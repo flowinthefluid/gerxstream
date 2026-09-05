@@ -1,0 +1,17 @@
+# Python-Bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+# Betriebssystem
+.DS_Store
+Thumbs.db
+
+# Build-Artefakte
+*.zip
