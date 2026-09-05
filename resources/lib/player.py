@@ -8,7 +8,9 @@ from xbmc import LOGINFO as LOGNOTICE, LOGERROR, log
 
 class XstreamPlayer(xbmc.Player):
     def __init__(self, *args, **kwargs):
-        xbmc.Player.__init__(self, *args, **kwargs)
+        # super() statt unbound Base-Call: xbmc.Player.__init__(self, ...) wirft
+        # unter Kodi 22 / Python 3.14 einen TypeError (xbmc/xbmc#29309).
+        super().__init__(*args, **kwargs)
         self.streamFinished = False
         self.streamSuccess = True
         self.playedTime = 0
