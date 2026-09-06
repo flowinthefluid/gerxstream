@@ -143,6 +143,26 @@ hinein — der Zeiger auf `Gujal00/smrzips`, **nicht** `script.module.resolveurl
 selbst. Begruendung siehe D1-Bericht: ein gespiegeltes ResolveURL veraltet und
 reisst die Hoster-Aufloesung mit.
 
+### Offener Punkt: `resolverUpdate()` faellt weg
+
+`updateManager.resolverUpdate()` laedt ResolveURL als GitHub-Zipball
+(`Gujal00/ResolveURL` bzw. `fetchdevteam/snipsolver`) und entpackt es selbst
+nach `special://home/addons/script.module.resolveurl` — an Kodis
+Addon-Verwaltung vorbei. Aufrufer: `service.py:166` beim Start, sowie
+`devUpdates()` (`updateManager.py:304`) hinter dem Menueeintrag
+"Manuelles Update" (`xstream.py:288-292`).
+
+Sobald `repository.resolveurl` in diesem Repo als regulaerer Versorgungsweg
+steht, faellt die Selbstinstallation **ersatzlos** weg: `resolverUpdate()`,
+`UpdateResolve()`, der Aufruf beim Start, der Resolver-Teil von `devUpdates()`
+und die zugehoerigen Einstellungen (`resolver.branch`, `githubUpdateResolver`,
+`enforceUpdate`) werden entfernt. Updates kommen dann ueber die
+Addon-Verwaltung.
+
+Bis dahin bleibt die Funktion bestehen — mit dem in S4 abgesicherten Entpacken
+und einem `LOGINFO`, wenn sie anlaeuft. Kein stilles Entpacken in fremde
+Verzeichnisse.
+
 ---
 
 ## 6. Veroeffentlichungs-Checkliste je Version
