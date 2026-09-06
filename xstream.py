@@ -16,6 +16,114 @@ from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
 from resources.lib.tools import logger, cParser, cCache
 
+SCRAPER_ENTRY_FUNCTIONS = frozenset((
+    '_showGenreMenu',
+    'ajaxCall',
+    'getHosterUrl',
+    'getHosterUrl_1',
+    'getHosterUrl_2',
+    'getHosterUrl_3',
+    'getHosterUrl_6',
+    'load',
+    'menuCollections',
+    'parseMovieEntrySite',
+    'parseNews',
+    'showAllSeries',
+    'showCharacters',
+    'showCinemaMovies',
+    'showCollection',
+    'showCollectionEntries',
+    'showCollections',
+    'showCountry',
+    'showDocuMenu',
+    'showDoku_6',
+    'showEntries',
+    'showEntriesLast',
+    'showEntriesUnJson',
+    'showEntries_1',
+    'showEntries_2',
+    'showEntries_3',
+    'showEntries_6',
+    'showEpisodeHosters',
+    'showEpisodes',
+    'showEpisodes_2',
+    'showFavItems',
+    'showGenre',
+    'showGenreEntries',
+    'showGenreMMenu',
+    'showGenreMenu',
+    'showGenreSMenu',
+    'showGenre_1',
+    'showGenre_2',
+    'showGenre_3',
+    'showGenres',
+    'showHosters',
+    'showHostersUnJson',
+    'showHosters_1',
+    'showHosters_2',
+    'showHosters_3',
+    'showHosters_6',
+    'showMovieMenu',
+    'showNewEpisodes',
+    'showNewSeries',
+    'showNews',
+    'showSearch',
+    'showSearchActor',
+    'showSearchMovies',
+    'showSearchPage',
+    'showSearchSeries',
+    'showSearch_1',
+    'showSearch_2',
+    'showSearch_3',
+    'showSearch_6',
+    'showSeasons',
+    'showSeries',
+    'showSeriesMenu',
+    'showStart',
+    'showThemen_6',
+    'showValue',
+    'showYTChannels',
+    'showYTGenre',
+    'showYTLists',
+    'showYears',
+    'showYearsMenu',
+))
+
+HOSTER_GUI_FUNCTIONS = frozenset((
+    'addToPlaylist',
+    'download',
+    'play',
+    'sendToJDownloader',
+    'sendToJDownloader2',
+    'sendToMyJDownloader',
+    'sendToPyLoad',
+))
+
+
+def _endFailedDirectory():
+    try:
+        xbmcplugin.endOfDirectory(int(sys.argv[1]), succeeded=False)
+    except (IndexError, ValueError):
+        pass
+
+
+def _rejectPluginRoute(sSiteName, sFunction, sReason):
+    log(cConfig().getLocalizedString(30166) +
+        " -> [xstream]: Rejected plugin route site=%r function=%r: %s" %
+        (sSiteName, sFunction, sReason), LOGERROR)
+    _endFailedDirectory()
+
+
+def _isAllowedScraperRoute(sSiteName, sFunction):
+    if sSiteName not in cPluginHandler().getPluginNames():
+        _rejectPluginRoute(sSiteName, sFunction, 'site is not a scraper module')
+        return False
+    if sFunction not in SCRAPER_ENTRY_FUNCTIONS:
+        _rejectPluginRoute(sSiteName, sFunction, 'function is not allowed')
+        return False
+    return True
+
+
 try:
     import resolveurl as resolver
 except ImportError:
@@ -26,10 +134,7 @@ except ImportError:
     # nie kommen. Danach abbrechen, statt weiterzulaufen und beim ersten Zugriff
     # auf 'resolver' mit NameError zu sterben.
     log(cConfig().getLocalizedString(30166) + ' -> [xstream]: resolveurl not available, aborting', LOGERROR)
-    try:
-        xbmcplugin.endOfDirectory(int(sys.argv[1]), succeeded=False)
-    except (IndexError, ValueError):
-        pass
+    _endFailedDirectory()
     sys.exit()
 
 
@@ -107,6 +212,8 @@ def parseUrl():
         return
     sSiteName = params.getValue('site')
     if params.exist('playMode'):
+        if not _isAllowedScraperRoute(sSiteName, sFunction):
+            return
         from resources.lib.gui.hoster import cHosterGui
         url = False
         playMode = params.getValue('playMode')
@@ -170,8 +277,13 @@ def parseUrl():
         oGui.setEndOfDirectory()
     else:
         # Else load any other site as plugin and run the function
+        if not _isAllowedScraperRoute(sSiteName, sFunction):
+            return
         plugin = __import__(sSiteName, globals(), locals())
-        function = getattr(plugin, sFunction)
+        function = getattr(plugin, sFunction, None)
+        if not callable(function):
+            _rejectPluginRoute(sSiteName, sFunction, 'function is unavailable')
+            return
         function()
 
 
@@ -308,8 +420,14 @@ def globalSearchGuiElement():
 
 def showHosterGui(sFunction):
     from resources.lib.gui.hoster import cHosterGui
+    if sFunction not in HOSTER_GUI_FUNCTIONS:
+        _rejectPluginRoute('cHosterGui', sFunction, 'function is not allowed')
+        return False
     oHosterGui = cHosterGui()
-    function = getattr(oHosterGui, sFunction)
+    function = getattr(oHosterGui, sFunction, None)
+    if not callable(function):
+        _rejectPluginRoute('cHosterGui', sFunction, 'function is unavailable')
+        return False
     function()
     return True
 

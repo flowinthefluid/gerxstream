@@ -71,6 +71,10 @@ class cPluginHandler:
             log(cConfig().getLocalizedString(30166) + ' -> [pluginHandler]: PluginDB informations updated.', LOGNOTICE)
         return self.getAvailablePluginsFromDB()
 
+    def getPluginNames(self):
+        return [fileName for fileName in self.__getFileNamesFromFolder(self.defaultFolder)
+                if not fileName.startswith('_')]
+
 
     def getAvailablePluginsFromDB(self):
         plugins = []

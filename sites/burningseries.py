@@ -10,6 +10,7 @@
 # SSsearch:      24 Stunden
 
 
+from ast import literal_eval
 import json
 import locale
 
@@ -361,7 +362,12 @@ def showHosters():
 
 
 def getHosterUrl(hUrl):
-    if type(hUrl) == str: hUrl = eval(hUrl)
+    if isinstance(hUrl, str):
+        try:
+            hUrl = literal_eval(hUrl)
+        except (SyntaxError, ValueError) as error:
+            logger.error('BurningSeries: invalid hoster URL parameter: %s' % error)
+            return []
 
     Request = cRequestHandler(URL_MAIN + '/' + hUrl[0], caching=False)
     Request.addHeaderEntry('Referer', ParameterHandler().getValue('entryUrl'))

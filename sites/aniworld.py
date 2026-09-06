@@ -12,6 +12,8 @@
     
 # 2022-12-06 Heptamer - Suchfunktion überarbeitet
 
+from ast import literal_eval
+
 import xbmcgui
 
 from resources.lib.handler.ParameterHandler import ParameterHandler
@@ -400,7 +402,12 @@ def showHosters():
 
 
 def getHosterUrl(hUrl):
-    if type(hUrl) == str: hUrl = eval(hUrl)
+    if isinstance(hUrl, str):
+        try:
+            hUrl = literal_eval(hUrl)
+        except (SyntaxError, ValueError) as error:
+            logger.error('AniWorld: invalid hoster URL parameter: %s' % error)
+            return []
     username = cConfig().getSetting('aniworld.user')
     password = cConfig().getSetting('aniworld.pass')
     Handler = cRequestHandler(URL_LOGIN, caching=False)
