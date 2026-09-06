@@ -165,6 +165,21 @@ def commitUpdate(onlineFile, offlineFile, downloadLink, LocalDir, plugin_id, loc
         return False
 
 
+def _getSafeUpdateDestination(localDir, archiveMember):
+    localDir = os.path.realpath(os.path.abspath(localDir))
+    relativePath = '/'.join(archiveMember.replace('\\', '/').split('/')[1:])
+    if not relativePath or os.path.isabs(relativePath):
+        return None
+
+    destination = os.path.realpath(os.path.abspath(os.path.join(localDir, relativePath)))
+    try:
+        if os.path.commonpath((localDir, destination)) != localDir:
+            return None
+    except ValueError:
+        return None
+    return destination
+
+
 def doUpdate(LocalDir, REMOTE_PATH, Title, localFileName, auth):
     try:
         response = requests.get(REMOTE_PATH, auth=auth)  # verify=False,
@@ -175,17 +190,21 @@ def doUpdate(LocalDir, REMOTE_PATH, Title, localFileName, auth):
         updateFile = zipfile.ZipFile(localFileName)
         removeFilesNotInRepo(updateFile, LocalDir)
         for index, n in enumerate(updateFile.namelist()):
-            if n[-1] != "/":
-                dest = os.path.join(LocalDir, "/".join(n.split("/")[1:]))
+            if not n.endswith('/'):
+                dest = _getSafeUpdateDestination(LocalDir, n)
+                if not dest:
+                    log(cConfig().getLocalizedString(30166) +
+                        ' -> [updateManager]: Skipping unsafe update archive entry: %s' % n,
+                        LOGWARNING)
+                    continue
                 destdir = os.path.dirname(dest)
                 if not os.path.isdir(destdir):
                     os.makedirs(destdir)
                 data = updateFile.read(n)
                 if os.path.exists(dest):
                     os.remove(dest)
-                f = open(dest, 'wb')
-                f.write(data)
-                f.close()
+                with open(dest, 'wb') as file:
+                    file.write(data)
         updateFile.close()
         os.remove(localFileName)
         executebuiltin("UpdateLocalAddons()")
