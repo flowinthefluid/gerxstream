@@ -1707,3 +1707,11 @@ msgstr "Thriller"
 msgctxt "#30812"
 msgid "Western film"
 msgstr "Western"
+
+msgctxt "#30813"
+msgid "Allow insecure TLS connections"
+msgstr "Unsichere TLS-Verbindungen erlauben"
+
+msgctxt "#30814"
+msgid "Disables TLS certificate checks for this scraper. Enable only when its server has an invalid certificate."
+msgstr "Deaktiviert die TLS-Zertifikatspruefung fuer diesen Scraper. Nur bei einem ungueltigen Serverzertifikat aktivieren."

@@ -9,12 +9,12 @@ import hashlib
 import json
 import traceback
 import ssl
-import certifi
 import socket
 import zlib
 import http.client
 
 from resources.lib.config import cConfig
+from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.tools import logger, cCache
 from xbmcvfs import translatePath
 
@@ -44,13 +44,12 @@ class IPHTTPSConnection(http.client.HTTPSConnection):
         else:
             super().connect()
 
-class CustomSecureHTTPSHandler(HTTPSHandler):
-    def __init__(self, ip=None):
-        # Create an SSL context with certifi's CA bundle.
-        context = ssl.create_default_context(cafile=certifi.where())
-        # If an IP is provided, disable hostname checking (since we'll verify using SNI later).
-        context.check_hostname = False if ip else True
-        context.verify_mode = ssl.CERT_REQUIRED
+class CustomHTTPSHandler(HTTPSHandler):
+    def __init__(self, ip=None, ssl_verify=True):
+        context = ssl.create_default_context()
+        if not ssl_verify:
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE
         self.ip = ip
         self.context = context
         super().__init__(context=context)
@@ -90,7 +89,7 @@ class cRequestHandler:
         _User_Agents = [FF_USER_AGENT, OPERA_USER_AGENT, EDGE_USER_AGENT, CHROME_USER_AGENT, SAFARI_USER_AGENT]
         return choice(_User_Agents)
 
-    def __init__(self, sUrl, caching=True, ignoreErrors=False, method='GET', data=None, compression=True, jspost=False, ssl_verify=False, bypass_dns=False):
+    def __init__(self, sUrl, caching=True, ignoreErrors=False, method='GET', data=None, compression=True, jspost=False, ssl_verify=True, bypass_dns=False, allow_insecure_tls=True):
         self._sUrl = self.__cleanupUrl(sUrl)
         self._sRealUrl = ''
         self._USER_AGENT = self.RandomUA()
@@ -101,7 +100,12 @@ class cRequestHandler:
         self._cookiePath = ''
         self._Status = ''
         self._sResponseHeader = ''
-        self._ssl_verify = ssl_verify
+        self._ssl_verify = bool(ssl_verify)
+        if self._ssl_verify and allow_insecure_tls and self.__isInsecureTLSAllowed():
+            self._ssl_verify = False
+        if not self._ssl_verify:
+            domain = urlparse(self._sUrl).hostname or self._sUrl
+            logger.warning(' -> [requestHandler]: TLS certificate verification disabled for %s' % domain)
         self._bypass_dns = bypass_dns
         self.ignoreDiscard(False)
         self.ignoreExpired(False)
@@ -165,14 +169,24 @@ class cRequestHandler:
     @staticmethod
     def __getDefaultHandler(ssl_verify, ip=None):
         if ip:
-            return [CustomSecureHTTPSHandler(ip=ip)]    
+            return [CustomHTTPSHandler(ip=ip, ssl_verify=ssl_verify)]
         elif ssl_verify:
-            return [CustomSecureHTTPSHandler()]
+            return [CustomHTTPSHandler()]
         else:
             ssl_context = ssl.create_default_context()
             ssl_context.check_hostname = False
             ssl_context.verify_mode = ssl.CERT_NONE
             return [HTTPSHandler(context=ssl_context)]
+
+    @staticmethod
+    def __isInsecureTLSAllowed():
+        site_identifier = ParameterHandler().getValue('site')
+        if not isinstance(site_identifier, str):
+            return False
+        if not re.fullmatch(r'[a-z0-9_-]+', site_identifier):
+            return False
+        setting = 'plugin_%s_allowInsecureTLS' % site_identifier
+        return cConfig().getSetting(setting, 'false') == 'true'
 
     @staticmethod
     def __cleanupUrl(url):
@@ -213,13 +227,14 @@ class cRequestHandler:
             logger.debug(e)
         
         domain = urlparse(self._sUrl).netloc
-        if domain in cRequestHandler.persistent_openers:
-            opener = cRequestHandler.persistent_openers[domain]
+        opener_key = (domain, self._ssl_verify, ip_override)
+        if opener_key in cRequestHandler.persistent_openers:
+            opener = cRequestHandler.persistent_openers[opener_key]
         else:
             handlers = self.__getDefaultHandler(self._ssl_verify, ip_override)        
             handlers += [HTTPHandler(), HTTPCookieProcessor(cookiejar=cookieJar), RedirectFilter()]
             opener = build_opener(*handlers)
-            cRequestHandler.persistent_openers[domain] = opener
+            cRequestHandler.persistent_openers[opener_key] = opener
 
         # Prepare parameters for GET/POST
         if self.method == 'POST':

@@ -162,7 +162,7 @@ class cTMDB:
             url += '&%s' % append_to_response
         if 'person' in url:
             url = url.replace('&page=', '')
-        oRequestHandler = cRequestHandler(url, ignoreErrors=True)
+        oRequestHandler = cRequestHandler(url, ignoreErrors=True, allow_insecure_tls=False)
         name = oRequestHandler.request()
         try:
             data = json.loads(name)
@@ -191,7 +191,7 @@ class cTMDB:
         meta = {}
         if media_type == 'episode' and tmdb_id and season and episode:
             url = '%stv/%s/season/%s?api_key=%s&language=de' % (self.URL, tmdb_id, season, self.api_key)
-            Data = cRequestHandler(url, ignoreErrors=True).request()
+            Data = cRequestHandler(url, ignoreErrors=True, allow_insecure_tls=False).request()
             if Data:
                 try:
                     meta = json.loads(Data)

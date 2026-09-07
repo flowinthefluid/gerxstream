@@ -263,6 +263,15 @@
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_aniworld_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_aniworld">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_aniworld">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_aniworld" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -312,6 +321,15 @@
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_api_all_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_api_all">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_api_all">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_api_all" type="boolean" label="30052">
 					<level>0</level>
 					<default>False</default>
@@ -357,6 +375,15 @@
                     <default>False</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_burningseries_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_burningseries">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_burningseries">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_burningseries" type="boolean" label="30052">
 					<level>0</level>
 					<default>False</default>
@@ -399,6 +426,15 @@
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_dokus_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_dokus">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_dokus">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="dokus.youtube" type="action" label="30431" help="">
 					<level>0</level>
 					<data>Addon.OpenSettings(plugin.video.youtube)</data>
@@ -423,6 +459,15 @@
 				<setting id="plugin_einschalten" type="boolean" label="30050" help="30411">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_einschalten_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_einschalten">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_einschalten">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_einschalten" type="boolean" label="30052">
@@ -466,6 +511,15 @@
 				<setting id="plugin_filmpalast" type="boolean" label="30050" help="30411">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_filmpalast_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_filmpalast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_filmpalast">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_filmpalast" type="boolean" label="30052">
@@ -512,6 +566,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>				
+				<setting id="plugin_hdfilme_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_hdfilme">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_hdfilme">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_hdfilme" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -554,6 +617,15 @@
 				<setting id="plugin_hdfilme_1" type="boolean" label="30050" help="30411">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_hdfilme_1_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_hdfilme_1">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_hdfilme_1">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_hdfilme_1" type="boolean" label="30052">
@@ -600,6 +672,15 @@
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_internetarchive_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_internetarchive">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_internetarchive">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_internetarchive" type="boolean" label="30052">
 					<level>0</level>
 					<default>False</default>
@@ -618,6 +699,15 @@
 				<setting id="plugin_kids_tube" type="boolean" label="30050" help="30411">
 					<level>0</level>
 					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kids_tube_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kids_tube">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kids_tube">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="kids_tube.youtube" type="action" label="30431" help="">
@@ -646,6 +736,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>				
+				<setting id="plugin_kinoger_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoger">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoger">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_kinoger" type="boolean" label="30052">
 					<level>0</level>
 					<default>False</default>
@@ -692,6 +791,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_kinokiste_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinokiste">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinokiste">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_kinokiste" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -734,6 +842,15 @@
 				<setting id="plugin_kinox" type="boolean" label="30050" help="30411">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinox_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinox">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinox">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_kinox" type="boolean" label="30052">
@@ -796,6 +913,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>				
+				<setting id="plugin_kkiste_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kkiste">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kkiste">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_kkiste" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -840,6 +966,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>				
+				<setting id="plugin_megakino_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_megakino">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_megakino">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_megakino" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -882,6 +1017,15 @@
 				<setting id="plugin_moflix-stream" type="boolean" label="30050" help="30411">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_moflix-stream_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_moflix-stream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_moflix-stream">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_moflix-stream" type="boolean" label="30052">
@@ -928,6 +1072,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_movie2k_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_movie2k">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_movie2k">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_movie2k" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -970,6 +1123,15 @@
 				<setting id="plugin_movie4k" type="boolean" label="30050" help="30411">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_movie4k_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_movie4k">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_movie4k">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_movie4k" type="boolean" label="30052">
@@ -1016,6 +1178,15 @@
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_netzkino_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_netzkino">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_netzkino">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_netzkino" type="boolean" label="30052">
 					<level>0</level>
 					<default>False</default>
@@ -1031,6 +1202,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>				
+				<setting id="plugin_serienstream_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_serienstream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_serienstream">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_serienstream" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -1080,6 +1260,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_streamcloud_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_streamcloud">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_streamcloud">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_streamcloud" type="boolean" label="30052">
 					<level>0</level>
 					<default>False</default>
@@ -1122,6 +1311,15 @@
 				<setting id="plugin_topstreamfilm" type="boolean" label="30050" help="30411">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_topstreamfilm_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_topstreamfilm">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_topstreamfilm">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_topstreamfilm" type="boolean" label="30052">
@@ -1168,6 +1366,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_xcine_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_xcine">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_xcine">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_xcine" type="boolean" label="30052">
 					<level>0</level>
 					<default>False</default>
@@ -1209,6 +1416,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_vod_huhu_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_huhu">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_huhu">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_vod_huhu" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -1227,6 +1443,15 @@
 				<setting id="plugin_vod_kool" type="boolean" label="30050" help="">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_vod_kool_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_kool">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_kool">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_vod_kool" type="boolean" label="30052">
@@ -1249,6 +1474,15 @@
                     <default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_vod_oha_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_oha">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_oha">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="global_search_vod_oha" type="boolean" label="30052">
 					<level>0</level>
 					<default>True</default>
@@ -1267,6 +1501,15 @@
 				<setting id="plugin_vod_vavoo" type="boolean" label="30050" help="">
 					<level>0</level>
                     <default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_vod_vavoo_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_vavoo">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_vavoo">false</dependency>
+					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_vod_vavoo" type="boolean" label="30052">
