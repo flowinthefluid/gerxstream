@@ -4,6 +4,7 @@
 # Multi Scraper für Kinder Videos
 
 
+import os
 import xbmc
 import xbmcgui, sys
 
@@ -25,6 +26,10 @@ cConfig().setSetting('global_search_' + SITE_IDENTIFIER, 'false')
 logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
+ADDON_ID = cConfig().getAddonInfo('id')
+SITE_ART_BASE = 'special://home/addons/%s/resources/art/sites' % ADDON_ID
+KIDS_TUBE_ICON_PATH = os.path.join(SITE_ART_BASE, 'kids_tube.png')
+NETZKINO_ICON_PATH = os.path.join(SITE_ART_BASE, 'netzkino.png')
 
 #################### Hauptmenü ####################
 
@@ -147,14 +152,14 @@ def _search_1(oGui, sSearchText):
 URL_MAIN = 'http://www.youtube.com'
 
 channellist = [
-    ("[B]YouTube:[/B] Kanäle", "Kanäle", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-    ("[B]YouTube:[/B] Filme", "Kinder Filme", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-    ("[B]YouTube:[/B] Serien", "Kinder Serien", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-    ("[B]YouTube:[/B] Klassiker", "Kinder Klassiker", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-    ("[B]YouTube:[/B] Märchen", "Kinder Geschichten", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-    ("[B]YouTube:[/B] Hörbücher", "Kinder Buch", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-    ("[B]YouTube:[/B] Wissen", "Kinder Wissen", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-    ("[B]YouTube:[/B] Musik", "Kinder Musik", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
+    ("[B]YouTube:[/B] Kanäle", "Kanäle", KIDS_TUBE_ICON_PATH),
+    ("[B]YouTube:[/B] Filme", "Kinder Filme", KIDS_TUBE_ICON_PATH),
+    ("[B]YouTube:[/B] Serien", "Kinder Serien", KIDS_TUBE_ICON_PATH),
+    ("[B]YouTube:[/B] Klassiker", "Kinder Klassiker", KIDS_TUBE_ICON_PATH),
+    ("[B]YouTube:[/B] Märchen", "Kinder Geschichten", KIDS_TUBE_ICON_PATH),
+    ("[B]YouTube:[/B] Hörbücher", "Kinder Buch", KIDS_TUBE_ICON_PATH),
+    ("[B]YouTube:[/B] Wissen", "Kinder Wissen", KIDS_TUBE_ICON_PATH),
+    ("[B]YouTube:[/B] Musik", "Kinder Musik", KIDS_TUBE_ICON_PATH),
 ]
 
 sublists = {
@@ -181,14 +186,14 @@ sublists = {
     ],
 
     'Kinder Filme': [
-        ("[B]Kinderfilme[/B] von Netzkino", "playlist/PLfEblejE-l3k5xxDsBiKVhdNqWAuCIYRr", "special://home/addons/plugin.video.xstream/resources/art/sites/netzkino.png"),
-        ("[B]Zeichentrickfilme[/B] von Netzkino", "playlist/PLfEblejE-l3l8AwrdcuMp-p31uwBaJJXl", "special://home/addons/plugin.video.xstream/resources/art/sites/netzkino.png"),
-        ("[B]Pferdefilme[/B] von Netzkino", "playlist/PLfEblejE-l3k3qM4Q1GlnGdGeRjzlZvRn", "special://home/addons/plugin.video.xstream/resources/art/sites/netzkino.png"),
-        ("[B]Hundefilme[/B] von Netzkino", "playlist/PLfEblejE-l3nIBgJeAv7KO1DPvC2yN8-5", "special://home/addons/plugin.video.xstream/resources/art/sites/netzkino.png"),
-        ("[B]Tennie Komödien[/B] von Netzkino", "playlist/PLfEblejE-l3kyX48AXCaOnKFLxxkasxOM", "special://home/addons/plugin.video.xstream/resources/art/sites/netzkino.png"),
-        ("[B]Familienkino[/B] von Netzkino", "playlist/PLfEblejE-l3nta_dpVmIwGomgE_a3sm6g", "special://home/addons/plugin.video.xstream/resources/art/sites/netzkino.png"),
-        ("[B]Weihnachtskino[/B] von Netzkino", "playlist/PLfEblejE-l3n9NKla09pwoYVLtnrL2kv3", "special://home/addons/plugin.video.xstream/resources/art/sites/netzkino.png"),
-        ("[B]Kinderkino[/B] von Netzkino", "channel/UCmZUsl5MLqXIhuSTVP6x-EA", "special://home/addons/plugin.video.xstream/resources/art/sites/netzkino.png"),
+        ("[B]Kinderfilme[/B] von Netzkino", "playlist/PLfEblejE-l3k5xxDsBiKVhdNqWAuCIYRr", NETZKINO_ICON_PATH),
+        ("[B]Zeichentrickfilme[/B] von Netzkino", "playlist/PLfEblejE-l3l8AwrdcuMp-p31uwBaJJXl", NETZKINO_ICON_PATH),
+        ("[B]Pferdefilme[/B] von Netzkino", "playlist/PLfEblejE-l3k3qM4Q1GlnGdGeRjzlZvRn", NETZKINO_ICON_PATH),
+        ("[B]Hundefilme[/B] von Netzkino", "playlist/PLfEblejE-l3nIBgJeAv7KO1DPvC2yN8-5", NETZKINO_ICON_PATH),
+        ("[B]Tennie Komödien[/B] von Netzkino", "playlist/PLfEblejE-l3kyX48AXCaOnKFLxxkasxOM", NETZKINO_ICON_PATH),
+        ("[B]Familienkino[/B] von Netzkino", "playlist/PLfEblejE-l3nta_dpVmIwGomgE_a3sm6g", NETZKINO_ICON_PATH),
+        ("[B]Weihnachtskino[/B] von Netzkino", "playlist/PLfEblejE-l3n9NKla09pwoYVLtnrL2kv3", NETZKINO_ICON_PATH),
+        ("[B]Kinderkino[/B] von Netzkino", "channel/UCmZUsl5MLqXIhuSTVP6x-EA", NETZKINO_ICON_PATH),
         ("[B]Kinderfilme[/B] von Nanoki", "playlist/PLAroxwS0jZuS521YByzaxA6ZO5VO-ppXJ", "https://yt3.googleusercontent.com/OfyylHIKU_TcdZXA8gWLAv2Z7S4BhZtpDhRCDewnzvfgQkTfeSQGkrDeJSPr8CR_8XjlTLSB=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Zeichentrickfilme[/B] von Nanoki", "playlist/PLAroxwS0jZuQSy2pjwruhzz44-kQ0YHEh", "https://yt3.googleusercontent.com/OfyylHIKU_TcdZXA8gWLAv2Z7S4BhZtpDhRCDewnzvfgQkTfeSQGkrDeJSPr8CR_8XjlTLSB=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Tierfilme[/B] von Nanoki", "playlist/PLAroxwS0jZuQQlgJJ3_-imn1abL4A4Zlc", "https://yt3.googleusercontent.com/OfyylHIKU_TcdZXA8gWLAv2Z7S4BhZtpDhRCDewnzvfgQkTfeSQGkrDeJSPr8CR_8XjlTLSB=s160-c-k-c0x00ffffff-no-rj"),
@@ -316,7 +321,7 @@ def sub_list(action):
         id = List[1]
         icon = List[2]
         if apikey == '' or apikey == None:
-            sUrl="plugin://plugin.video.youtube/" + id + "/?addon_id=plugin.video.xstream"
+            sUrl="plugin://plugin.video.youtube/" + id + "/?addon_id=" + ADDON_ID
         else:
             sUrl="plugin://plugin.video.youtube/" + id + "/"
         params.setParam('trumb', icon)

@@ -8,6 +8,7 @@ def main():
     import platform
 
     from resources.lib.config import cConfig
+    from resources.lib import tools
     from xbmc import LOGINFO as LOGNOTICE, log
     from xbmcvfs import translatePath
 
@@ -23,6 +24,9 @@ def main():
     log('-----------------------------------------------------------------------', LOGNOTICE)
     log(LOGMESSAGE + ' -> [default]: Start xStream Log, Version %s ' % cConfig().getAddonInfo('version'), LOGNOTICE)
     log(LOGMESSAGE + ' -> [default]: Python-Version: %s' % platform.python_version(), LOGNOTICE)
+
+    tools.migrateLegacyAddonData()
+    tools.showLegacyInstallHintOnce()
 
     try:
         parseUrl()

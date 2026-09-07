@@ -214,7 +214,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             elif controlId == 5215 or controlId == 5205 or controlId == 5210:
                 item = self.getControl(controlId).getSelectedItem()
                 self.close()
-                xbmc.executebuiltin("Container.Update(%s?function=searchTMDB&%s)" % ('plugin://plugin.video.xstream/', urlencode({'searchTitle': item.getLabel()})))
+                xbmc.executebuiltin("Container.Update(%s?function=searchTMDB&%s)" % ('plugin://%s/' % cConfig().getAddonInfo('id'), urlencode({'searchTitle': item.getLabel()})))
                 return
 
         def onFocus(self, controlId):
@@ -230,7 +230,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 self.close()
 
 # kasi
-    path = 'special://home/addons/%s' % cConfig().getAddonInfo('id')   
+    path = cConfig().getAddonInfo('path')
     wd = XMLDialog('info.xml', path, 'default', '720p')
     wd.doModal()
     del wd

@@ -139,10 +139,15 @@ class cPluginHandler:
             tree = ET.parse(self.settingsFile)
             root = tree.getroot()
 
-            # Hauptsektion für xstream Plugin finden
+            # Hauptsektion für das aktuelle Addon finden
             xstream_section = None
+            current_addon_id = cConfig().getAddonInfo('id')
             for section in root.findall('section'):
+                if section.get('id') == current_addon_id:
+                    xstream_section = section
+                    break
                 if section.get('id') == 'plugin.video.xstream':
+                    section.set('id', current_addon_id)
                     xstream_section = section
                     break
 

@@ -8,6 +8,7 @@ import json
 import re
 import os
 import time
+import shutil
 
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib import pyaes
@@ -18,6 +19,89 @@ from html.entities import name2codepoint
 from difflib import SequenceMatcher
 from functools import lru_cache
 from os import path, chdir
+
+LEGACY_ADDON_ID = 'plugin.video.xstream'
+CURRENT_ADDON_ID = 'plugin.video.gerxstream'
+ADDON_DATA_MIGRATION_MARKER = '.gerxstream_data_migrated'
+LEGACY_INSTALL_HINT_MARKER = '.gerxstream_legacy_install_hint_shown'
+
+
+def _addonDataPath(addon_id):
+    return translatePath(os.path.join('special://home/userdata/addon_data', addon_id))
+
+
+def _writeMarker(marker_path, content):
+    try:
+        marker_dir = os.path.dirname(marker_path)
+        if marker_dir and not os.path.isdir(marker_dir):
+            os.makedirs(marker_dir)
+        with open(marker_path, mode='w', encoding='utf-8') as marker_file:
+            marker_file.write(content)
+    except Exception as e:
+        log('[tools] Failed to write marker %s: %s' % (marker_path, e), LOGERROR)
+
+
+def migrateLegacyAddonData():
+    addon_id = cConfig().getAddonInfo('id')
+    if addon_id != CURRENT_ADDON_ID:
+        return False
+
+    old_data_path = _addonDataPath(LEGACY_ADDON_ID)
+    new_data_path = _addonDataPath(CURRENT_ADDON_ID)
+    marker_path = os.path.join(new_data_path, ADDON_DATA_MIGRATION_MARKER)
+
+    if os.path.isfile(marker_path):
+        return False
+
+    copied_files = 0
+    os.makedirs(new_data_path, exist_ok=True)
+
+    if os.path.isdir(old_data_path):
+        for src_root, _, file_names in os.walk(old_data_path):
+            rel_path = os.path.relpath(src_root, old_data_path)
+            dst_root = new_data_path if rel_path == '.' else os.path.join(new_data_path, rel_path)
+            os.makedirs(dst_root, exist_ok=True)
+            for file_name in file_names:
+                src_file = os.path.join(src_root, file_name)
+                dst_file = os.path.join(dst_root, file_name)
+                if os.path.exists(dst_file):
+                    continue
+                try:
+                    shutil.copy2(src_file, dst_file)
+                    copied_files += 1
+                except Exception as e:
+                    log('[tools] Could not migrate %s: %s' % (src_file, e), LOGERROR)
+
+    marker_content = 'migrated_from=%s\ntime=%s\nfiles=%s\n' % (
+        LEGACY_ADDON_ID,
+        int(time.time()),
+        copied_files)
+    _writeMarker(marker_path, marker_content)
+    if copied_files:
+        log('[tools] Migrated %s addon_data files from %s to %s' % (copied_files, LEGACY_ADDON_ID, CURRENT_ADDON_ID), LOGDEBUG)
+    return copied_files > 0
+
+
+def showLegacyInstallHintOnce():
+    addon_id = cConfig().getAddonInfo('id')
+    if addon_id != CURRENT_ADDON_ID:
+        return
+
+    addon_data_path = _addonDataPath(CURRENT_ADDON_ID)
+    marker_path = os.path.join(addon_data_path, LEGACY_INSTALL_HINT_MARKER)
+    if os.path.isfile(marker_path):
+        return
+
+    legacy_addon_path = translatePath(os.path.join('special://home/addons', LEGACY_ADDON_ID))
+    if not os.path.isdir(legacy_addon_path):
+        return
+
+    xbmcgui.Dialog().ok(
+        cConfig().getAddonInfo('name'),
+        'Alte Installation erkannt: plugin.video.xstream.\n'
+        'Dieses Addon verwendet jetzt plugin.video.gerxstream.\n'
+        'Bitte entferne die alte Installation, um Doppelinstallationen zu vermeiden.')
+    _writeMarker(marker_path, 'shown=%s\n' % int(time.time()))
 
 # Aufgeführte Plattformen zum Anzeigen der Systemplattform
 def platform():
@@ -51,7 +135,8 @@ def platform():
 
 # zeigt nach Update den Changelog als Popup an
 def changelog():
-    CHANGELOG_PATH = translatePath(os.path.join('special://home/addons/' + cConfig().getAddonInfo('id') + '/', 'changelog.txt'))
+    addon_path = translatePath(cConfig().getAddonInfo('path'))
+    CHANGELOG_PATH = os.path.join(addon_path, 'changelog.txt')
     version = cConfig().getAddonInfo('version')
     if cConfig().getSetting('changelog_version') == version or not os.path.isfile(CHANGELOG_PATH):
         return
@@ -67,7 +152,8 @@ def changelog():
 
 # zeigt die Entwickler Optionen Warnung als Popup an
 def devWarning():
-    POPUP_PATH = translatePath(os.path.join('special://home/addons/' + cConfig().getAddonInfo('id') + '/resources/popup', 'devWarning.txt'))
+    addon_path = translatePath(cConfig().getAddonInfo('path'))
+    POPUP_PATH = os.path.join(addon_path, 'resources', 'popup', 'devWarning.txt')
     heading = cConfig().getLocalizedString(30322)
     with open(POPUP_PATH, mode='r', encoding='utf-8') as f:
         cl_lines = f.readlines()
@@ -409,7 +495,7 @@ class cCache(object):
     def __init__(self):
         # see https://kodi.wiki/view/Window_IDs
         self._win = xbmcgui.Window(10000)
-        addon_id = cConfig().getAddonInfo('id') or 'plugin.video.xstream'
+        addon_id = cConfig().getAddonInfo('id') or CURRENT_ADDON_ID
         self._property_prefix = addon_id + '.volatileCache.'
         self._registry_property = self._property_prefix + 'registry'
 

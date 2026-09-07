@@ -483,7 +483,7 @@ def showYTChannels():
             id = List[2]
             icon = List[1]
             if apikey == '' or apikey == None:
-                sUrl="plugin://plugin.video.youtube" + id + "/?addon_id=plugin.video.xstream"
+                sUrl="plugin://plugin.video.youtube" + id + "/?addon_id=" + cConfig().getAddonInfo('id')
             else:
                 sUrl="plugin://plugin.video.youtube" + id + "/"
             params.setParam('trumb', icon)
@@ -699,7 +699,7 @@ def showYTLists():
         id = List[1]
         icon = List[2]
         if apikey == '' or apikey == None:
-            sUrl="plugin://plugin.video.youtube/" + id + "/?addon_id=plugin.video.xstream"
+            sUrl="plugin://plugin.video.youtube/" + id + "/?addon_id=" + cConfig().getAddonInfo('id')
         else:
             sUrl="plugin://plugin.video.youtube/" + id + "/"
         params.setParam('trumb', icon)

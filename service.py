@@ -9,7 +9,7 @@ import time
 
 from resources.lib.config import cConfig
 from resources.lib import tools
-from xbmc import LOGERROR,  LOGDEBUG, log
+from xbmc import LOGERROR, LOGDEBUG, log
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib import updateManager
@@ -143,6 +143,7 @@ def checkVersion(xs='xstream'):
 
 
 def main():
+    tools.migrateLegacyAddonData()
     cache = cCache()
     try:
         cache_time = int(cConfig().getSetting('cacheTime', 360)) * 60
@@ -182,7 +183,7 @@ def main():
             if cConfig().getSetting('enforceUpdate') == 'true': cConfig().setSetting('enforceUpdate', 'false')
 
     # Startet Überprüfung der Abhängigkeiten
-    checkDependence('plugin.video.xstream')
+    checkDependence(cConfig().getAddonInfo('id'))
 
     # Startet Domain Überprüfung und schreibt diese in die settings.xml
     cPluginHandler().checkDomain()
