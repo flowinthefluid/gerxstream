@@ -4,6 +4,7 @@
 import os
 import shutil
 import json
+import re
 import requests
 import zipfile
 
@@ -12,6 +13,15 @@ from xbmcgui import Dialog
 from resources.lib.config import cConfig
 from xbmc import LOGINFO as LOGNOTICE, LOGERROR, LOGWARNING, log, executebuiltin
 from xbmcvfs import translatePath
+
+
+ADDON_ID_PATTERN = re.compile(r'^[a-z0-9]+(?:[._-][a-z0-9]+)*$')
+
+
+def _isValidUpdateTarget(plugin_id):
+    return (isinstance(plugin_id, str) and
+            ADDON_ID_PATTERN.fullmatch(plugin_id) is not None and
+            plugin_id == cConfig().getAddonInfo('id'))
 
 
 # Resolver
@@ -107,6 +117,12 @@ def UpdateResolve(username, resolve_dir, resolve_id, branch, token, silent):
 
 # xStream Update
 def Update(username, plugin_id, branch, token, silent):
+    if not _isValidUpdateTarget(plugin_id):
+        log(cConfig().getLocalizedString(30166) +
+            ' -> [updateManager]: Refusing update for invalid addon id: %s' % plugin_id,
+            LOGERROR)
+        return False
+
     REMOTE_PLUGIN_COMMITS = "https://api.github.com/repos/%s/%s/commits/%s" % (username, plugin_id, branch)
     REMOTE_PLUGIN_DOWNLOADS = "https://api.github.com/repos/%s/%s/zipball/%s" % (username, plugin_id, branch)
     auth = HTTPBasicAuth(username, token)
@@ -215,18 +231,32 @@ def doUpdate(LocalDir, REMOTE_PATH, Title, localFileName, auth):
 
 
 def removeFilesNotInRepo(updateFile, LocalDir):
-    ignored_files = ['settings.xml', 'aniworld.py', 'aniworld.png']
-    updateFileNameList = [i.split("/")[-1] for i in updateFile.namelist()]
-
-    for root, dirs, files in os.walk(LocalDir):
-        if ".git" in root or "pydev" in root or ".idea" in root:
+    ignored_files = {
+        os.path.normcase(os.path.normpath('resources/settings.xml')),
+        os.path.normcase(os.path.normpath('sites/aniworld.py')),
+        os.path.normcase(os.path.normpath('resources/art/sites/aniworld.png')),
+    }
+    localDir = os.path.realpath(os.path.abspath(LocalDir))
+    updateFilePathList = set()
+    for archiveMember in updateFile.namelist():
+        if archiveMember.endswith('/'):
             continue
-        else:
-            for file in files:
-                if file in ignored_files:
-                    continue
-                if file not in updateFileNameList:
-                    os.remove(os.path.join(root, file))
+        destination = _getSafeUpdateDestination(localDir, archiveMember)
+        if destination:
+            updateFilePathList.add(os.path.normcase(os.path.normpath(
+                os.path.relpath(destination, localDir))))
+
+    for root, dirs, files in os.walk(localDir):
+        dirs[:] = [directory for directory in dirs
+                   if directory not in ('.git', 'pydev', '.idea')]
+        for file in files:
+            filePath = os.path.join(root, file)
+            relativePath = os.path.normcase(os.path.normpath(
+                os.path.relpath(filePath, localDir)))
+            if relativePath in ignored_files:
+                continue
+            if relativePath not in updateFilePathList:
+                os.remove(filePath)
 
 
 def _getXmlString(xml_url, auth):
