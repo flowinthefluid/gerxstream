@@ -616,6 +616,7 @@ class cPluginHandler:
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30414) + '\n'  # Plugin Informationen
             + cConfig().getAddonInfo('name') + ' Version:  ' + cConfig().getAddonInfo('id') + ' - ' + cConfig().getAddonInfo('version') + '\n'  # xStream ID und Version
+            + 'Hinweis: Selbst-Update deaktiviert, kein Repo hinterlegt.\n'
             + cConfig('script.module.resolveurl').getAddonInfo('name') + ' Version:  ' + cConfig('script.module.resolveurl').getAddonInfo('id') + ' - ' + cConfig('script.module.resolveurl').getAddonInfo('version') + '\n'  # Resolver ID und Version
             + cConfig('script.module.resolveurl').getAddonInfo('name') + ' Status:  ' + UPDATERU + cConfig().getSettingString('resolver.branch') + '\n'  # Resolver Update Status und Branch
             + cConfig().getLocalizedString(30435) + ' ' + getRepofromAddonsDB(cConfig().getAddonInfo('id')) + '\n' # Repo-Info

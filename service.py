@@ -9,7 +9,7 @@ import time
 
 from resources.lib.config import cConfig
 from resources.lib import tools
-from xbmc import LOGERROR, LOGDEBUG, log
+from xbmc import LOGERROR, LOGDEBUG, LOGINFO, log
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib import updateManager
@@ -142,6 +142,14 @@ def checkVersion(xs='xstream'):
         pass
 
 
+def logSelfUpdateDisabledOnce():
+    setting_key = 'self_update_disabled_notice'
+    if cConfig().getSetting(setting_key) == 'true':
+        return
+    log(__name__ + ' - Selbst-Update deaktiviert, kein Repo hinterlegt', LOGINFO)
+    cConfig().setSetting(setting_key, 'true')
+
+
 def main():
     tools.migrateLegacyAddonData()
     cache = cCache()
@@ -152,8 +160,7 @@ def main():
     cache.clearExpired(cache_time)
     cache.set(cConfig().getAddonInfo('id') + '_main', 'running')
 
-    if cConfig().getAddonInfo('id') == 'plugin.video.xstream':
-        checkVersion('xstream')
+    logSelfUpdateDisabledOnce()
 
     if cConfig().getSetting('githubUpdateDevXstream') == 'true':
         status1 = updateManager.xStreamDevUpdate(True)
