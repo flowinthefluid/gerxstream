@@ -4,6 +4,7 @@
 import xbmc
 import xbmcgui
 import hashlib
+import json
 import re
 import os
 import time
@@ -402,29 +403,114 @@ def getRepofromAddonsDB(addonID):
 
 
 class cCache(object):
+    MAX_ENTRIES = 200
     _win = None
 
     def __init__(self):
         # see https://kodi.wiki/view/Window_IDs
         self._win = xbmcgui.Window(10000)
+        addon_id = cConfig().getAddonInfo('id') or 'plugin.video.xstream'
+        self._property_prefix = addon_id + '.volatileCache.'
+        self._registry_property = self._property_prefix + 'registry'
 
     def __del__(self):
         del self._win
 
-    def get(self, key, cache_time):
-        cachedata = self._win.getProperty(key)
+    def _entryProperty(self, key):
+        return self._property_prefix + 'entry.' + str(key)
 
-        if cachedata:
-            cachedata = eval(cachedata)
-            if time.time() - cachedata[0] < cache_time or cache_time < 0:
-                return cachedata[1]
-            else:
-                self._win.clearProperty(key)
+    def _getRegistry(self):
+        registry_data = self._win.getProperty(self._registry_property)
+        if not registry_data:
+            return {}
+        try:
+            registry = json.loads(registry_data)
+        except (TypeError, ValueError):
+            self._win.clearProperty(self._registry_property)
+            return {}
+        if not isinstance(registry, dict):
+            self._win.clearProperty(self._registry_property)
+            return {}
+
+        valid_registry = {}
+        for key, timestamp in registry.items():
+            if not isinstance(key, str):
+                continue
+            try:
+                valid_registry[key] = float(timestamp)
+            except (TypeError, ValueError):
+                continue
+        return valid_registry
+
+    def _setRegistry(self, registry):
+        if registry:
+            self._win.setProperty(self._registry_property, json.dumps(registry, separators=(',', ':')))
+        else:
+            self._win.clearProperty(self._registry_property)
+
+    def _removeEntry(self, key, registry):
+        self._win.clearProperty(self._entryProperty(key))
+        registry.pop(key, None)
+
+    def _readEntry(self, key):
+        cache_data = self._win.getProperty(self._entryProperty(key))
+        if not cache_data:
+            return None
+        try:
+            timestamp, data = json.loads(cache_data)
+            return float(timestamp), data
+        except (TypeError, ValueError):
+            return None
+
+    def _limitEntries(self, registry):
+        while len(registry) > self.MAX_ENTRIES:
+            oldest_key = min(registry, key=registry.get)
+            self._removeEntry(oldest_key, registry)
+
+    def get(self, key, cache_time):
+        key = str(key)
+        registry = self._getRegistry()
+        if key not in registry:
+            self._win.clearProperty(self._entryProperty(key))
+            return None
+        cache_data = self._readEntry(key)
+
+        if cache_data:
+            if time.time() - cache_data[0] < cache_time or cache_time < 0:
+                return cache_data[1]
+        self._removeEntry(key, registry)
+        self._setRegistry(registry)
 
         return None
-    
+
     def set(self, key, data):
-        self._win.setProperty(key, repr((time.time(), data)))
+        key = str(key)
+        timestamp = time.time()
+        try:
+            cache_data = json.dumps((timestamp, data), separators=(',', ':'))
+        except (TypeError, ValueError):
+            return
+
+        registry = self._getRegistry()
+        self._win.setProperty(self._entryProperty(key), cache_data)
+        registry[key] = timestamp
+        self._limitEntries(registry)
+        self._setRegistry(registry)
+
+    def clearExpired(self, cache_time):
+        if cache_time < 0:
+            return
+
+        registry = self._getRegistry()
+        current_time = time.time()
+        for key in list(registry):
+            cache_data = self._readEntry(key)
+            if not cache_data or current_time - cache_data[0] >= cache_time:
+                self._removeEntry(key, registry)
+        self._setRegistry(registry)
 
     def clear(self):
-        self._win.clearProperties()
+        registry = self._getRegistry()
+        for key in registry:
+            self._win.clearProperty(self._entryProperty(key))
+        self._win.clearProperty(self._registry_property)

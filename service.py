@@ -143,7 +143,13 @@ def checkVersion(xs='xstream'):
 
 
 def main():
-    cCache().set(cConfig().getAddonInfo('id') + '_main', 'running')
+    cache = cCache()
+    try:
+        cache_time = int(cConfig().getSetting('cacheTime', 360)) * 60
+    except (TypeError, ValueError):
+        cache_time = 360 * 60
+    cache.clearExpired(cache_time)
+    cache.set(cConfig().getAddonInfo('id') + '_main', 'running')
 
     if cConfig().getAddonInfo('id') == 'plugin.video.xstream':
         checkVersion('xstream')
@@ -189,7 +195,7 @@ def main():
         pass
 
     # getAvailablePlugins must be finished before the main menu can be started!
-    cCache().set(cConfig().getAddonInfo('id') + '_main', 'finished')
+    cache.set(cConfig().getAddonInfo('id') + '_main', 'finished')
 
     # Changelog Popup in den "settings.xml" ein bzw. aus schaltbar
     if cConfig().getSetting('popup.update.notification') == 'true':
