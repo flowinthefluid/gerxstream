@@ -6,8 +6,6 @@
 
 import xbmc
 import xbmcgui, sys
-import requests
-import random
 
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -15,7 +13,6 @@ from resources.lib.tools import logger, cParser
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
-from resources.lib import youtube_fix
 
 #
 
@@ -51,27 +48,10 @@ def load(): # Menu structure of the site plugin
         cGui().addFolder(cGuiElement(font + cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch_1'), params)    # Search
         main_list()
     else:
-        action = params.getValue("action")
-        if '#' in str(params.getValue("action")):
-            action = action.split('#')[1]
-            sub_listw(action)
-        elif '*' in str(params.getValue("action")):
-            action = action.split('*')[1]
-            search(action)
-        else:
-            sub_list(action)
+        sub_list(params.getValue("action"))
     cGui().setEndOfDirectory()
 
 def loads():
-    params = ParameterHandler()
-    action = params.getValue("action")
-    action2 = params.getValue("action1")
-    if '#' in str(params.getValue("action1")):
-        action = action2.split('#')[1]
-        sub_listw(action)
-    elif '*' in str(params.getValue("action1")):
-        action = action2.split('*')[1]
-        search(action)
     cGui().setEndOfDirectory()
 
 
@@ -198,7 +178,6 @@ sublists = {
         ("[B]Kinderlieder[/B] von Volker Rosin", "channel/UC7HM-Pm3mLzZBvhJKFnL6oA", "https://yt3.googleusercontent.com/JJrATrwxWPSfcl96xTQqdKCsPoRu-szzn_NTvazvFG9Vx8aAvTHZBT_WuznsbOuiClwdTf0RXw=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]KIDFLIX[/B]", "channel/UCBZZcF8BC0kvZL_-zM7yuFg", "https://yt3.googleusercontent.com/ZHa7HKjK0Dj9-bg2AlM9Udts_3bItaKWEe7aEkvmvDAf1kDFpqfcTe9a0e8-GhbkiFQd8dm1IHI=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Ric TV[/B]", "user/RICTVChannel", "https://yt3.googleusercontent.com/ytc/AIdro_llzhDC24z43QbBNVmCWEuNP_1cVflbImhBIw2_7np6Bw=s160-c-k-c0x00ffffff-no-rj"),
-        ("[B][I]Suche[/I][/B]", "Suche", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
     ],
 
     'Kinder Filme': [
@@ -217,8 +196,6 @@ sublists = {
         ("[B]Familienfilme[/B] von Nanoki", "playlist/PLAroxwS0jZuQUBhbxcAUlfh9qeJGV_tom", "https://yt3.googleusercontent.com/OfyylHIKU_TcdZXA8gWLAv2Z7S4BhZtpDhRCDewnzvfgQkTfeSQGkrDeJSPr8CR_8XjlTLSB=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Weihnachtsfilme[/B] von Nanoki", "playlist/PLAroxwS0jZuTLDgN-YeW2Yy0trylROSs4", "https://yt3.googleusercontent.com/OfyylHIKU_TcdZXA8gWLAv2Z7S4BhZtpDhRCDewnzvfgQkTfeSQGkrDeJSPr8CR_8XjlTLSB=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Kinderfilme Klassiker[/B] von Nanoki", "playlist/PLAroxwS0jZuQUke_UTBPvbyCB27G0NtwA", "https://yt3.googleusercontent.com/OfyylHIKU_TcdZXA8gWLAv2Z7S4BhZtpDhRCDewnzvfgQkTfeSQGkrDeJSPr8CR_8XjlTLSB=s160-c-k-c0x00ffffff-no-rj"),
-        ("[B][I]Weitere[/I][/B]", "Weitere", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-        ("[B][I]Suche[/I][/B]", "Suche", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
     ],
 
     'Kinder Serien': [
@@ -266,8 +243,6 @@ sublists = {
         ("[B]Zoes Zauberschrank[/B]", "PLPHcQYsAZvMA4PIV8JYR4ZZpJjZ8i4Jjs", "https://yt3.googleusercontent.com/PHGbrL1fSJgdN-1S69zDJ7GUVuw9ypSiq8skG1GAzxcESnwCgRYwv0yhe7sTR_5VS-NwjjIxyA=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Trotro[/B]", "channel/UCAML9huAKtSutHftRbbNmTA", "https://yt3.googleusercontent.com/tHrYXausgAx1JUVDSaQkxoyJ3YA7TXMNSUIZESsKGDJcrcTpHcpke_uLriqZqh3D9IRP2cs4pQ=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Tim & Struppi[/B]", "playlist/PLY25BVSAuho3YVOUhdzCvpE11y2GGz2Nf", "https://yt3.googleusercontent.com/ytc/AIdro_m8aufXYahT6M_Ls2moneQrvHYYgZX-65jKnau6_euSbg=s160-c-k-c0x00ffffff-no-rj"),
-        ("[B][I]Weitere[/I][/B]", "Weitere", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-        ("[B][I]Suche[/I][/B]", "Suche", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
     ],
 
     'Kinder Klassiker': [
@@ -281,8 +256,6 @@ sublists = {
         ("[B]Trickfilm-Klassiker[/B] DEFA", "playlist/PLx7XyMBfhgoq5obBLDvi58-ljZfZb0qzp", "https://yt3.googleusercontent.com/m9EMpzxqRblZQ9CuD6_b-KZEbXeGs_fYern_BKeANOTlQTZ-YynVvcUTKpoo3I0gVQ3X_0A1qK4=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Spielfilmklassiker zu Weihnachten[/B]", "playlist/PLx7XyMBfhgoqJHGE11Dr3oEhWMCDvRFLo", "https://yt3.googleusercontent.com/m9EMpzxqRblZQ9CuD6_b-KZEbXeGs_fYern_BKeANOTlQTZ-YynVvcUTKpoo3I0gVQ3X_0A1qK4=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Kinderfilm Klassiker[/B]", "playlist/PLAroxwS0jZuTN6tscgrR_ubgHM4UaFBPv", "https://yt3.googleusercontent.com/OfyylHIKU_TcdZXA8gWLAv2Z7S4BhZtpDhRCDewnzvfgQkTfeSQGkrDeJSPr8CR_8XjlTLSB=s160-c-k-c0x00ffffff-no-rj"),
-        ("[B][I]Weitere[/I][/B]", "Weitere", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-        ("[B][I]Suche[/I][/B]", "Suche", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
     ],
 
     'Kinder Geschichten': [
@@ -294,8 +267,6 @@ sublists = {
         ("[B]Geschichten für Kinder[/B]", "playlist/PLT8zuqWPJkYAJI2jiNa67Q3YaRMOVR-uL", "https://yt3.googleusercontent.com/ytc/AIdro_l_cpO1x5DrRvlYSdq_LaO1q_Epc06e8S5Ofme2kFSdKw=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]SimsalaGrimm[/B]", "playlist/PLN5h7nQDQsiNAygibR61TxqtquFrvydt6", "https://yt3.googleusercontent.com/TPSvYLHHLDCNQea0b1viNt6mGEGs1We9vvnZMOeUcoILoektm_BDeVIlpcHNx5S1Gm7LFppZYg=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Grimms Märchen[/B] Filme", "playlist/PL9A89EE24241DACF2", "https://yt3.googleusercontent.com/AgKnoiN2B95xJcDsF3wbrIvDaMWNwJ1l4d8VMEOlnMHWLRi2tQfBlLNyPxSjryi6rMhW8NCYug=s160-c-k-c0x00ffffff-no-rj"),
-        ("[B][I]Weitere[/I][/B]", "Weitere", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-        ("[B][I]Suche[/I][/B]", "Suche", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
     ],
 
     'Kinder Buch': [
@@ -313,8 +284,6 @@ sublists = {
         ("[B]Christliche Hörspiele[/B] die Bibel", "channel/UCJSF-0y7Pz7VUNH3cCdqwLw", "https://yt3.googleusercontent.com/ytc/AIdro_m0D75VUeq8rjNhGPl80HH8WMqMhGBHk0p8t61jPzUDWw=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Urmel[/B] Hörspiel Serie", "playlist/PLa3cPVZ_c5hhE6mgOvbDAfLzxxiPDWkId", "https://yt3.googleusercontent.com/65wFWDo8cizVOOLeW5hDP7VLDmka6zrpXObnlobNOo8vlPg40skZwYISCtWj5Scg7_qFsDnXmw=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Tim und Struppi[/B] Hörspiel", "playlist/PLa3cPVZ_c5hisrwl_5GopM5x57xDPauS7", "https://yt3.googleusercontent.com/65wFWDo8cizVOOLeW5hDP7VLDmka6zrpXObnlobNOo8vlPg40skZwYISCtWj5Scg7_qFsDnXmw=s160-c-k-c0x00ffffff-no-rj"),
-        ("[B][I]Weitere[/I][/B]", "Weitere", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-        ("[B][I]Suche[/I][/B]", "Suche", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
     ],
 
     'Kinder Wissen': [
@@ -324,8 +293,6 @@ sublists = {
         ("[B]Checker Welt[/B] Experimente", "playlist/PLXHkZNhCrU2ZGzKXPeq_8NY8ZF3coQyR9", "https://yt3.googleusercontent.com/lOR8wZvBdSO56a4CXiQm45EPeUoQEUN8ctVFJW75MDgrL_sFJ8SPe5KrW0owlTKQJUcjz1pnQQ=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]DIY Inspiration Kids Club[/B] Experimente", "playlist/PLjXEwjXTkbzqewdd_3DTgb0GZ_0LhECPJ", "https://yt3.googleusercontent.com/ytc/AIdro_mXiHnjWsyR6OwXG1zncEa08PxvWKnmVdc5Xo8XohfWLFs=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]PAXI[/B] European Space Agency", "playlist/PLbyvawxScNbvwcIVrGQV4p6g6cp9pH0To", "https://yt3.googleusercontent.com/gnGJqh7iQPl66irKn3xdT9BDv2K7LOPMFghqL0MHQKk5XjmK-nD9r7CrdYcIEWFmSC0rlr_a=s160-c-k-c0x00ffffff-no-rj"),
-        ("[B][I]Weitere[/I][/B]", "Weitere", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-        ("[B][I]Suche[/I][/B]", "Suche", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
     ],
 
     'Kinder Musik': [
@@ -338,111 +305,16 @@ sublists = {
         ("[B]GiraffenaffenTV[/B]", "channel/UCUWTq9Jq97CNE9j28OarHbQ", "https://yt3.googleusercontent.com/5f81fzOw1sMs0u9zlz8hUqXWrDJ5XWbdsTM3z2VMgoAsPX_cENGCip8_YI8Yx9xsp7BfDjmZyQ=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Liederkiste[/B] Kinderlieder", "channel/UCAOmPP7Xt9YmPYtjettV3oA", "https://yt3.googleusercontent.com/uDGJirtwpri8ClvehxG1GMHIL5AXPDnHquIKQRmituyTdH46HK443mcSzBuUl3UDMNN6vkXfJA=s160-c-k-c0x00ffffff-no-rj"),
         ("[B]Kika TanzAlarm[/B] | Mehr auf KiKA.de", "playlist/PLIFhkWbVDf6wcorvcRTbQvSYvYemSvJoa", "https://yt3.googleusercontent.com/eVEM7kLayi8-pFKQ2jMVMqWMMf-Sj-LFtPD5oD5d4vctMxwa_MxvYkYQOihpO8YxHO3Fo8qHVA=s160-c-k-c0x00ffffff-no-rj"),
-        ("[B][I]Weitere[/I][/B]", "Weitere", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
-        ("[B][I]Suche[/I][/B]", "Suche", "special://home/addons/plugin.video.xstream/resources/art/sites/kids_tube.png"),
     ],
 }
 
-def search_playlists(query, max_results=5):
-    search_url = "https://www.googleapis.com/youtube/v3/search"
-    my_keys = ['AIzaSyBQ68nE4JxFSlyogirJUo8b4TYF2iGMJms', 'AIzaSyAyvS7LLZsBF6mNWiAmISYvdJWtu_MSvf4']
-    key = random.choice(my_keys)
-    params = {
-        'part': 'snippet',
-        'q': query,
-        'type': 'playlist',
-        'maxResults': max_results,
-        'key': key}
-    response = requests.get(search_url, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        playlists = data.get('items', [])
-        sublists = []
-
-        if not playlists:
-            xbmcgui.Dialog().notification('Kids_Tube', 'Not found')
-        else:
-            for i, item in enumerate(playlists, start=1):
-                playlist_title = item['snippet']['title']
-                playlist_id = 'playlist/' + item['id']['playlistId']
-                playlist_icon = item['snippet']['thumbnails']['default']['url']
-                sublists.append({'title': playlist_title, 'id': playlist_id, 'icon': playlist_icon})
-        return sublists
-    else:
-        xbmcgui.Dialog().notification('Kids_Tube', 'Not found')
-
-
 def sub_list(action):
-    youtube_fix.YT()
     params = ParameterHandler()
-    action1 = '#' + str(action) + ' deutsch für kinder'
-    action2 = '*' + str(action)
     apikey = cConfig('plugin.video.youtube').getSetting('youtube.api.key')
     for List in sublists[str(action)]:
         name = List[0]
         id = List[1]
         icon = List[2]
-        if apikey == '' or apikey == None:
-            sUrl="plugin://plugin.video.youtube/" + id + "/?addon_id=plugin.video.xstream"
-        else:
-            sUrl="plugin://plugin.video.youtube/" + id + "/"
-        if 'Weitere' in str(id):
-            params.setParam('action', action1)
-            params.setParam('sUrl', '')
-            params.setParam('trumb', icon)
-            cGui().addFolder(cGuiElement(name, SITE_IDENTIFIER, 'load'),params,bIsFolder=True)
-        elif 'Suche' in str(id):
-            params.setParam('action', action2)
-            params.setParam('sUrl', '')
-            params.setParam('trumb', icon)
-            cGui().addFolder(cGuiElement(name, SITE_IDENTIFIER, 'load'),params,bIsFolder=True)
-        else:
-            params.setParam('trumb', icon)
-            params.setParam('sUrl', sUrl)
-            cGui().addFolder(cGuiElement(name,SITE_IDENTIFIER,''),params,bIsFolder=True)
-    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
-
-
-def sub_listw(action):
-    youtube_fix.YT()
-    params = ParameterHandler()
-    sublist2 = search_playlists(action, max_results=50)
-    apikey = cConfig('plugin.video.youtube').getSetting('youtube.api.key')
-    for List in sublist2:
-        name = "[B]%s[/B]" % List['title']
-        id = List['id']
-        icon = List['icon']
-        if apikey == '' or apikey == None:
-            sUrl="plugin://plugin.video.youtube/" + id + "/?addon_id=plugin.video.xstream"
-        else:
-            sUrl="plugin://plugin.video.youtube/" + id + "/"
-        params.setParam('trumb', icon)
-        params.setParam('sUrl', sUrl)
-        cGui().addFolder(cGuiElement(name,SITE_IDENTIFIER,''),params,bIsFolder=True)
-    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
-
-
-def keyb():
-        heading = cConfig().getLocalizedString(30281)
-        keyboard = xbmc.Keyboard('default', 'heading', True)
-        keyboard.setDefault()
-        keyboard.setHeading(heading)
-        keyboard.setHiddenInput(False)
-        keyboard.doModal()
-        if keyboard.isConfirmed() and not keyboard.getText() == '':
-            return keyboard.getText()
-        else:sys.exit()
-
-def search(action):
-    youtube_fix.YT()
-    params = ParameterHandler()
-    apikey = cConfig('plugin.video.youtube').getSetting('youtube.api.key')
-    query= keyb()
-    sublist2 = search_playlists(query + ' ' + action + ' deutsch', max_results=50)
-    for List in sublist2:
-        name = "[B]%s[/B]" % List['title']
-        id = List['id']
-        icon = List['icon']
         if apikey == '' or apikey == None:
             sUrl="plugin://plugin.video.youtube/" + id + "/?addon_id=plugin.video.xstream"
         else:

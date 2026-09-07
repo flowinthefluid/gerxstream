@@ -9,7 +9,6 @@ from resources.lib.tools import logger, cParser
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
-from resources.lib import youtube_fix
 
 import sys, xbmcplugin, xbmc
 
@@ -448,7 +447,6 @@ def _search_6(oGui, sSearchText):
 URL_MAIN = 'http://www.youtube.com'
 
 def showYTChannels():
-    youtube_fix.YT()
     try:
         params = ParameterHandler()
         apikey = cConfig('plugin.video.youtube').getSetting('youtube.api.key')
@@ -495,7 +493,6 @@ def showYTChannels():
     except:return
 
 def showYTGenre():
-    youtube_fix.YT()
     params = ParameterHandler()
     channellist = [
         ("Arbeit, Beruf & Leben", "Arbeit", "youtube.png"),
