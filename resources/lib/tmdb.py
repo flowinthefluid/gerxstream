@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
+from ast import literal_eval
 import json
 import re
 
@@ -309,21 +310,28 @@ class cTMDB:
                 else:
                     _meta['studio'] += ' / ' + studio['name']
         if 'credits' in meta and meta['credits']:
-            strmeta = str(meta['credits'])
-            listCredits = eval(strmeta)
-            casts = listCredits['cast']
-            crews = []
-            if len(casts) > 0:
+            listCredits = meta['credits']
+            if isinstance(listCredits, str):
+                try:
+                    listCredits = literal_eval(listCredits)
+                except (SyntaxError, ValueError):
+                    listCredits = {}
+            if not isinstance(listCredits, dict):
+                listCredits = {}
+            casts = listCredits.get('cast', [])
+            crews = listCredits.get('crew', [])
+            if not isinstance(casts, list):
+                casts = []
+            if not isinstance(crews, list):
+                crews = []
+            if casts:
+                _meta['credits'] = {'cast': casts}
+                if crews:
+                    _meta['credits']['crew'] = crews
                 licast = []
-                if 'crew' in listCredits:
-                    crews = listCredits['crew']
-                if len(crews) > 0:
-                    _meta['credits'] = "{'cast': " + str(casts) + ", 'crew': " + str(crews) + "}"
-                    for cast in casts:
-                        licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
-                    _meta['cast'] = licast
-                else:
-                    _meta['credits'] = "{'cast': " + str(casts) + '}'
+                for cast in casts:
+                    licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
+                _meta['cast'] = licast
             if len(crews) > 0:
                 _meta['writer'] = ''
                 for crew in crews:

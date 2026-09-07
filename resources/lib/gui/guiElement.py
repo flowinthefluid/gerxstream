@@ -234,7 +234,8 @@ class cGuiElement:
         self.__aItemValues[sItemKey] = sItemValue
 
     def setItemValues(self, aValueList):
-        self.__aItemValues = aValueList
+        self.__aItemValues = dict(aValueList)
+        self.__aItemValues.pop('credits', None)
 
     def getItemValues(self):
         self.__aItemValues['title'] = self.getTitle()

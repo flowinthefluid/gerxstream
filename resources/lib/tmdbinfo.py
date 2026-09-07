@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
+from ast import literal_eval
+
 import xbmc
 import time
 import xbmcgui
@@ -9,6 +11,19 @@ from resources.lib.config import cConfig
 from resources.lib.tmdb import cTMDB
 from datetime import date, datetime
 from urllib.parse import urlencode
+
+
+def _getCredits(credits):
+    if isinstance(credits, dict):
+        return credits
+    if isinstance(credits, str):
+        try:
+            credits = literal_eval(credits)
+        except (SyntaxError, ValueError):
+            return {}
+        if isinstance(credits, dict):
+            return credits
+    return {}
 
 
 def WindowsBoxes(sTitle, sFileName, metaType, year=''):
@@ -56,10 +71,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             if 'credits' in meta and meta['credits']:
                 cast = []
                 crew = []
-                try:
-                    data = eval(str(meta['credits'].encode('latin-1'), 'utf-8'))
-                except Exception:
-                    data = eval(str(meta['credits']))
+                data = _getCredits(meta['credits'])
 
                 listitems = []
                 if 'cast' in data and data['cast']:
