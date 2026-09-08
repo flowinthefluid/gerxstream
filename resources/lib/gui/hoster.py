@@ -75,11 +75,12 @@ class cHosterGui:
                 pass
 
         vers = int(xbmc.getInfoLabel("System.BuildVersion").split(".")[0])
+        stream_url = (siteResult or {}).get('streamUrl', '')
 
         logger.info('-> [hoster]: play file link: ' + str(data['link']))
         list_item = xbmcgui.ListItem(path=data['link'])
         #m3u8 und mpd via inputstream, exklusive Filemoon, da IA mit dem Hoster nicht unter Android läuft
-        if not 'filemoon' in siteResult['streamUrl']:
+        if 'filemoon' not in stream_url:
             if '.m3u8' in data['link'] or '.mpd' in data['link']:
                 list_item.setProperty("inputstream", "inputstream.adaptive")
                 if '.mpd' in data['link']:
