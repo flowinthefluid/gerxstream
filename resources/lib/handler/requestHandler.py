@@ -439,6 +439,7 @@ class cRequestHandler:
         cacheFile = os.path.join(self._cachePath, h)
         fileAge = self.getFileAge(cacheFile)
         if 0 < fileAge < self.cacheTime:
+            content = None
             try:
                 with open(cacheFile, 'rb') as f:
                         content = f.read().decode('utf8')
