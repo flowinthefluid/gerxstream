@@ -26,6 +26,7 @@ def _isValidUpdateTarget(plugin_id):
 
 # Resolver
 def resolverUpdate(silent=False):
+    log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: resolverUpdate called (silent=%s)' % silent, LOGNOTICE)
     # Nightly Branch
     if cConfig().getSetting('resolver.branch') == 'nightly':
         username = 'fetchdevteam'

@@ -9,13 +9,15 @@ import time
 
 from resources.lib.config import cConfig
 from resources.lib import tools
-from xbmc import LOGERROR, LOGDEBUG, LOGINFO, log
+from xbmc import LOGERROR, LOGDEBUG, LOGINFO, LOGWARNING, log
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib import updateManager
 from resources.lib.utils import translatePath
 from resources.lib.tools import cCache
 from resources.lib.tools import infoDialog
+
+MIN_RESOLVEURL_VERSION = (5, 1, 208)
 
 
 # ResolverUrl Addon Data
@@ -150,6 +152,28 @@ def logSelfUpdateDisabledOnce():
     cConfig().setSetting(setting_key, 'true')
 
 
+def _parseVersionTuple(version):
+    parts = re.findall(r'\d+', str(version))
+    if not parts:
+        return ()
+    return tuple(int(part) for part in parts)
+
+
+def logResolveUrlVersionStatus():
+    resolve_id = 'script.module.resolveurl'
+    try:
+        resolve_version = cConfig(resolve_id).getAddonInfo('version')
+    except Exception as e:
+        log(__name__ + ' - ResolveURL-Version konnte nicht gelesen werden: %s' % e, LOGWARNING)
+        return
+
+    log(__name__ + ' - ResolveURL installiert: %s %s' % (resolve_id, resolve_version), LOGINFO)
+    version_tuple = _parseVersionTuple(resolve_version)
+    if version_tuple and version_tuple < MIN_RESOLVEURL_VERSION:
+        minimum = '.'.join(str(part) for part in MIN_RESOLVEURL_VERSION)
+        log(__name__ + ' - ResolveURL-Version unter Mindeststand %s: %s' % (minimum, resolve_version), LOGWARNING)
+
+
 def main():
     tools.migrateLegacyAddonData()
     cache = cCache()
@@ -161,6 +185,7 @@ def main():
     cache.set(cConfig().getAddonInfo('id') + '_main', 'running')
 
     logSelfUpdateDisabledOnce()
+    logResolveUrlVersionStatus()
 
     if cConfig().getSetting('githubUpdateDevXstream') == 'true':
         status1 = updateManager.xStreamDevUpdate(True)
