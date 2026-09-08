@@ -183,7 +183,7 @@ class cGui:
             except: pass
         if 'genre' in itemValues:
             try:
-                vtag.setGenres(itemValues['genres'].split(' / '))
+                vtag.setGenres(itemValues['genre'].split(' / '))
             except: pass
         if 'imdb_id' in itemValues:
             try:
