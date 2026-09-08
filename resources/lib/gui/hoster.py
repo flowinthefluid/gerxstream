@@ -99,7 +99,7 @@ class cHosterGui:
             time.sleep(1)
         info = {'Title': data['title']}
         if data['thumb']:
-            list_item.setArt(data['thumb'])
+            list_item.setArt({'thumb': data['thumb'], 'poster': data['thumb']})
         if data['showTitle']:
             info['Episode'] = data['episode']
             info['Season'] = data['season']
