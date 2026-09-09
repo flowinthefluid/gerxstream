@@ -177,7 +177,8 @@ def commitUpdate(onlineFile, offlineFile, downloadLink, LocalDir, plugin_id, loc
         else:
             return None
     except Exception:
-        os.remove(offlineFile)
+        if os.path.exists(offlineFile):
+            os.remove(offlineFile)
         log(' -> [updateManager]: RateLimit reached')
         return False
 
