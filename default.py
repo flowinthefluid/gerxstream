@@ -37,7 +37,9 @@ def main():
             import traceback
             import xbmcgui
             log(traceback.format_exc(), LOGNOTICE)
-            value = (str(e.__class__.__name__) + ' : ' + str(e), str(traceback.format_exc().splitlines()[-3].split('addons')[-1]))
+            trace_lines = traceback.format_exc().splitlines()
+            trace_line = trace_lines[-3] if len(trace_lines) >= 3 else trace_lines[-1] if trace_lines else ''
+            value = (str(e.__class__.__name__) + ' : ' + str(e), str(trace_line.split('addons')[-1]))
             dialog = xbmcgui.Dialog().ok(cConfig().getLocalizedString(257), str(value)) # Error
 
 if __name__ == "__main__":
