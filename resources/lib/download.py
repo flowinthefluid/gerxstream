@@ -63,7 +63,7 @@ class cDownload:
             request = Request(url, headers=header)
             self.__download(urlopen(request, timeout=240), sDownloadPath)
         except Exception as e:
-            log(e)
+            log(cConfig().getLocalizedString(30166) + ' -> [download]: prepare download failed: %s' % e, LOGNOTICE)
         self.__oDialog.close()
 
 
