@@ -4,7 +4,6 @@
 from resources.lib.tools import cParser, cUtil
 from resources.lib.config import cConfig
 from xbmc import LOGERROR, log
-from os import path
 
 class cGuiElement:
     '''
@@ -16,7 +15,7 @@ class cGuiElement:
         These arguments are mandatory. If not given on init, they have to be set by their setter-methods, before the GuiElement is added to the Gui.
     '''
     DEFAULT_FOLDER_ICON = 'DefaultFolder.png'
-    DEFAULT_FANART = path.join(cConfig().getAddonInfo('path'), 'fanart.jpg')
+    DEFAULT_FANART = cConfig().getAddonInfo('fanart')
     MEDIA_TYPES = ['movie', 'tvshow', 'season', 'episode']
 
     def __init__(self, sTitle: object = '', sSite: object = None, sFunction: object = None) -> None:
