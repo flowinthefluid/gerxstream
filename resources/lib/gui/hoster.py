@@ -291,91 +291,92 @@ class cHosterGui:
 
     def stream(self, playMode, siteName, function, url):
         self.dialog = xbmcgui.DialogProgress()
-        self.dialog.create('xStream', cConfig().getLocalizedString(30138))
-        # load site as plugin and run the function
-        self.dialog.update(5, cConfig().getLocalizedString(30139))
-        plugin = __import__(siteName, globals(), locals())
-        function = getattr(plugin, function)
-        self.dialog.update(10, cConfig().getLocalizedString(30140))
-        if url:
-            siteResult = function(url)
-        else:
-            siteResult = function()
-        self.dialog.update(40)
-        if not siteResult:
-            self.dialog.close()
-            cGui().showInfo('xStream', cConfig().getLocalizedString(30141))
-            return
-        # if result is not a list, make in one
-        if not type(siteResult) is list:
-            temp = [siteResult]
-            siteResult = temp
-        # field "name" marks hosters
-        if 'name' in siteResult[0]:
-            functionName = siteResult[-1]
-            del siteResult[-1]
-            if not siteResult:
-                self.dialog.close()
-                cGui().showInfo('xStream', cConfig().getLocalizedString(30142))
-                return
-
-            self.dialog.update(60, cConfig().getLocalizedString(30143))
-            # Sitplugins VOD mit in automatische Abspielliste aufnehmen (Da Links bei der Überprüfung der Verfügbarkeit gekickt werden)
-            if (playMode != 'jd') and (playMode != 'jd2') and (playMode != 'pyload') and (cConfig().getSetting('presortHoster') == 'true') and (playMode != 'myjd'):
-            #if (not siteName.startswith('vod_')) and (playMode != 'jd') and (playMode != 'jd2') and (playMode != 'pyload') and (cConfig().getSetting('presortHoster') == 'true') and (playMode != 'myjd'):
-                siteResult = self.__getPriorities(siteResult)
-            if not siteResult:
-                self.dialog.close()
-                cGui().showInfo('xStream', cConfig().getLocalizedString(30144))
-                return False
-            self.dialog.update(90)
-            # self.dialog.close()
-            if len(siteResult) > self.maxHoster:
-                siteResult = siteResult[:self.maxHoster - 1]
-            if cConfig().getSetting('hosterSelect') == 'List':
-                self.showHosterFolder(siteResult, siteName, functionName)
-                return
-            if len(siteResult) > 1:
-                # choose hoster
-                siteResult = self._chooseHoster(siteResult)
-                if not siteResult:
-                    return
+        try:
+            self.dialog.create('xStream', cConfig().getLocalizedString(30138))
+            # load site as plugin and run the function
+            self.dialog.update(5, cConfig().getLocalizedString(30139))
+            plugin = __import__(siteName, globals(), locals())
+            function = getattr(plugin, function)
+            self.dialog.update(10, cConfig().getLocalizedString(30140))
+            if url:
+                siteResult = function(url)
             else:
-                siteResult = siteResult[0]
-            # get stream links
-            logger.info(siteResult['link'])
-            function = getattr(plugin, functionName)
-            siteResult = function(siteResult['link'])
+                siteResult = function()
+            self.dialog.update(40)
+            if not siteResult:
+                cGui().showInfo('xStream', cConfig().getLocalizedString(30141))
+                return
             # if result is not a list, make in one
             if not type(siteResult) is list:
                 temp = [siteResult]
                 siteResult = temp
-        # choose part
-        if len(siteResult) > 1:
-            siteResult = self._choosePart(siteResult)
-            if not siteResult:
-                logger.info('-> [hoster]: no part selected')
-                return
-        else:
-            siteResult = siteResult[0]
+            # field "name" marks hosters
+            if 'name' in siteResult[0]:
+                functionName = siteResult[-1]
+                del siteResult[-1]
+                if not siteResult:
+                    cGui().showInfo('xStream', cConfig().getLocalizedString(30142))
+                    return
 
-        self.dialog = xbmcgui.DialogProgress()
-        self.dialog.create('xStream', cConfig().getLocalizedString(30145))
-        self.dialog.update(95, cConfig().getLocalizedString(30146))
-        if playMode == 'play':
-            self.play(siteResult)
-        elif playMode == 'download':
-            self.download(siteResult)
-        elif playMode == 'enqueue':
-            self.addToPlaylist(siteResult)
-        elif playMode == 'jd':
-            self.sendToJDownloader(siteResult['streamUrl'])
-        elif playMode == 'jd2':
-            self.sendToJDownloader2(siteResult['streamUrl'])
-        elif playMode == 'myjd':
-            self.sendToMyJDownloader(siteResult['streamUrl'])
-        elif playMode == 'pyload':
-            self.sendToPyLoad(siteResult)
+                self.dialog.update(60, cConfig().getLocalizedString(30143))
+                # Sitplugins VOD mit in automatische Abspielliste aufnehmen (Da Links bei der Überprüfung der Verfügbarkeit gekickt werden)
+                if (playMode != 'jd') and (playMode != 'jd2') and (playMode != 'pyload') and (cConfig().getSetting('presortHoster') == 'true') and (playMode != 'myjd'):
+                #if (not siteName.startswith('vod_')) and (playMode != 'jd') and (playMode != 'jd2') and (playMode != 'pyload') and (cConfig().getSetting('presortHoster') == 'true') and (playMode != 'myjd'):
+                    siteResult = self.__getPriorities(siteResult)
+                if not siteResult:
+                    cGui().showInfo('xStream', cConfig().getLocalizedString(30144))
+                    return False
+                self.dialog.update(90)
+                if len(siteResult) > self.maxHoster:
+                    siteResult = siteResult[:self.maxHoster - 1]
+                if cConfig().getSetting('hosterSelect') == 'List':
+                    self.showHosterFolder(siteResult, siteName, functionName)
+                    return
+                if len(siteResult) > 1:
+                    # choose hoster
+                    siteResult = self._chooseHoster(siteResult)
+                    if not siteResult:
+                        return
+                else:
+                    siteResult = siteResult[0]
+                # get stream links
+                logger.info(siteResult['link'])
+                function = getattr(plugin, functionName)
+                siteResult = function(siteResult['link'])
+                # if result is not a list, make in one
+                if not type(siteResult) is list:
+                    temp = [siteResult]
+                    siteResult = temp
+            # choose part
+            if len(siteResult) > 1:
+                siteResult = self._choosePart(siteResult)
+                if not siteResult:
+                    logger.info('-> [hoster]: no part selected')
+                    return
+            else:
+                siteResult = siteResult[0]
+
+            self.dialog.create('xStream', cConfig().getLocalizedString(30145))
+            self.dialog.update(95, cConfig().getLocalizedString(30146))
+            if playMode == 'play':
+                self.play(siteResult)
+            elif playMode == 'download':
+                self.download(siteResult)
+            elif playMode == 'enqueue':
+                self.addToPlaylist(siteResult)
+            elif playMode == 'jd':
+                self.sendToJDownloader(siteResult['streamUrl'])
+            elif playMode == 'jd2':
+                self.sendToJDownloader2(siteResult['streamUrl'])
+            elif playMode == 'myjd':
+                self.sendToMyJDownloader(siteResult['streamUrl'])
+            elif playMode == 'pyload':
+                self.sendToPyLoad(siteResult)
+        finally:
+            try:
+                self.dialog.close()
+            except Exception:
+                pass
 
     def streamAuto(self, playMode, siteName, function):
         logger.info('-> [hoster]: auto stream initiated')
