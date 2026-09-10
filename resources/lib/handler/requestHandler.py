@@ -290,7 +290,9 @@ class cRequestHandler:
                         return 'DDOS GUARD SCHUTZ'
                 elif 'cloudflare' in str(e.headers):
                     if not self.ignoreErrors:
-                        value = ('!!! CLOUDFLARE-SCHUTZ AKTIV !!! Weitere Informationen: ' + str(e.__class__.__name__) + ' : ' + str(e), str(traceback.format_exc().splitlines()[-3].split('addons')[-1]))
+                        trace_lines = traceback.format_exc().splitlines()
+                        trace_line = trace_lines[-3] if len(trace_lines) >= 3 else trace_lines[-1] if trace_lines else ''
+                        value = ('!!! CLOUDFLARE-SCHUTZ AKTIV !!! Weitere Informationen: ' + str(e.__class__.__name__) + ' : ' + str(e), str(trace_line.split('addons')[-1]))
                         xbmcgui.Dialog().ok(cConfig().getLocalizedString(30166), str(value))  # Error
                     logger.error(' -> [requestHandler]: Failed Cloudflare active: ' + self._sUrl)
                     return 'CLOUDFLARE-SCHUTZ AKTIV' # Meldung geht als "e.doc" in die exception nach default.py
