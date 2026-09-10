@@ -626,11 +626,8 @@ def getHosterUrl(sUrl=False):
 
 
 def _redirectHoster(url):
-    try:
-        from urllib2 import build_opener, HTTPError
-    except ImportError:
-        from urllib.error import HTTPError
-        from urllib.request import build_opener
+    from urllib.error import HTTPError
+    from urllib.request import build_opener
     opener = build_opener()
     opener.addheaders = [('Referer', url)]
     try:
