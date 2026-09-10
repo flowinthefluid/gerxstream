@@ -115,15 +115,9 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
             for prop in meta:
                 try:
-                    if isinstance(meta[prop], unicode):
-                        self.setProperty(prop, meta[prop].encode('utf-8'))
-                    else:
-                        self.setProperty(prop, str(meta[prop]))
+                    self.setProperty(prop, '' if meta[prop] is None else str(meta[prop]))
                 except Exception:
-                    if isinstance(meta[prop], str):
-                        self.setProperty(prop, meta[prop].encode('utf-8'))
-                    else:
-                        self.setProperty(prop, str(meta[prop]))
+                    self.setProperty(prop, '')
 
         def credit(self, meta='', control=''):
             listitems = []
