@@ -69,9 +69,13 @@ class cDownload:
 
     def __download(self, oUrlHandler, fpath):
         headers = oUrlHandler.info()
-        iTotalSize = -1
-        if 'content-length' in headers:
-            iTotalSize = (headers['Content-Length'])
+        iTotalSize = 0
+        content_length = headers.get('Content-Length') or headers.get('content-length')
+        if content_length:
+            try:
+                iTotalSize = int(content_length)
+            except (TypeError, ValueError):
+                iTotalSize = 0
         chunk = 4096
         #f = open(r'%s' % fpath, 'wb')
         import xbmcvfs
@@ -108,12 +112,13 @@ class cDownload:
     def __stateCallBackFunction(self, iCount, iBlocksize, iTotalSize):
         timedif = time.time() - self._startTime
         currentLoaded = int(iCount) * iBlocksize
-        iPercent = (currentLoaded * 100 // int(iTotalSize))
+        iPercent = (currentLoaded * 100 // int(iTotalSize)) if iTotalSize > 0 else 0
         if timedif > 0.0:
             avgSpd = (currentLoaded // timedif // 1024.0)
         else:
             avgSpd = 5
-        value = self.__sTitle, str('%s/%s@%dKB/s' % (self.__formatFileSize(currentLoaded), self.__formatFileSize(iTotalSize), avgSpd))
+        totalSize = self.__formatFileSize(iTotalSize) if iTotalSize > 0 else '?'
+        value = self.__sTitle, str('%s/%s@%dKB/s' % (self.__formatFileSize(currentLoaded), totalSize, avgSpd))
         self.__oDialog.update(iPercent, str(value))
         if cConfig().getSetting('backgrounddownload') == 'false' and self.__oDialog.iscanceled():
             self.__processIsCanceled = True
