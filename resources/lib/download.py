@@ -57,6 +57,7 @@ class cDownload:
 
 
     def __prepareDownload(self, url, header, sDownloadPath, downloadDialogTitle):
+        self.__oDialog = None
         try:
             log(cConfig().getLocalizedString(30166) + ' -> [download]: download file: ' + str(url) + ' to ' + str(sDownloadPath), LOGNOTICE)
             self.__createProcessDialog(downloadDialogTitle)
@@ -64,7 +65,9 @@ class cDownload:
             self.__download(urlopen(request, timeout=240), sDownloadPath)
         except Exception as e:
             log(cConfig().getLocalizedString(30166) + ' -> [download]: prepare download failed: %s' % e, LOGNOTICE)
-        self.__oDialog.close()
+        finally:
+            if self.__oDialog:
+                self.__oDialog.close()
 
 
     def __download(self, oUrlHandler, fpath):
@@ -77,11 +80,11 @@ class cDownload:
             except (TypeError, ValueError):
                 iTotalSize = 0
         chunk = 4096
-        #f = open(r'%s' % fpath, 'wb')
         import xbmcvfs
-        f = xbmcvfs.File(fpath, 'w')
+        f = None
         log(cConfig().getLocalizedString(30166) + ' -> [download]: start download', LOGNOTICE)
         try:
+            f = xbmcvfs.File(fpath, 'w')
             iCount = 0
             self._startTime = time.time()
             while 1:
@@ -91,11 +94,12 @@ class cDownload:
                     break
                 f.write(data)
                 self.__stateCallBackFunction(iCount, chunk, iTotalSize)              
-            f.close()
-            
-        except:
-            log(cConfig().getLocalizedString(30166) + '-> [download]: download failed', LOGNOTICE)     
-            f.close()
+
+        except Exception:
+            log(cConfig().getLocalizedString(30166) + '-> [download]: download failed', LOGNOTICE)
+        finally:
+            if f:
+                f.close()
 
 
     def __createTitle(self, sUrl, sTitle):
