@@ -169,6 +169,9 @@ class CaptchaSolver:
                 if 'captchaid' in data:
                     captcha_id = data['captchaid']
                     tries = 0
+                else:
+                    logger.error('9kw Error: captchaid missing in response')
+                    return token
 
                 # Warte auf Captcha-Lösung
                 while tries < self.timeout and self.is_alive:
