@@ -2048,16 +2048,6 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
-				<!-- Domain Überprüfung mit automatischer und manueller Anpassung -->
-				<setting id="plugin_testplugin_checkDomain" type="boolean" label="30277">
-					<level>3</level>
-					<default>False</default>
-					<dependencies>
-						<dependency type="enable" operator="!is" setting="plugin_testplugin">false</dependency>
-						<dependency type="visible" operator="!is" setting="plugin_testplugin">false</dependency>
-					</dependencies>
-					<control type="toggle"/>
-				</setting>
 				<setting id="plugin_testplugin.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
