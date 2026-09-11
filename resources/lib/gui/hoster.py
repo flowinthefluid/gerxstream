@@ -246,20 +246,17 @@ class cHosterGui:
 
             if len(hmf.get_resolvers()):
                 priority = False
-                for resolver in hmf.get_resolvers():
+                for resolver_instance in hmf.get_resolvers():
                     # prefer individual priority
-                    if not resolver.isUniversal():
-                        priority = resolver._get_priority()
+                    if not resolver_instance.isUniversal():
+                        priority = resolver_instance._get_priority()
                         break
                     if not priority:
-                        priority = resolver._get_priority()
+                        priority = resolver_instance._get_priority()
                 if priority:
                     ranking.append([priority, hoster])
             elif not filter:
                 ranking.append([999, hoster])
-
-            # Reset resolver so we have a fresh instance when loop starts again
-            del(resolver) 
 
         if any('quality' in hoster[1] for hoster in ranking):
             try:
