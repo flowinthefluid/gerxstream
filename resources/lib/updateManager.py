@@ -269,7 +269,7 @@ def _getXmlString(xml_url, auth):
         else:
             log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: Update-URL incorrect or bad credentials')
     except Exception as e:
-        log(e)
+        log(str(e), LOGERROR)
 
 
 # todo Verzeichnis packen -für zukünftige Erweiterung "Backup"
@@ -360,4 +360,4 @@ def devUpdates():  # für manuelles Updates vorgesehen
         if cConfig().getSetting('enforceUpdate') == 'true': cConfig().setSetting('enforceUpdate', 'false')
         return
     except Exception as e:
-        log(e)
+        log(str(e), LOGERROR)
