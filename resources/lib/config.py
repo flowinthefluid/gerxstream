@@ -43,7 +43,7 @@ class cConfig:
             return default
 
     def setSetting(self, id, value):
-        if id and value:
+        if id is not None:
             with cConfig._settings_lock:
                 self.__addon.setSetting(id, value)
 
