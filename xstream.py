@@ -255,6 +255,9 @@ def parseUrl():
     elif sSiteName == 'devUpdates':
         from resources.lib import updateManager
         updateManager.devUpdates()
+    # Scraper Domain-Check manuell
+    elif sSiteName == 'checkDomain':
+        cPluginHandler().checkDomain()
     # Plugin Infos    
     elif sSiteName == 'pluginInfo':
         cPluginHandler().pluginInfo()
@@ -403,7 +406,15 @@ def settingsGuiElements():
     oGuiElement.setFunction('devUpdates')
     oGuiElement.setThumbnail(os.path.join(ART, 'manuel_update.png'))
     DevUpdateMan = oGuiElement
-    return PluginInfo, xStreamSettings, resolveurlSettings, DevUpdateMan
+
+    # GUI Domain-Check der Scraper
+    oGuiElement = cGuiElement()
+    oGuiElement.setTitle(cConfig().getLocalizedString(30277))
+    oGuiElement.setSiteName('checkDomain')
+    oGuiElement.setFunction('checkDomain')
+    oGuiElement.setThumbnail(os.path.join(ART, 'settings.png'))
+    DomainCheck = oGuiElement
+    return PluginInfo, xStreamSettings, resolveurlSettings, DevUpdateMan, DomainCheck
 
 
 def globalSearchGuiElement():

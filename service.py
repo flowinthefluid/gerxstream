@@ -217,9 +217,6 @@ def main():
     # Startet Überprüfung der Abhängigkeiten
     checkDependence(cConfig().getAddonInfo('id'))
 
-    # Startet Domain Überprüfung und schreibt diese in die settings.xml
-    cPluginHandler().checkDomain()
-
     # Wenn neue settings vorhanden oder geändert in addon_data dann starte Pluginhandler und aktualisiere die PluginDB um Daten von checkDomain mit aufzunehmen
     try:
         if cConfig().getSetting('newSetting') == 'true':

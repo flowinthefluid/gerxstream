@@ -636,10 +636,11 @@ class cPluginHandler:
 
     # Überprüfung des Domain Namens. Leite um und hole neue URL und schreibe in die settings.xml. Bei nicht erreichen der Seite deaktiviere Globale Suche bis zum nächsten Start und überprüfe erneut.
     def checkDomain(self):
-        import threading
+        from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
         log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Query status code of the provider', LOGNOTICE)
         fileNames = self.__getFileNamesFromFolder(self.defaultFolder)
-        threads = []
+        tasks = []
+        monitor = xbmc.Monitor()
         for fileName in fileNames:
             try:
                 pluginDataDomain = self.__getPluginDataDomain(fileName, self.defaultFolder)
@@ -657,19 +658,30 @@ class cPluginHandler:
                 
                 if cConfig().getSetting('plugin_' + provider) == 'false':  # Wenn SitePlugin deaktiviert
                     cConfig().setSetting('global_search_' + provider, 'false')  # setzte Globale Suche auf aus
-                    cConfig().setSetting('plugin_' + provider + '_checkdomain', 'false')  # setzte Domain Check auf aus
+                    cConfig().setSetting('plugin_' + provider + '_checkDomain', 'false')  # setzte Domain Check auf aus
                     cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
                     cConfig().setSetting('plugin_' + provider + '_status', '')  # lösche Settings Eintrag
-                    
-                if cConfig().getSetting('plugin_' + provider + '_checkdomain') == 'true':  # aut. Domainüberprüfung an ist überprüfe Status der Sitplugins
-                    t = threading.Thread(target=self._checkdomain, args=(provider, base_link), name=fileName)
-                    threads += [t]
-                    t.start()
+
+                legacyCheck = cConfig().getSetting('plugin_' + provider + '_checkdomain')
+                checkDomainEnabled = cConfig().getSetting('plugin_' + provider + '_checkDomain', legacyCheck)
+                if legacyCheck and not cConfig().getSetting('plugin_' + provider + '_checkDomain'):
+                    cConfig().setSetting('plugin_' + provider + '_checkDomain', legacyCheck)
+
+                if checkDomainEnabled == 'true':  # aut. Domainüberprüfung an ist überprüfe Status der Sitplugins
+                    tasks.append((provider, base_link))
             except Exception:
                 pass
-        
-        for count, t in enumerate(threads):
-            t.join()
+
+        if tasks:
+            maxWorkers = min(6, max(1, len(tasks)))
+            with ThreadPoolExecutor(max_workers=maxWorkers, thread_name_prefix='checkDomain') as executor:
+                pending = {executor.submit(self._checkdomain, provider, base_link) for provider, base_link in tasks}
+                while pending and not monitor.abortRequested():
+                    done, pending = wait(pending, timeout=0.5, return_when=FIRST_COMPLETED)
+                for future in pending:
+                    future.cancel()
+            if monitor.abortRequested():
+                log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Domain check aborted by monitor shutdown signal', LOGNOTICE)
 
         log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Domains for all available Plugins updated', LOGNOTICE)
         infoDialog("Domain-Überprüfung aller Plugins abgeschlossen", sound=False, icon='INFO', time=6000)
