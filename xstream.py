@@ -479,7 +479,7 @@ def searchGlobal(sSearchText=False):
             oGui.setEndOfDirectory()
             return
         t.join()
-        dialog.update((count + 1) * 50 // progressPlugins + 50, t.getName() + cConfig().getLocalizedString(30125))
+        dialog.update((count + 1) * 50 // progressPlugins + 50, t.name + cConfig().getLocalizedString(30125))
     dialog.close()
     # deactivate collectMode attribute because now we want the elements really added
     oGui._collectMode = False
@@ -556,7 +556,7 @@ def searchAlter(params):
         if dialog.iscanceled(): 
             oGui.setEndOfDirectory()
             return
-        dialog.update((count + 1) * 50 // progressPlugins + 50, t.getName() + cConfig().getLocalizedString(30125))
+        dialog.update((count + 1) * 50 // progressPlugins + 50, t.name + cConfig().getLocalizedString(30125))
     dialog.close()
     # check results, put this to the threaded part, too
     filteredResults = []
@@ -611,7 +611,7 @@ def searchTMDB(params):
         if dialog.iscanceled(): 
             oGui.setEndOfDirectory()
             return
-        dialog.update((count + 1) * 50 // progressPlugins + 50, t.getName() + cConfig().getLocalizedString(30125))
+        dialog.update((count + 1) * 50 // progressPlugins + 50, t.name + cConfig().getLocalizedString(30125))
     dialog.close()
     # deactivate collectMode attribute because now we want the elements really added
     oGui._collectMode = False
