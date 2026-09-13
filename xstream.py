@@ -294,9 +294,11 @@ def showMainMenu(sFunction):
     ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
     addon_id = cConfig().getAddonInfo('id')
     start_time = time.time()
+    monitor = xbmc.Monitor()
     # timeout for the startup status check = 60s
     while (startupStatus := cCache().get(addon_id + '_main', -1)) != 'finished' and time.time() - start_time <= 60:
-        time.sleep(5)
+        if monitor.waitForAbort(1):
+            return
     
     oGui = cGui()
 
