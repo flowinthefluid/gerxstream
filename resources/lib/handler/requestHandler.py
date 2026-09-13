@@ -126,8 +126,6 @@ class cRequestHandler:
         self.isMemoryCacheActive = (cConfig().getSetting('volatileHtmlCache', 'false') == 'true')
         if self.isMemoryCacheActive:
             self._memCache = cCache()
-        
-        socket.setdefaulttimeout(self.requestTimeout)
 
     def getStatus(self):
         return self._Status
@@ -266,7 +264,7 @@ class cRequestHandler:
         cookieJar.add_cookie_header(oRequest)
         
         try:
-            oResponse = opener.open(oRequest)
+            oResponse = opener.open(oRequest, timeout=self.requestTimeout)
         except HTTPError as e:
             if e.code >= 400:
                 self._Status = str(e.code)
@@ -274,17 +272,17 @@ class cRequestHandler:
                 if 'DDOS-GUARD' in str(data):
                     opener = build_opener(HTTPCookieProcessor(cookieJar))
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]
-                    response = opener.open('https://check.ddos-guard.net/check.js')
+                    response = opener.open('https://check.ddos-guard.net/check.js', timeout=self.requestTimeout)
                     content = response.read().decode('utf-8', 'replace')
                     url2 = re.findall("Image.*?'([^']+)'; new", content)
                     url3 = urlparse(self._sUrl)
                     url3 = '%s://%s/%s' % (url3.scheme, url3.netloc, url2[0])
                     opener = build_opener(HTTPCookieProcessor(cookieJar))
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]
-                    opener.open(url3).read()
+                    opener.open(url3, timeout=self.requestTimeout).read()
                     opener = build_opener(HTTPCookieProcessor(cookieJar))
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]
-                    oResponse = opener.open(self._sUrl, sParameters if len(sParameters) > 0 else None)
+                    oResponse = opener.open(self._sUrl, sParameters if sParameters and len(sParameters) > 0 else None, timeout=self.requestTimeout)
                     if not oResponse:
                         logger.error(' -> [requestHandler]: Failed DDOS-GUARD active: ' + self._sUrl)
                         return 'DDOS GUARD SCHUTZ'
@@ -333,7 +331,7 @@ class cRequestHandler:
             sContent = oResponse.read().decode('utf-8', 'replace')
 
         if 'lazingfast' in sContent:
-            bf = cBF().resolve(self._sUrl, sContent, cookieJar, self._USER_AGENT, sParameters)
+            bf = cBF().resolve(self._sUrl, sContent, cookieJar, self._USER_AGENT, sParameters, self.requestTimeout)
             if bf:
                 sContent = bf
             else:
@@ -490,20 +488,20 @@ class cRequestHandler:
 
 
 class cBF:
-    def resolve(self, url, html, cookie_jar, user_agent, sParameters):
+    def resolve(self, url, html, cookie_jar, user_agent, sParameters, timeout=10):
         page = urlparse(url).scheme + '://' + urlparse(url).netloc
         j = re.compile('<script[^>]src="([^"]+)').findall(html)
         if j:
             opener = build_opener(HTTPCookieProcessor(cookie_jar))
             opener.addheaders = [('User-agent', user_agent), ('Referer', url)]
-            opener.open(page + j[0])
+            opener.open(page + j[0], timeout=timeout)
         a = re.compile(r'xhr\.open\("GET","([^,]+)",').findall(html)
         if a:
             import random
             aespage = page + a[0].replace('" + ww +"', str(random.randint(700, 1500)))
             opener = build_opener(HTTPCookieProcessor(cookie_jar))
             opener.addheaders = [('User-agent', user_agent), ('Referer', url)]
-            html = opener.open(aespage).read().decode('utf-8', 'replace')
+            html = opener.open(aespage, timeout=timeout).read().decode('utf-8', 'replace')
             cval = self.aes_decode(html)
             cdata = re.compile('cookie="([^="]+).*?domain[^>]=([^;]+)').findall(html)
             if cval and cdata:
@@ -511,7 +509,7 @@ class cBF:
                 cookie_jar.set_cookie(c)
                 opener = build_opener(HTTPCookieProcessor(cookie_jar))
                 opener.addheaders = [('User-agent', user_agent), ('Referer', url)]
-                return opener.open(url, sParameters if len(sParameters) > 0 else None).read().decode('utf-8', 'replace')
+                return opener.open(url, sParameters if sParameters and len(sParameters) > 0 else None, timeout=timeout).read().decode('utf-8', 'replace')
 
     @staticmethod
     def aes_decode(html):
