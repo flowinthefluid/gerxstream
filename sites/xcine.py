@@ -109,7 +109,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
         oRequest.cacheTime = 60 * 60 * 6
     sHtmlContent = oRequest.request()
-    pattern = 'item__link.*?href="([^"]+).*?<img src="([^"]+).*?alt="([^"]+).*?(.*?)</span>\s+<span>'
+    pattern = r'item__link.*?href="([^"]+).*?<img src="([^"]+).*?alt="([^"]+).*?(.*?)</span>\s+<span>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         if not sGui: oGui.showInfo()
@@ -128,9 +128,9 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
             cGui().showLanguage()
             continue
         isQuality, sQuality = cParser.parseSingleResult(sDummy, 'movie-item__label">([^<]+)')
-        isInfoEpisode, sInfoEpisode = cParser.parseSingleResult(sDummy, 'ep-num">e.([\d]+)') 
-        isYear, sYear = cParser.parseSingleResult(sDummy, 'meta ws-nowrap">\s+<span>([\d]+)')
-        isTvshow, aResult = cParser.parse(sName, '\s+-\s+Staffel\s+\d+')
+        isInfoEpisode, sInfoEpisode = cParser.parseSingleResult(sDummy, r'ep-num">e.([\d]+)')
+        isYear, sYear = cParser.parseSingleResult(sDummy, r'meta ws-nowrap">\s+<span>([\d]+)')
+        isTvshow, aResult = cParser.parse(sName, r'\s+-\s+Staffel\s+\d+')
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showEpisodes' if isTvshow else 'showHosters')
         if sThumbnail[0] == '/':
             sThumbnail = sThumbnail[1:]
@@ -148,14 +148,14 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         oGui.addFolder(oGuiElement, params, isTvshow, total)
 
     if not sGui and not sSearchText and not sSearchPageText:
-        isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'class="pagination.*?<span>[^>]</span>\s<a\shref="([^"]+)')
+        isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, r'class=r"pagination.*?<span>[^>]</span>\s<a\shref="([^"]+)')
         if not isMatchNextPage:
-            isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'class="pagination.*?<span>[^>][^>]</span>\s<a\shref="([^"]+)')
+            isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, r'class=r"pagination.*?<span>[^>][^>]</span>\s<a\shref="([^"]+)')
         if not isMatchNextPage:
-            isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'class="pagination.*?<span>[^>][^>][^>]</span>\s<a\shref="([^"]+)')
+            isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, r'class=r"pagination.*?<span>[^>][^>][^>]</span>\s<a\shref="([^"]+)')
         isMatchSiteSearch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, 'class="pagination(.*?)</main>')
         if isMatchSiteSearch:
-            isMatch, aResult = cParser.parse(sHtmlContainer,'<span>([\d]+)</span>.*?href="([^"]+).*?nav_ext">.*?">([\d]+)')
+            isMatch, aResult = cParser.parse(sHtmlContainer,r'<span>([\d]+)</span>.*?href="([^"]+).*?nav_ext">.*?">([\d]+)')
             for sPageActive, sNextPage, sPageLast in aResult:
                 sPageName = cConfig().getLocalizedString(30284) + str(sPageActive) + cConfig().getLocalizedString(30285) + str(sPageLast) + cConfig().getLocalizedString(30286)
                 params.setParam('sNextPage', sNextPage)

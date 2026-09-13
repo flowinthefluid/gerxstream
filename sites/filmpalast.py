@@ -115,10 +115,10 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
-    pattern = '<article[^>]*>\s*<a href="([^"]+)" title="([^"]+)">\s*<img src=["\']([^"\']+)["\'][^>]*>(.*?)</article>'
+    pattern = r'<article[^>]*>\s*<a href="([^"]+)" title="([^"]+)">\s*<img src=[r"\']([^"\']+)["\'][^>]*>(.*?)</article>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
-        pattern = '<a[^>]*href="([^"]*)"[^>]*title="([^"]*)"[^>]*>[^<]*<img[^>]*src=["\']([^"\']*)["\'][^>]*>\s*</a>(\s*)</article>'
+        pattern = r'<a[^>]*href="([^"]*)"[^>]*title="([^"]*)"[^>]*>[^<]*<img[^>]*src=[r"\']([^"\']*)["\'][^>]*>\s*</a>(\s*)</article>'
         isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         if not sGui: oGui.showInfo()
@@ -126,15 +126,15 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
 
     total = len(aResult)
     for sUrl, sName, sThumbnail, sDummy in aResult:
-        isTvshow, aResult = cParser.parse(sName, 'S\d\dE\d\d')
+        isTvshow, aResult = cParser.parse(sName, r'S\d\dE\d\d')
         # seriesname should not be crippled here!
         if sSearchText and not cParser.search(sSearchText, sName):
             continue
         if sThumbnail.startswith('/'):
             sThumbnail = URL_MAIN + sThumbnail
         ### ÄNDERUNG ANFANG ###
-        isYear, sYear = cParser.parseSingleResult(sDummy, 'Jahr:[^>]([\d]+)')
-        isDuration, sDuration = cParser.parseSingleResult(sDummy, '(?:Laufzeit|Spielzeit):[^>]([\d]+)')
+        isYear, sYear = cParser.parseSingleResult(sDummy, r'Jahr:[^>]([\d]+)')
+        isDuration, sDuration = cParser.parseSingleResult(sDummy, r'(?:Laufzeit|Spielzeit):[^>]([\d]+)')
         isRating, sRating = cParser.parseSingleResult(sDummy, 'Imdb:[^>]([^/]+)')
         ### ÄNDERUNG ENDE ###
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
@@ -155,7 +155,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         params.setParam('sThumbnail', sThumbnail)
         oGui.addFolder(oGuiElement, params, isTvshow, total)
     if not sGui and not sSearchText:
-        pattern = '<a class="pageing[^"]*"\s*href=([^>]+)>[^\+]+\+</a>\s*</div>'
+        pattern = r'<a class="pageing[^"]*"\s*href=([^>]+)>[^\+]+\+</a>\s*</div>'
         isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, pattern)
         if isMatchNextPage:
             sNextUrl = sNextUrl.replace("'", "").replace('"', '')
@@ -177,7 +177,7 @@ def showSeasons():
     if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
         oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
     sHtmlContent = oRequest.request()
-    pattern = '<a[^>]*class="staffTab"[^>]*data-sid="(\d+)"[^>]*>'
+    pattern = r'<a[^>]*class="staffTab"[^>]*data-sid=r"(\d+)"[^>]*>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         cGui().showInfo()
@@ -219,7 +219,7 @@ def showEpisodes():
     isDesc, sDesc = cParser.parseSingleResult(sHtmlContent, '"description">([^<]+)')
     total = len(aResult)
     for sUrl in aResult:
-        isMatch, sName = cParser.parseSingleResult(sUrl, 'e(\d+)')
+        isMatch, sName = cParser.parseSingleResult(sUrl, r'e(\d+)')
         oGuiElement = cGuiElement('Episode ' + str(sName), SITE_IDENTIFIER, 'showHosters')
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setTVShowTitle(sShowName)
@@ -244,7 +244,7 @@ def showHosters():
     else: sLang = ''
     sHtmlContent = cRequestHandler(sUrl, caching=False, bypass_dns=True).request()
     pattern = 'hostName">([^<]+).*?(http[^"]+)' # Hoster Link
-    releaseQuality = 'class="rb">.*?(\d\d\d+)p\.' # Release Qualität
+    releaseQuality = r'class="rb">.*?(\d\d\d+)p\.' # Release Qualität
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     isQuality, sQuality = cParser.parseSingleResult(sHtmlContent, releaseQuality)  # sReleaseQuality auslesen z.B. 1080
     if not isQuality: sQuality = '720'

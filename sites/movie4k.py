@@ -102,10 +102,10 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         elif sLanguage == '3':    # Japanisch
             cGui().showLanguage()
             continue
-        isInfoEpisode, sInfo = cParser.parseSingleResult(sInfo, '</span>([\d]+)')  # Episodenanzahl
+        isInfoEpisode, sInfo = cParser.parseSingleResult(sInfo, r'</span>([\d]+)')  # Episodenanzahl
         isThumbnail, sThumbnail = cParser.parseSingleResult(sDummy, 'data-src="([^"]+)')  # Thumbnail
         isQuality, sQuality = cParser.parseSingleResult(sDummy, '<li>([^<]+)')  # Qualität
-        isYear, sYear = cParser.parseSingleResult(sDummy, 'class="white">([\d]+)')  # Release Jahr
+        isYear, sYear = cParser.parseSingleResult(sDummy, r'class="white">([\d]+)')  # Release Jahr
         isTvshow = True if 'taffel' in sName else False
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showEpisodes' if isTvshow else 'showHosters')
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
@@ -127,7 +127,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         # Start Page Function
         isMatchSiteSearch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, 'class="row page_numbers">(.*?)</div></div></div>')
         if isMatchSiteSearch:
-            isMatch, aResult = cParser.parse(sHtmlContainer, '<span>([\d]+)</span>.*?nav_ext">.*?">([\d]+)</a>.*?"page_next".*?href="([^"]+)')
+            isMatch, aResult = cParser.parse(sHtmlContainer, r'<span>([\d]+)</span>.*?nav_ext">.*?r">([\d]+)</a>.*?"page_next".*?href="([^"]+)')
             for sPageActive, sPageLast, sNextPage in aResult:
                 # sPageName = '[I]Seitensuche starten  >>> [/I] Seite ' + str(sPageActive) + ' von ' + str(sPageLast) + ' Seiten  [I]<<<[/I]'
                 sPageName = cConfig().getLocalizedString(30284) + str(sPageActive) + cConfig().getLocalizedString(30285) + str(sPageLast) + cConfig().getLocalizedString(30286)
@@ -151,7 +151,7 @@ def showEpisodes():
     if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
         oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
     sHtmlContent = oRequest.request()    
-    pattern = 'id="serie-(\d+)[^>](\d+).*?href="#">([^<]+)'
+    pattern = r'id=r"serie-(\d+)[^>](\d+).*?href="#">([^<]+)'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch: return
     isTvshow, sTVShowTitle = cParser.parseSingleResult(sHtmlContent, '<title>([^-]+)')

@@ -509,7 +509,7 @@ def searchAlter(params):
     searchYear = params.getValue('searchYear')
     # Wenn sYear im searchTitle vorhanden
     if ' (19' in searchTitle or ' (20' in searchTitle:
-        isMatch, aYear = cParser.parse(searchTitle, '(.*?) \((\d{4})\)')
+        isMatch, aYear = cParser.parse(searchTitle, r'(.*?) \((\d{4})\)')
         if isMatch:
             searchTitle = aYear[0][0]
             # Wenn kein Jahr vorhanden nutze Jahr aus searchTitle

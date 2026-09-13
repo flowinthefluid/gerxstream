@@ -92,7 +92,7 @@ def showValue():
     sHtmlContent = oRequest.request()
     isMatch, sContainer = cParser.parseSingleResult(sHtmlContent, '<ul[^>]*class="%s"[^>]*>(.*?)<\\/ul>' % params.getValue('sCont'))
     if isMatch:
-        isMatch, aResult = cParser.parse(sContainer, '<li>\s*<a[^>]*href="([^"]*)"[^>]*>(.*?)<\\/a>\s*<\\/li>')
+        isMatch, aResult = cParser.parse(sContainer, r'<li>\s*<a[^>]*href="([^"]*)"[^>]*>(.*?)<\\/a>\s*<\\/li>')
     if not isMatch:
         cGui().showInfo()
         return
@@ -141,7 +141,7 @@ def showNewEpisodes(entryUrl=False, sGui=False):
     if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
         oRequest.cacheTime = 60 * 60 * 4 # HTML Cache Zeit 4 Stunden
     sHtmlContent = oRequest.request()
-    pattern = '<div[^>]*class="col-md-[^"]*"[^>]*>\s*<a[^>]*href="([^"]*)"[^>]*>\s*<strong>([^<]+)</strong>\s*<span[^>]*>([^<]+)</span>'
+    pattern = r'<div[^>]*class="col-md-[^"]*r"[^>]*>\s*<a[^>]*href="([^"]*)"[^>]*>\s*<strong>([^<]+)</strong>\s*<span[^>]*>([^<]+)</span>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         if not sGui: oGui.showInfo()
@@ -263,13 +263,13 @@ def showEpisodes():
     isMatch, sContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
         if isMovieList == True:
-            pattern = '<tr[^>]*data-episode-season-id="(\d+).*?<a href="([^"]+)">\s([^<]+).*?<strong>([^<]+)'
+            pattern = r'<tr[^>]*data-episode-season-id=r"(\d+).*?<a href="([^"]+)">\s([^<]+).*?<strong>([^<]+)'
             isMatch, aResult = cParser.parse(sContainer, pattern)
             if not isMatch:
-                pattern = '<tr[^>]*data-episode-season-id="(\d+).*?<a href="([^"]+)">\s([^<]+).*?<span>([^<]+)'
+                pattern = r'<tr[^>]*data-episode-season-id=r"(\d+).*?<a href="([^"]+)">\s([^<]+).*?<span>([^<]+)'
                 isMatch, aResult = cParser.parse(sContainer, pattern)
         else:
-            pattern = '<tr[^>]*data-episode-season-id="(\d+).*?<a href="([^"]+).*?(?:<strong>(.*?)</strong>.*?)?(?:<span>(.*?)</span>.*?)?<'
+            pattern = r'<tr[^>]*data-episode-season-id=r"(\d+).*?<a href="([^"]+).*?(?:<strong>(.*?)</strong>.*?)?(?:<span>(.*?)</span>.*?)?<'
             isMatch, aResult = cParser.parse(sContainer, pattern)
     if not isMatch:
         cGui().showInfo()
@@ -304,7 +304,7 @@ def showHosters():
     sUrl = ParameterHandler().getValue('sUrl')
     sHtmlContent = cRequestHandler(sUrl, caching=False).request()
     if cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain') == 'serienstream.stream':
-        pattern = '<li[^>]*episodeLink([^"]+)"\sdata-lang-key="([^"]+).*?data-link-target=([^"]+).*?<h4>([^<]+)<([^>]+)'
+        pattern = r'<li[^>]*episodeLink([^"]+)"\sdata-lang-key="([^"]+).*?data-link-target=([^"]+).*?<h4>([^<]+)<([^>]+)'
         pattern2 = 'itemprop="keywords".content=".*?Season...([^"]+).S.*?'  # HD Kennzeichen
         # data-lang-key="1" Deutsch
         # data-lang-key="2" Englisch
@@ -469,7 +469,7 @@ def SSsearch(sGui=False, sSearchText=False):
 
     sst = sSearchText.lower()
 
-    pattern = '<li><a data.+?href="([^"]+)".+?">(.*?)\<\/a><\/l' #link - title
+    pattern = r'<li><a data.+?href="([^"]+)".+?">(.*?)\<\/a><\/l' #link - title
 
     aResult = cParser.parse(sHtmlContent, pattern)
 
