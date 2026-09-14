@@ -103,6 +103,7 @@ class CaptchaSolver:
     def _get_2captcha_result(self, captcha_id):
         """Wartet auf und holt das Ergebnis von 2Captcha"""
         start_time = time.time()
+        monitor = xbmc.Monitor()
 
         while True:
             request = cRequestHandler(
@@ -132,7 +133,8 @@ class CaptchaSolver:
                 raise Exception(error_msg)
 
             # Kurze Pause zwischen den Anfragen
-            time.sleep(2)
+            if monitor.waitForAbort(2):
+                raise Exception(f"Abbruch beim Warten auf Captcha-Lösung (ID: {captcha_id})")
 
     def _solve_with_9kw(self, site_key, page_url):
         """9kw.eu-Implementation für reCAPTCHA v2"""
@@ -174,9 +176,11 @@ class CaptchaSolver:
                     return token
 
                 # Warte auf Captcha-Lösung
+                monitor = xbmc.Monitor()
                 while tries < self.timeout and self.is_alive:
                     tries += 1
-                    xbmc.sleep(1000)  # 1 Sekunde warten
+                    if monitor.waitForAbort(1):
+                        break
 
                     check_url = f"https://www.9kw.eu/index.cgi?action=usercaptchacorrectdata&id={captcha_id}&apikey={self.api_key}&json=1"
                     result_request = cRequestHandler(check_url, caching=False)
