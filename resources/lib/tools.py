@@ -165,30 +165,14 @@ def devWarning():
 
 # Erstellt eine Textbox
 def textBox(heading, announce):
-    class TextBox():
-
-        def __init__(self, *args, **kwargs):
-            self.WINDOW = 10147
-            self.CONTROL_LABEL = 1
-            self.CONTROL_TEXTBOX = 5
-            xbmc.executebuiltin("ActivateWindow(%d)" % (self.WINDOW, ))
-            self.win = xbmcgui.Window(self.WINDOW)
-            xbmc.sleep(500)
-            self.setControls()
-
-        def setControls(self):
-            self.win.getControl(self.CONTROL_LABEL).setLabel(heading)
-            try:
-                f = open(announce)
-                text = f.read()
-            except:
-                text = announce
-            self.win.getControl(self.CONTROL_TEXTBOX).setText(str(text))
-            return
-
-    TextBox()
-    while xbmc.getCondVisibility('Window.IsVisible(10147)'):
-        xbmc.sleep(500)
+    text = announce
+    if isinstance(announce, str) and os.path.isfile(announce):
+        try:
+            with open(announce, mode='r', encoding='utf-8') as text_file:
+                text = text_file.read()
+        except Exception:
+            text = announce
+    xbmcgui.Dialog().textviewer(heading, str(text))
 
 
 # Info Meldung im Kodi
