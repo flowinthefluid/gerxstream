@@ -200,7 +200,7 @@ def _getSafeUpdateDestination(localDir, archiveMember):
 
 def doUpdate(LocalDir, REMOTE_PATH, Title, localFileName, auth):
     try:
-        response = requests.get(REMOTE_PATH, auth=auth)  # verify=False,
+        response = requests.get(REMOTE_PATH, auth=auth, timeout=10)  # verify=False,
         if response.status_code == 200:
             open(localFileName, "wb").write(response.content)
         else:
@@ -263,7 +263,7 @@ def removeFilesNotInRepo(updateFile, LocalDir):
 
 def _getXmlString(xml_url, auth):
     try:
-        xmlString = requests.get(xml_url, auth=auth).content  # verify=False,
+        xmlString = requests.get(xml_url, auth=auth, timeout=10).content  # verify=False,
         if "sha" in json.loads(xmlString):
             return xmlString
         else:

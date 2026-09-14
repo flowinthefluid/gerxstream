@@ -109,7 +109,7 @@ def checkVersion(xs='xstream'):
         else: return
 
         addonVersion = addonInfo('version')
-        r = requests.get(url)
+        r = requests.get(url, timeout=10)
         if r.status_code != 200 : return
         remoteVersion = re.findall('version="([^"]+)', str(r.content))[1]
         if addonVersion == remoteVersion: return

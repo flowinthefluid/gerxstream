@@ -401,7 +401,7 @@ class Myjdapi:
             else:
                 query += ["signature=" + str(self.__signature_create(self.__server_encryption_token, query[0] + "&".join(query[1:])))]
             query = query[0] + "&".join(query[1:])
-            encrypted_response = requests.get(self.__api_url + query)
+            encrypted_response = requests.get(self.__api_url + query, timeout=10)
         else:
             params_request = []
             for param in params:
@@ -416,7 +416,7 @@ class Myjdapi:
                 request_url = self.__api_url + action + path
             else:
                 request_url = self.__api_url + path
-            encrypted_response = requests.post(request_url, headers={"Content-Type": "application/aesjson-jd; charset=utf-8"}, data=encrypted_data)
+            encrypted_response = requests.post(request_url, headers={"Content-Type": "application/aesjson-jd; charset=utf-8"}, data=encrypted_data, timeout=10)
         if encrypted_response.status_code != 200:
             error_msg = json.loads(encrypted_response.text)
             msg = "\n\tSOURCE: " + error_msg["src"] + "\n\tTYPE: " + \
