@@ -7,13 +7,10 @@ import xbmcgui, xbmcvfs
 from xbmcvfs import translatePath
 from urllib.request import urlretrieve
 
-progressDialog = xbmcgui.DialogProgress()
-
-
 def download_url(url, dest, dp=None):
     # download_url(url, src, dp=[None / True / False / Dialog])
     if dp == None or dp == True:
-        dp = progressDialog
+        dp = xbmcgui.DialogProgress()
         dp.create("URL Downloader", " \n  Downloading  File:  [B]%s[/B]" % url.split('/')[-1])
     elif dp == False:
         return urlretrieve(url, dest)
