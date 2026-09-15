@@ -176,7 +176,9 @@ def textBox(heading, announce):
 
 
 # Info Meldung im Kodi
-def infoDialog(message, heading=cConfig().getAddonInfo('name'), icon='', time=5000, sound=False):
+def infoDialog(message, heading=None, icon='', time=5000, sound=False):
+    if heading is None:
+        heading = cConfig().getAddonInfo('name')
     if icon == '': icon = cConfig().getAddonInfo('icon')
     elif icon == 'INFO': icon = xbmcgui.NOTIFICATION_INFO
     elif icon == 'WARNING': icon = xbmcgui.NOTIFICATION_WARNING

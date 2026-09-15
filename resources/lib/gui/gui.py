@@ -369,7 +369,9 @@ class cGui:
         return False
 
     @staticmethod
-    def showNumpad(defaultNum="", numPadTitle=cConfig().getLocalizedString(30251)):
+    def showNumpad(defaultNum="", numPadTitle=None):
+        if numPadTitle is None:
+            numPadTitle = cConfig().getLocalizedString(30251)
         defaultNum = str(defaultNum)
         dialog = xbmcgui.Dialog()
         num = dialog.numeric(0, numPadTitle, defaultNum)
@@ -396,7 +398,9 @@ class cGui:
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, cConfig().getAddonInfo('icon')))
 
     @staticmethod
-    def showInfo(sTitle='xStream', sDescription=cConfig().getLocalizedString(30253), iSeconds=0):
+    def showInfo(sTitle='xStream', sDescription=None, iSeconds=0):
+        if sDescription is None:
+            sDescription = cConfig().getLocalizedString(30253)
         if iSeconds == 0:
             iSeconds = 1000
         else:
@@ -404,7 +408,9 @@ class cGui:
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, cConfig().getAddonInfo('icon')))
 
     @staticmethod
-    def showLanguage(sTitle='xStream', sDescription=cConfig().getLocalizedString(30403), iSeconds=0):
+    def showLanguage(sTitle='xStream', sDescription=None, iSeconds=0):
+        if sDescription is None:
+            sDescription = cConfig().getLocalizedString(30403)
         if iSeconds == 0:
             iSeconds = 1000
         else:
