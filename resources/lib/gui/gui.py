@@ -104,9 +104,6 @@ class cGui:
             pass
         #listitem = xbmcgui.ListItem(itemTitle + infoString, oGuiElement.getIcon(), oGuiElement.getThumbnail())
         listitem = xbmcgui.ListItem(itemTitle + infoString)
-        # Function: setInfo(type, infoLabels)
-        # listitem.setInfo('video', { 'genre': 'Comedy' })
-        listitem.setInfo(oGuiElement.getType(), itemValues)
         #Wenn Kodi 19, dann ignoriere setinfotagvideo
         kodi_version = xbmc.getInfoLabel('System.BuildVersion')
         if kodi_version[:2]  > '19':

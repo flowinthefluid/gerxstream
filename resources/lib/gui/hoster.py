@@ -108,7 +108,7 @@ class cHosterGui:
         #Neuer Video-Tag, mit Kodi 19 nicht kompatibel, daher folgende Abfrage
         kodi_version = xbmc.getInfoLabel('System.BuildVersion')
         if kodi_version[:2] < '20':
-            list_item.setInfo(type="Video", infoLabels=info)
+            pass
         else:
             vtag = list_item.getVideoInfoTag()
             vtag.setMediaType('video')
