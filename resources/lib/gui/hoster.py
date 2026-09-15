@@ -105,29 +105,24 @@ class cHosterGui:
             info['Season'] = data['season']
             info['TVShowTitle'] = data['showTitle']
 
-        #Neuer Video-Tag, mit Kodi 19 nicht kompatibel, daher folgende Abfrage
-        kodi_version = xbmc.getInfoLabel('System.BuildVersion')
-        if kodi_version[:2] < '20':
-            pass
-        else:
-            vtag = list_item.getVideoInfoTag()
-            vtag.setMediaType('video')
-            if 'Title' in info:
-                try:
-                    vtag.setTitle(str(info['Title']))
-                except: pass
-            if 'Season' in info:
-                try:
-                    vtag.setSeason(int(info['Season']))
-                except: pass
-            if 'Episode' in info:
-                try:
-                    vtag.setEpisode(int(info['Episode']))
-                except: pass
-            if 'TVShowTitle' in info:
-                try:
-                    vtag.setTvShowTitle(info['TVShowTitle'])
-                except: pass
+        vtag = list_item.getVideoInfoTag()
+        vtag.setMediaType('video')
+        if 'Title' in info:
+            try:
+                vtag.setTitle(str(info['Title']))
+            except: pass
+        if 'Season' in info:
+            try:
+                vtag.setSeason(int(info['Season']))
+            except: pass
+        if 'Episode' in info:
+            try:
+                vtag.setEpisode(int(info['Episode']))
+            except: pass
+        if 'TVShowTitle' in info:
+            try:
+                vtag.setTvShowTitle(info['TVShowTitle'])
+            except: pass
 
         list_item.setProperty('IsPlayable', 'true')
         if cGui().pluginHandle > 0:

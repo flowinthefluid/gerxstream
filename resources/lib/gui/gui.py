@@ -104,10 +104,7 @@ class cGui:
             pass
         #listitem = xbmcgui.ListItem(itemTitle + infoString, oGuiElement.getIcon(), oGuiElement.getThumbnail())
         listitem = xbmcgui.ListItem(itemTitle + infoString)
-        #Wenn Kodi 19, dann ignoriere setinfotagvideo
-        kodi_version = xbmc.getInfoLabel('System.BuildVersion')
-        if kodi_version[:2]  > '19':
-            self.setInfoTagVideo(oGuiElement, listitem)
+        self.setInfoTagVideo(oGuiElement, listitem)
 
         listitem.setProperty('fanart_image', oGuiElement.getFanart())
         listitem.setArt({'icon': oGuiElement.getIcon(), 'thumb': oGuiElement.getThumbnail(), 'poster': oGuiElement.getThumbnail(), 'fanart': oGuiElement.getFanart()})
