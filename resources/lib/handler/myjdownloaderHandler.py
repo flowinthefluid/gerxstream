@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-import myjdapi
+from resources.lib.handler import myjdapi
 
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
