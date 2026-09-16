@@ -22,8 +22,6 @@ SITE_NAME = 'Kids Tube'
 SITE_ICON = 'kids_tube.png'
 
 SITE_GLOBAL_SEARCH = False
-cConfig().setSetting('global_search_' + SITE_IDENTIFIER, 'false')
-logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 ADDON_ID = cConfig().getAddonInfo('id')
@@ -35,6 +33,10 @@ NETZKINO_ICON_PATH = os.path.join(SITE_ART_BASE, 'netzkino.png')
 
 def load(): # Menu structure of the site plugin
     logger.info('Load %s' % SITE_NAME)
+    global_search_setting = 'global_search_' + SITE_IDENTIFIER
+    if cConfig().getSetting(global_search_setting) != 'false':
+        cConfig().setSetting(global_search_setting, 'false')
+        logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
     params = ParameterHandler()
     # Abfrage ob Youtube installiert ist
     if cConfig().getSetting('plugin_' + SITE_IDENTIFIER) == 'true':
