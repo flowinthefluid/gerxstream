@@ -201,9 +201,8 @@ class cTMDB:
                     meta = {}
         if 'episodes' in meta:
             for e in meta['episodes']:
-                if 'episode_number':
-                    if e['episode_number'] == int(episode):
-                        return self._format_episodes(e, name)
+                if e.get('episode_number') == int(episode):
+                    return self._format_episodes(e, name)
         else:
             return {}
 
