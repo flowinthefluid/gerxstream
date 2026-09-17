@@ -1016,6 +1016,10 @@ msgctxt "#30282"
 msgid "Please choose a number between 1 and "
 msgstr "Bitte wähle eine Zahl zwischen 1 und "
 
+msgctxt "#30283"
+msgid "Please choose a number between 1 and "
+msgstr "Bitte wähle eine Zahl zwischen 1 und "
+
 msgctxt "#30284"
 msgid "[I]Start page search  >>> [/I] Page "
 msgstr "[I]Seitensuche starten  >>> [/I] Seite "

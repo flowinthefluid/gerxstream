@@ -273,7 +273,7 @@ class cGui:
                 contextitem.setTitle(cConfig().getLocalizedString(30248))   # Send myjd
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=myjd)" % (sUrl,),)]
             if cConfig().getSetting('pyload_enabled') == 'true':
-                contextitem.setTitle(cConfig().getLocalizedString(30249))   # Send Pyload
+                contextitem.setTitle(cConfig().getLocalizedString(30250))   # Send Pyload
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=pyload)" % (sUrl,),)]
             if cConfig().getSetting('hosterSelect') == 'Auto':
                 contextitem.setTitle(cConfig().getLocalizedString(30149))   # select Hoster
