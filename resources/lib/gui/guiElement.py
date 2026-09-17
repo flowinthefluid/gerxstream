@@ -332,7 +332,7 @@ class cGuiElement:
         else:
             meta.update(self.__aItemValues)
             meta.update(self.__aProperties)
-            if 'cover_url' in meta != '' and self.__sThumbnail == '':
+            if meta.get('cover_url') and self.__sThumbnail == '':
                 self.setThumbnail(meta['cover_url'])
 
             if 'backdrop_url' in meta and self.__sFanart == self.DEFAULT_FANART:
