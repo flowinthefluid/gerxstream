@@ -79,7 +79,3 @@ def remove_dir(folder):
             print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
-# # Todo - soll mal Hilfefunktion werden
-def help():
-    return 'OK' # Platzhalter
-
