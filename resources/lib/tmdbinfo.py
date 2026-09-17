@@ -27,15 +27,15 @@ def _getCredits(credits):
 
 
 def WindowsBoxes(sTitle, sFileName, metaType, year=''):
+    meta = {}
     try:
         meta = cTMDB().get_meta(metaType, sFileName, tmdb_id=xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year=year, advanced='true')
         try:
             meta['plot'] = str(meta['plot'].encode('latin-1'), 'utf-8')
         except Exception:
             pass
-    except Exception:
-        print("TMDB - error")
-        pass
+    except Exception as e:
+        xbmc.log('TMDB - error: %s' % e, xbmc.LOGERROR)
 
     if 'tmdb_id' not in meta:
         xbmc.executebuiltin("Notification(TMDB, Kein Eintrag gefunden, 1000, '')")
