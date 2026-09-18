@@ -4,6 +4,7 @@
 import sys
 import xbmc
 import xbmcgui
+import xbmcplugin
 import os
 import time
 from resources.lib.handler.ParameterHandler import ParameterHandler
@@ -20,6 +21,16 @@ try:
 except ImportError:
     # Resolver Fehlermeldung (bei defekten oder nicht installierten Resolver)
     xbmcgui.Dialog().ok(cConfig().getLocalizedString(30119), cConfig().getLocalizedString(30120))
+    # Ohne Resolver ist kein sinnvoller Betrieb moeglich. Das Listing muss als
+    # fehlgeschlagen abgeschlossen werden, sonst wartet Kodi auf Eintraege, die
+    # nie kommen. Danach abbrechen, statt weiterzulaufen und beim ersten Zugriff
+    # auf 'resolver' mit NameError zu sterben.
+    log(cConfig().getLocalizedString(30166) + ' -> [xstream]: resolveurl not available, aborting', LOGERROR)
+    try:
+        xbmcplugin.endOfDirectory(int(sys.argv[1]), succeeded=False)
+    except (IndexError, ValueError):
+        pass
+    sys.exit()
 
 
 def viewInfo(params):
