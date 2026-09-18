@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showGenre:    48 Stunden
 # showEntries:   6 Stunden
 
@@ -20,12 +20,12 @@ SITE_NAME = 'Internet Archive'
 SITE_ICON = 'internetarchive.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'archive.org') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'archive.org') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -57,7 +57,7 @@ def showCollections(entryUrl=False, sGui=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler((entryUrl), ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # # Wenn Suche erfolglos - Abbruch
@@ -72,7 +72,7 @@ def showCollections(entryUrl=False, sGui=False):
 
     for i in aResults:
         if 'identifier' in i and i['identifier'] != '' and 'title' in i and i['title'] != '':
-            sId = str(i['identifier'])  # ID des Films / Serie für die weitere URL
+            sId = str(i['identifier'])  # ID des Films / Serie fÃ¼r die weitere URL
             sName = str(i['title'])  # Name des Films / Serie
             #sName = sName.replace('"', '-')
             oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters')
@@ -100,7 +100,7 @@ def showCollections(entryUrl=False, sGui=False):
                         continue
             oGuiElement.setLanguage(i['language'])
 
-            #if 'is_series' in i: isTvshow = i['is_series']  # Wenn True dann Serie ToDo Prüfen wie sich Serien verhalten
+            #if 'is_series' in i: isTvshow = i['is_series']  # Wenn True dann Serie ToDo PrÃ¼fen wie sich Serien verhalten
             #oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
             #oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters')
             if 'year' in i and len(str(i['year'])) == 4: # Suche bei year nach 4 stelliger Zahl
@@ -112,7 +112,7 @@ def showCollections(entryUrl=False, sGui=False):
 
             #oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
             oGuiElement.setMediaType('movie')
-            # Parameter übergeben
+            # Parameter Ã¼bergeben
             params.setParam('entryUrl', URL_MOVIE + sId)
             params.setParam('sName', sName)
             #oGui.addFolder(oGuiElement, params, isTvshow, total)
@@ -132,7 +132,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl + '%20AND%20mediatype%3Amovies&fl%5B%5D=description&fl%5B%5D=genre&fl%5B%5D=identifier&fl%5B%5D=language&fl%5B%5D=title&fl%5B%5D=year&rows=500&output=json', ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # # Wenn Suche erfolglos - Abbruch
@@ -147,7 +147,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
 
     for i in aResults:
         if 'identifier' in i and i['identifier'] != '' and 'title' in i and i['title'] != '':
-            sId = str(i['identifier'])  # ID des Films / Serie für die weitere URL
+            sId = str(i['identifier'])  # ID des Films / Serie fÃ¼r die weitere URL
             sName = str(i['title'])  # Name des Films / Serie
             sName = sName.replace(':', '-')
             oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters')
@@ -175,7 +175,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
                         continue
             oGuiElement.setLanguage(i['language'])
 
-            #if 'is_series' in i: isTvshow = i['is_series']  # Wenn True dann Serie ToDo Prüfen wie sich Serien verhalten
+            #if 'is_series' in i: isTvshow = i['is_series']  # Wenn True dann Serie ToDo PrÃ¼fen wie sich Serien verhalten
             #oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
             #oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters')
             if 'year' in i and len(str(i['year'])) == 4: # Suche bei year nach 4 stelliger Zahl
@@ -187,7 +187,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
 
             #oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
             oGuiElement.setMediaType('movie')
-            # Parameter übergeben
+            # Parameter Ã¼bergeben
             params.setParam('entryUrl', URL_MOVIE + sId)
             params.setParam('sName', sName)
             #oGui.addFolder(oGuiElement, params, isTvshow, total)

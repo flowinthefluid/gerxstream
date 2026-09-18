@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 
 
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showValue:     24 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
@@ -20,12 +20,12 @@ SITE_NAME = 'Kinokiste'
 SITE_ICON = 'kinokistetech.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinokiste.cloud') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinokiste.cloud') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -60,7 +60,7 @@ def showGenre():
     params = ParameterHandler()
     entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48  # 48 Stunden
     sHtmlContent = oRequest.request()
     pattern = r'<nav\s+class="header-nav">(.*?)</nav>'
@@ -86,7 +86,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     isTvshow = False
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
     pattern = '<section class="fl-item.*?href="([^"]+).*?alt="([^"]+).*?src="([^"]+).*?(.*?)</section>'
@@ -110,7 +110,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
             continue
         if sThumbnail[0] == '/':
             sThumbnail = sThumbnail[1:]
-        isQuality, sQuality = cParser.parseSingleResult(sDummy, 'fl-quality[^"]+">([^<]+)')  # Qualität
+        isQuality, sQuality = cParser.parseSingleResult(sDummy, 'fl-quality[^"]+">([^<]+)')  # QualitÃ¤t
         isInfoEpisode, sInfoEpisode = cParser.parseSingleResult(sDummy, r'mli-ep">ep.([\d]+)')  # Episodenanzahl
         isTvshow, aResult = cParser.parse(sName, r'\s+-\s+Staffel\s+\d+')
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showEpisodes' if isTvshow else 'showHosters')
@@ -161,7 +161,7 @@ def showEpisodes():
         return
 
     oRequest = cRequestHandler(sUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
     sHtmlContent = oRequest.request()
     pattern = r'<li\s+id="serie-([^"]+)r">\s*<a\s+href="#">([^<]+)</a>'
@@ -196,7 +196,7 @@ def showHosters():
     if isMatch:
         sQuality = '720'
         for sUrl, sName in aResult:
-            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
             hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I][%sp][/I]' % (sName, sQuality), 'quality': sQuality}
             hosters.append(hoster)
     if hosters:
@@ -214,8 +214,8 @@ def showEpisodeHosters():
     if isMatch:
         for sUrl, sHoster in aResult:
             sName = cParser.urlparse(sUrl)
-            #if cConfig().isBlockedHoster(sName, checkResolver=True): continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
-            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+            #if cConfig().isBlockedHoster(sName, checkResolver=True): continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
             hoster = {'link': sUrl, 'name': sHoster}
             hosters.append(hoster)
     if hosters:
@@ -238,14 +238,15 @@ def _search(oGui, sSearchText):
     showEntries(URL_SEARCH % cParser.quotePlus(sSearchText), oGui, sSearchText)
 
 
-def showSearchPage(): # Suche für die Page Funktion
+def showSearchPage(): # Suche fÃ¼r die Page Funktion
     params = ParameterHandler()
-    sNextPage = params.getValue('sNextPage') # URL mit nächster Seite
+    sNextPage = params.getValue('sNextPage') # URL mit nÃ¤chster Seite
     sPageLast = params.getValue('sPageLast') # Anzahl gefundener Seiten
-    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wählen.'
+    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wÃ¤hlen.'
     sHeading = cConfig().getLocalizedString(30282) + str(sPageLast)
     sSearchPageText = cGui().showKeyBoard(sHeading=sHeading)
     if not sSearchPageText: return
     sNextSearchPage = sNextPage.split('page/')[0].strip() + 'page/' + sSearchPageText + '/'
     showEntries(sNextSearchPage)
     cGui().setEndOfDirectory()
+

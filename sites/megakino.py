@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showValue:     48 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
@@ -19,12 +19,12 @@ SITE_NAME = 'Megakino'
 SITE_ICON = 'megakino.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'megakino.si') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'megakino.si') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -66,7 +66,7 @@ def showGenre():
     params = ParameterHandler()
     entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48 # 48 Stunden
     sHtmlContent = oRequest.request()    
     pattern = r'<div\s+class="side-block__title">Genres</div>(.*?)</ul>\s*</div>'
@@ -88,7 +88,7 @@ def showCollection():
     params = ParameterHandler()
     entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48 # 48 Stunden
     sHtmlContent = oRequest.request()
     pattern = r'<div\s+class="side-block__title">Sammlung</div>(.*?)<div class="side-block\sjs'
@@ -112,7 +112,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     isTvshow = False
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False), bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
     pattern = '<a[^>]*class="poster grid-item.*?href="([^"]+).*?<img data-src="([^"]+).*?alt="([^"]+)".*?(.*?)</a>'
@@ -129,7 +129,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         if not isQuality:
             isQuality, sQuality = cParser.parseSingleResult(sDummy, r'poster__label">\+\s([\d]+)') # Episoden Info mit + und Leerzeichen
         if not isQuality:
-            isQuality, sQuality = cParser.parseSingleResult(sDummy, 'poster__label">([^<]+)') # Qualität bei Filmen
+            isQuality, sQuality = cParser.parseSingleResult(sDummy, 'poster__label">([^<]+)') # QualitÃ¤t bei Filmen
         isYear, sYear = cParser.parseSingleResult(sDummy, r'([\d]+)</li>\s+<li>')  # Release Jahr
         isDesc, sDesc = cParser.parseSingleResult(sDummy, 'class="poster__text[^"]+">([^<]+)')  # Beschreibung
         isTvshow, aResult = cParser.parse(sName, r'\s+-\s+Staffel\s+\d+')
@@ -191,7 +191,7 @@ def showEpisodes():
         return
 
     oRequest = cRequestHandler(sUrl, bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
     sHtmlContent = oRequest.request()     
     pattern = r'<option\s+value="ep([^"]+)">([^<]+)</option>'
@@ -224,7 +224,7 @@ def showHosters():
             if 'youtube' in sUrl: continue  # Youtube Trailer
             sName = cParser.urlparse(sUrl).split('.')[0].strip()
             if 'Watch' in sName: sName = sName.replace('Watch', 'GXPlayer')
-            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
             hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I][%sp][/I]' % (sName, sQuality), 'quality': sQuality}
             hosters.append(hoster)
     if hosters:
@@ -247,7 +247,7 @@ def showEpisodeHosters():
                 sQuality = '720'
                 if 'youtube' in sUrl: continue  # Youtube Trailer
                 sName = cParser.urlparse(sUrl).split('.')[0].strip()
-                if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+                if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
                 hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I][%sp][/I]' % (sName, sQuality), 'quality': sQuality}
                 hosters.append(hoster)
     if hosters:
@@ -270,14 +270,15 @@ def _search(oGui, sSearchText):
     showEntries(URL_SEARCH % cParser.quotePlus(sSearchText), oGui, sSearchText)
 
 
-def showSearchPage(): # Suche für die Page Funktion
+def showSearchPage(): # Suche fÃ¼r die Page Funktion
     params = ParameterHandler()
-    sNextPage = params.getValue('sNextPage') # URL mit nächster Seite
+    sNextPage = params.getValue('sNextPage') # URL mit nÃ¤chster Seite
     sPageLast = params.getValue('sPageLast') # Anzahl gefundener Seiten
-    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wählen.'
+    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wÃ¤hlen.'
     sHeading = cConfig().getLocalizedString(30282) + str(sPageLast)
     sSearchPageText = cGui().showKeyBoard(sHeading=sHeading)
     if not sSearchPageText: return
     sNextSearchPage = sNextPage.split('page/')[0].strip() + 'page/' + sSearchPageText + '/'
     showEntries(sNextSearchPage)
     cGui().setEndOfDirectory()
+

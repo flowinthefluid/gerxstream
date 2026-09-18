@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showValue:     48 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
@@ -19,12 +19,12 @@ SITE_NAME = 'FHD Filme'
 SITE_ICON = 'hdfilme_1.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'hdfilme.my') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'hdfilme.my') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -63,7 +63,7 @@ def load(): # Menu structure of the site plugin
 def showValue():
     params = ParameterHandler()
     oRequest = cRequestHandler(URL_MAIN)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48  # 48 Stunden
     sHtmlContent = oRequest.request()
     pattern = '>{0}</(.*?)</a[^<]*</div>'.format(params.getValue('Value'))
@@ -87,7 +87,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     isTvshow = False
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
     pattern = 'class="item relative mt-3">.*?href="([^"]+).*?title="([^"]+).*?data-src="([^"]+)(.*?)</div></div>'
@@ -120,7 +120,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
                     isTvshow = True
         if 'South Park: The End Of Obesity' in sName:
             isTvshow = False
-        isQuality, sQuality = cParser.parseSingleResult(sDummy, '">([^<]+)</span>')  # Qualität
+        isQuality, sQuality = cParser.parseSingleResult(sDummy, '">([^<]+)</span>')  # QualitÃ¤t
         sThumbnail = URL_MAIN + sThumbnail
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
         if isYear:
@@ -160,7 +160,7 @@ def showSeasons():
     sUrl = params.getValue('entryUrl')
     sThumbnail = params.getValue('sThumbnail')
     oRequest = cRequestHandler(sUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
     sHtmlContent = oRequest.request()
     pattern = 'class="su-accordion collapse show"(.*?)<br>'
@@ -188,7 +188,7 @@ def showEpisodes():
     sThumbnail = params.getValue('sThumbnail')
     sSeason = params.getValue('season')
     oRequest = cRequestHandler(entryUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
     sHtmlContent = oRequest.request()
     pattern = '#se-ac-%s(.*?)</div></div>' % sSeason
@@ -234,7 +234,7 @@ def showEpisodeHosters():
                     elif sUrl.startswith('//'):
                         sUrl = 'https:' + sUrl
                     sName = cParser.urlparse(sUrl).split('.')[0].strip()
-                    if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+                    if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
                     hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I][%sp][/I]' % (sName, sQuality), 'quality': sQuality}
                     hosters.append(hoster)
     if hosters:
@@ -260,7 +260,7 @@ def showHosters():
                 elif sUrl.startswith('//'):
                     sUrl = 'https:' + sUrl
                 sName = cParser.urlparse(sUrl).split('.')[0].strip()
-                if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+                if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
                 hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I][%sp][/I]' % (sName, sQuality), 'quality': sQuality}
                 hosters.append(hoster)
         if hosters:
@@ -283,14 +283,15 @@ def _search(oGui, sSearchText):
     showEntries(URL_SEARCH % cParser.quotePlus(sSearchText), oGui, sSearchText)
 
 
-def showSearchPage(): # Suche für die Page Funktion
+def showSearchPage(): # Suche fÃ¼r die Page Funktion
     params = ParameterHandler()
-    sNextPage = params.getValue('sNextPage') # URL mit nächster Seite
+    sNextPage = params.getValue('sNextPage') # URL mit nÃ¤chster Seite
     sPageLast = params.getValue('sPageLast') # Anzahl gefundener Seiten
-    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wählen.'
+    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wÃ¤hlen.'
     sHeading = cConfig().getLocalizedString(30282) + str(sPageLast)
     sSearchPageText = cGui().showKeyBoard(sHeading=sHeading)
     if not sSearchPageText: return
     sNextSearchPage = sNextPage.split('page/')[0].strip() + 'page/' + sSearchPageText + '/'
     showEntries(sNextSearchPage)
     cGui().setEndOfDirectory()
+

@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 
 
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showGenre:     48 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
@@ -20,12 +20,12 @@ SITE_NAME = 'Einschalten'
 SITE_ICON = 'einschalten.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'einschalten.in') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'einschalten.in') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -56,7 +56,7 @@ def load(): # Menu structure of the site plugin
 def showGenre():
     params = ParameterHandler()
     oRequest = cRequestHandler(URL_GENRES)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48  # 48 Stunden
     sHtmlContent = oRequest.request()
     pattern = '{"id":([^,"]+).*?name":"([^"]+)'
@@ -76,7 +76,7 @@ def showGenreEntries(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     iPage = int(params.getValue('page'))
     oRequest = cRequestHandler(entryUrl + '&page=' + str(iPage) if iPage > 0 else entryUrl, ignoreErrors=(sGui is not False))
@@ -117,7 +117,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     iPage = int(params.getValue('page'))
     oRequest = cRequestHandler(entryUrl + '?page=' + str(iPage) if iPage > 0 else entryUrl, ignoreErrors=(sGui is not False))
@@ -158,7 +158,7 @@ def showCollections(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     iPage = int(params.getValue('page'))
     oRequest = cRequestHandler(entryUrl + '?page=' + str(iPage) if iPage > 0 else entryUrl, ignoreErrors=(sGui is not False))
@@ -198,7 +198,7 @@ def showCollectionEntries(sGui=False, sSearchText=False):
     params = ParameterHandler()
     entryUrl = URL_COLLECTIONS + '/' + params.getValue('entryUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
     pattern = '{"id":([^,"]+).*?title":"([^"]+).*?Date":"([^-]+).*?"posterPath":"([^"]+).*?collectionId":([^}]+)'
@@ -230,7 +230,7 @@ def showEntriesLast(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     iPage = int(params.getValue('page'))
     oRequest = cRequestHandler(entryUrl + '&page=' + str(iPage) if iPage > 0 else entryUrl, ignoreErrors=(sGui is not False))
@@ -278,7 +278,7 @@ def showHosters():
     sQuality = '720'
     for sUrl in aResult:
         sName = cParser.urlparse(sUrl)
-        if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+        if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
         hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I][%sp][/I]' % (sName, sQuality), 'quality': sQuality}
         hosters.append(hoster)
     if hosters:

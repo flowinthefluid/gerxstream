@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showGenre:     48 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
@@ -19,7 +19,7 @@ SITE_IDENTIFIER = 'xcine'
 SITE_NAME = 'xCine'
 SITE_ICON = 'xcinetop.png'
 
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
@@ -58,7 +58,7 @@ def showGenre(entryUrl=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48
     sHtmlContent = oRequest.request()    
     pattern = 'Genre.*?</ul>'
@@ -81,7 +81,7 @@ def showYears(entryUrl=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48
     sHtmlContent = oRequest.request() 
     pattern = 'Release.*?</ul>'
@@ -106,7 +106,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     isTvshow = False
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6
     sHtmlContent = oRequest.request()
     pattern = r'item__link.*?href="([^"]+).*?<img src="([^"]+).*?alt="([^"]+).*?(.*?)</span>\s+<span>'
@@ -173,7 +173,7 @@ def showEpisodes():
     entryUrl = params.getValue('entryUrl')
     sThumbnail = params.getValue('sThumbnail')
     oRequest = cRequestHandler(entryUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  
     sHtmlContent = oRequest.request()
     isMatch, aResult = cParser.parse(sHtmlContent, '"><a href="#">([^<]+)')
@@ -249,3 +249,4 @@ def showSearchPage():
     sNextSearchPage = sNextPage.split('page/')[0].strip() + 'page/' + sSearchPageText + '/'
     showEntries(sNextSearchPage)
     cGui().setEndOfDirectory()
+

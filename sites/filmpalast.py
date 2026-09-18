@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 
 # Always pay attention to the translations in the menu!
-# Sprachauswahl für Filme
-# HTML LangzeitCache hinzugefügt
+# Sprachauswahl fÃ¼r Filme
+# HTML LangzeitCache hinzugefÃ¼gt
 # showValue:     24 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
@@ -21,12 +21,12 @@ SITE_NAME = 'FilmPalast'
 SITE_ICON = 'filmpalast.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'filmpalast.to') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'filmpalast.to') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -90,10 +90,10 @@ def showValue():
     params = ParameterHandler()
     value = params.getValue("value")
     oRequest = cRequestHandler(params.getValue('sUrl'), bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 24 # HTML Cache Zeit 1 Tag
     sHtmlContent = oRequest.request()
-    pattern = '<section[^>]id="%s">(.*?)</section>' % value # Suche in der Section Einträge
+    pattern = '<section[^>]id="%s">(.*?)</section>' % value # Suche in der Section EintrÃ¤ge
     isMatch, sContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
         isMatch, aResult = cParser.parse(sContainer, 'href="([^"]+)">([^<]+)')
@@ -112,7 +112,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     if not entryUrl: entryUrl = params.getValue('sUrl')
     isTvshow = False
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False), bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
     pattern = r'<article[^>]*>\s*<a href="([^"]+)" title="([^"]+)">\s*<img src=[r"\']([^"\']+)["\'][^>]*>(.*?)</article>'
@@ -132,11 +132,11 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
             continue
         if sThumbnail.startswith('/'):
             sThumbnail = URL_MAIN + sThumbnail
-        ### ÄNDERUNG ANFANG ###
+        ### Ã„NDERUNG ANFANG ###
         isYear, sYear = cParser.parseSingleResult(sDummy, r'Jahr:[^>]([\d]+)')
         isDuration, sDuration = cParser.parseSingleResult(sDummy, r'(?:Laufzeit|Spielzeit):[^>]([\d]+)')
         isRating, sRating = cParser.parseSingleResult(sDummy, 'Imdb:[^>]([^/]+)')
-        ### ÄNDERUNG ENDE ###
+        ### Ã„NDERUNG ENDE ###
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
         oGuiElement.setThumbnail(sThumbnail)
@@ -146,7 +146,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
             oGuiElement.addItemValue('duration', sDuration)
         if isRating:
             oGuiElement.addItemValue('rating', sRating.replace(',', '.'))
-        # Parameter übergeben
+        # Parameter Ã¼bergeben
         if sUrl.startswith('//'):
             params.setParam('entryUrl', 'https:' + sUrl)
         else:
@@ -174,7 +174,7 @@ def showSeasons():
     sThumbnail = params.getValue("sThumbnail")
     sName = params.getValue('sName')
     oRequest = cRequestHandler(sUrl, bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
     sHtmlContent = oRequest.request()
     pattern = r'<a[^>]*class="staffTab"[^>]*data-sid=r"(\d+)"[^>]*>'
@@ -205,7 +205,7 @@ def showEpisodes():
     sSeason = params.getValue('season')
     sShowName = params.getValue('TVShowTitle')
     oRequest = cRequestHandler(sUrl, bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
     sHtmlContent = oRequest.request()
     pattern = '<div[^>]*class="staffelWrapperLoop[^"]*"[^>]*data-sid="%s">(.*?)</ul></div>' % sSeason
@@ -244,7 +244,7 @@ def showHosters():
     else: sLang = ''
     sHtmlContent = cRequestHandler(sUrl, caching=False, bypass_dns=True).request()
     pattern = 'hostName">([^<]+).*?(http[^"]+)' # Hoster Link
-    releaseQuality = r'class="rb">.*?(\d\d\d+)p\.' # Release Qualität
+    releaseQuality = r'class="rb">.*?(\d\d\d+)p\.' # Release QualitÃ¤t
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     isQuality, sQuality = cParser.parseSingleResult(sHtmlContent, releaseQuality)  # sReleaseQuality auslesen z.B. 1080
     if not isQuality: sQuality = '720'
@@ -253,13 +253,13 @@ def showHosters():
         for sName, sUrl in aResult:
             sName = sName.split(' HD')[0].strip()
             if 'Filemoon' in sName or 'Swiftload' in sName or 'Vidhide' in sName:
-                sUrl = sUrl + '$$https://filmpalast.to/' # Referer hinzugefügt
-                if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
-                hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'languageCode': sLang, 'quality': sQuality}  # Qualität Anzeige aus Release Eintrag
+                sUrl = sUrl + '$$https://filmpalast.to/' # Referer hinzugefÃ¼gt
+                if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+                hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'languageCode': sLang, 'quality': sQuality}  # QualitÃ¤t Anzeige aus Release Eintrag
                 hosters.append(hoster)
             else:
-                if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
-                hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'languageCode': sLang, 'quality': sQuality} # Qualität Anzeige aus Release Eintrag
+                if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+                hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'languageCode': sLang, 'quality': sQuality} # QualitÃ¤t Anzeige aus Release Eintrag
                 hosters.append(hoster)
     if hosters:
         hosters.append('getHosterUrl')
@@ -278,3 +278,4 @@ def showSearch():
 
 def _search(oGui, sSearchText):
     showEntries(URL_SEARCH % cParser.quotePlus(sSearchText), oGui, sSearchText)
+

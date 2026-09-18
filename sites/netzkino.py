@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showEntries:      6 Stunden
 # showEntriesUnJson:6 Stunden
 
@@ -20,12 +20,12 @@ SITE_NAME = 'NetzKino'
 SITE_ICON = 'netzkino.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www.netzkino.de') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www.netzkino.de') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -71,7 +71,7 @@ def showStart():
     params.setParam('sUrl', URL_START % 'Thriller-frontpage')
     cGui().addFolder(cGuiElement('Thriller', SITE_IDENTIFIER, 'showEntriesUnJson'), params)
     params.setParam('sUrl', URL_MAIN % 'komodien-frontpage')
-    cGui().addFolder(cGuiElement('Komödien', SITE_IDENTIFIER, 'showEntries'), params)
+    cGui().addFolder(cGuiElement('KomÃ¶dien', SITE_IDENTIFIER, 'showEntries'), params)
     params.setParam('sUrl', URL_START % 'Zombiefilme-frontpage')
     cGui().addFolder(cGuiElement('Zombiefilme', SITE_IDENTIFIER, 'showEntriesUnJson'), params)
     params.setParam('sUrl', URL_START % 'Hollywood-Filme-frontpage')
@@ -81,7 +81,7 @@ def showStart():
     params.setParam('sUrl', URL_MAIN % 'mockbuster-frontpage')
     cGui().addFolder(cGuiElement('Mockbuster', SITE_IDENTIFIER, 'showEntries'), params)
     params.setParam('sUrl', URL_MAIN % 'frontpage-exklusiv-frontpage')
-    cGui().addFolder(cGuiElement('Die schönsten Märchen', SITE_IDENTIFIER, 'showEntries'), params)
+    cGui().addFolder(cGuiElement('Die schÃ¶nsten MÃ¤rchen', SITE_IDENTIFIER, 'showEntries'), params)
     params.setParam('sUrl', URL_MAIN % 'empfehlungen_woche-frontpage')
     cGui().addFolder(cGuiElement('Unsere Empfehlungen der Woche', SITE_IDENTIFIER, 'showEntries'), params)
     params.setParam('sUrl', URL_MAIN % 'filme_mit_auszeichnungen-frontpage')
@@ -149,7 +149,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=sGui is not False)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # # Wenn Suche erfolglos - Abbruch
@@ -192,7 +192,7 @@ def showEntriesUnJson(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
     #Aufbau pattern
@@ -270,3 +270,4 @@ def showSearch():
 
 def _search(oGui, sSearchText):
     showEntries(URL_SEARCH % cParser.quotePlus(sSearchText), oGui, sSearchText)
+

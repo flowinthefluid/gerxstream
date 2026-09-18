@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 
 # Always pay attention to the translations in the menu!
 
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showValue:     24 Stunden
 # showAllSeries: 24 Stunden
 # showEpisodes:   24 Stunden
@@ -28,7 +28,7 @@ SITE_NAME = 'BurningSeries'
 SITE_ICON = 'burningseries.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
@@ -39,7 +39,7 @@ if cConfig().getSetting('2captcha.pass') == '':
     logger.info('-> [SitePlugin]: 2Captcha API Key not set')
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'bs.to') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'bs.to') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -77,7 +77,7 @@ def showValue():
     sUrl = params.getValue('sUrl')
 
     oRequest = cRequestHandler(sUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 24 # HTML Cache Zeit 1 Tag
     sHtmlContent = oRequest.request()
 
@@ -99,7 +99,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     if not entryUrl: entryUrl = params.getValue('sUrl')
     sGenre = params.getValue('sGenre')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 24 # HTML Cache Zeit 1 Tag
     sHtmlContent = oRequest.request()
 
@@ -135,15 +135,15 @@ def showAllSeries(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 24 # HTML Cache Zeit 1 Tag
     sHtmlContent = oRequest.request()
 
     #logger.info('BurningSeries: showAllSeries: entryUrl request done: %s, sSearchText: %s' % (entryUrl, sSearchText))
 
     # pattern = '<a[^>]*href="(serie\\/[^"]*)"\\stitle="(.*?)"[^>]*>.*</a>' # Original Pattern funktioniert
-    # Optimiertes Pattern: weniger Backtracking, keine unnötigen Gruppen, kein .* am Ende
-    # Ursprünglich: pattern = '<a[^>]*href="(serie\/[^"]*)"[^>]*title="([^"]*)"'
+    # Optimiertes Pattern: weniger Backtracking, keine unnÃ¶tigen Gruppen, kein .* am Ende
+    # UrsprÃ¼nglich: pattern = '<a[^>]*href="(serie\/[^"]*)"[^>]*title="([^"]*)"'
     # Optimiert:
     pattern = r'<a[^>]+href="(serie/[^"]+)"[^>]+title="([^"]+)"'
 
@@ -213,7 +213,7 @@ def showNewSeries(entryUrl=False, sGui=False):
     if not entryUrl:
         entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
 
@@ -291,7 +291,7 @@ def showEpisodes():
         sSeason = '1'
     isMovieList = sUrl.endswith('filme')
     oRequest = cRequestHandler(sUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 24  # HTML Cache Zeit 24 Stunden
     sHtmlContent = oRequest.request()
     pattern = r'<tr[^>]*>\s*<td><a href="([^"]+)" title="([^"]+)">(\d+)</a></td>\s*<td>.*?<a href="([^"]+)" title="([^"]+)">.*?</td>\s*<td>(.*?)</td>\s*</tr>'
@@ -348,11 +348,11 @@ def showHosters():
     sQuality = '720'
     if isMatch:
         for sUrl, sName in aResult:
-            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
             # sLanguage = cConfig().getSetting('prefLanguage')
             sName = sName.strip()
 
-            hoster = {'link': [sUrl, sName], 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'quality': sQuality, 'languageCode': sLang} # Language Code für hoster.py Sprache Prio
+            hoster = {'link': [sUrl, sName], 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'quality': sQuality, 'languageCode': sLang} # Language Code fÃ¼r hoster.py Sprache Prio
             hosters.append(hoster)
         if hosters:
             hosters.append('getHosterUrl')
@@ -469,3 +469,4 @@ def showSearch():
 
 def _search(oGui, sSearchText):
     showAllSeries(URL_SERIES, oGui, sSearchText)
+

@@ -29,7 +29,7 @@ def load(): # Menu structure of the site plugin
     logger.info('Load %s' % SITE_NAME)
     params = ParameterHandler()
     # Abfrage ob Youtube installiert ist
-    if cConfig().getSetting('plugin_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('plugin_' + SITE_IDENTIFIER, False):
         if not xbmc.getCondVisibility('System.HasAddon(%s)' % 'plugin.video.youtube'):
             xbmc.executebuiltin('InstallAddon(%s)' % 'plugin.video.youtube')
     # Menü für Dokus4.me

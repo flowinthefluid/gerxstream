@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showGenre:     48 Stunden
 # showEntries:    6 Stunden
 # showSeasons:    6 Stunden
@@ -28,12 +28,12 @@ SITE_NAME = 'KinoGer'
 SITE_ICON = 'kinoger.png'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -58,7 +58,7 @@ def load(): # Menu structure of the site plugin
 def showGenre():
     params = ParameterHandler()
     oRequest = cRequestHandler(URL_MAIN)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48 # 48 Stunden
     sHtmlContent = oRequest.request()
     pattern = '<li[^>]class="links"><a href="([^"]+).*?/>([^<]+)</a>'
@@ -78,7 +78,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     if sSearchText:
         oRequest.addParameters('story', sSearchText)
@@ -124,7 +124,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
             oGuiElement.setDescription(sDesc)
         if isDuration:
             oGuiElement.addItemValue('duration', sDuration)
-        # Parameter übergeben
+        # Parameter Ã¼bergeben
         params.setParam('sThumbnail', sThumbnail)
         params.setParam('TVShowTitle', sName)
         params.setParam('entryUrl', sUrl)
@@ -156,7 +156,7 @@ def showSeasons():
     sThumbnail = params.getValue('sThumbnail')
     sTVShowTitle = params.getValue('TVShowTitle')
     oRequest = cRequestHandler(entryUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
     sHtmlContent = oRequest.request()
     L11 = []
@@ -292,7 +292,7 @@ def showHosters():
                 #        oRequest.addHeaderEntry('Origin', 'https://kinoger.ru')
                 #        oRequest.removeNewLines(False)
                 #        sHtmlContent = oRequest.request()
-                #        if not 'MEDIA:TYPE=AUDIO' in sHtmlContent: # Wenn keine zusätzlichen Audiostreams vorhanden durchsuche m3u8 und filter Links aus
+                #        if not 'MEDIA:TYPE=AUDIO' in sHtmlContent: # Wenn keine zusÃ¤tzlichen Audiostreams vorhanden durchsuche m3u8 und filter Links aus
                 #            pattern = 'RESOLUTION=.*?x(\d+).*?\n([^\s]+)'
                 #            isMatch, aResult = cParser.parse(sHtmlContent, pattern)
                 #            if isMatch:
@@ -303,7 +303,7 @@ def showHosters():
                 #                    hosters.append(hoster)
                 #        else: # Wenn Audiostreams enthalten nutze video.m3u8 und lese Content daraus
                 #            sUrl = hUrl + '|verifypeer=false&Referer=https%3A%2F%2Fkinoger.ru%2F&Origin=https%3A%2F%2Fkinoger.ru' + headers
-                #            hoster = {'link': sUrl, 'name': 'KinoGer.ru [I][Video/Audio auswählbar][/I]', 'resolveable': True}
+                #            hoster = {'link': sUrl, 'name': 'KinoGer.ru [I][Video/Audio auswÃ¤hlbar][/I]', 'resolveable': True}
                 #            hosters.append(hoster)
 
                 elif 'kinoger.be' in sUrl:
@@ -323,7 +323,7 @@ def showHosters():
                         oRequest.addHeaderEntry('Origin', 'https://kinoger.be')
                         oRequest.removeNewLines(False)
                         sHtmlContent = oRequest.request()
-                        if 'CF-DDOS-GUARD aktiv' in sHtmlContent: # Wenn Request eine 403 zurückgibt dann überspringen
+                        if 'CF-DDOS-GUARD aktiv' in sHtmlContent: # Wenn Request eine 403 zurÃ¼ckgibt dann Ã¼berspringen
                             continue
                         else:
                             pattern = r'RESOLUTION=.*?x(\d+).*?\n(index[^\n]+)'
@@ -348,7 +348,7 @@ def showHosters():
                 else: # Alle anderen Hoster wie z.B. Voe
                     sQuality = '720'
                     sName = cParser.urlparse(sUrl)
-                    if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+                    if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
                     hoster = {'link': sUrl + 'DIREKT', 'name': sName, 'displayedName': '%s [I][%sp][/I]' % (sName, sQuality), 'quality': sQuality}
                     hosters.append(hoster)
 
@@ -386,11 +386,11 @@ def _search(oGui, sSearchText):
     showEntries(URL_MAIN, oGui, sSearchText)
 
 
-def showSearchPage(): # Suche für die Page Funktion
+def showSearchPage(): # Suche fÃ¼r die Page Funktion
     params = ParameterHandler()
-    sNextPage = params.getValue('sNextPage') # URL mit nächster Seite
+    sNextPage = params.getValue('sNextPage') # URL mit nÃ¤chster Seite
     sPageLast = params.getValue('sPageLast') # Anzahl gefundener Seiten
-    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wählen.'
+    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wÃ¤hlen.'
     sHeading = cConfig().getLocalizedString(30282) + str(sPageLast)
     sSearchPageText = cGui().showKeyBoard(sHeading=sHeading)
     if not sSearchPageText: return
@@ -435,3 +435,4 @@ def content_decryptor(html_content,passphrase):
         return json.loads(plain_text.decode())
     else:
         return None
+

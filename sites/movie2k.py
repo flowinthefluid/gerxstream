@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefügt
+# HTML LangzeitCache hinzugefÃ¼gt
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
 
@@ -25,12 +25,12 @@ URL_SEARCH = 'https://movie2k.ch/data/browse/?lang=%s&keyword=%s&page=%s&limit=0
 URL_THUMBNAIL = 'https://image.tmdb.org/t/p/w300%s'
 URL_WATCH = 'https://movie2k.ch/data/watch/?_id=%s'
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www2.movie2k.ch') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www2.movie2k.ch') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -45,7 +45,7 @@ def load():
     logger.info('Load %s' % SITE_NAME)
     params = ParameterHandler()
     sLanguage = cConfig().getSetting('prefLanguage')
-    # Änderung des Sprachcodes nach voreigestellter Sprache
+    # Ã„nderung des Sprachcodes nach voreigestellter Sprache
     if sLanguage == '0':  # prefLang Alle Sprachen
         sLang = 'all'
     if sLanguage == '1':  # prefLang Deutsch
@@ -131,7 +131,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     if not entryUrl: entryUrl = params.getValue('sUrl')
     try:
         oRequest = cRequestHandler(entryUrl)
-        if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+        if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
             oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
@@ -209,7 +209,7 @@ def showEpisodes():
     sThumbnail = params.getValue("sThumbnail")
     try:
         oRequest = cRequestHandler(sUrl)
-        if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+        if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
             oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
@@ -264,7 +264,7 @@ def showHosters():
                     isMatch, aName = cParser.parse(stream['stream'], '//([^/]+)/')
                     if isMatch:
                         sName = aName[0][:aName[0].rindex('.')]
-                        if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
+                        if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
                         sHoster = sHoster + ' ' + sName
                     if 'release' in stream and str(stream['release']) != '':
                         sHoster = sHoster + ' [I][' + _getQuality(stream['release']) + '][/I]'
@@ -297,3 +297,4 @@ def _search(oGui, sSearchText):
     if sLanguage == '2':  # prefLang Englisch
         sLang = '3'
     showEntries(URL_SEARCH % (sLang, cParser.quotePlus(sSearchText), '1'), oGui, sSearchText)
+
