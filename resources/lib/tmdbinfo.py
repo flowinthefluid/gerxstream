@@ -41,8 +41,10 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
     class XMLDialog(xbmcgui.WindowXMLDialog):
         def __init__(self, *args, **kwargs):
-            xbmcgui.WindowXMLDialog.__init__(self)
-            pass
+            # super() statt unbound Base-Call: xbmcgui.WindowXMLDialog.__init__(self)
+            # wirft unter Kodi 22 / Python 3.14 einen TypeError (xbmc/xbmc#29309)
+            # und verschluckte zusaetzlich die vier Konstruktorargumente.
+            super().__init__(*args, **kwargs)
 
         def onInit(self):
             self.setProperty('color', cConfig().getSetting('Color'))
