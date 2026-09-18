@@ -7,13 +7,13 @@ import sys
 import xbmc
 
 from resources.lib.config import cConfig
-from xbmc import LOGINFO as LOGNOTICE, LOGERROR, log
+from xbmc import LOGINFO as LOGNOTICE, LOGERROR
 from resources.lib import utils
 from resources.lib.handler.requestHandler import cRequestHandler
 from urllib.parse import urlparse
 from xbmcgui import Dialog
 from xbmcvfs import translatePath
-from resources.lib.tools import platform, infoDialog, getDNS, getRepofromAddonsDB
+from resources.lib.tools import platform, infoDialog, getDNS, getRepofromAddonsDB, addon_log as log
 
 
 ADDON_PATH = translatePath(os.path.join('special://home/addons/', '%s'))

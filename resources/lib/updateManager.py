@@ -11,7 +11,8 @@ import zipfile
 from requests.auth import HTTPBasicAuth
 from xbmcgui import Dialog
 from resources.lib.config import cConfig
-from xbmc import LOGINFO as LOGNOTICE, LOGERROR, LOGWARNING, log, executebuiltin
+from xbmc import LOGINFO as LOGNOTICE, LOGERROR, LOGWARNING, executebuiltin
+from resources.lib.tools import addon_log as log
 from xbmcvfs import translatePath
 
 

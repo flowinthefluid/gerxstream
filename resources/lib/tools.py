@@ -334,15 +334,43 @@ class logger:
     def __writeLog(sLog, cLogLevel=xbmc.LOGDEBUG):
         params = ParameterHandler()
         try:
-            if params.exist('site'):
+            message = str(sLog).strip()
+            legacy_marker_pos = message.find('-> [')
+            if legacy_marker_pos > 0:
+                message = message[legacy_marker_pos + 3:].strip()
+            if message.startswith('->'):
+                message = message[2:].strip()
+
+            module_match = re.match(r'^\[([^\]]+)\]:\s*(.*)$', message)
+            if module_match:
+                module_name = module_match.group(1)
+                module_msg = module_match.group(2)
+                sLog = "[%s] -> [%s]: %s" % (cConfig().getAddonInfo('name'), module_name, module_msg)
+            elif params.exist('site'):
                 site = params.getValue('site')
-                sLog = "[%s] -> [%s]: %s" % (cConfig().getAddonInfo('name'), site, sLog)
+                sLog = "[%s] -> [%s]: %s" % (cConfig().getAddonInfo('name'), site, message)
             else:
-                sLog = "[%s] %s" % (cConfig().getAddonInfo('name'), sLog)
+                sLog = "[%s] %s" % (cConfig().getAddonInfo('name'), message)
             xbmc.log(sLog, cLogLevel)
         except Exception as e:
             xbmc.log('Logging Failure: %s' % e, cLogLevel)
             pass
+
+
+def addon_log(message, level=xbmc.LOGDEBUG):
+    if level == xbmc.LOGFATAL:
+        logger.fatal(message)
+        return
+    if level == xbmc.LOGERROR:
+        logger.error(message)
+        return
+    if level == xbmc.LOGWARNING:
+        logger.warning(message)
+        return
+    if level == xbmc.LOGDEBUG:
+        logger.debug(message)
+        return
+    logger.info(message)
 
 
 class cUtil:

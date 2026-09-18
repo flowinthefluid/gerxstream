@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-from xbmc import LOGINFO as LOGNOTICE, log
+from xbmc import LOGINFO as LOGNOTICE
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.tools import addon_log as log
 
 class cJDownloaderHandler:
     def sendToJDownloader(self, sUrl):

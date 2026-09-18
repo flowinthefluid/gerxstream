@@ -11,11 +11,11 @@ from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
-from xbmc import LOGINFO as LOGNOTICE, LOGERROR, log
+from xbmc import LOGINFO as LOGNOTICE, LOGERROR
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
-from resources.lib.tools import logger, cParser, cCache
+from resources.lib.tools import logger, cParser, cCache, addon_log as log
 
 SCRAPER_ENTRY_FUNCTIONS = frozenset((
     '_showGenreMenu',

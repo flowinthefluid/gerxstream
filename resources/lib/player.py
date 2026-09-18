@@ -5,7 +5,8 @@ import xbmc
 import time
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
-from xbmc import LOGINFO as LOGNOTICE, LOGERROR, log
+from xbmc import LOGINFO as LOGNOTICE, LOGERROR
+from resources.lib.tools import addon_log as log
 
 class XstreamPlayer(xbmc.Player):
     def __init__(self, *args, **kwargs):

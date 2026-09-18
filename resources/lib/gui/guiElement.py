@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-from resources.lib.tools import cParser, cUtil
+from resources.lib.tools import cParser, cUtil, addon_log as log
 from resources.lib.config import cConfig
-from xbmc import LOGERROR, log
+from xbmc import LOGERROR
 
 class cGuiElement:
     '''

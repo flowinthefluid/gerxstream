@@ -9,13 +9,14 @@ import time
 
 from resources.lib.config import cConfig
 from resources.lib import tools
-from xbmc import LOGERROR, LOGDEBUG, LOGINFO, LOGWARNING, log
+from xbmc import LOGERROR, LOGDEBUG, LOGINFO, LOGWARNING
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib import updateManager
 from resources.lib.utils import translatePath
 from resources.lib.tools import cCache
 from resources.lib.tools import infoDialog
+from resources.lib.tools import addon_log as log
 
 MIN_RESOLVEURL_VERSION = (5, 1, 208)
 

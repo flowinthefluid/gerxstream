@@ -8,7 +8,8 @@ import xbmcgui
 from resources.lib import utils
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
-from xbmc import LOGINFO as LOGNOTICE, log
+from xbmc import LOGINFO as LOGNOTICE
+from resources.lib.tools import addon_log as log
 from xbmcvfs import translatePath
 from urllib.request import Request, urlopen
 

@@ -5,7 +5,8 @@ import re
 
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
-from xbmc import LOGINFO as LOGNOTICE, log
+from xbmc import LOGINFO as LOGNOTICE
+from resources.lib.tools import addon_log as log
 from urllib.request import Request, urlopen
 from urllib.parse import urlencode
 
