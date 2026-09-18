@@ -210,7 +210,7 @@ class cGuiElement:
     def setThumbnail(self, sThumbnail):
         self.__sThumbnail = sThumbnail
         try:
-            if cConfig().getSetting('replacefanart') == 'true' and sThumbnail.startswith('http'):
+            if cConfig().getSettingBool('replacefanart', False) and sThumbnail.startswith('http'):
                 self.__sFanart = sThumbnail
         except Exception:
             pass
@@ -279,7 +279,7 @@ class cGuiElement:
             TVShowTitle (str)   :
             mode (str)          : 'add'/'replace' defines if fetched metainformtions should be added to existing informations, or if they should replace them.
         '''
-        if cConfig().getSetting('TMDBMETA') == 'false':
+        if not cConfig().getSettingBool('TMDBMETA', False):
             return False
         if not self._mediaType:
             self.setMediaType(mediaType)

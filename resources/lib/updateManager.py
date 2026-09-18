@@ -88,7 +88,7 @@ def UpdateResolve(username, resolve_dir, resolve_id, branch, token, silent):
         LOCAL_FILE_NAME_PLUGIN = os.path.join(ADDON_DIR, 'update-' + resolve_id + '.zip')
         if not os.path.exists(ADDON_DIR): os.mkdir(ADDON_DIR)
         
-        if cConfig().getSetting('enforceUpdate') == 'true':
+        if cConfig().getSettingBool('enforceUpdate', False):
             if os.path.exists(LOCAL_PLUGIN_VERSION): os.remove(LOCAL_PLUGIN_VERSION)
             
         commitXML = _getXmlString(REMOTE_PLUGIN_COMMITS, auth)  # Commit Update
@@ -134,7 +134,7 @@ def Update(username, plugin_id, branch, token, silent):
         LOCAL_FILE_NAME_PLUGIN = os.path.join(ADDON_DIR, 'update-' + plugin_id + '.zip')
         if not os.path.exists(ADDON_DIR): os.mkdir(ADDON_DIR)
         # ka - Update erzwingen
-        if cConfig().getSetting('enforceUpdate') == 'true':
+        if cConfig().getSettingBool('enforceUpdate', False):
             if os.path.exists(LOCAL_PLUGIN_VERSION): os.remove(LOCAL_PLUGIN_VERSION)
 
         path = translatePath(os.path.join('special://home/addons/', '%s') % plugin_id)
@@ -357,7 +357,7 @@ def devUpdates():  # für manuelles Updates vorgesehen
                 pass
 
         # Zurücksetzten der Update.sha
-        if cConfig().getSetting('enforceUpdate') == 'true': cConfig().setSetting('enforceUpdate', 'false')
+        if cConfig().getSettingBool('enforceUpdate', False): cConfig().setSetting('enforceUpdate', 'false')
         return
     except Exception as e:
         log(str(e), LOGERROR)

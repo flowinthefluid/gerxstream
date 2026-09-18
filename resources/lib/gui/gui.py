@@ -25,8 +25,8 @@ class cGui:
             self.pluginPath = sys.argv[0]
         except Exception:
             self.pluginPath = ''
-        self.isMetaOn = cConfig().getSetting('TMDBMETA') == 'true'
-        if cConfig().getSetting('metaOverwrite') == 'true':
+        self.isMetaOn = cConfig().getSettingBool('TMDBMETA', False)
+        if cConfig().getSettingBool('metaOverwrite', False):
             self.metaMode = 'replace'
         else:
             self.metaMode = 'add'
@@ -222,7 +222,7 @@ class cGui:
         itemValues = oGuiElement.getItemValues()
         contextitem = cContextElement()
         if oGuiElement._mediaType == 'movie' or oGuiElement._mediaType == 'tvshow':
-            if cConfig().getSetting('xstream.trailer') == 'true':
+            if cConfig().getSettingBool('xstream.trailer', False):
                 if not xbmc.getCondVisibility('System.HasAddon(%s)' % 'script.module.xstream.trailer'):  # Schauen ob Addon installiert
                     xbmc.executebuiltin('InstallAddon(%s)' % 'script.module.xstream.trailer')  # Addon installieren
                 contextitem.setTitle(cConfig().getLocalizedString(30027))  # Trailer Funktion
@@ -263,16 +263,16 @@ class cGui:
             contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=enqueue)" % (sUrl,),)]
             contextitem.setTitle(cConfig().getLocalizedString(30245))   # Download
             contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=download)" % (sUrl,),)]
-            if cConfig().getSetting('jd_enabled') == 'true':
+            if cConfig().getSettingBool('jd_enabled', False):
                 contextitem.setTitle(cConfig().getLocalizedString(30246))   # send JD
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=jd)" % (sUrl,),)]
-            if cConfig().getSetting('jd2_enabled') == 'true':
+            if cConfig().getSettingBool('jd2_enabled', False):
                 contextitem.setTitle(cConfig().getLocalizedString(30247))   # Send JD2
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=jd2)" % (sUrl,),)]
-            if cConfig().getSetting('myjd_enabled') == 'true':
+            if cConfig().getSettingBool('myjd_enabled', False):
                 contextitem.setTitle(cConfig().getLocalizedString(30248))   # Send myjd
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=myjd)" % (sUrl,),)]
-            if cConfig().getSetting('pyload_enabled') == 'true':
+            if cConfig().getSettingBool('pyload_enabled', False):
                 contextitem.setTitle(cConfig().getLocalizedString(30250))   # Send Pyload
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=pyload)" % (sUrl,),)]
             if cConfig().getSetting('hosterSelect') == 'Auto':
@@ -307,7 +307,7 @@ class cGui:
         if content in supportedViews:
             self._isViewSet = True
             xbmcplugin.setContent(self.pluginHandle, content)
-        if cConfig().getSetting('auto-view') == 'true' and content:
+        if cConfig().getSettingBool('auto-view', False) and content:
             viewId = cConfig().getSetting(content + '-view')
             if viewId:
                 xbmc.executebuiltin("Container.SetViewMode(%s)" % viewId)

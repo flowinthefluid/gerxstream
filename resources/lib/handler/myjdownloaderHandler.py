@@ -31,7 +31,7 @@ class cMyJDownloaderHandler:
 
     def __checkConfig(self):
         log(cConfig().getLocalizedString(30166) + ' -> [myjdownloaderHandler]: check MYJD Addon setings', LOGNOTICE)
-        if cConfig().getSetting('myjd_enabled') == 'true':
+        if cConfig().getSettingBool('myjd_enabled', False):
             return True
         return False
 

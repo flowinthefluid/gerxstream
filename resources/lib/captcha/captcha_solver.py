@@ -143,7 +143,7 @@ class CaptchaSolver:
             return None
 
         # Prüfen, ob Selfsolve aktiviert ist (über Addon-Einstellungen)
-        selfsolve = '1' if cConfig().getSetting('9kw.SelfSolve', 'false') == 'true' else '0'
+        selfsolve = '1' if cConfig().getSettingBool('9kw.SelfSolve', False) else '0'
 
         post = {
             'apikey': self.api_key,

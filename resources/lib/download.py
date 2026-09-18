@@ -14,7 +14,7 @@ from urllib.request import Request, urlopen
 
 class cDownload:
     def __createProcessDialog(self, downloadDialogTitle):
-        if cConfig().getSetting('backgrounddownload') == 'true':
+        if cConfig().getSettingBool('backgrounddownload', False):
             oDialog = xbmcgui.DialogProgressBG()
         else:
             oDialog = xbmcgui.DialogProgress()
@@ -124,7 +124,7 @@ class cDownload:
         totalSize = self.__formatFileSize(iTotalSize) if iTotalSize > 0 else '?'
         value = self.__sTitle, str('%s/%s@%dKB/s' % (self.__formatFileSize(currentLoaded), totalSize, avgSpd))
         self.__oDialog.update(iPercent, str(value))
-        if cConfig().getSetting('backgrounddownload') == 'false' and self.__oDialog.iscanceled():
+        if not cConfig().getSettingBool('backgrounddownload', False) and self.__oDialog.iscanceled():
             self.__processIsCanceled = True
             self.__oDialog.close()
 
