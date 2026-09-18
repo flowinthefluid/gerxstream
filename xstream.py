@@ -473,30 +473,29 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
     return True
 
 
-def searchGlobal(sSearchText=False):
+def _collectGlobalSearchResults(searchText, includePlugin):
     oGui = cGui()
     monitor = xbmc.Monitor()
     oGui.globalSearch = True
     oGui._collectMode = True
-    if not sSearchText:
-        sSearchText = oGui.showKeyBoard(sHeading=cConfig().getLocalizedString(30280)) # Bitte Suchbegriff eingeben
-    if not sSearchText: 
-        oGui.setEndOfDirectory()
-        return True
-    aPlugins = []
     aPlugins = cPluginHandler().getAvailablePlugins()
+    searchPlugins = [pluginEntry for pluginEntry in aPlugins if includePlugin(pluginEntry)]
+
     dialog = xbmcgui.DialogProgress()
     dialog.create(cConfig().getLocalizedString(30122), cConfig().getLocalizedString(30123))
-    searchPlugins = [pluginEntry for pluginEntry in aPlugins
-                     if pluginEntry['globalsearch'] != 'false' and pluginEntry['globalsearch'] != '']
-    if not _runPluginSearches(searchPlugins, sSearchText, oGui, dialog, monitor):
+    try:
+        if not _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
+            oGui.setEndOfDirectory()
+            return None
+        return oGui
+    finally:
         dialog.close()
-        oGui.setEndOfDirectory()
-        return
-    dialog.close()
-    # deactivate collectMode attribute because now we want the elements really added
+
+
+def _renderCollectedSearchResults(oGui, results=None):
     oGui._collectMode = False
-    total = len(oGui.searchResults)
+    collected = oGui.searchResults if results is None else results
+    total = len(collected)
     dialog = xbmcgui.DialogProgress()
     dialog.create(cConfig().getLocalizedString(30126), cConfig().getLocalizedString(30127))
     if total == 0:
@@ -504,16 +503,28 @@ def searchGlobal(sSearchText=False):
         oGui.setView()
         oGui.setEndOfDirectory()
         return True
-    for count, result in enumerate(sorted(oGui.searchResults, key=lambda k: k['guiElement'].getSiteName()), 1):
-        if dialog.iscanceled(): 
+    for count, result in enumerate(sorted(collected, key=lambda k: k['guiElement'].getSiteName()), 1):
+        if dialog.iscanceled():
             oGui.setEndOfDirectory()
-            return
+            return False
         oGui.addFolder(result['guiElement'], result['params'], bIsFolder=result['isFolder'], iTotal=total)
         dialog.update(count * 100 // total, str(count) + cConfig().getLocalizedString(30128) + str(total) + ': ' + result['guiElement'].getTitle())
     dialog.close()
     oGui.setView()
     oGui.setEndOfDirectory()
     return True
+
+
+def searchGlobal(sSearchText=False):
+    if not sSearchText:
+        sSearchText = cGui().showKeyBoard(sHeading=cConfig().getLocalizedString(30280)) # Bitte Suchbegriff eingeben
+    if not sSearchText:
+        cGui().setEndOfDirectory()
+        return True
+    oGui = _collectGlobalSearchResults(sSearchText, lambda pluginEntry: pluginEntry['globalsearch'] != 'false' and pluginEntry['globalsearch'] != '')
+    if oGui is None:
+        return False
+    return _renderCollectedSearchResults(oGui)
 
 
 def searchAlter(params):
@@ -540,21 +551,9 @@ def searchAlter(params):
         elif ' Staffel' in searchTitle:
             searchTitle = searchTitle.split(' Staffel')[0].strip()
 
-    oGui = cGui()
-    monitor = xbmc.Monitor()
-    oGui.globalSearch = True
-    oGui._collectMode = True
-    aPlugins = []
-    aPlugins = cPluginHandler().getAvailablePlugins()
-    dialog = xbmcgui.DialogProgress()
-    dialog.create(cConfig().getLocalizedString(30122), cConfig().getLocalizedString(30123))
-    searchPlugins = [pluginEntry for pluginEntry in aPlugins
-                     if pluginEntry['globalsearch'] != 'false' and pluginEntry['globalsearch'] != '']
-    if not _runPluginSearches(searchPlugins, searchTitle, oGui, dialog, monitor):
-        dialog.close()
-        oGui.setEndOfDirectory()
-        return
-    dialog.close()
+    oGui = _collectGlobalSearchResults(searchTitle, lambda pluginEntry: pluginEntry['globalsearch'] != 'false' and pluginEntry['globalsearch'] != '')
+    if oGui is None:
+        return False
     # check results, put this to the threaded part, too
     filteredResults = []
     for result in oGui.searchResults:
@@ -565,55 +564,20 @@ def searchAlter(params):
         if guiElement._sYear and searchYear and guiElement._sYear != searchYear: continue
         if searchImdbId and guiElement.getItemProperties().get('imdbID', False) and guiElement.getItemProperties().get('imdbID', False) != searchImdbId: continue
         filteredResults.append(result)
-    oGui._collectMode = False
-    total = len(filteredResults)
-    for result in sorted(filteredResults, key=lambda k: k['guiElement'].getSiteName()):
-        oGui.addFolder(result['guiElement'], result['params'], bIsFolder=result['isFolder'], iTotal=total)
-    oGui.setView()
-    oGui.setEndOfDirectory()
+    _renderCollectedSearchResults(oGui, filteredResults)
     xbmc.executebuiltin('Container.Update')
     return True
 
 
 def searchTMDB(params):
     sSearchText = params.getValue('searchTitle')
-    oGui = cGui()
-    monitor = xbmc.Monitor()
-    oGui.globalSearch = True
-    oGui._collectMode = True
     if not sSearchText: 
-        oGui.setEndOfDirectory()
+        cGui().setEndOfDirectory()
         return True
-    aPlugins = []
-    aPlugins = cPluginHandler().getAvailablePlugins()
-    dialog = xbmcgui.DialogProgress()
-    dialog.create(cConfig().getLocalizedString(30122), cConfig().getLocalizedString(30123))
-    searchPlugins = [pluginEntry for pluginEntry in aPlugins if pluginEntry['globalsearch'] != 'false']
-    if not _runPluginSearches(searchPlugins, sSearchText, oGui, dialog, monitor):
-        dialog.close()
-        oGui.setEndOfDirectory()
-        return
-    dialog.close()
-    # deactivate collectMode attribute because now we want the elements really added
-    oGui._collectMode = False
-    total = len(oGui.searchResults)
-    dialog = xbmcgui.DialogProgress()
-    dialog.create(cConfig().getLocalizedString(30126), cConfig().getLocalizedString(30127))
-    if total == 0:
-        dialog.close()
-        oGui.setView()
-        oGui.setEndOfDirectory()
-        return True
-    for count, result in enumerate(sorted(oGui.searchResults, key=lambda k: k['guiElement'].getSiteName()), 1):
-        if dialog.iscanceled(): 
-            oGui.setEndOfDirectory()
-            return
-        oGui.addFolder(result['guiElement'], result['params'], bIsFolder=result['isFolder'], iTotal=total)
-        dialog.update(count * 100 // total, str(count) + cConfig().getLocalizedString(30128) + str(total) + ': ' + result['guiElement'].getTitle())
-    dialog.close()
-    oGui.setView()
-    oGui.setEndOfDirectory()
-    return True
+    oGui = _collectGlobalSearchResults(sSearchText, lambda pluginEntry: pluginEntry['globalsearch'] != 'false')
+    if oGui is None:
+        return False
+    return _renderCollectedSearchResults(oGui)
 
 
 def _pluginSearch(pluginEntry, sSearchText, oGui):
