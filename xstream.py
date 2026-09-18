@@ -304,7 +304,7 @@ def showMainMenu(sFunction):
     oGui = cGui()
 
     # Setzte die globale Suche an erste Stelle
-    if cConfig().getSetting('GlobalSearchPosition') == 'true':
+    if cConfig().getSettingBool('GlobalSearchPosition', False):
         oGui.addFolder(globalSearchGuiElement())
 
     oPluginHandler = cPluginHandler()
@@ -326,7 +326,7 @@ def showMainMenu(sFunction):
             if 'icon' in aPlugin and aPlugin['icon']:
                 oGuiElement.setThumbnail(aPlugin['icon'])
             oGui.addFolder(oGuiElement)
-        if cConfig().getSetting('GlobalSearchPosition') == 'false':
+        if not cConfig().getSettingBool('GlobalSearchPosition', False):
             oGui.addFolder(globalSearchGuiElement())
     # VoD Ordner im Hauptmenü anzeigen
     oGuiElement = cGuiElement()
@@ -337,7 +337,7 @@ def showMainMenu(sFunction):
     oGuiElement.setIcon(os.path.join(ART, 'settings.png'))
     oGui.addFolder(oGuiElement)
 
-    if cConfig().getSetting('SettingsFolder') == 'true':
+    if cConfig().getSettingBool('SettingsFolder', False):
         # Einstellung im Menü mit Untereinstellungen
         oGuiElement = cGuiElement()
         oGuiElement.setTitle(cConfig().getLocalizedString(30041))

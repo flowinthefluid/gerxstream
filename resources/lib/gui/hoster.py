@@ -312,7 +312,7 @@ class cHosterGui:
 
                 self.dialog.update(60, cConfig().getLocalizedString(30143))
                 # Sitplugins VOD mit in automatische Abspielliste aufnehmen (Da Links bei der Überprüfung der Verfügbarkeit gekickt werden)
-                if (playMode != 'jd') and (playMode != 'jd2') and (playMode != 'pyload') and (cConfig().getSetting('presortHoster') == 'true') and (playMode != 'myjd'):
+                if (playMode != 'jd') and (playMode != 'jd2') and (playMode != 'pyload') and cConfig().getSettingBool('presortHoster', False) and (playMode != 'myjd'):
                 #if (not siteName.startswith('vod_')) and (playMode != 'jd') and (playMode != 'jd2') and (playMode != 'pyload') and (cConfig().getSetting('presortHoster') == 'true') and (playMode != 'myjd'):
                     siteResult = self.__getPriorities(siteResult)
                 if not siteResult:

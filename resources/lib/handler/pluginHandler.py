@@ -89,7 +89,7 @@ class cPluginHandler:
             else:
                 plugin['icon'] = ''
             # existieren zu diesem plugin die an/aus settings
-            if cConfig().getSetting(pluginSettingsName) == 'true': # Lese aus settings.xml welche Plugins eingeschaltet sind
+            if cConfig().getSettingBool(pluginSettingsName, False): # Lese aus settings.xml welche Plugins eingeschaltet sind
                 plugins.append(plugin)
         return plugins
 
@@ -226,11 +226,11 @@ class cPluginHandler:
         result_string = result_string.replace('false', cConfig().getLocalizedString(30419))
         list_of_PluginData = (result_string) # Ergebnis der Liste
         # Settings Abragen
-        if cConfig().getSetting('githubUpdateResolver') == 'true':  # Resolver Update An/Aus
+        if cConfig().getSettingBool('githubUpdateResolver', False):  # Resolver Update An/Aus
             UPDATERU = cConfig().getLocalizedString(30415)  # Aktiv
         else:
             UPDATERU = cConfig().getLocalizedString(30416)  # Inaktiv
-        if cConfig().getSetting('bypassDNSlock') == 'true':  # DNS Bypass
+        if cConfig().getSettingBool('bypassDNSlock', False):  # DNS Bypass
             BYPASS = cConfig().getLocalizedString(30418)  # Aktiv
         else:
             BYPASS = cConfig().getLocalizedString(30419)  # Inaktiv
@@ -287,7 +287,7 @@ class cPluginHandler:
                     cConfig().setSetting('plugin_' + provider + '_status', '')  # lösche Status Code in den Settings
                     continue
                 
-                if cConfig().getSetting('plugin_' + provider) == 'false':  # Wenn SitePlugin deaktiviert
+                if not cConfig().getSettingBool('plugin_' + provider, False):  # Wenn SitePlugin deaktiviert
                     cConfig().setSetting('global_search_' + provider, 'false')  # setzte Globale Suche auf aus
                     cConfig().setSetting('plugin_' + provider + '_checkDomain', 'false')  # setzte Domain Check auf aus
                     cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
@@ -298,7 +298,7 @@ class cPluginHandler:
                 if legacyCheck and not cConfig().getSetting('plugin_' + provider + '_checkDomain'):
                     cConfig().setSetting('plugin_' + provider + '_checkDomain', legacyCheck)
 
-                if checkDomainEnabled == 'true':  # aut. Domainüberprüfung an ist überprüfe Status der Sitplugins
+                if cConfig().getSettingBool('plugin_' + provider + '_checkDomain', bool(legacyCheck and str(legacyCheck).strip().lower() == 'true')):  # aut. Domainüberprüfung an ist überprüfe Status der Sitplugins
                     tasks.append((provider, base_link))
             except Exception:
                 pass

@@ -63,7 +63,7 @@ def checkDependence(ADDONID):
                 if 'optional' in i or 'xbmc.python' in i: continue
                 pattern = 'import.*?"([^"]+)'
                 IDdoADDON = re.search(pattern, i).group(1)
-                if os.path.exists(ADDON_PATH % IDdoADDON) == True and cConfig().getSetting('enforceUpdate') != 'true':
+                if os.path.exists(ADDON_PATH % IDdoADDON) == True and not cConfig().getSettingBool('enforceUpdate', False):
                     enableAddon(IDdoADDON)
                 else:
                     xbmc.executebuiltin('InstallAddon(%s)' % (IDdoADDON))
@@ -146,7 +146,7 @@ def checkVersion(xs='xstream'):
 
 def logSelfUpdateDisabledOnce():
     setting_key = 'self_update_disabled_notice'
-    if cConfig().getSetting(setting_key) == 'true':
+    if cConfig().getSettingBool(setting_key, False):
         return
     log(__name__ + ' - Selbst-Update deaktiviert, kein Repo hinterlegt', LOGINFO)
     cConfig().setSetting(setting_key, 'true')
@@ -187,7 +187,7 @@ def main():
     logSelfUpdateDisabledOnce()
     logResolveUrlVersionStatus()
 
-    if cConfig().getSetting('githubUpdateDevXstream') == 'true':
+    if cConfig().getSettingBool('githubUpdateDevXstream', False):
         status1 = updateManager.xStreamDevUpdate(True)
         cRequestHandler('').clearCache()  # Cache löschen
         if cConfig().getSetting('update.notification') == 'full':  # Benachrichtung xStream vollständig
@@ -201,25 +201,25 @@ def main():
 
 
     # Starte Resolver Update wenn auf Github verfügbar
-    if os.path.isfile(RESOLVE_SHA) == False or cConfig().getSetting('githubUpdateResolver') == 'true'  or cConfig().getSetting('enforceUpdate') == 'true':
+    if os.path.isfile(RESOLVE_SHA) == False or cConfig().getSettingBool('githubUpdateResolver', False) or cConfig().getSettingBool('enforceUpdate', False):
         status2 = updateManager.resolverUpdate(True)
         if cConfig().getSetting('update.notification') == 'full': # Benachrichtigung Resolver vollständig
             infoDialog(cConfig().getLocalizedString(30112), sound=False, icon='INFO', time=10000)   # Suche Updates
             if status2 == True: infoDialog('Resolver ' + cConfig().getSetting('resolver.branch') + cConfig().getLocalizedString(30116), sound=False, icon='INFO', time=6000)
             if status2 == False: infoDialog(cConfig().getLocalizedString(30117), sound=True, icon='ERROR')
             if status2 == None: infoDialog(cConfig().getLocalizedString(30118), sound=False, icon='INFO', time=6000)
-            if cConfig().getSetting('enforceUpdate') == 'true': cConfig().setSetting('enforceUpdate', 'false')
+            if cConfig().getSettingBool('enforceUpdate', False): cConfig().setSetting('enforceUpdate', 'false')
         else:
             if status2 == True: infoDialog('Resolver ' + cConfig().getSetting('resolver.branch') + cConfig().getLocalizedString(30116), sound=False, icon='INFO', time=6000)
             if status2 == False: infoDialog(cConfig().getLocalizedString(30117), sound=True, icon='ERROR')
-            if cConfig().getSetting('enforceUpdate') == 'true': cConfig().setSetting('enforceUpdate', 'false')
+            if cConfig().getSettingBool('enforceUpdate', False): cConfig().setSetting('enforceUpdate', 'false')
 
     # Startet Überprüfung der Abhängigkeiten
     checkDependence(cConfig().getAddonInfo('id'))
 
     # Wenn neue settings vorhanden oder geändert in addon_data dann starte Pluginhandler und aktualisiere die PluginDB um Daten von checkDomain mit aufzunehmen
     try:
-        if cConfig().getSetting('newSetting') == 'true':
+        if cConfig().getSettingBool('newSetting', False):
             cPluginHandler().getAvailablePlugins()
     except Exception:
         pass
@@ -228,7 +228,7 @@ def main():
     cache.set(cConfig().getAddonInfo('id') + '_main', 'finished')
 
     # Changelog Popup in den "settings.xml" ein bzw. aus schaltbar
-    if cConfig().getSetting('popup.update.notification') == 'true':
+    if cConfig().getSettingBool('popup.update.notification', False):
         tools.changelog()
 
     # Html Cache beim KodiStart nach (X) Tage löschen

@@ -42,6 +42,32 @@ class cConfig:
         else:
             return default
 
+    def getSettingBool(self, sName, default=False):
+        result = self.__addon.getSetting(sName)
+        if result is None or result == '':
+            return bool(default)
+        if isinstance(result, bool):
+            return result
+        return str(result).strip().lower() in ('true', '1', 'yes', 'on')
+
+    def getSettingInt(self, sName, default=0):
+        result = self.__addon.getSetting(sName)
+        if result is None or result == '':
+            return int(default)
+        try:
+            return int(result)
+        except (TypeError, ValueError):
+            return int(default)
+
+    def getSettingNumber(self, sName, default=0.0):
+        result = self.__addon.getSetting(sName)
+        if result is None or result == '':
+            return float(default)
+        try:
+            return float(result)
+        except (TypeError, ValueError):
+            return float(default)
+
     def setSetting(self, id, value):
         if id is not None:
             with cConfig._settings_lock:

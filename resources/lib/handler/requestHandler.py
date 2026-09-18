@@ -66,7 +66,7 @@ class CustomHTTPSHandler(HTTPSHandler):
 
 class RedirectFilter(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, hdrs, newurl):
-        if cConfig().getSetting('bypassDNSlock', 'false') != 'true':
+        if not cConfig().getSettingBool('bypassDNSlock', False):
             if 'notice.cuii' in newurl:
                 xbmcgui.Dialog().ok(cConfig().getLocalizedString(30265), cConfig().getLocalizedString(30260) + '\n' + cConfig().getLocalizedString(30261))
                 return None
@@ -117,13 +117,13 @@ class cRequestHandler:
         self.jspost = jspost
         self.cacheTime = int(cConfig().getSetting('cacheTime', 360)) *60 # 360 Minuten * 60 = 6 Stunden Cachetime
         self.requestTimeout = int(cConfig().getSetting('requestTimeout', 10))
-        self.bypassDNSlock = (cConfig().getSetting('bypassDNSlock', 'false') == 'true')
+        self.bypassDNSlock = cConfig().getSettingBool('bypassDNSlock', False)
         self.removeBreakLines(True)
         self.removeNewLines(True)
         self.__setDefaultHeader()
         self.__setCachePath()
         self.__setCookiePath()
-        self.isMemoryCacheActive = (cConfig().getSetting('volatileHtmlCache', 'false') == 'true')
+        self.isMemoryCacheActive = cConfig().getSettingBool('volatileHtmlCache', False)
         if self.isMemoryCacheActive:
             self._memCache = cCache()
 
@@ -184,7 +184,7 @@ class cRequestHandler:
         if not re.fullmatch(r'[a-z0-9_-]+', site_identifier):
             return False
         setting = 'plugin_%s_allowInsecureTLS' % site_identifier
-        return cConfig().getSetting(setting, 'false') == 'true'
+        return cConfig().getSettingBool(setting, False)
 
     @staticmethod
     def __cleanupUrl(url):
