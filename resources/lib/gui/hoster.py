@@ -19,7 +19,7 @@ class cHosterGui:
     SITE_NAME = 'cHosterGui'
 
     def __init__(self):
-        self.maxHoster = int(cConfig().getSetting('maxHoster', 100))
+        self.maxHoster = cConfig().getSettingInt('maxHoster', 100)
         self.dialog = False
 
     # TODO: unify parts of play, download etc.

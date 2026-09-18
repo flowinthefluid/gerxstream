@@ -177,10 +177,7 @@ def logResolveUrlVersionStatus():
 def main():
     tools.migrateLegacyAddonData()
     cache = cCache()
-    try:
-        cache_time = int(cConfig().getSetting('cacheTime', 360)) * 60
-    except (TypeError, ValueError):
-        cache_time = 360 * 60
+    cache_time = cConfig().getSettingInt('cacheTime', 360) * 60
     cache.clearExpired(cache_time)
     cache.set(cConfig().getAddonInfo('id') + '_main', 'running')
 
