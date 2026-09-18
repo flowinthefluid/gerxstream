@@ -265,7 +265,7 @@ def showHosters():
             isMatch, aResult = cParser.parse(sHtmlContainer, 'src="([^"]+)')
             try:
                 sUrl = aResult[0]
-            except:
+            except Exception:
                 pass
         if not isMatch:
             cGui().showInfo()

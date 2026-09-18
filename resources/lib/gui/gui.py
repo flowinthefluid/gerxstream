@@ -19,11 +19,11 @@ class cGui:
     def __init__(self):
         try:
             self.pluginHandle = int(sys.argv[1])
-        except:
+        except Exception:
             self.pluginHandle = 0
         try:
             self.pluginPath = sys.argv[0]
-        except:
+        except Exception:
             self.pluginPath = ''
         self.isMetaOn = cConfig().getSetting('TMDBMETA') == 'true'
         if cConfig().getSetting('metaOverwrite') == 'true':
@@ -57,7 +57,7 @@ class cGui:
 #kasi
         try:
             if params.exist('trumb'): oGuiElement.setIcon(params.getValue('trumb'))
-        except:
+        except Exception:
             pass
 
         listitem = self.createListItem(oGuiElement)
@@ -100,7 +100,7 @@ class cGui:
         try:
             if not 'plot' in str(itemValues) or itemValues['plot'] == '':
                 itemValues['plot'] = ' ' #kasi Alt 255
-        except:
+        except Exception:
             pass
         #listitem = xbmcgui.ListItem(itemTitle + infoString, oGuiElement.getIcon(), oGuiElement.getThumbnail())
         listitem = xbmcgui.ListItem(itemTitle + infoString)

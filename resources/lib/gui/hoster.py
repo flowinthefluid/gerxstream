@@ -32,7 +32,7 @@ class cHosterGui:
         try:
             try:
                 import resolveurl as resolver
-            except:
+            except Exception:
                 import urlresolver as resolver
             # resolve
             if siteResult:
@@ -71,7 +71,7 @@ class cHosterGui:
         if self.dialog:
             try:
                 self.dialog.close()
-            except:
+            except Exception:
                 pass
 
         vers = int(xbmc.getInfoLabel("System.BuildVersion").split(".")[0])
@@ -220,7 +220,7 @@ class cHosterGui:
             # we try to load resolveurl within the loop, making sure that the resolver loads new with every cycle
             try:
                 import resolveurl as resolver
-            except:
+            except Exception:
                 import urlresolver as resolver
                  
             # accept hoster which is marked as resolveable by sitePlugin
@@ -233,7 +233,7 @@ class cHosterGui:
                 link = hoster['link'][0] if isinstance(hoster['link'], list) else hoster['link']
                 hmf = resolver.HostedMediaFile(url=link)
                 #hmf = resolver.HostedMediaFile(url=hoster['link'])
-            except:
+            except Exception:
                 continue
 
             if not hmf.valid_url():
@@ -262,7 +262,7 @@ class cHosterGui:
                 else:
                 # Wenn Hosterliste prüfen an ist, sortiere Hoster nach Prio Qualität
                     ranking = sorted(ranking, key=lambda hoster: 'quality' in hoster[1] and int(hoster[1]['quality']), reverse=True)
-            except:
+            except Exception:
                 pass
         # After sorting Quality, we sort for Hoster-Priority :) -Hep 24.01.23
         # ranking = sorted(ranking, key=lambda ranking: ranking[0])
@@ -420,7 +420,7 @@ class cHosterGui:
                     check = self.__autoEnqueue(siteResult, playMode)
                     if check:
                         return True
-                except:
+                except Exception:
                     self.dialog.update(percent, cConfig().getLocalizedString(30148) % hoster['name'])
                     logger.error('-> [hoster]: playback with hoster %s failed' % hoster['name'])
         # field "resolved" marks streamlinks
@@ -430,7 +430,7 @@ class cHosterGui:
                     if self.__autoEnqueue(siteResult, playMode):
                         self.dialog.close()
                         return True
-                except:
+                except Exception:
                     pass
 
     def _chooseHoster(self, siteResult):
@@ -490,7 +490,7 @@ class cHosterGui:
                     self.download(partList[i])
                 elif playMode == 'enqueue' or (playMode == 'play' and i > 0):
                     self.addToPlaylist(partList[i])
-            except:
+            except Exception:
                 return False
         logger.info('-> [hoster]: autoEnqueue successful')
         return True

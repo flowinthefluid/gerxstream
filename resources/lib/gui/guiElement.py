@@ -133,7 +133,7 @@ class cGuiElement:
     def setYear(self, year):
         try:
             year = int(year)
-        except:
+        except Exception:
             log(cConfig().getLocalizedString(30166) + ' -> [guiElement]: Year given for %s seems not to be a valid number' % self.getTitle(), LOGERROR)
             return False
         if len(str(year)) != 4:
@@ -178,7 +178,7 @@ class cGuiElement:
             elif 'TS' in quality:
                 self._sQuality = 'TS'
             #self._sQuality = quality
-        except:
+        except Exception:
             pass
 
     def getQuality(self):
@@ -212,7 +212,7 @@ class cGuiElement:
         try:
             if cConfig().getSetting('replacefanart') == 'true' and sThumbnail.startswith('http'):
                 self.__sFanart = sThumbnail
-        except:
+        except Exception:
             pass
     def getThumbnail(self):
         return self.__sThumbnail
@@ -253,7 +253,7 @@ class cGuiElement:
             if not self.__aItemValues[sItemValueKey] == '':
                 try:
                     self.__aProperties[sItemValueKey] = str(self.__aItemValues[sItemValueKey])
-                except:
+                except Exception:
                     pass
         return self.__aProperties
 

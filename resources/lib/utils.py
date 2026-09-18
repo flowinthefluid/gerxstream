@@ -18,14 +18,14 @@ def download_url(url, dest, dp=None):
         dp.update(0)
         urlretrieve(url, dest, lambda nb, bs, fs, url=url: _pbhook(nb, bs, fs, dp))
         dp.close()
-    except:
+    except Exception:
         urlretrieve(url, dest)
 
 def _pbhook(numblocks, blocksize, filesize, dp):
     try:
         percent = min((numblocks * blocksize * 100) / filesize, 100)
         dp.update(int(percent))
-    except:
+    except Exception:
         percent = 100
         dp.update(percent)
     if dp.iscanceled():
@@ -52,7 +52,7 @@ def unzip(path, dest, folder=None):
     try:
         with zipfile.ZipFile(path, 'r') as zip:
             zip.extractall(dest)
-    except:
+    except Exception:
         pass
 
 def get_zip_directory(path, folder):

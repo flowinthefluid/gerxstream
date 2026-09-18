@@ -137,7 +137,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
         aJson = loads(sJson)
-    except:
+    except Exception:
         if not sGui: oGui.showInfo()
         return
 
@@ -215,7 +215,7 @@ def showEpisodes():
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
         aJson = loads(sJson)
-    except:
+    except Exception:
         cGui().showInfo()
         return
 
@@ -252,7 +252,7 @@ def showHosters():
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
-    except:
+    except Exception:
         return hosters
     if sJson:
         aJson = loads(sJson)

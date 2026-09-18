@@ -350,7 +350,7 @@ class cPluginHandler:
                 cConfig().setSetting('global_search_' + provider, 'false')  # deaktiviere Globale Suche
                 cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
                 log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: globalSearch for ' + provider + ' is deactivated.', LOGNOTICE)
-        except:
+        except Exception:
             # Wenn Timeout und die Seite Offline ist
             cConfig().setSetting('global_search_' + provider, 'false')  # deaktiviere Globale Suche
             cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag

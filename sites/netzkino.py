@@ -179,7 +179,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
                 urls += '#' + 'plugin://plugin.video.youtube/play/?video_id=%s' % item['custom_fields']['Youtube_Delivery_Id'][0]
             params.setParam('entryUrl', urls)
             oGui.addFolder(oGuiElement, params, False, total)
-        except:
+        except Exception:
             continue
 
     if not sGui:
@@ -224,7 +224,7 @@ def showEntriesUnJson(entryUrl=False, sGui=False, sSearchText=False):
             params.setParam('sName', sName)
             params.setParam('sThumbnail', sThumbnail)
             oGui.addFolder(oGuiElement, params, False, total)
-        except:
+        except Exception:
             continue
     if not sGui:
         oGui.setView('movies')

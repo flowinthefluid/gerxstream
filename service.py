@@ -44,7 +44,7 @@ def enableAddon(ADDONID):
             try:
                 struktur = json.loads(xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.GetAddonDetails","id":1,"params": {"addonid":"%s", "properties": ["enabled"]}}' % ADDONID))
                 if struktur["result"]["addon"]["enabled"] == True: break
-            except:
+            except Exception:
                 pass
 
 # Überprüfe Abhängigkeiten
@@ -69,7 +69,7 @@ def checkDependence(ADDONID):
                     xbmc.executebuiltin('InstallAddon(%s)' % (IDdoADDON))
                     xbmc.executebuiltin('SendClick(11)')
                     enableAddon(IDdoADDON)
-            except:
+            except Exception:
                 pass
     except Exception as e:
         log(__name__ + ' %s - Exception ' % e, LOGERROR)
@@ -140,7 +140,7 @@ def checkVersion(xs='xstream'):
         # executebuiltin("UpdateLocalAddons()") # kasi - ist das nötig?
         profil = getInfoLabel('System.ProfileName')
         if profil:  executebuiltin('LoadProfile(' + profil + ',prompt)')
-    except:
+    except Exception:
         pass
 
 

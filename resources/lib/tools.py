@@ -213,7 +213,7 @@ class cParser:
                 ('&#xDC;', '³'), ('&#xBC;', '¼'), ('&#xBD;', '½'), ('&#xBE;', '¾'),
                 ('&#8531;', '⅓'), ('&#8727;', '*')):
                 s = s.replace(*h)
-        except:
+        except Exception:
             pass
         return s
 

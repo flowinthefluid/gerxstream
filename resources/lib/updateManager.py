@@ -112,7 +112,7 @@ def UpdateResolve(username, resolve_dir, resolve_id, branch, token, silent):
         log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: %s: - Error updating!' % resolve_id, LOGERROR)
         Dialog().ok(cConfig().getLocalizedString(30151), cConfig().getLocalizedString(30156) + resolve_id + cConfig().getLocalizedString(30157))
         return False
-    except:
+    except Exception:
         log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: %s: - Error updating!' % resolve_id, LOGERROR)
         Dialog().ok(cConfig().getLocalizedString(30151), cConfig().getLocalizedString(30156) + resolve_id + cConfig().getLocalizedString(30157))
 
@@ -155,7 +155,7 @@ def Update(username, plugin_id, branch, token, silent):
         log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: %s: - Error updating!' % plugin_id, LOGERROR)
         Dialog().ok(cConfig().getLocalizedString(30151), cConfig().getLocalizedString(30156) + plugin_id + cConfig().getLocalizedString(30157))
         return False
-    except:
+    except Exception:
         log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: %s: - Error updating!' % plugin_id, LOGERROR)
         Dialog().ok(cConfig().getLocalizedString(30151), cConfig().getLocalizedString(30156) + plugin_id + cConfig().getLocalizedString(30157))
 
@@ -170,7 +170,7 @@ def commitUpdate(onlineFile, offlineFile, downloadLink, LocalDir, plugin_id, loc
                 try:
                     open(offlineFile, 'w').write(jsData['sha'])
                     return True
-                except:
+                except Exception:
                     return False
             else:
                 return False
@@ -227,7 +227,7 @@ def doUpdate(LocalDir, REMOTE_PATH, Title, localFileName, auth):
         os.remove(localFileName)
         executebuiltin("UpdateLocalAddons()")
         return True
-    except:
+    except Exception:
         log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: doUpdate not possible due download error')
         return False
 
@@ -353,7 +353,7 @@ def devUpdates():  # für manuelles Updates vorgesehen
         if resolverupdate is True:
             try:
                 resolverUpdate(False)
-            except:
+            except Exception:
                 pass
 
         # Zurücksetzten der Update.sha
