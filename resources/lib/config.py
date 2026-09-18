@@ -2,7 +2,6 @@
 # Python 3
 
 import xbmcaddon
-import resolveurl as resolver
 import threading
 
 from urllib.parse import urlparse
@@ -67,6 +66,10 @@ class cConfig:
         for i in hostblockDict:
             if i in domain.lower() or i.split('.')[0] in domain.lower(): return True, domain
         if checkResolver:   # Überprüfung in resolveUrl
+            # Lazy Import: cConfig wird von praktisch jedem Modul importiert. Lag
+            # resolveurl auf Modulebene, starb das gesamte Addon mit ImportError,
+            # bevor die Fehlerbehandlung in xstream.py ueberhaupt greifen konnte.
+            import resolveurl as resolver
             if resolver.relevant_resolvers(domain=domain) == []:
                 log('[xStream] -> [isblockedHoster]: In resolveUrl no domain for url: %s' % domain, LOGWARNING)
                 return True, domain    # Domain nicht in resolveUrl gefunden
