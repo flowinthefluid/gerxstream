@@ -133,6 +133,24 @@ Anforderungen an die Implementierung, wenn sie kommt:
 
 ---
 
+## 4a. Offene Punkte
+
+- **`INSTALL.md` fehlt noch.** Wird in Etappe 3 angelegt (D1): haelt fest, dass
+  bis auf Weiteres das ResolveURL-Repo vor GeerXStream installiert sein muss.
+- **Keine Screenshots im `<assets>`-Block.** Die vier alten Eintraege wurden
+  entfernt, weil die Dateien geloescht sind und neue erst nach dem
+  D3.2-Rewrite entstehen (sie wuerden sonst den alten Namen zeigen). Vor der
+  ersten Veroeffentlichung neu aufnehmen: 1280x720 oder 1920x1080, je max.
+  750 KB.
+- **`banner.png` und `clearlogo.png`** tragen noch das alte xStream-Motiv.
+  Ersatz liegt vor, ist aber nicht einsetzbar — siehe Bericht zu D3.1.
+- **`design/` gehoert nicht ins Release-Zip.** Der Ordner haelt Quellmaterial
+  (`icon-master.png`, spaeter die SVGs und das Generatorskript). Der noch zu
+  bauende Zip-Schritt (N13) muss ihn ausschliessen, ebenso `docs/`,
+  `.github/`, `ScraperInfo.txt` und `__pycache__/`.
+
+---
+
 ## 5. ResolveURL
 
 Vorerst **nicht** ueber dieses Repo. Bis auf Weiteres gilt die Zwischenlage aus
