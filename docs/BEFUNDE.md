@@ -117,7 +117,7 @@ ID	Inhalt	Status
 D1	ResolveURL: Bezugsquelle und Version. Untergrenze 5.1.208 (Begründung Hoster-Aktualität, nicht Kompatibilität — die API-Inventur zeigt keine brechende Änderung seit 5.1.173). repository.resolveurl bleibt vorerst optional="true", script.module.resolveurl bleibt nicht-optional. INSTALL.md anlegen: bis auf Weiteres muss das ResolveURL-Repo vorher installiert sein. Laufzeit-Check: installierte Version bedingungslos bei jedem Start auf LOGINFO, zusätzlich LOGWARNING bei Unterschreitung. Abschaffung von resolverUpdate() → Repo-Auftrag; S4-Fix jetzt; bis dahin LOGINFO, wenn die Funktion anläuft.	erledigt (REPO-SPEC, ce98635 Laufzeitcheck, 733e9f1 INSTALL.md)
 D2	Absturzuntersuchung — zurückgestuft, kein eigener Track. Ergebnisse in S8 und H17 überführt.	abgeschlossen (Ergebnisse in S8 und H17 ueberfuehrt)
 D3	Eigenständigkeit / Entflechtung. Siehe eigener Abschnitt in der laufenden Freigabe.	erledigt (D3.5 in 5891643: Bezeichner und Strings auf gerxstream)
-D4	Parser- und HTTP-Stack-Bewertung (neu).	offen — einziger noch nicht begonnener Punkt
+D4	Parser- und HTTP-Stack-Bewertung (neu).	erledigt — Ergebnis in docs/D4-STACK-BEWERTUNG.md: beide Stacks bleiben (begruendet). P1 behoben, P2 dokumentiert, P3 (Zeichentabelle) verhaltensaendernd und zur Freigabe gestellt, H-A in den Repo-Auftrag b) verschoben.
 Etappenplan
 Etappe	Inhalt
 0	Git-Init, .gitignore, jsnprotect.py vorher löschen — erledigt

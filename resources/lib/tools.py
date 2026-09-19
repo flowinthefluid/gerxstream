@@ -187,7 +187,12 @@ def infoDialog(message, heading=None, icon='', time=5000, sound=False):
 
 
 class cParser:
+    # Der Name versprach einen Cache, den es nicht gab: jeder Aufruf ging durch
+    # re.compile(). Bei 27 Site-Plugins mit zusammen ueber 300 Aufrufstellen
+    # traegt das messbar auf. Kompilierte Muster sind unveraenderlich und beim
+    # Matchen thread-sicher, lassen sich also gefahrlos halten.
     @staticmethod
+    @lru_cache(maxsize=512)
     def _get_compiled_pattern(pattern, flags=0):
         return re.compile(pattern, flags)
     
