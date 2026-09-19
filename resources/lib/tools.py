@@ -308,7 +308,7 @@ class cParser:
         return base64.b64decode(text).decode('utf-8')
 
 
-# xStream interner Log
+# GerXStream interner Log
 class logger:
     @staticmethod
     def info(sInfo):

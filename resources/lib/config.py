@@ -94,9 +94,9 @@ class cConfig:
         if checkResolver:   # Überprüfung in resolveUrl
             # Lazy Import: cConfig wird von praktisch jedem Modul importiert. Lag
             # resolveurl auf Modulebene, starb das gesamte Addon mit ImportError,
-            # bevor die Fehlerbehandlung in xstream.py ueberhaupt greifen konnte.
+            # bevor die Fehlerbehandlung in gerxstream.py ueberhaupt greifen konnte.
             import resolveurl as resolver
             if resolver.relevant_resolvers(domain=domain) == []:
-                log('[xStream] -> [isblockedHoster]: In resolveUrl no domain for url: %s' % domain, LOGWARNING)
+                log('[GerXStream] -> [isblockedHoster]: In resolveUrl no domain for url: %s' % domain, LOGWARNING)
                 return True, domain    # Domain nicht in resolveUrl gefunden
         return False, domain

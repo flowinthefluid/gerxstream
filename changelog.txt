@@ -1,3 +1,15 @@
+[B]Version: 1.0.0[/B]
+
+
+19.09.2026
+
+- [GerXStream] Neuer Name und neue Addon-ID plugin.video.gerxstream (Fork von xStream 4.3.0.5)
+- [GerXStream] Einstellungen und Daten der alten Installation werden beim ersten Start kopiert
+- [GerXStream] Kodi 22 (Piers) Kompatibilität, Kodi 21 (Omega) als Fallback
+- [GerXStream] Sicherheitskorrekturen: URL-Routing abgesichert, TLS-Prüfung standardmäßig aktiv, kein eval mehr auf Fremddaten
+- [GerXStream] Selbst-Update deaktiviert, kein Repository hinterlegt
+
+
 [B]Version: 4.3.0.5[/B]
 
 

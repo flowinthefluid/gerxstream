@@ -222,7 +222,7 @@ class cGui:
         itemValues = oGuiElement.getItemValues()
         contextitem = cContextElement()
         if oGuiElement._mediaType == 'movie' or oGuiElement._mediaType == 'tvshow':
-            if cConfig().getSettingBool('xstream.trailer', False):
+            if cConfig().getSettingBool('gerxstream.trailer', False):
                 if not xbmc.getCondVisibility('System.HasAddon(%s)' % 'script.module.xstream.trailer'):  # Schauen ob Addon installiert
                     xbmc.executebuiltin('InstallAddon(%s)' % 'script.module.xstream.trailer')  # Addon installieren
                 contextitem.setTitle(cConfig().getLocalizedString(30027))  # Trailer Funktion
@@ -299,7 +299,7 @@ class cGui:
 
     def setView(self, content='movies'):
         # set the listing to a certain content, makes special views available
-        # sets view to the viewID which is selected in xStream settings
+        # sets view to the viewID which is selected in GerXStream settings
         # see http://mirrors.xbmc.org/docs/python-docs/stable/xbmcplugin.html#-setContent
         # (seasons is also supported but not listed)
         content = content.lower()
@@ -398,7 +398,7 @@ class cGui:
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, cConfig().getAddonInfo('icon')))
 
     @staticmethod
-    def showInfo(sTitle='xStream', sDescription=None, iSeconds=0):
+    def showInfo(sTitle='GerXStream', sDescription=None, iSeconds=0):
         if sDescription is None:
             sDescription = cConfig().getLocalizedString(30253)
         if iSeconds == 0:
@@ -408,7 +408,7 @@ class cGui:
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, cConfig().getAddonInfo('icon')))
 
     @staticmethod
-    def showLanguage(sTitle='xStream', sDescription=None, iSeconds=0):
+    def showLanguage(sTitle='GerXStream', sDescription=None, iSeconds=0):
         if sDescription is None:
             sDescription = cConfig().getLocalizedString(30403)
         if iSeconds == 0:

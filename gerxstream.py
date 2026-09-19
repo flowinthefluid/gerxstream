@@ -110,7 +110,7 @@ def _endFailedDirectory():
 
 def _rejectPluginRoute(sSiteName, sFunction, sReason):
     log(cConfig().getLocalizedString(30166) +
-        " -> [xstream]: Rejected plugin route site=%r function=%r: %s" %
+        " -> [gerxstream]: Rejected plugin route site=%r function=%r: %s" %
         (sSiteName, sFunction, sReason), LOGERROR)
     _endFailedDirectory()
 
@@ -134,7 +134,7 @@ except ImportError:
     # fehlgeschlagen abgeschlossen werden, sonst wartet Kodi auf Eintraege, die
     # nie kommen. Danach abbrechen, statt weiterzulaufen und beim ersten Zugriff
     # auf 'resolver' mit NameError zu sterben.
-    log(cConfig().getLocalizedString(30166) + ' -> [xstream]: resolveurl not available, aborting', LOGERROR)
+    log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: resolveurl not available, aborting', LOGERROR)
     _endFailedDirectory()
     sys.exit()
 
@@ -199,9 +199,9 @@ def parseUrl():
             if sLink:
                 xbmc.executebuiltin('PlayMedia(' + sLink + ')')
             else:
-                log(cConfig().getLocalizedString(30166) + ' -> [xstream]: Could not play remote url %s ' % sLink, LOGNOTICE)
+                log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: Could not play remote url %s ' % sLink, LOGNOTICE)
         except resolver.resolver.ResolverError as e:
-            log(cConfig().getLocalizedString(30166) + ' -> [xstream]: ResolverError: %s' % e, LOGERROR)
+            log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: ResolverError: %s' % e, LOGERROR)
         return
     else:
         sFunction = 'load'
@@ -228,7 +228,7 @@ def parseUrl():
             cHosterGui().stream(playMode, sSiteName, sFunction, url)
         return
 
-    log(cConfig().getLocalizedString(30166) + " -> [xstream]: Call function '%s' from '%s'" % (sFunction, sSiteName), LOGNOTICE)
+    log(cConfig().getLocalizedString(30166) + " -> [gerxstream]: Call function '%s' from '%s'" % (sFunction, sSiteName), LOGNOTICE)
     # If the hoster gui is called, run the function on it and return
     if sSiteName == 'cHosterGui':
         showHosterGui(sFunction)
@@ -238,7 +238,7 @@ def parseUrl():
         if params.exist('searchterm'):
             searchterm = params.getValue('searchterm')
         searchGlobal(searchterm)
-    elif sSiteName == 'xStream':
+    elif sSiteName == 'GerXStream':
         oGui = cGui()
         oGui.openSettings()
         # resolves strange errors in the logfile
@@ -310,7 +310,7 @@ def showMainMenu(sFunction):
     oPluginHandler = cPluginHandler()
     aPlugins = oPluginHandler.getAvailablePlugins()
     if not aPlugins:
-        log(cConfig().getLocalizedString(30166) + ' -> [xstream]: No activated Plugins found', LOGNOTICE)
+        log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: No activated Plugins found', LOGNOTICE)
         # Open the settings dialog to choose a plugin that could be enabled
         oGui.openSettings()
         oGui.updateDirectory()
@@ -356,7 +356,7 @@ def vodGuiElements(sFunction): # Vod Menü
     oPluginHandler = cPluginHandler()
     aPlugins = oPluginHandler.getAvailablePlugins() # Suche Plugins mit Pluginhandler
     if not aPlugins:
-        log(cConfig().getLocalizedString(30166) + ' -> [xstream]: No activated Vod Plugins found', LOGNOTICE)
+        log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: No activated Vod Plugins found', LOGNOTICE)
         # Öffne Einstellungen wenn keine VoD SitePlugins vorhanden
         oGui.openSettings()
         oGui.updateDirectory()
@@ -386,13 +386,13 @@ def settingsGuiElements():
     PluginInfo = oGuiElement
 
 
-    # GUI xStream Einstellungen
+    # GUI GerXStream Einstellungen
     oGuiElement = cGuiElement()
     oGuiElement.setTitle(cConfig().getLocalizedString(30042))
-    oGuiElement.setSiteName('xStream')
+    oGuiElement.setSiteName('GerXStream')
     oGuiElement.setFunction('display_settings')
-    oGuiElement.setThumbnail(os.path.join(ART, 'xstream_settings.png'))
-    xStreamSettings = oGuiElement
+    oGuiElement.setThumbnail(os.path.join(ART, 'gerxstream_settings.png'))
+    GerXStreamSettings = oGuiElement
 
     # GUI Resolver Einstellungen
     oGuiElement = cGuiElement()
@@ -417,7 +417,7 @@ def settingsGuiElements():
     oGuiElement.setFunction('checkDomain')
     oGuiElement.setThumbnail(os.path.join(ART, 'settings.png'))
     DomainCheck = oGuiElement
-    return PluginInfo, xStreamSettings, resolveurlSettings, DevUpdateMan, DomainCheck
+    return PluginInfo, GerXStreamSettings, resolveurlSettings, DevUpdateMan, DomainCheck
 
 
 def globalSearchGuiElement():
@@ -451,12 +451,12 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
     maxWorkers = min(6, progressPlugins)
     completed = 0
     futures = {}
-    with ThreadPoolExecutor(max_workers=maxWorkers, thread_name_prefix='xstream-search') as executor:
+    with ThreadPoolExecutor(max_workers=maxWorkers, thread_name_prefix='gerxstream-search') as executor:
         for count, pluginEntry in enumerate(searchPlugins):
             if dialog.iscanceled() or monitor.abortRequested():
                 return False
             dialog.update((count + 1) * 50 // progressPlugins, cConfig().getLocalizedString(30124) + str(pluginEntry['name']) + '...')
-            log(cConfig().getLocalizedString(30166) + ' -> [xstream]: Searching for %s at %s' % (searchText, pluginEntry['id']), LOGNOTICE)
+            log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: Searching for %s at %s' % (searchText, pluginEntry['id']), LOGNOTICE)
             future = executor.submit(_pluginSearch, pluginEntry, searchText, oGui)
             futures[future] = pluginEntry['name']
 
@@ -558,7 +558,7 @@ def searchAlter(params):
     filteredResults = []
     for result in oGui.searchResults:
         guiElement = result['guiElement']
-        log(cConfig().getLocalizedString(30166) + ' -> [xstream]: Site: %s Titel: %s' % (guiElement.getSiteName(), guiElement.getTitle()), LOGNOTICE)
+        log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: Site: %s Titel: %s' % (guiElement.getSiteName(), guiElement.getTitle()), LOGNOTICE)
         if searchTitle not in guiElement.getTitle():
             continue
         if guiElement._sYear and searchYear and guiElement._sYear != searchYear: continue
@@ -586,6 +586,6 @@ def _pluginSearch(pluginEntry, sSearchText, oGui):
         function = getattr(plugin, '_search')
         function(oGui, sSearchText)
     except Exception:
-        log(cConfig().getLocalizedString(30166) + ' -> [xstream]: ' + pluginEntry['name'] + ': search failed', LOGERROR)
+        log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: ' + pluginEntry['name'] + ': search failed', LOGERROR)
         import traceback
         log(traceback.format_exc())

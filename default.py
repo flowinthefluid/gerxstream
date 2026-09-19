@@ -2,7 +2,7 @@
 # Python 3
 
 def main():
-    from xstream import parseUrl
+    from gerxstream import parseUrl
     from os.path import join
     from sys import path
     import platform
@@ -22,7 +22,7 @@ def main():
     
     LOGMESSAGE = cConfig().getLocalizedString(30166)
     log('-----------------------------------------------------------------------', LOGNOTICE)
-    log(LOGMESSAGE + ' -> [default]: Start xStream Log, Version %s ' % cConfig().getAddonInfo('version'), LOGNOTICE)
+    log(LOGMESSAGE + ' -> [default]: Start GerXStream Log, Version %s ' % cConfig().getAddonInfo('version'), LOGNOTICE)
     log(LOGMESSAGE + ' -> [default]: Python-Version: %s' % platform.python_version(), LOGNOTICE)
 
     tools.migrateLegacyAddonData()

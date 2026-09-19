@@ -45,17 +45,17 @@ class cHosterGui:
                     logger.info('-> [hoster]: resolve: hoster: %s - mediaID: %s' % (siteResult['host'], mediaId))
                     link = resolver.HostedMediaFile(host=siteResult['host'].lower(), media_id=mediaId).resolve()
                 else:
-                    oGui.showError('xStream', cConfig().getLocalizedString(30134), 5)
+                    oGui.showError('GerXStream', cConfig().getLocalizedString(30134), 5)
                     return False
             elif mediaUrl:
                 logger.info('-> [hoster]: resolve: ' + mediaUrl)
                 link = resolver.resolve(mediaUrl)
             else:
-                oGui.showError('xStream', cConfig().getLocalizedString(30134), 5)
+                oGui.showError('GerXStream', cConfig().getLocalizedString(30134), 5)
                 return False
         except resolver.resolver.ResolverError as e:
             logger.error('-> [hoster]: ResolverError: %s' % e)
-            oGui.showError('xStream', cConfig().getLocalizedString(30135), 7)
+            oGui.showError('GerXStream', cConfig().getLocalizedString(30135), 7)
             return False
         # resolver response
         if link is not False:
@@ -194,7 +194,7 @@ class cHosterGui:
         logger.info('-> [hoster]: call send to JDownloader2: ' + sMediaUrl)
         cJDownloader2Handler().sendToJDownloader2(sMediaUrl)
 
-    def sendToMyJDownloader(self, sMediaUrl=False, sMovieTitle='xStream'):
+    def sendToMyJDownloader(self, sMediaUrl=False, sMovieTitle='GerXStream'):
         from resources.lib.handler.myjdownloaderHandler import cMyJDownloaderHandler
         params = ParameterHandler()
         if not sMediaUrl:
@@ -284,7 +284,7 @@ class cHosterGui:
     def stream(self, playMode, siteName, function, url):
         self.dialog = xbmcgui.DialogProgress()
         try:
-            self.dialog.create('xStream', cConfig().getLocalizedString(30138))
+            self.dialog.create('GerXStream', cConfig().getLocalizedString(30138))
             # load site as plugin and run the function
             self.dialog.update(5, cConfig().getLocalizedString(30139))
             plugin = __import__(siteName, globals(), locals())
@@ -296,7 +296,7 @@ class cHosterGui:
                 siteResult = function()
             self.dialog.update(40)
             if not siteResult:
-                cGui().showInfo('xStream', cConfig().getLocalizedString(30141))
+                cGui().showInfo('GerXStream', cConfig().getLocalizedString(30141))
                 return
             # if result is not a list, make in one
             if not type(siteResult) is list:
@@ -307,7 +307,7 @@ class cHosterGui:
                 functionName = siteResult[-1]
                 del siteResult[-1]
                 if not siteResult:
-                    cGui().showInfo('xStream', cConfig().getLocalizedString(30142))
+                    cGui().showInfo('GerXStream', cConfig().getLocalizedString(30142))
                     return
 
                 self.dialog.update(60, cConfig().getLocalizedString(30143))
@@ -316,7 +316,7 @@ class cHosterGui:
                 #if (not siteName.startswith('vod_')) and (playMode != 'jd') and (playMode != 'jd2') and (playMode != 'pyload') and (cConfig().getSetting('presortHoster') == 'true') and (playMode != 'myjd'):
                     siteResult = self.__getPriorities(siteResult)
                 if not siteResult:
-                    cGui().showInfo('xStream', cConfig().getLocalizedString(30144))
+                    cGui().showInfo('GerXStream', cConfig().getLocalizedString(30144))
                     return False
                 self.dialog.update(90)
                 if len(siteResult) > self.maxHoster:
@@ -348,7 +348,7 @@ class cHosterGui:
             else:
                 siteResult = siteResult[0]
 
-            self.dialog.create('xStream', cConfig().getLocalizedString(30145))
+            self.dialog.create('GerXStream', cConfig().getLocalizedString(30145))
             self.dialog.update(95, cConfig().getLocalizedString(30146))
             if playMode == 'play':
                 self.play(siteResult)
@@ -373,7 +373,7 @@ class cHosterGui:
     def streamAuto(self, playMode, siteName, function):
         logger.info('-> [hoster]: auto stream initiated')
         self.dialog = xbmcgui.DialogProgress()
-        self.dialog.create('xStream', cConfig().getLocalizedString(30138))
+        self.dialog.create('GerXStream', cConfig().getLocalizedString(30138))
         # load site as plugin and run the function
         self.dialog.update(5, cConfig().getLocalizedString(30139))
         plugin = __import__(siteName, globals(), locals())
@@ -382,7 +382,7 @@ class cHosterGui:
         siteResult = function()
         if not siteResult:
             self.dialog.close()
-            cGui().showInfo('xStream', cConfig().getLocalizedString(30141))
+            cGui().showInfo('GerXStream', cConfig().getLocalizedString(30141))
             return False
         # if result is not a list, make in one
         if not type(siteResult) is list:
@@ -400,19 +400,19 @@ class cHosterGui:
                 hosters = self.__getPriorities(siteResult)
             if not hosters:
                 self.dialog.close()
-                cGui().showInfo('xStream', cConfig().getLocalizedString(30144))
+                cGui().showInfo('GerXStream', cConfig().getLocalizedString(30144))
                 return False
             if len(siteResult) > self.maxHoster:
                 siteResult = siteResult[:self.maxHoster - 1]
             check = False
-            self.dialog.create('xStream', cConfig().getLocalizedString(30147))
+            self.dialog.create('GerXStream', cConfig().getLocalizedString(30147))
             total = len(hosters)
             for count, hoster in enumerate(hosters):
                 if self.dialog.iscanceled() or xbmc.Monitor().abortRequested() or check: return
                 percent = (count + 1) * 100 // total
                 try:
                     logger.info('-> [hoster]: try hoster %s' % hoster['name'])
-                    self.dialog.create('xStream', cConfig().getLocalizedString(30147))
+                    self.dialog.create('GerXStream', cConfig().getLocalizedString(30147))
                     self.dialog.update(percent, cConfig().getLocalizedString(30147) + ' %s' % hoster['name'])
                     # get stream links
                     function = getattr(plugin, functionName)

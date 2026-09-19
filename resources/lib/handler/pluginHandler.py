@@ -208,7 +208,7 @@ class cPluginHandler:
     def pluginInfo(self):
         # Erstelle Liste mit den Indexseiten Informationen
         list_of_plugins = []
-        fileNames = self.__getFileNamesFromFolder(self.defaultFolder) # Hole Plugins aus xStream
+        fileNames = self.__getFileNamesFromFolder(self.defaultFolder) # Hole Plugins aus GerXStream
         for fileName in fileNames:
             pluginData = self.__getPluginDataIndex(fileName, self.defaultFolder) # Hole Plugin Daten
             list_of_plugins.append(pluginData)
@@ -246,19 +246,19 @@ class cPluginHandler:
             + cConfig().getLocalizedString(30266) + '   {0}'.format(platform().title()) + '\n'  # System Plattform
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30414) + '\n'  # Plugin Informationen
-            + cConfig().getAddonInfo('name') + ' Version:  ' + cConfig().getAddonInfo('id') + ' - ' + cConfig().getAddonInfo('version') + '\n'  # xStream ID und Version
+            + cConfig().getAddonInfo('name') + ' Version:  ' + cConfig().getAddonInfo('id') + ' - ' + cConfig().getAddonInfo('version') + '\n'  # GerXStream ID und Version
             + 'Hinweis: Selbst-Update deaktiviert, kein Repo hinterlegt.\n'
             + cConfig('script.module.resolveurl').getAddonInfo('name') + ' Version:  ' + cConfig('script.module.resolveurl').getAddonInfo('id') + ' - ' + cConfig('script.module.resolveurl').getAddonInfo('version') + '\n'  # Resolver ID und Version
             + cConfig('script.module.resolveurl').getAddonInfo('name') + ' Status:  ' + UPDATERU + cConfig().getSettingString('resolver.branch') + '\n'  # Resolver Update Status und Branch
             + cConfig().getLocalizedString(30435) + ' ' + getRepofromAddonsDB(cConfig().getAddonInfo('id')) + '\n' # Repo-Info
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30420) + '\n'  # DNS Informationen
-            + cConfig().getLocalizedString(30417) + ' ' + BYPASS + '\n'  # xStream DNS Bypass aktiv/inaktiv
+            + cConfig().getLocalizedString(30417) + ' ' + BYPASS + '\n'  # GerXStream DNS Bypass aktiv/inaktiv
             + cConfig().getLocalizedString(30434) + '1' + ' ' + getDNS('Network.DNS1Address') + '\n' # DNS Nameserver 1
             + cConfig().getLocalizedString(30434) + '2' + ' ' + getDNS('Network.DNS2Address') + '\n' # DNS Nameserver 2
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30421) + '\n'  # Repo Informationen
-            + cConfig('repository.xstream').getAddonInfo('name') + ':  ' + cConfig('repository.xstream').getAddonInfo('id') + ' - ' + cConfig('repository.xstream').getAddonInfo('version') + '\n'  # xStream Repository ID und Version
+            + cConfig('repository.gerxstream').getAddonInfo('name') + ':  ' + cConfig('repository.gerxstream').getAddonInfo('id') + ' - ' + cConfig('repository.gerxstream').getAddonInfo('version') + '\n'  # GerXStream Repository ID und Version
             + RESOLVEURL
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30422) + '\n'  # Indexseiten Informationen

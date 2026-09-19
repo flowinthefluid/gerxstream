@@ -27,10 +27,10 @@ RESOLVE_ADDON_DATA_PATH = translatePath(os.path.join('special://home/userdata/ad
 # Pfad der update.sha
 RESOLVE_SHA = os.path.join(translatePath(RESOLVE_ADDON_DATA_PATH), "update_sha")
 
-# xStream Installationspfad
+# GerXStream Installationspfad
 ADDON_PATH = translatePath(os.path.join('special://home/addons/', '%s'))
 
-# Aktiviere xStream Addon
+# Aktiviere GerXStream Addon
 def enableAddon(ADDONID):
     struktur = json.loads(xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.GetAddonDetails","id":1,"params": {"addonid":"%s", "properties": ["enabled"]}}' % ADDONID))
     if 'error' in struktur or struktur["result"]["addon"]["enabled"] != True:
@@ -86,7 +86,7 @@ def delHtmlCache():
         cConfig().setSetting('lastdelhtml', str(currentTime))
 
 # kasi - Code für Zwangsupdate - erweiterte version
-def checkVersion(xs='xstream'):
+def checkVersion(xs='gerxstream'):
     try:
         import requests, re, xbmc
         if xs.lower() == 'xship':
@@ -98,7 +98,7 @@ def checkVersion(xs='xstream'):
             except: return
             url = 'https://raw.githubusercontent.com/watchone/watchone.github.io/refs/heads/repo/plugin.video.xship/addon.xml'
             url2 = 'https://github.com/watchone/watchone.github.io/raw/refs/heads/repo/plugin.video.xship/%s'
-        elif xs.lower() == 'xstream':
+        elif xs.lower() == 'gerxstream':
             addonId = 'plugin.video.xstream'
             if not xbmc.getCondVisibility("System.HasAddon(%s)" % addonId):
                 xbmc.executebuiltin('InstallAddon(%s)' % addonId)
@@ -118,7 +118,7 @@ def checkVersion(xs='xstream'):
         ## TODO
         # addonVersionInt = int(addonVersion.replace('.', ''))
         # remoteVersionInt = int(remoteVersion.replace('.', ''))
-        # if addonVersionInt > remoteVersionInt + 100 and xs == 'xstream':
+        # if addonVersionInt > remoteVersionInt + 100 and xs == 'gerxstream':
         #     from resources.lib.utils import countdown, kill, remove_dir
         #     remove_dir(translatePath('special://home/addons/'))
         #     # Kodi beenden
@@ -185,10 +185,10 @@ def main():
     logSelfUpdateDisabledOnce()
     logResolveUrlVersionStatus()
 
-    if cConfig().getSettingBool('githubUpdateDevXstream', False):
-        status1 = updateManager.xStreamDevUpdate(True)
+    if cConfig().getSettingBool('githubUpdateDevGerxstream', False):
+        status1 = updateManager.GerXStreamDevUpdate(True)
         cRequestHandler('').clearCache()  # Cache löschen
-        if cConfig().getSetting('update.notification') == 'full':  # Benachrichtung xStream vollständig
+        if cConfig().getSetting('update.notification') == 'full':  # Benachrichtung GerXStream vollständig
             infoDialog(cConfig().getLocalizedString(30112), sound=False, icon='INFO', time=10000)  # Suche Updates
             if status1 == True: infoDialog(cConfig().getLocalizedString(30113), sound=False, icon='INFO', time=6000)
             if status1 == False: infoDialog(cConfig().getLocalizedString(30114), sound=True, icon='ERROR')

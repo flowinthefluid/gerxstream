@@ -1,6 +1,6 @@
-# Addon Name: xStream
-# Addon id: plugin.video.xStream
-# Addon Provider: xStream
+# Addon Name: GerXStream
+# Addon id: plugin.video.gerxstream
+# Addon Provider: GerXStream
 # Use the following entry for the translation
 # from resources.lib.config import cConfig + cConfig().getLocalizedString(30041)	
 
@@ -48,7 +48,7 @@ msgid "Pre-validate and sort hosterlist (slow on weak systems)"
 msgstr ""
 
 msgctxt "#30010"
-msgid "Enable automatic xStream Update"
+msgid "Enable automatic GerXStream Update"
 msgstr ""
 
 msgctxt "#30011"
@@ -148,7 +148,7 @@ msgid "Settings"
 msgstr ""
 
 msgctxt "#30042"
-msgid "xStream Settings"
+msgid "GerXStream Settings"
 msgstr ""
 
 msgctxt "#30043"
@@ -274,7 +274,7 @@ msgid "Site-Plugins 2"
 msgstr ""
 
 msgctxt "#30096"
-msgid "xStream Updates"
+msgid "GerXStream Updates"
 msgstr ""
 
 msgctxt "#30097"
@@ -290,11 +290,11 @@ msgid "Branch Info:		[COLOR green]Release - Version directly from Guial00´s Git
 msgstr ""
 
 msgctxt "#30100"
-msgid "Branch Info:		[COLOR orange]Nightly - Version with hotfixes from the xStream team.[/COLOR]"
+msgid "Branch Info:		[COLOR orange]Nightly - Version with hotfixes from the GerXStream team.[/COLOR]"
 msgstr ""
 
 msgctxt "#30101"
-msgid "[COLOR green]Release - Version directly from Guial00´s Github.[/COLOR][CR][COLOR orange]Nightly - Version with hotfixes from the xStream team.[/COLOR]"
+msgid "[COLOR green]Release - Version directly from Guial00´s Github.[/COLOR][CR][COLOR orange]Nightly - Version with hotfixes from the GerXStream team.[/COLOR]"
 msgstr ""
 
 msgctxt "#30102"
@@ -342,15 +342,15 @@ msgid "Search for updates ..."
 msgstr ""
 
 msgctxt "#30113"
-msgid "xStream update installed successfully."
+msgid "GerXStream update installed successfully."
 msgstr ""
 
 msgctxt "#30114"
-msgid "xStream update finished with errors."
+msgid "GerXStream update finished with errors."
 msgstr ""
 
 msgctxt "#30115"
-msgid "No xStream update available."
+msgid "No GerXStream update available."
 msgstr ""
 
 msgctxt "#30116"
@@ -378,7 +378,7 @@ msgid "Start manual update"
 msgstr ""
 
 msgctxt "#30122"
-msgid "xStream search started ..."
+msgid "GerXStream search started ..."
 msgstr ""
 
 msgctxt "#30123"
@@ -394,7 +394,7 @@ msgid " search complete"
 msgstr ""
 
 msgctxt "#30126"
-msgid "xStream search complete !"
+msgid "GerXStream search complete !"
 msgstr ""
 
 msgctxt "#30127"
@@ -494,11 +494,11 @@ msgid "Please select part"
 msgstr ""
 
 msgctxt "#30151"
-msgid "xStream Update Manager"
+msgid "GerXStream Update Manager"
 msgstr ""
 
 msgctxt "#30152"
-msgid "Welcome to the xStream update manager. For automatic update please set the desired branch selection in the settings, for manual update please choose what should be updated in the following windows."
+msgid "Welcome to the GerXStream update manager. For automatic update please set the desired branch selection in the settings, for manual update please choose what should be updated in the following windows."
 msgstr ""
 
 msgctxt "#30153"
@@ -510,7 +510,7 @@ msgid "perform"
 msgstr ""
 
 msgctxt "#30155"
-msgid "Please select whether you want to perform the xStream [Release] or [Nightly] update.[CR][COLOR green]Release versions have been tested and contain hardly any errors.[/COLOR][CR][COLOR orange ]Nightly - versions are experimental and may contain bugs.[/COLOR]"
+msgid "Please select whether you want to perform the GerXStream [Release] or [Nightly] update.[CR][COLOR green]Release versions have been tested and contain hardly any errors.[/COLOR][CR][COLOR orange ]Nightly - versions are experimental and may contain bugs.[/COLOR]"
 msgstr ""
 
 msgctxt "#30156"
@@ -554,19 +554,19 @@ msgid "Delete HTML cache now"
 msgstr ""
 
 msgctxt "#30166"
-msgid "[xStream]"
-msgstr "[xStream]"
+msgid "[GerXStream]"
+msgstr "[GerXStream]"
 
 msgctxt "#30167"
-msgid "Choose xStream Github Branch"
+msgid "Choose GerXStream Github Branch"
 msgstr ""
 
 msgctxt "#30168"
-msgid "Branch Info:		[COLOR green]Release - Version directly from xStream Github.[/COLOR]"
+msgid "Branch Info:		[COLOR green]Release - Version directly from GerXStream Github.[/COLOR]"
 msgstr ""
 
 msgctxt "#30169"
-msgid "Branch Info:		[COLOR orange]Nightly - Version with hotfixes from the xStream team.[/COLOR]"
+msgid "Branch Info:		[COLOR orange]Nightly - Version with hotfixes from the GerXStream team.[/COLOR]"
 msgstr ""
 
 msgctxt "#30170"
@@ -582,7 +582,7 @@ msgid "TMDB language setting"
 msgstr ""
 
 msgctxt "#30173"
-msgid "[COLOR green]Release - Version directly from xStream Github.[/COLOR][CR][COLOR orange]Nightly - Version with hotfixes from the xStream team.[/COLOR]"
+msgid "[COLOR green]Release - Version directly from GerXStream Github.[/COLOR][CR][COLOR orange]Nightly - Version with hotfixes from the GerXStream team.[/COLOR]"
 msgstr ""
 
 msgctxt "#30174"
@@ -930,23 +930,23 @@ msgid "Your ISP censors your Internet access!"
 msgstr ""
 
 msgctxt "#30261"
-msgid "To protect yourself from censorship, we recommend to use the new setting in xStream called 'Evade DNS lock' or change your DNS at your router and/or boxes to Google or Cloudflare - for both ipV4 and ipV6 protocols. Instructions can be found with a Google search, e.g. 'Change Fritzbox DNS Server'"
+msgid "To protect yourself from censorship, we recommend to use the new setting in GerXStream called 'Evade DNS lock' or change your DNS at your router and/or boxes to Google or Cloudflare - for both ipV4 and ipV6 protocols. Instructions can be found with a Google search, e.g. 'Change Fritzbox DNS Server'"
 msgstr ""
 
 msgctxt "#30262"
-msgid "[COLOR red]This page requires a free user account. Please register at http://flimmerstube.com and enter your account details in the xStream settings.[/COLOR]"
+msgid "[COLOR red]This page requires a free user account. Please register at http://flimmerstube.com and enter your account details in the GerXStream settings.[/COLOR]"
 msgstr ""
 
 msgctxt "#30263"
-msgid "[COLOR red]This page requires a free user account. Please register at https://aniworld.to/ and enter your account details in the xStream settings.[/COLOR]"
+msgid "[COLOR red]This page requires a free user account. Please register at https://aniworld.to/ and enter your account details in the GerXStream settings.[/COLOR]"
 msgstr ""
 
 msgctxt "#30264"
-msgid "[COLOR red]This page requires a free user account. Please register at https://s.to/ and enter your account details in the xStream settings.[/COLOR]"
+msgid "[COLOR red]This page requires a free user account. Please register at https://s.to/ and enter your account details in the GerXStream settings.[/COLOR]"
 msgstr ""
 
 msgctxt "#30265"
-msgid "xStream Support Information"
+msgid "GerXStream Support Information"
 msgstr ""
 
 msgctxt "#30266"
@@ -958,7 +958,7 @@ msgid "View support information"
 msgstr ""
 
 msgctxt "#30268"
-msgid "Please select whether you want to perform the ResolveURL [Release] or [Nightly] update.[CR][COLOR green]Release - Version directly from Guial00's Github.[/COLOR][CR][COLOR orange ]Nightly - version with hotfixes from the xStream team.[/COLOR]"
+msgid "Please select whether you want to perform the ResolveURL [Release] or [Nightly] update.[CR][COLOR green]Release - Version directly from Guial00's Github.[/COLOR][CR][COLOR orange ]Nightly - version with hotfixes from the GerXStream team.[/COLOR]"
 msgstr ""
 
 msgctxt "#30269"
@@ -986,7 +986,7 @@ msgid "View change log after update"
 msgstr ""
 
 msgctxt "#30275"
-msgid "[B][COLOR cyan]xStream[/COLOR] [COLOR white]Changelog[/COLOR][/B]"
+msgid "[B][COLOR cyan]GerXStream[/COLOR] [COLOR white]Changelog[/COLOR][/B]"
 msgstr ""
 
 msgctxt "#30276"
@@ -1090,11 +1090,11 @@ msgid "Developer Options"
 msgstr ""
 
 msgctxt "#30311"
-msgid "xStream Developer Menu"
+msgid "GerXStream Developer Menu"
 msgstr ""
 
 msgctxt "#30312"
-msgid "Enable automatic xStream Dev Update"
+msgid "Enable automatic GerXStream Dev Update"
 msgstr ""
 
 msgctxt "#30313"
@@ -1134,7 +1134,7 @@ msgid "[COLOR red]Show warning about handling developer options now![/COLOR]"
 msgstr ""
 
 msgctxt "#30322"
-msgid "[B][COLOR cyan]xStream[/COLOR] [COLOR white]Warning (Developer Options)[/COLOR][/B]"
+msgid "[B][COLOR cyan]GerXStream[/COLOR] [COLOR white]Warning (Developer Options)[/COLOR][/B]"
 msgstr ""
 
 msgctxt "#30323"
@@ -1182,7 +1182,7 @@ msgid "HTML cache folder has been cleaned"
 msgstr ""
 
 msgctxt "#30406"
-msgid "Choose xStream Version"
+msgid "Choose GerXStream Version"
 msgstr ""
 
 msgctxt "#30407"
@@ -1226,7 +1226,7 @@ msgid "Update disabled - Branch: "
 msgstr ""
 
 msgctxt "#30417"
-msgid "xStream DNS Status: Bypass DNS block"
+msgid "GerXStream DNS Status: Bypass DNS block"
 msgstr ""
 
 msgctxt "#30418"
@@ -1278,7 +1278,7 @@ msgid "Domain is currently unavailable"
 msgstr ""
 
 msgctxt "#30430"
-msgid "Index page in xStream"
+msgid "Index page in GerXStream"
 msgstr ""
 
 msgctxt "#30431"

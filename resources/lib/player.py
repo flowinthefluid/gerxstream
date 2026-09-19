@@ -8,7 +8,7 @@ from resources.lib.config import cConfig
 from xbmc import LOGINFO as LOGNOTICE, LOGERROR
 from resources.lib.tools import addon_log as log
 
-class XstreamPlayer(xbmc.Player):
+class GerxstreamPlayer(xbmc.Player):
     def __init__(self, *args, **kwargs):
         # super() statt unbound Base-Call: xbmc.Player.__init__(self, ...) wirft
         # unter Kodi 22 / Python 3.14 einen TypeError (xbmc/xbmc#29309).
@@ -58,7 +58,7 @@ class cPlayer:
 
     def startPlayer(self):
         log(cConfig().getLocalizedString(30166) + ' -> [player]: start player', LOGNOTICE)
-        xbmcPlayer = XstreamPlayer()
+        xbmcPlayer = GerxstreamPlayer()
         monitor = xbmc.Monitor()
         startTime = time.time()
         streamStarted = False

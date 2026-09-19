@@ -25,7 +25,7 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'archive.org') # Domain Auswahl Ã¼ber die xStream Einstellungen mÃ¶glich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'archive.org') # Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -67,7 +67,7 @@ def showCollections(entryUrl=False, sGui=False):
         if not sGui: oGui.showInfo()
         return
 
-    # Filter nach eingestellter Sprache in xstream laden
+    # Filter nach eingestellter Sprache in gerxstream laden
     sLanguage = cConfig().getSetting('prefLanguage')
 
     for i in aResults:
@@ -142,7 +142,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         if not sGui: oGui.showInfo()
         return
 
-    # Filter nach eingestellter Sprache in xstream laden
+    # Filter nach eingestellter Sprache in gerxstream laden
     sLanguage = cConfig().getSetting('prefLanguage')
 
     for i in aResults:

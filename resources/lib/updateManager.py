@@ -60,12 +60,12 @@ def resolverUpdate(silent=False):
             return
 
 
-# xStream Dev
-def xStreamDevUpdate(silent=False):
-    username = cConfig().getSettingString('xstream.dev.username')
-    plugin_id = cConfig().getSettingString('xstream.dev.id')
-    branch = cConfig().getSettingString('xstream.dev.branch')
-    token = cConfig().getSettingString('xstream.dev.token')
+# GerXStream Dev
+def GerXStreamDevUpdate(silent=False):
+    username = cConfig().getSettingString('gerxstream.dev.username')
+    plugin_id = cConfig().getSettingString('gerxstream.dev.id')
+    branch = cConfig().getSettingString('gerxstream.dev.branch')
+    token = cConfig().getSettingString('gerxstream.dev.token')
     try:
         return Update(username, plugin_id, branch, token, silent)
     except Exception as e:
@@ -117,7 +117,7 @@ def UpdateResolve(username, resolve_dir, resolve_id, branch, token, silent):
         log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: %s: - Error updating!' % resolve_id, LOGERROR)
         Dialog().ok(cConfig().getLocalizedString(30151), cConfig().getLocalizedString(30156) + resolve_id + cConfig().getLocalizedString(30157))
 
-# xStream Update
+# GerXStream Update
 def Update(username, plugin_id, branch, token, silent):
     if not _isValidUpdateTarget(plugin_id):
         log(cConfig().getLocalizedString(30166) +
@@ -287,7 +287,7 @@ def zipfolder(foldername, target_dir):
 def devUpdates():  # für manuelles Updates vorgesehen
     try:
         resolverupdate = False # Resolver Update
-        #pluginupdate = False # xStream Update
+        #pluginupdate = False # GerXStream Update
         # Einleitungstext
         #if Dialog().ok(cConfig().getLocalizedString(30151), cConfig().getLocalizedString(30152)):
             # Abfrage welches Plugin aktualisiert werden soll (kann erweitert werden)
@@ -318,7 +318,7 @@ def devUpdates():  # für manuelles Updates vorgesehen
         else:
             return False
 
-        #elif result == 1:  # xStream aktualisieren
+        #elif result == 1:  # GerXStream aktualisieren
         #    if Dialog().yesno(cConfig().getLocalizedString(30151), cConfig().getLocalizedString(30269),
         #                      yeslabel=cConfig().getLocalizedString(30162),
         #                      nolabel=cConfig().getLocalizedString(30163)):
@@ -348,7 +348,7 @@ def devUpdates():  # für manuelles Updates vorgesehen
 
         #if pluginupdate is True:
            #try:
-                #xStreamUpdate(False)
+                #GerXStreamUpdate(False)
             #except:
                 #pass
         if resolverupdate is True:

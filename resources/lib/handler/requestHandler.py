@@ -296,22 +296,22 @@ class cRequestHandler:
                     return 'CLOUDFLARE-SCHUTZ AKTIV' # Meldung geht als "e.doc" in die exception nach default.py
                 else:
                     if not self.ignoreErrors:
-                        xbmcgui.Dialog().ok('xStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
+                        xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
                     logger.error(' -> [requestHandler]: HTTPError ' + str(e) + ' Url: ' + self._sUrl)
                     return 'SEITE NICHT ERREICHBAR'
             else:
                 if not self.ignoreErrors:
-                    xbmcgui.Dialog().ok('xStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
+                    xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
                 logger.error(' -> [requestHandler]: HTTPError ' + str(e) + ' Url: ' + self._sUrl)
                 return 'SEITE NICHT ERREICHBAR'
         except URLError as e:
             if not self.ignoreErrors:
-                xbmcgui.Dialog().ok('xStream', str(e.reason))
+                xbmcgui.Dialog().ok('GerXStream', str(e.reason))
             logger.error(' -> [requestHandler]: URLError ' + str(e.reason) + ' Url: ' + self._sUrl)
             return 'URL FEHLER'
         except HTTPException as e:
             if not self.ignoreErrors:
-                xbmcgui.Dialog().ok('xStream', str(e))
+                xbmcgui.Dialog().ok('GerXStream', str(e))
             logger.error(' -> [requestHandler]: HTTPException ' + str(e) + ' Url: ' + self._sUrl)
             return 'TIMEOUT'
 
@@ -484,7 +484,7 @@ class cRequestHandler:
         files = os.listdir(self._cachePath)
         for file in files:
             os.remove(os.path.join(self._cachePath, file))
-            xbmcgui.Dialog().notification('xStream', cConfig().getLocalizedString(30405), xbmcgui.NOTIFICATION_INFO, 100, False)
+            xbmcgui.Dialog().notification('GerXStream', cConfig().getLocalizedString(30405), xbmcgui.NOTIFICATION_INFO, 100, False)
 
 
 class cBF:

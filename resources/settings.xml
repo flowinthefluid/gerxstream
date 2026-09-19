@@ -53,7 +53,7 @@
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
-				<setting id="xstream.trailer" type="boolean" label="30026" help="">
+				<setting id="gerxstream.trailer" type="boolean" label="30026" help="">
 					<level>0</level>
 					<default>False</default>
 					<control type="toggle"/>
@@ -1969,14 +1969,14 @@
 				</setting>
 			</group>
 		</category>
-		<category id="xstream.dev" label="30310" help="">
-			<group id="xstream.dev.updates" label="30311">
-				<setting id="githubUpdateDevXstream" type="boolean" label="30312" help="30411">
+		<category id="gerxstream.dev" label="30310" help="">
+			<group id="gerxstream.dev.updates" label="30311">
+				<setting id="githubUpdateDevGerxstream" type="boolean" label="30312" help="30411">
 					<level>3</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
-				<setting id="xstream.dev.notification" type="action" label="30321" help="">
+				<setting id="gerxstream.dev.notification" type="action" label="30321" help="">
 					<level>0</level>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -1985,50 +1985,50 @@
 						<data>RunPlugin(plugin://plugin.video.gerxstream/?function=devWarning)</data>
 					</control>
 				</setting>
-				<setting id="xstream.dev.id" type="string" label="30313" help="30317">
+				<setting id="gerxstream.dev.id" type="string" label="30313" help="30317">
 					<level>3</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateDevXstream">true</dependency>
+						<dependency type="visible" setting="githubUpdateDevGerxstream">true</dependency>
 					</dependencies>
 					<control type="edit" format="string"/>
 						<heading>30310</heading>
 				</setting>
-				<setting id="xstream.dev.username" type="string" label="30314" help="30318">
+				<setting id="gerxstream.dev.username" type="string" label="30314" help="30318">
 					<level>3</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateDevXstream">true</dependency>
+						<dependency type="visible" setting="githubUpdateDevGerxstream">true</dependency>
 					</dependencies>
 					<control type="edit" format="string"/>
 						<heading>30310</heading>
 				</setting>
-				<setting id="xstream.dev.branch" type="string" label="30315" help="30319">
+				<setting id="gerxstream.dev.branch" type="string" label="30315" help="30319">
 					<level>3</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateDevXstream">true</dependency>
+						<dependency type="visible" setting="githubUpdateDevGerxstream">true</dependency>
 					</dependencies>
 					<control type="edit" format="string"/>
 						<heading>30310</heading>
 				</setting>
-				<setting id="xstream.dev.token" type="string" label="30316" help="30320">
+				<setting id="gerxstream.dev.token" type="string" label="30316" help="30320">
 					<level>3</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateDevXstream">true</dependency>
+						<dependency type="visible" setting="githubUpdateDevGerxstream">true</dependency>
 					</dependencies>
 					<control type="edit" format="string"/>
 						<heading>30310</heading>

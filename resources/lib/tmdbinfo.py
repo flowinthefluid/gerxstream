@@ -184,7 +184,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     self.setFocusId(9000)
                 except Exception:
                     return
-                self.setProperty('xstream_menu', 'Person')
+                self.setProperty('gerxstream_menu', 'Person')
             elif controlId == 9:
                 sid = self.getProperty('tmdb_id')
                 if metaType == 'movie':
