@@ -53,7 +53,7 @@ class cJDownloader2Handler:
         return cConfig().getSetting('jd2_host')
 
     def __getPort(self):
-        return cConfig().getSetting('jd2_port')
+        return cConfig().getSettingInt('jd2_port', 9666)
 
     def __checkConnection(self):
         log(cConfig().getLocalizedString(30166) + ' -> [jdownloader2Handler]: check JD2 Connection', LOGNOTICE)

@@ -26,7 +26,7 @@ class cPyLoadHandler:
         log(cConfig().getLocalizedString(30166) + ' -> [pyLoadHandler]: Sending link...', LOGNOTICE)
         try:
             py_host = self.config.getSetting('pyload_host')
-            py_port = self.config.getSetting('pyload_port')
+            py_port = str(self.config.getSettingInt('pyload_port', 8000))
             py_user = self.config.getSetting('pyload_user')
             py_passwd = self.config.getSetting('pyload_passwd')
             mydata = [('username', py_user), ('password', py_passwd)]

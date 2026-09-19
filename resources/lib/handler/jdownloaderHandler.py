@@ -30,7 +30,7 @@ class cJDownloaderHandler:
         return cConfig().getSetting('jd_host')
 
     def __getPort(self):
-        return cConfig().getSetting('jd_port')
+        return cConfig().getSettingInt('jd_port', 10025)
 
     def __getAutomaticStart(self):
         # Hinweis: jd_automatic_start ist in resources/settings.xml nicht
