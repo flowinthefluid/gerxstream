@@ -136,3 +136,6 @@ enthalten.
 | Lokalisierung | [resources/language/](../resources/language/) |
 | Sicherheitsfunde & Status | [BEFUNDE.md](BEFUNDE.md) |
 | Ziel-Repo-Struktur / Update-Verdrahtung | [REPO-SPEC.md](REPO-SPEC.md) |
+| Bot-Schutz (Cloudflare/DDoS-Guard) je Quelle | [resources/lib/handler/protection.py](../resources/lib/handler/protection.py) |
+| Kategorie-Engine (TMDB-gestuetzt) | [resources/lib/categories.py](../resources/lib/categories.py) |
+| Quellen-Recherche (gewuenscht, geprueft, abgelehnt) | [QUELLEN-RECHERCHE.md](QUELLEN-RECHERCHE.md) |
