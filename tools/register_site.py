@@ -118,11 +118,29 @@ GROUP_TEMPLATE = """\t\t\t<group id="{sid}" label="{label}">
 """
 
 
+def labelAlreadyTaken(label):
+    """True wenn die String-ID bereits fuer einen ANDEREN Text vergeben
+    ist. Ohne diese Pruefung kann ein bereits genutztes Label versehentlich
+    einer neuen Quelle zugewiesen werden - die Einstellungsgruppe zeigt dann
+    den falschen Namen an, und addPoEntry() legt keinen neuen Eintrag an,
+    weil die ID schon existiert. Genau das ist einmal passiert (KayoAnime
+    erhielt label=30800, das bereits 'Action' bedeutete)."""
+    for path in POFILES.values():
+        with io.open(path, encoding='utf-8') as fh:
+            if 'msgctxt "#%s"' % label in fh.read():
+                return True
+    return False
+
+
 def addSettingsGroup(sid, label, isVod):
     with io.open(SETTINGS, encoding='utf-8') as fh:
         content = fh.read()
     if 'id="plugin_%s"' % sid in content:
         return False
+    if labelAlreadyTaken(label):
+        raise SystemExit(
+            'String-ID #%s ist bereits vergeben - eine freie ID waehlen.'
+            % label)
     anchor = CATEGORY_END[isVod]
     if anchor not in content:
         raise SystemExit('Einfuegemarke nicht gefunden: %r' % anchor)
