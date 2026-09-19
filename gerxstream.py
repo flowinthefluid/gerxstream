@@ -80,6 +80,7 @@ SCRAPER_ENTRY_FUNCTIONS = frozenset((
     'showSeasons',
     'showSeries',
     'showSeriesMenu',
+    'showShows',
     'showStart',
     'showThemen_6',
     'showValue',
