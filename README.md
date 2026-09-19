@@ -16,6 +16,7 @@ Filme, Serien und Streams direkt in die gewohnte Kodi-Oberfläche.
 
 - 🔎 **Eine Suche, alle Quellen** – die globale Suche fragt alle Site-Plugins parallel ab
 - 🎬 **Filme & Serien** – vollständige Metadaten (Cover, Beschreibung, Bewertung, Cast, Erstausstrahlung, Serienstatus)
+- ⭐ **Favoriten mit Ordnern** – eigene Ordner und Unterordner zum Sortieren der Favoriten (in Arbeit, kommt mit einer der nächsten Versionen)
 - 🧩 **Site-Plugins** – jede Quelle ist ein eigenständiges, austauschbares Modul
 - 🛡️ **Sicherheit eingebaut** – striktes URL-Routing, TLS-Prüfung aktiv, kein `eval()` auf Fremddaten
 - 🇩🇪 **Deutsch zuerst** – Oberfläche und Fehlermeldungen auf Deutsch, Englisch als Fallback
@@ -24,7 +25,9 @@ Filme, Serien und Streams direkt in die gewohnte Kodi-Oberfläche.
 ## Los geht's
 
 Installationsschritte, Voraussetzungen und Hinweise zur Datenübernahme stehen
-ausführlich in [INSTALL.md](INSTALL.md).
+ausführlich in [INSTALL.md](INSTALL.md). Wer noch eine ältere xStream-Installation
+nutzt, kann direkt zu GerXStream wechseln: Einstellungen und Favoriten werden beim
+ersten Start automatisch übernommen, sofern xStream noch installiert ist.
 
 ## Wie es funktioniert
 

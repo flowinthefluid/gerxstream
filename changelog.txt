@@ -3,7 +3,7 @@
 19.09.2026
 
 - Erste öffentliche Version von GerXStream
-- Neues Branding: Icon, Banner, Clearlogo und Fanart im violett-smaragdgrünen GerXStream-Design
+- Neues Branding: Icon, Banner, Clearlogo im violett-smaragdgrünen GerXStream-Design
 - Kodi 22 "Piers" als Zielplattform, Kodi 21 "Omega" als Fallback unterstützt
 - InfoTag-Metadaten vervollständigt: Titel, Regie, Drehbuch, Bewertung, Erstausstrahlung und Serienstatus werden jetzt korrekt übernommen
 - Kids-Tube: YouTube-Suche wiederhergestellt, nutzt ausschließlich den eigenen API-Schlüssel aus dem YouTube-Addon
@@ -18,31 +18,10 @@
 
 09.09.2026
 
-- Automatische Übernahme bestehender Einstellungen/Daten beim ersten Start
+- Automatische Übernahme bestehender Einstellungen, Favoriten und Daten beim ersten Start (sofern eine ältere Installation vorhanden ist)
 - Diverse Bugfixes in den Site-Plugins (globale Suche, Paginierung, Genres)
 
 05.09.2026
 
 - Projektstart: Grundgerüst und Addon-ID plugin.video.gerxstream festgelegt
-
-- [Generell] Diverse Bugfixes
-
-22.06.2025
-
-- [Burningseries] Einen Fehler korrigiert, dass sich die Domain nicht automatisch in die
-  Settings schreibt
-
-
-21.06.2025
-
-- [BurningSeries] Neuer Scraper Thx @ Alex für den Code und an Kyle fürs Logo.
-- [BurningSeries] Exception Handler für fehlenden API Key hinzugefügt
-
-[color yellow] WICHTIG! BurningSeries ist im Standard deaktiviert. Ihr benötigt zwingend
-ein Konto bei 2Captcha und müsst einen API Key mit Guthaben in xStream hinterlegen,
-sonst funktioniert BurningSeries nicht! Anleitung findet sich in unserer Wiki unter
-Punkt 5.4.2.9[/color]
-
-- [API_Suche] Caching für Hoster-Listen aktiviert
-- [TMDB Helper] Neue Player zum Download verfügbar
 

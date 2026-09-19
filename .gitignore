@@ -15,3 +15,6 @@ Thumbs.db
 
 # Build-Artefakte
 *.zip
+
+# Lokale Arbeits-/Quelldateien (Sprite-Sheets, Skripte, Backups)
+.tmp/
