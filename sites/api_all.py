@@ -26,7 +26,7 @@ SITE_NAME = 'API Suchmaschine'
 SITE_ICON = 'api.png'
 SITE_IDENTIFIER = 'api_all'
 
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinokiste.eu')
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinokiste.club')
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 ORIGIN = 'https://' + DOMAIN + '/'
