@@ -13,6 +13,11 @@
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="showCategories" type="boolean" label="30824" help="">
+					<level>0</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
 				<setting id="replacefanart" type="boolean" label="30019" help="">
 					<level>0</level>
 					<default>True</default>

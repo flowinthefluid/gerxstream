@@ -184,6 +184,10 @@ def parseUrl():
         elif sFunction == 'vod':
             vodGuiElements(sFunction)
             return
+        elif sFunction == 'categories':
+            from resources.lib import categories
+            categories.showMenu()
+            return
         elif sFunction == 'changelog':
             from resources.lib import tools
             cConfig().setSetting('changelog_version', '')
@@ -330,6 +334,16 @@ def showMainMenu(sFunction):
             oGui.addFolder(oGuiElement)
         if not cConfig().getSettingBool('GlobalSearchPosition', False):
             oGui.addFolder(globalSearchGuiElement())
+    # Kategorien im Hauptmenü anzeigen. Speist sich aus TMDB und gilt damit
+    # fuer alle aktivierten Quellen gleichzeitig, nicht nur fuer eine Seite.
+    if cConfig().getSettingBool('showCategories', True):
+        oGuiElement = cGuiElement()
+        oGuiElement.setTitle(cConfig().getLocalizedString(30507))  # Kategorien
+        oGuiElement.setSiteName('categories')
+        oGuiElement.setFunction('categories')
+        oGuiElement.setThumbnail(os.path.join(ART, 'categories.png'))
+        oGui.addFolder(oGuiElement)
+
     # VoD Ordner im Hauptmenü anzeigen
     oGuiElement = cGuiElement()
     oGuiElement.setTitle(cConfig().getLocalizedString(30412))

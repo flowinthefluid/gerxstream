@@ -1723,3 +1723,43 @@ msgstr "Deaktiviert die TLS-Zertifikatspruefung fuer diesen Scraper. Nur bei ein
 msgctxt "#30794"
 msgid "media.ccc.de"
 msgstr "media.ccc.de"
+
+msgctxt "#30815"
+msgid "Collections"
+msgstr "Sammlungen"
+
+msgctxt "#30816"
+msgid "Charts"
+msgstr "Charts"
+
+msgctxt "#30817"
+msgid "Decades"
+msgstr "Jahrzehnte"
+
+msgctxt "#30818"
+msgid "Trending this week"
+msgstr "Im Trend diese Woche"
+
+msgctxt "#30819"
+msgid "Popular"
+msgstr "Beliebt"
+
+msgctxt "#30820"
+msgid "Top rated"
+msgstr "Bestbewertet"
+
+msgctxt "#30821"
+msgid "Now playing"
+msgstr "Jetzt im Kino"
+
+msgctxt "#30822"
+msgid "Upcoming"
+msgstr "Demnächst"
+
+msgctxt "#30823"
+msgid "Popular actors"
+msgstr "Beliebte Schauspieler"
+
+msgctxt "#30824"
+msgid "Show categories in the main menu"
+msgstr "Kategorien im Hauptmenü anzeigen"
