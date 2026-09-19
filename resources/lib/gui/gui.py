@@ -121,11 +121,11 @@ class cGui:
         
         vtag.setMediaType(oGuiElement.getType())
         
-        # Titel ist bereits gesetzt und der Infostring geht hier verloren, wenn man den Titel erneut setzt
-        #if 'title' in itemValues:
-        #    try:    
-        #        vtag.setTitle(itemValues['title'])
-        #    except: pass
+        # itemValues['title'] enthaelt bereits Label + Infostring (siehe createListItem)
+        if 'title' in itemValues:
+            try:
+                vtag.setTitle(str(itemValues['title']))
+            except: pass
         if 'plot' in itemValues:
             try:
                 vtag.setPlot(itemValues['plot'])
@@ -166,6 +166,15 @@ class cGui:
             try:
                 vtag.setDirectors(itemValues['directors'])
             except: pass
+        # tmdb.py liefert 'director' und 'writer' als ' / '-getrennte Strings
+        if 'director' in itemValues:
+            try:
+                vtag.setDirectors([d.strip() for d in str(itemValues['director']).split(' / ') if d.strip()])
+            except: pass
+        if 'writer' in itemValues:
+            try:
+                vtag.setWriters([w.strip() for w in str(itemValues['writer']).split(' / ') if w.strip()])
+            except: pass
         if 'duration' in itemValues:
             # minuten in sekunden umrechnen
             try:
@@ -174,6 +183,22 @@ class cGui:
         if 'rating' in itemValues:
             try:
                 vtag.setRating(float(itemValues['rating']))
+            except: pass
+        if 'votes' in itemValues:
+            try:
+                vtag.setVotes(int(itemValues['votes']))
+            except: pass
+        if 'code' in itemValues:
+            try:
+                vtag.setProductionCode(str(itemValues['code']))
+            except: pass
+        if 'aired' in itemValues:
+            try:
+                vtag.setFirstAired(str(itemValues['aired']))
+            except: pass
+        if 'status' in itemValues:
+            try:
+                vtag.setTvShowStatus(str(itemValues['status']))
             except: pass
         if 'genre' in itemValues:
             try:
