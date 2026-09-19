@@ -61,6 +61,7 @@ def load(): # Menu structure of the site plugin
     params.setParam('sUrl', URL_SERIES)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30511), SITE_IDENTIFIER, 'showSeries'), params)  # Series
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'), params)   # Search
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30836), SITE_IDENTIFIER, 'showDomains'), params)  # Adresse wechseln
     cGui().setEndOfDirectory()
 
 

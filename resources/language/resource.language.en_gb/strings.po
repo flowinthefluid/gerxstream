@@ -1824,3 +1824,11 @@ msgstr ""
 msgctxt "#30834"
 msgid "4anime"
 msgstr ""
+
+msgctxt "#30835"
+msgid "Domain switched"
+msgstr ""
+
+msgctxt "#30836"
+msgid "Switch address"
+msgstr ""

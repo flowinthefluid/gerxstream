@@ -189,6 +189,12 @@ def parseUrl():
             from resources.lib import categories
             categories.showMenu()
             return
+        elif sFunction == 'showDomains':
+            showDomainMenu(params)
+            return
+        elif sFunction == 'setSiteDomain':
+            setSiteDomain(params)
+            return
         elif sFunction == 'changelog':
             from resources.lib import tools
             cConfig().setSetting('changelog_version', '')
@@ -366,6 +372,55 @@ def showMainMenu(sFunction):
         for folder in settingsGuiElements():
             oGui.addFolder(folder)
     oGui.setEndOfDirectory()
+
+
+def showDomainMenu(params):
+    """Listet die bekannten Adressen einer Quelle zum Umschalten auf.
+
+    Nuetzlich, wenn eine Adresse gesperrt wird (in Deutschland regelmaessig
+    per DNS-Sperre): die Quelle laeuft unter einer anderen Adresse weiter,
+    ohne dass der Nutzer dafuer in die Einstellungen wechseln muss.
+    """
+    from resources.lib import domains
+    sSiteName = params.getValue('site')
+    if sSiteName not in cPluginHandler().getPluginNames():
+        _rejectPluginRoute(sSiteName, 'showDomains', 'site is not a scraper module')
+        return
+    aAlternates = domains.getAlternates(sSiteName)
+    if not aAlternates:
+        cGui().showInfo()
+        return
+    sCurrent = domains.currentDomain(sSiteName)
+    oGui = cGui()
+    for sDomain in aAlternates:
+        # Die aktive Adresse wird markiert, sonst ist nicht erkennbar,
+        # welche gerade benutzt wird.
+        sTitle = ('[B]%s[/B]' % sDomain) if sDomain == sCurrent else sDomain
+        oGuiElement = cGuiElement(sTitle, sSiteName, 'setSiteDomain')
+        params.setParam('newDomain', sDomain)
+        oGui.addFolder(oGuiElement, params)
+    oGui.setEndOfDirectory()
+
+
+def setSiteDomain(params):
+    """Uebernimmt eine Adresse aus der hinterlegten Liste.
+
+    Die Pruefung liegt in domains.applyDomain(): ein Wert, der nicht in der
+    Liste steht, wird abgelehnt. Ein praeparierter plugin://-Link kann eine
+    Quelle damit nicht auf eine fremde Adresse umbiegen (vgl. S8).
+    """
+    from resources.lib import domains
+    sSiteName = params.getValue('site')
+    if sSiteName not in cPluginHandler().getPluginNames():
+        _rejectPluginRoute(sSiteName, 'setSiteDomain', 'site is not a scraper module')
+        return
+    sNewDomain = params.getValue('newDomain')
+    if domains.applyDomain(sSiteName, sNewDomain):
+        cGui().showInfo(cConfig().getLocalizedString(30835), sNewDomain)
+        # Die Liste zeigt danach die neue Markierung.
+        xbmc.executebuiltin('Container.Refresh')
+    else:
+        _rejectPluginRoute(sSiteName, 'setSiteDomain', 'domain not in allowlist')
 
 
 def vodGuiElements(sFunction): # Vod Menü

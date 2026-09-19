@@ -67,6 +67,7 @@ def load(): # Menu structure of the site plugin
     parms.setParam('sUrl', URL_SEARCH)
     parms.setParam('mediaType', '')
     oGui.addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'), parms)  # Search
+    oGui.addFolder(cGuiElement(cConfig().getLocalizedString(30836), SITE_IDENTIFIER, 'showDomains'), parms)  # Adresse wechseln
     oGui.setEndOfDirectory()
 
 

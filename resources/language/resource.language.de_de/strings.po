@@ -1823,3 +1823,11 @@ msgstr "Anime-Stream"
 msgctxt "#30834"
 msgid "4anime"
 msgstr "4anime"
+
+msgctxt "#30835"
+msgid "Domain switched"
+msgstr "Adresse gewechselt"
+
+msgctxt "#30836"
+msgid "Switch address"
+msgstr "Adresse wechseln"

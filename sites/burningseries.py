@@ -70,6 +70,7 @@ def load(): # Menu structure of the site plugin
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30506), SITE_IDENTIFIER, 'showValue'), params)    # Genre
     params.setParam('sUrl', URL_SERIES)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'), params)   # Search
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30836), SITE_IDENTIFIER, 'showDomains'), params)  # Adresse wechseln
     cGui().setEndOfDirectory()
 
 def showValue():

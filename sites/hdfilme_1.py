@@ -57,6 +57,7 @@ def load(): # Menu structure of the site plugin
     params.setParam('Value', 'Land')
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30538), SITE_IDENTIFIER, 'showValue'), params)  # Country
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'), params)   # Search
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30836), SITE_IDENTIFIER, 'showDomains'), params)  # Adresse wechseln
     cGui().setEndOfDirectory()
 
 
