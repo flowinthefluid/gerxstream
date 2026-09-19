@@ -134,7 +134,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         # Start Page Function
         isMatchSiteSearch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, 'class="navigation(.*?)</a></div>')
         if isMatchSiteSearch:
-            isMatch, aResult = cParser.parse(sHtmlContainer, r'<span>([\d]+)</span>.*?nav_ext">.*?r">([\d]+).*?href="([^"]+)')
+            isMatch, aResult = cParser.parse(sHtmlContainer, r'<span>([\d]+)</span>.*?nav_ext">.*?">([\d]+).*?href="([^"]+)')
             for sPageActive, sPageLast, sNextPage in aResult:
                 #sPageName = '[I]Seitensuche starten  >>> [/I] Seite ' + str(sPageActive) + ' von ' + str(sPageLast) + ' Seiten  [I]<<<[/I]'
                 sPageName = cConfig().getLocalizedString(30284) + str(sPageActive) + cConfig().getLocalizedString(30285) + str(sPageLast) + cConfig().getLocalizedString(30286)
@@ -326,7 +326,7 @@ def showHosters():
                         if 'CF-DDOS-GUARD aktiv' in sHtmlContent: # Wenn Request eine 403 zurückgibt dann überspringen
                             continue
                         else:
-                            pattern = r'RESOLUTION=.*?x(\d+).*?\n(index[^\n]+)'
+                            pattern = 'RESOLUTION=.*?x(\\d+).*?\n(index[^\n]+)'
                             isMatch, aResult = cParser.parse(sHtmlContent, pattern)
                     if isMatch:
                         for sQuality, sUrl in aResult:

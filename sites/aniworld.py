@@ -79,7 +79,7 @@ def showValue():
     sHtmlContent = oRequest.request()
     isMatch, sContainer = cParser.parseSingleResult(sHtmlContent, '<ul[^>]*class="%s"[^>]*>(.*?)<\\/ul>' % params.getValue('sCont'))
     if isMatch:
-        isMatch, aResult = cParser.parse(sContainer, r'<li>\s*<a[^>]*href="([^"]*)"[^>]*>(.*?)<\\/a>\s*<\\/li>')
+        isMatch, aResult = cParser.parse(sContainer, '<li>\\s*<a[^>]*href="([^"]*)"[^>]*>(.*?)<\\/a>\\s*<\\/li>')
     if not isMatch:
         cGui().showInfo()
         return
@@ -128,7 +128,7 @@ def showNewEpisodes(entryUrl=False, sGui=False):
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4 # HTML Cache Zeit 4 Stunden
     sHtmlContent = oRequest.request()
-    pattern = r'<div[^>]*class="col-md-[^"]*r"[^>]*>\s*<a[^>]*href="([^"]*)"[^>]*>\s*<strong>([^<]+)</strong>\s*<span[^>]*>([^<]+)</span>'
+    pattern = r'<div[^>]*class="col-md-[^"]*"[^>]*>\s*<a[^>]*href="([^"]*)"[^>]*>\s*<strong>([^<]+)</strong>\s*<span[^>]*>([^<]+)</span>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         if not sGui: oGui.showInfo()
@@ -250,13 +250,13 @@ def showEpisodes():
     isMatch, sContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
         if isMovieList == True:
-            pattern = r'<tr[^>]*data-episode-season-id=r"(\d+).*?<a href="([^"]+)">\s([^<]+).*?<strong>([^<]+)'
+            pattern = r'<tr[^>]*data-episode-season-id="(\d+).*?<a href="([^"]+)">\s([^<]+).*?<strong>([^<]+)'
             isMatch, aResult = cParser.parse(sContainer, pattern)
             if not isMatch:
-                pattern = r'<tr[^>]*data-episode-season-id=r"(\d+).*?<a href="([^"]+)">\s([^<]+).*?<span>([^<]+)'
+                pattern = r'<tr[^>]*data-episode-season-id="(\d+).*?<a href="([^"]+)">\s([^<]+).*?<span>([^<]+)'
                 isMatch, aResult = cParser.parse(sContainer, pattern)
         else:
-            pattern = r'<tr[^>]*data-episode-season-id=r"(\d+).*?<a href="([^"]+).*?(?:<strong>(.*?)</strong>.*?)?(?:<span>(.*?)</span>.*?)?<'
+            pattern = r'<tr[^>]*data-episode-season-id="(\d+).*?<a href="([^"]+).*?(?:<strong>(.*?)</strong>.*?)?(?:<span>(.*?)</span>.*?)?<'
             isMatch, aResult = cParser.parse(sContainer, pattern)
     if not isMatch:
         cGui().showInfo()
@@ -510,7 +510,7 @@ def getMetaInfo(link, title):   # Setzen von Metadata in Suche:
     if not sHtmlContent:
         return
 
-    pattern = r'seriesCoverBox">.*?<img src="([^"]+)r"\ al.+?data-full-description="([^"]+)"' #img , descr
+    pattern = r'seriesCoverBox">.*?<img src="([^"]+)"\ al.+?data-full-description="([^"]+)"' #img , descr
 
     aResult = cParser.parse(sHtmlContent, pattern)
 

@@ -115,10 +115,10 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
-    pattern = r'<article[^>]*>\s*<a href="([^"]+)" title="([^"]+)">\s*<img src=[r"\']([^"\']+)["\'][^>]*>(.*?)</article>'
+    pattern = '<article[^>]*>\\s*<a href="([^"]+)" title="([^"]+)">\\s*<img src=["\']([^"\']+)["\'][^>]*>(.*?)</article>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
-        pattern = r'<a[^>]*href="([^"]*)"[^>]*title="([^"]*)"[^>]*>[^<]*<img[^>]*src=[r"\']([^"\']*)["\'][^>]*>\s*</a>(\s*)</article>'
+        pattern = '<a[^>]*href="([^"]*)"[^>]*title="([^"]*)"[^>]*>[^<]*<img[^>]*src=["\']([^"\']*)["\'][^>]*>\\s*</a>(\\s*)</article>'
         isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         if not sGui: oGui.showInfo()
@@ -177,7 +177,7 @@ def showSeasons():
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
     sHtmlContent = oRequest.request()
-    pattern = r'<a[^>]*class="staffTab"[^>]*data-sid=r"(\d+)"[^>]*>'
+    pattern = r'<a[^>]*class="staffTab"[^>]*data-sid="(\d+)"[^>]*>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         cGui().showInfo()

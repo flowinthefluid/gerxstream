@@ -169,7 +169,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         # Start Page Function
         isMatchSiteSearch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, 'class="wp-pagenavi(.*?)Next')
         if isMatchSiteSearch:
-            isMatch, aResult = cParser.parse(sHtmlContainer,r'<span>([\d]+)</span>.*?nav_ext">.*?r">([\d]+)</a>.*?href="([^"]+)')
+            isMatch, aResult = cParser.parse(sHtmlContainer,r'<span>([\d]+)</span>.*?nav_ext">.*?">([\d]+)</a>.*?href="([^"]+)')
             for sPageActive, sPageLast, sNextPage in aResult:
                 # sPageName = '[I]Seitensuche starten  >>> [/I] Seite ' + str(sPageActive) + ' von ' + str(sPageLast) + ' Seiten  [I]<<<[/I]'
                 sPageName = cConfig().getLocalizedString(30284) + str(sPageActive) + cConfig().getLocalizedString(
@@ -220,7 +220,7 @@ def showSeries(entryUrl=False, sGui=False, sSearchText=False): # Neu eingebaut d
         oGui.addFolder(oGuiElement, params, isTvshow, total)
 
     if not sGui and not sSearchText:
-        isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, r'r"nav_ext.*?>\d[1-9]+<.*?href="([^"]+).*?</div>')
+        isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, r'"nav_ext.*?>\d[1-9]+<.*?href="([^"]+).*?</div>')
         if isMatchNextPage:
             params.setParam('sUrl', sNextUrl)
             oGui.addNextPage(SITE_IDENTIFIER, 'showSeries', params)

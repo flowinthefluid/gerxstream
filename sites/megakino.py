@@ -94,7 +94,7 @@ def showCollection():
     pattern = r'<div\s+class="side-block__title">Sammlung</div>(.*?)<div class="side-block\sjs'
     isMatch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
-        pattern = r'href="([^"]+)r"\s.*?title">([^<]+)'
+        pattern = r'href="([^"]+)"\s.*?title">([^<]+)'
         isMatch, aResult = cParser.parse(sHtmlContainer, pattern)
     if not isMatch:
         cGui().showInfo()
@@ -237,7 +237,7 @@ def showEpisodeHosters():
     sUrl = ParameterHandler().getValue('entryUrl')
     episodeId = 'ep' + ParameterHandler().getValue('episodeId')
     sHtmlContent = cRequestHandler(sUrl, bypass_dns=True, caching=False).request()
-    pattern = r'<select\s+name="pmovie__select-items"\s+class="[^"]+r"\s+style="[^"]+"\s+id="%s">\s*(.*?)\s*</select>' % episodeId
+    pattern = r'<select\s+name="pmovie__select-items"\s+class="[^"]+"\s+style="[^"]+"\s+id="%s">\s*(.*?)\s*</select>' % episodeId
     isMatch, sContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
         pattern = r'<option\s+value="([^"]+)">'

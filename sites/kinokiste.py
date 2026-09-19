@@ -164,7 +164,7 @@ def showEpisodes():
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
     sHtmlContent = oRequest.request()
-    pattern = r'<li\s+id="serie-([^"]+)r">\s*<a\s+href="#">([^<]+)</a>'
+    pattern = r'<li\s+id="serie-([^"]+)">\s*<a\s+href="#">([^<]+)</a>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
 
     isDesc, sDesc = cParser.parseSingleResult(sHtmlContent, '"description"[^>]content="([^"]+)')

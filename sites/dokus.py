@@ -365,7 +365,7 @@ def showThemen_6():
     params = ParameterHandler()
     oRequest = cRequestHandler(URL_MAIN_6)
     sHtmlContent = oRequest.request()
-    pattern = r'Themen</a>(.*?)class=r"\swp-block-navigation-item\shas-child open-on-hover-click\swp-block-navigation-submenu">'
+    pattern = r'Themen</a>(.*?)class="\swp-block-navigation-item\shas-child open-on-hover-click\swp-block-navigation-submenu">'
     isMatch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
         isMatch, aResult = cParser.parse(sHtmlContainer, 'href="([^"]+).*?>([^<]+)')

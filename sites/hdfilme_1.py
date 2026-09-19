@@ -139,7 +139,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         # Start Page Function
         isMatchSiteSearch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, 'class="pages">(.*?)<svg')
         if isMatchSiteSearch:
-            isMatch, aResult = cParser.parse(sHtmlContainer, r'<span>([\d]+)</span>.*?r">([\d]+)</a></div>.*?ref="([^"]+)')
+            isMatch, aResult = cParser.parse(sHtmlContainer, r'<span>([\d]+)</span>.*?">([\d]+)</a></div>.*?ref="([^"]+)')
             for sPageActive, sPageLast, sNextPage in aResult:
                 #sPageName = '[I]Seitensuche starten  >>> [/I] Seite ' + str(sPageActive) + ' von ' + str(sPageLast) + ' Seiten  [I]<<<[/I]'
                 sPageName = cConfig().getLocalizedString(30284) + str(sPageActive) + cConfig().getLocalizedString(30285) + str(sPageLast) + cConfig().getLocalizedString(30286)
