@@ -2386,6 +2386,85 @@
 					</control>
 				</setting>
 			</group>
+			<group id="animeloads" label="30799">
+				<setting id="plugin_animeloads" type="boolean" label="30050" help="30411">
+					<level>0</level>
+					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animeloads_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animeloads">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animeloads">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="global_search_animeloads" type="boolean" label="30052">
+					<level>0</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animeloads">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animeloads_checkDomain" type="boolean" label="30051">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animeloads">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animeloads_status" type="string" label="Dummy" help="">
+					<visible>false</visible>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animeloads_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animeloads">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animeloads">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_animeloads_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animeloads">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animeloads">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
+				<setting id="plugin_animeloads.domain" type="string" label="30278" help="">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animeloads">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animeloads">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30278</heading>
+					</control>
+				</setting>
+			</group>
 		</category>
 		<category id="indexsiteVoD" label="30407" help="">
 			<group id="plugin_vod_huhu" label="30790">

@@ -1807,3 +1807,7 @@ msgstr "FlareSolverr-Adresse"
 msgctxt "#30831"
 msgid "FlareSolverr runs a real browser and solves the check itself, so the session renews automatically instead of having to be entered again. Runs as a separate service, by default on http://127.0.0.1:8191."
 msgstr "FlareSolverr faehrt einen echten Browser und loest die Pruefung selbst - die Sitzung erneuert sich dadurch automatisch, statt erneut eingetragen werden zu muessen. Laeuft als eigener Dienst, standardmaessig unter http://127.0.0.1:8191."
+
+msgctxt "#30799"
+msgid "Anime-Loads"
+msgstr "Anime-Loads"
