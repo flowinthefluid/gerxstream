@@ -15,6 +15,7 @@ from resources.lib import pyaes
 from resources.lib.config import cConfig
 from xbmcvfs import translatePath
 from urllib.parse import quote, unquote, quote_plus, unquote_plus, urlparse
+import html
 from html.entities import name2codepoint
 from difflib import SequenceMatcher
 from functools import lru_cache
@@ -196,28 +197,46 @@ class cParser:
     def _get_compiled_pattern(pattern, flags=0):
         return re.compile(pattern, flags)
     
+    # Gewollte Faltungen auf ASCII. Alles andere wird nicht mehr von Hand
+    # abgebildet, sondern von html.unescape() aufgeloest (siehe unten).
+    #   stand hier frueher auf 'h' und machte aus "20:30 Uhr" ein
+    # "20:30hUhr" - es ist ein schmales geschuetztes Leerzeichen.
+    _ASCII_FOLDINGS = (
+        ('–', '-'),      # Halbgeviertstrich
+        ('…', '...'),    # Auslassungspunkte
+        ('∗', '*'),      # Asterisk-Operator
+        ('／', '/'),      # Schraegstrich in voller Breite
+        (' ', ' '),      # schmales geschuetztes Leerzeichen
+    )
+
+    _UNICODE_ESCAPE = re.compile(r'\\u([0-9a-fA-F]{4})')
+
     @staticmethod
     def _replaceSpecialCharacters(s):
         try:
-            # Umlaute Unicode konvertieren
-            for t in (('\\/', '/'), ('&amp;', '&'), ('\\u00c4', 'Ä'), ('\\u00e4', 'ä'),
-                ('\\u00d6', 'Ö'), ('\\u00f6', 'ö'), ('\\u00dc', 'Ü'), ('\\u00fc', 'ü'),
-                ('\\u00df', 'ß'), ('\\u2013', '-'), ('\\u00b2', '²'), ('\\u00b3', '³'),
-                ('\\u00e9', 'é'), ('\\u2018', '‘'), ('\\u201e', '„'), ('\\u201c', '“'),
-                ('\\u00c9', 'É'), ('\\u2026', '...'), ('\\u202f', 'h'), ('\\u2019', '’'),
-                ('\\u0308', '̈'), ('\\u00e8', 'è'), ('#038;', ''), ('\\u00f8', 'ø'),
-                ('／', '/'), ('\\u00e1', 'á'), ('&#8211;', '-'), ('&#8220;', '“'), ('&#8222;', '„'),
-                ('&#8217;', '’'), ('&#8230;', '…'), ('\\u00bc', '¼'), ('\\u00bd', '½'), ('\\u00be', '¾'),
-                ('\\u2153', '⅓'), ('\\u002A', '*')):
-                s = s.replace(*t)
+            # 1. JSON-Escapes, die als Rohtext in der Antwort stehen. Kommt
+            #    vor, wenn eine Quelle JSON in HTML einbettet.
+            s = s.replace('\\/', '/')
+            if '\\u' in s:
+                s = cParser._UNICODE_ESCAPE.sub(
+                    lambda m: chr(int(m.group(1), 16)), s)
 
-            # Umlaute HTML konvertieren
-            for h in (('\\/', '/'), ('&#x26;', '&'), ('&#039;', "'"), ("&#39;", "'"),
-                ('&#xC4;', 'Ä'), ('&#xE4;', 'ä'), ('&#xD6;', 'Ö'), ('&#xF6;', 'ö'),
-                ('&#xDC;', 'Ü'), ('&#xFC;', 'ü'), ('&#xDF;', 'ß') , ('&#xB2;', '²'),
-                ('&#xDC;', '³'), ('&#xBC;', '¼'), ('&#xBD;', '½'), ('&#xBE;', '¾'),
-                ('&#8531;', '⅓'), ('&#8727;', '*')):
-                s = s.replace(*h)
+            # 2. HTML-Entities. Die frueher handgepflegte Tabelle deckte 54
+            #    Faelle ab; html.unescape() kennt alle benannten und alle
+            #    numerischen. Sie enthielt ausserdem zwei Fehler: &#xDC; war
+            #    doppelt belegt und in der zweiten Zeile auf '³' statt 'Ü'
+            #    gemappt - gemeint war &#xB3;, weshalb '³' nie aufgeloest
+            #    wurde.
+            s = html.unescape(s)
+            # Doppelt kodierte Quellen (&amp;#038; -> &#038; -> &) brauchen
+            # einen zweiten Durchgang. Ohne verbliebene Entity ist
+            # html.unescape() ein No-op, der Test spart nur Arbeit.
+            if '&#' in s or '&amp;' in s:
+                s = html.unescape(s)
+
+            # 3. Gewollte Faltungen auf ASCII.
+            for src, dst in cParser._ASCII_FOLDINGS:
+                s = s.replace(src, dst)
         except Exception:
             pass
         return s

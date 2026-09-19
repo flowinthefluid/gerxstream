@@ -6,9 +6,10 @@ HTTP-Zugriff — so bleiben können oder ersetzt werden müssen.
 
 **Ergebnis vorweg: beide bleiben.** Ein Austausch wäre ein Framework-Wechsel und
 damit gegen die geltenden Arbeitsregeln; er wäre zudem nicht durch einen
-messbaren Gewinn gedeckt. Dafür fallen im Bestand sechs konkrete Mängel an, die
-unabhängig vom Framework behoben werden sollten. Vier davon ändern sichtbares
-Verhalten und sind deshalb hier zur Entscheidung gestellt statt umgesetzt.
+messbaren Gewinn gedeckt. Dafür fallen im Bestand konkrete Mängel an, die unabhängig vom
+Framework zu beheben sind. P1 und P3 sind umgesetzt, P2 bleibt bewusst
+dokumentiert statt geändert, H-A gehört in den Repo-Auftrag, P4 wurde bei der
+Umsetzung von P3 gefunden und steht noch offen.
 
 ---
 
@@ -83,9 +84,9 @@ Durchgang mit Sichtprüfung je Quelle.
 | Eintrag | Tabelle | Korrekt | Bewertung |
 |---|---|---|---|
 | `&#xDC;` | `³` | `Ü` | **Fehler.** Der Schlüssel ist doppelt belegt (vorher schon `Ü`), die zweite Zeile greift nie. Gemeint war ersichtlich `&#xB3;` → `³`. Folge: `³` als HTML-Entity wird nirgends aufgelöst. |
-| ` ` | `h` | schmales geschütztes Leerzeichen | **Fehler.** Aus „20:30 Uhr" wird „20:30hUhr". Offenbar ein Schnellschuss für eine einzelne Quelle. |
-| `&#8211;`, `–` | `-` | `–` | Absichtliche ASCII-Faltung, in Ordnung. |
-| `…` | `...` | `…` | Absichtliche ASCII-Faltung, in Ordnung. |
+| `U+202F` | `h` | schmales geschütztes Leerzeichen | **Fehler.** Aus „20:30 Uhr" wird „20:30hUhr". Offenbar ein Schnellschuss für eine einzelne Quelle. |
+| `&#8211;`, `\u2013` | `-` | `–` | Absichtliche ASCII-Faltung, in Ordnung. |
+| `\u2026` | `...` | `…` | Absichtliche ASCII-Faltung, in Ordnung. |
 | `&#8727;` | `*` | `∗` | Absichtliche ASCII-Faltung, in Ordnung. |
 | `\\/` | `/` | — | Doppelt aufgeführt, wirkungslos, harmlos. |
 
@@ -95,8 +96,7 @@ erreicht die Oberfläche unaufgelöst.
 
 **Vorschlag (verhaltensändernd):** zuerst `html.unescape()` laufen lassen, das
 sämtliche Entities korrekt und vollständig auflöst, und danach eine kurze,
-ausdrücklich als solche benannte Liste gewollter ASCII-Faltungen (`–` → `-`,
-`…` → `...`, `∗` → `*`). Das ersetzt 54 Zeilen durch etwa fünf, behebt die
+ausdrücklich als solche benannte Liste gewollter ASCII-Faltungen (`–` → `-`, `…` → `...`, `∗` → `*`). Das ersetzt 54 Zeilen durch etwa fünf, behebt die
 beiden Fehler und deckt alle übrigen Entities mit ab. Da sich sichtbare Titel
 ändern können, nicht ohne Freigabe.
 
@@ -167,8 +167,27 @@ und kann damit nie herabgestuft werden. Entspricht S3 und Entscheidung f).
 |---|---|---|
 | P1 | `_get_compiled_pattern` ohne Cache | behoben |
 | P2 | Uneinheitliche Regex-Flags zwischen `parse()` und `parseSingleResult()` | dokumentiert, Angleichung als eigener Durchgang vorgeschlagen |
-| P3 | Zeichentabelle: `&#xDC;`→`³` falsch, ` `→`h` falsch, 54 Fälle statt aller Entities | Vorschlag `html.unescape()`, **Freigabe nötig** |
+| P3 | Zeichentabelle: `&#xDC;`→`³` falsch, `U+202F`→`h` falsch, 54 Fälle statt aller Entities | **behoben** — freigegeben und umgesetzt, Gegentest über alle 54 Alt-Fälle |
 | H-A | `updateManager` umgeht die TLS-Richtlinie | in den Repo-Auftrag b) verschoben |
 | H-B | TLS-Standardwerte | geprüft, kein Befund |
 | — | Parser-Framework wechseln | abgelehnt, begründet |
 | — | HTTP-Framework wechseln | abgelehnt, begründet |
+
+---
+
+## 4. Nachtrag: waehrend der Umsetzung von P3 gefunden
+
+### P4 — `cUtil.unescape()` ist eine tote zweite Entity-Dekodierung
+
+[tools.py](../resources/lib/tools.py) enthaelt in `cUtil` eine zweite,
+handgeschriebene Entity-Aufloesung ueber `name2codepoint` und einen eigenen
+`fixup()`. Sie hat **keinen einzigen Aufrufer** im gesamten Projekt.
+
+Zusaetzlich steckt darin ein toter Python-2-Block: `text.decode('utf-8')` auf
+einem `str` wirft unter Python 3 `AttributeError`, was von einem umschliessenden
+`except Exception: pass` verschluckt wird.
+
+Nach der Umstellung von P3 auf `html.unescape()` gaebe es damit zwei
+Entity-Dekodierungen im selben Modul, von denen die zweite weder benutzt wird
+noch funktioniert. **Empfehlung: ersatzlos entfernen** (rund 30 Zeilen).
+Nicht mit P3 zusammen erledigt, weil es ein eigener Befund ist.
