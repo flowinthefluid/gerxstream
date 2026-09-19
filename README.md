@@ -1,16 +1,45 @@
 
-## Willkommen bei GerXStream für Kodi!
+<p align="center">
+  <img src="resources/clearlogo.png" alt="GerXStream" width="420">
+</p>
 
-GerXStream ist ein Video-Addon für Kodi. GerXStream dient als Suchmaschine für Filme und Serien auf verschiedenen Webseiten. GerXStream verfügt über eine intuitive und optisch ansprechende Benutzeroberfläche, wobei man direkt in den einzelnen Site-Plugins der Webseiten nach Streams suchen kann, oder alle Webseiten gemeinsam durchsucht.
-
-Wichtige lokale Installations- und Migrationshinweise stehen in [INSTALL.md](INSTALL.md).
-
-Sowohl der Funktionsumfang von GerXStream als auch das Angebot an Webseiten-Inhalten wird von den beteiligten Entwicklern stetig weiterentwickelt bzw. um neue Webseiten erweitert.
-
-Diese werden auch als Site-Plugins bezeichnet, welche auf die eigentlichen Quellen verweisen, die für das bereitgestellte Angebot verantwortlich sind! Der bereitgestellte Inhalt der Webseiten steht in keinem Bezug zu GerXStream oder den Entwicklern! GerXStream läuft ausschließlich unter Python 3. Zielplattform ist Kodi 22 „Piers", Kodi 21 „Omega" wird als Fallback unterstützt.
+<h1 align="center">GerXStream für Kodi</h1>
+<p align="center"><b>Eine Suchmaschine. Alle Quellen. Ein Klick.</b></p>
 
 ***
 
-### Herkunft
+## Warum GerXStream?
 
-GerXStream ist ein eigenständiger Fork von xStream (https://github.com/streamxstream) und wird unabhängig davon weiterentwickelt. Lizenz: GPL-3.0-only, siehe [license.txt](license.txt).
+Kein Wischen durch zehn Apps, kein Tab-Chaos im Browser. GerXStream durchsucht
+alle angebundenen Webseiten gleichzeitig — oder gezielt einzeln — und liefert
+Filme, Serien und Streams direkt in die gewohnte Kodi-Oberfläche.
+
+- 🔎 **Eine Suche, alle Quellen** – die globale Suche fragt alle Site-Plugins parallel ab
+- 🎬 **Filme & Serien** – vollständige Metadaten (Cover, Beschreibung, Bewertung, Cast, Erstausstrahlung, Serienstatus)
+- 🧩 **Site-Plugins** – jede Quelle ist ein eigenständiges, austauschbares Modul
+- 🛡️ **Sicherheit eingebaut** – striktes URL-Routing, TLS-Prüfung aktiv, kein `eval()` auf Fremddaten
+- 🇩🇪 **Deutsch zuerst** – Oberfläche und Fehlermeldungen auf Deutsch, Englisch als Fallback
+- ⚡ **Kodi 22 „Piers"** als Zielplattform, Kodi 21 „Omega" läuft als Fallback mit
+
+## Los geht's
+
+Installationsschritte, Voraussetzungen und Hinweise zur Datenübernahme stehen
+ausführlich in [INSTALL.md](INSTALL.md).
+
+## Wie es funktioniert
+
+Jede angebundene Webseite steckt in einem eigenen Site-Plugin unter [sites/](sites/).
+Diese Plugins liefern nur die Verknüpfung zur jeweiligen Quelle — der Inhalt der
+Webseiten selbst steht in keinerlei Bezug zu GerXStream oder den Entwickler:innen.
+Umfang und Angebot werden laufend erweitert und gepflegt.
+
+## Mitentwickeln
+
+GerXStream läuft ausschließlich unter Python 3. Wer eine neue Quelle anbinden
+oder an der Oberfläche mitbauen möchte, findet den technischen Überblick in
+[docs/CODING-PLAN.md](docs/CODING-PLAN.md).
+
+***
+
+Lizenz: GPL-3.0-only, siehe [license.txt](license.txt).
+
