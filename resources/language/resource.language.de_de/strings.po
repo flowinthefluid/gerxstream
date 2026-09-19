@@ -1839,3 +1839,11 @@ msgstr "Proxer.Me Konto"
 msgctxt "#30838"
 msgid "Proxer.Me"
 msgstr "Proxer.Me"
+
+msgctxt "#30839"
+msgid "Channels"
+msgstr "Sender"
+
+msgctxt "#30840"
+msgid "MediathekViewWeb"
+msgstr "MediathekViewWeb"

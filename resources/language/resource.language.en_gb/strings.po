@@ -1840,3 +1840,11 @@ msgstr ""
 msgctxt "#30838"
 msgid "Proxer.Me"
 msgstr ""
+
+msgctxt "#30839"
+msgid "Channels"
+msgstr ""
+
+msgctxt "#30840"
+msgid "MediathekViewWeb"
+msgstr ""
