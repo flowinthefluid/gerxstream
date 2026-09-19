@@ -1764,3 +1764,11 @@ msgstr ""
 msgctxt "#30824"
 msgid "Show categories in the main menu"
 msgstr ""
+
+msgctxt "#30795"
+msgid "ARD Mediathek"
+msgstr ""
+
+msgctxt "#30796"
+msgid "Arte"
+msgstr ""

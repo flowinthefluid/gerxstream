@@ -1763,3 +1763,11 @@ msgstr "Beliebte Schauspieler"
 msgctxt "#30824"
 msgid "Show categories in the main menu"
 msgstr "Kategorien im Hauptmenü anzeigen"
+
+msgctxt "#30795"
+msgid "ARD Mediathek"
+msgstr "ARD Mediathek"
+
+msgctxt "#30796"
+msgid "Arte"
+msgstr "Arte"
