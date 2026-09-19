@@ -24,14 +24,84 @@ Zusaetzlich: `sites/internetarchive.py` um eine deutschsprachige Auswahl
 (Filme, Anime, Dokumentationen, Stummfilme auf Deutsch) erweitert, statt eine
 neue Quelle daraus zu machen - archive.org war bereits abgedeckt.
 
-## 2. Bereits abgedeckt, nur die Standard-Domain repariert
+## 2. Domain-Alias oder eigenstaendiger Klon? (korrigiert)
 
-27 der genannten Adressen sind keine neuen Quellen, sondern zusaetzliche
-Domains fuer bereits vorhandene Plugins (z. B. `w11.kinox.to`,
-`www21.kinox.to` fuer `sites/kinox.py`). Ein Erreichbarkeitstest ergab dabei,
-dass 12 der 27 Standard-Domains selbst tot oder falsch waren - siehe den
-Commit "Standard-Domains auf geprueft erreichbare Werte setzen". Details dort,
-nicht hier wiederholt.
+**Diese Einschaetzung war zunaechst falsch.** Ich hatte 27 Adressen pauschal
+als "nur zusaetzliche Domains" eingeordnet, gestuetzt allein darauf, dass sie
+erreichbar sind und denselben Markennamen tragen. Der Nutzer hat
+widersprochen: gleicher Name und gleiches Piraten-CMS heisse nicht gleicher
+Betreiber, die Filmlinks dahinter seien andere. Das trifft zu.
+
+### Die belastbare Unterscheidung
+
+Erreichbarkeit sagt nichts. Aussagekraeftig ist der Fingerabdruck der
+Installation:
+
+| Signal | Bedeutung |
+|---|---|
+| gleicher Theme-Ordner (`/templates/<name>/`) | dieselbe Installation, echter Alias |
+| gleiche Stylesheet-Namen | dieselbe Installation, echter Alias |
+| 301-Weiterleitung aufeinander | echter Alias |
+| **anderer** Theme-Ordner bei gleichem Markennamen | **eigenstaendiger Betreiber** - eigener Katalog, eigene Hoster-Links, gehoert in ein eigenes Plugin |
+| anderes CMS (WordPress vs. DataLifeEngine) | eigenstaendiger Betreiber |
+
+### Was die Nachpruefung ergab
+
+Echte Aliase, per Fingerabdruck bestaetigt (jetzt als Umschaltmenue
+eingebaut, siehe `resources/lib/domains.py`):
+
+- `burningseries.ac` / `.cx` / `bs.cine.to` - identische Stylesheets
+- `w11.kinox.to` / `kinoz.to` / `www21.kinox.to` - identische Stylesheets
+- `hdfilme.to` / `.cafe` / `.bid` - identischer Theme-Ordner
+- `xcine.hair` / `xcine.online` - identischer Theme-Ordner
+- `streamcloud.download` / `.watch` - 301-Weiterleitung
+- `kinokiste.eu` -> `kinokiste.club`, `streamkiste.taxi` -> `.bid`,
+  `kkiste-io.skin` -> `.ink`, `megakino19.com` -> `megakino20.com`,
+  `7megakino.lol` -> `8megakino.com` - Weiterleitungen
+
+Eigenstaendige Betreiber unter gleichem Namen - der Nutzer hatte recht:
+
+- **Megakino**: `megakino.foo` laeuft auf WordPress, `8megakino.com` und
+  `megakino20.com` auf DataLifeEngine mit voellig anderer URL-Struktur.
+  Zwei Betreiber, ein Name.
+- **Streamkiste**: mindestens drei. `streamkiste.bid`/`.taxi` (DLE, Theme
+  "streamkiste"), `streamkiste.ae` (DLE, Theme "popcornie-dark", nennt sich
+  selbst "das Original"), `streamkiste.city` (WordPress).
+- **hdfilme**: `hd-filme.lol` (Theme `hdfilme1`) ist ein anderer Betreiber
+  als `hdfilme.to`/`.cafe` (Theme `hdfilme`). Die bestehende Trennung in
+  `hdfilme.py` und `hdfilme_1.py` war also bereits richtig.
+
+### Ein Domain-Squatting-Netzwerk, das alles verzerrt
+
+Dabei faellt ein Muster auf, das die urspruengliche Fehleinschaetzung
+ueberhaupt erst ermoeglicht hat: eine ganze Reihe abgelaufener Domains
+bekannter Marken laeuft heute auf **derselben anonymen Geruest-Seite** -
+identische Groesse (6326 Byte), identischer Titel "Watch Movies Online
+Free", reine JavaScript-Huelle ohne Inhalt.
+
+Betroffen und damit **keine echten Quellen**: `megakino.org`, `kkiste.eu`,
+`kinokiste.club`, `kinokiste.eu`, `movie2k.ag`, `movie4k.sx`,
+`streamkiste.sx`, `streamkiste.life`, `hdfilme.me`, `movie2k.ch`.
+
+Diese Domains antworten mit HTTP 200 und tragen den richtigen Namen - genau
+deshalb hatte mein erster Erreichbarkeitstest sie durchgewunken. Drei davon
+hatte ich sogar als "reparierte" Standardwerte eingetragen; das ist im
+Commit "Regression-Fix: drei eigene Domain-Defaults zeigten auf falsche
+Ziele" behoben. `streamcloud.my` war noch schlimmer - dort laeuft heute eine
+Gluecksspielseite.
+
+Daneben gibt es **SEO-Koederseiten**, die ueber eine Marke schreiben statt
+einen Katalog zu zeigen (`streamcloud.world`, `streamcloud.mom`,
+`kinokistetv.cv`, `streamkiste.autos`, diverse `*.bitbucket.io`). Auch
+diese sind keine Quellen.
+
+### Offen geblieben
+
+Fuer `kkiste.py` und `kinokiste.py` wurde bewusst **kein** neuer Standard
+gesetzt: alle geprueften Kandidaten waren Squat, Koederseite oder ein
+andersnamiger Betreiber (`kkiste-io`), dessen Markup hinter Cloudflare und
+ohne Archivaufnahmen nicht einsehbar war. Eine geratene Domain waere
+schlechter als eine ehrliche Luecke.
 
 ## 3. Login-gated, kein Scraping-Ziel
 
@@ -110,3 +180,7 @@ geschaffen: eine im Browser bestaetigte Sitzung (Cookie + User-Agent) laesst
 sich pro Quelle hinterlegen und wird automatisch wiederverwendet und bei
 Bedarf ueber einen optionalen FlareSolverr-Dienst erneuert. Details und
 Testergebnisse in den zugehoerigen Commits.
+
+Siehe auch: [LIVE-UND-BACKLOG.md](LIVE-UND-BACKLOG.md) fuer die Analyse der
+Live-Angebote (Sport, Live-TV, Live-Kino) und die zurueckgestellten
+Funktionswuensche.

@@ -139,3 +139,5 @@ enthalten.
 | Bot-Schutz (Cloudflare/DDoS-Guard) je Quelle | [resources/lib/handler/protection.py](../resources/lib/handler/protection.py) |
 | Kategorie-Engine (TMDB-gestuetzt) | [resources/lib/categories.py](../resources/lib/categories.py) |
 | Quellen-Recherche (gewuenscht, geprueft, abgelehnt) | [QUELLEN-RECHERCHE.md](QUELLEN-RECHERCHE.md) |
+| Alternative Adressen je Quelle | [resources/lib/domains.py](../resources/lib/domains.py) |
+| Live-Angebote und Backlog | [LIVE-UND-BACKLOG.md](LIVE-UND-BACKLOG.md) |
