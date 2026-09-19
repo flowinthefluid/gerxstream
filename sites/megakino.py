@@ -24,7 +24,7 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'megakino.org') # Domain Auswahl über die GerXStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', '8megakino.com') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -115,7 +115,9 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
-    pattern = '<a[^>]*class="poster grid-item.*?href="([^"]+).*?<img data-src="([^"]+).*?alt="([^"]+)".*?(.*?)</a>'
+    # data-src (Lazy-Load) und src (direktes Laden) kommen je nach Theme-
+    # Version vor - beide Domains dieses Netzwerks beobachtet.
+    pattern = '<a[^>]*class="poster grid-item.*?href="([^"]+).*?<img (?:data-src|src)="([^"]+).*?alt="([^"]+)".*?(.*?)</a>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         if not sGui: oGui.showInfo()
