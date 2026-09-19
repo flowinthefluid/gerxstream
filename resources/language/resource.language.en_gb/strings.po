@@ -1720,3 +1720,7 @@ msgstr ""
 msgctxt "#30814"
 msgid "Disables TLS certificate checks for this scraper. Enable only when its server has an invalid certificate."
 msgstr ""
+
+msgctxt "#30794"
+msgid "media.ccc.de"
+msgstr ""
