@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/Kodi-22%20Piers-5ad?style=flat-square" alt="Kodi 22">
   <img src="https://img.shields.io/badge/Kodi%2021-Omega%20unterstützt-3a7?style=flat-square" alt="Kodi 21">
   <img src="https://img.shields.io/badge/Python-3-blue?style=flat-square" alt="Python 3">
-  <img src="https://img.shields.io/badge/Quellen-27-7c3aed?style=flat-square" alt="27 Quellen">
+  <img src="https://img.shields.io/badge/Quellen-36-7c3aed?style=flat-square" alt="36 Quellen">
   <img src="https://img.shields.io/badge/Lizenz-GPL--3.0--only-green?style=flat-square" alt="GPL-3.0-only">
 </p>
 
@@ -34,7 +34,8 @@ Du wählst aus. Mehr ist es nicht.
 |---|---|
 | 🔎 **Globale Parallelsuche** | Alle Quellen auf einmal, sauber gedrosselt und jederzeit abbrechbar — Kodi bleibt bedienbar, auch wenn eine Seite hängt |
 | 🎬 **Echte Metadaten** | Cover, Fanart, Plot, Bewertung, Laufzeit, Genres, Cast, Erstausstrahlung und Serienstatus über TMDB |
-| 🧩 **27 Quellen, modular** | Jede Webseite ist ein eigenes, austauschbares Site-Plugin — kaputte Quelle raus, neue rein, ohne den Rest anzufassen |
+| 🧩 **36 Quellen, modular** | Jede Webseite ist ein eigenes, austauschbares Site-Plugin — kaputte Quelle raus, neue rein, ohne den Rest anzufassen |
+| 🗂️ **Kategorien statt nur "Neu"** | Genres, Sammlungen (MCU, Star Wars, …), Charts, Jahrzehnte und angesagte Schauspieler — TMDB-gespeist, wirkt über alle Quellen gleichzeitig |
 | 🎯 **Gezielt statt global** | Nur eine bestimmte Seite durchstöbern? Jede Quelle hat ihr eigenes Menü mit Genres, Jahren und A–Z |
 | 📺 **Mediatheken & Dokus** | Nicht nur Filme und Serien: Doku-Quellen und Kinderinhalte sind eigene Bereiche |
 | ⬇️ **Download & Weiterleitung** | Direkter Download oder Übergabe an JDownloader, JDownloader 2, MyJDownloader oder pyLoad |
