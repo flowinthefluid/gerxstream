@@ -72,6 +72,34 @@ GROUP_TEMPLATE = """\t\t\t<group id="{sid}" label="{label}">
 \t\t\t\t\t<default>true</default>
 \t\t\t\t\t<control type="toggle"/>
 \t\t\t\t</setting>
+\t\t\t\t<setting id="plugin_{sid}_bypassCookie" type="string" label="30826" help="30828">
+\t\t\t\t\t<level>3</level>
+\t\t\t\t\t<default/>
+\t\t\t\t\t<constraints>
+\t\t\t\t\t\t<allowempty>true</allowempty>
+\t\t\t\t\t</constraints>
+\t\t\t\t\t<dependencies>
+\t\t\t\t\t\t<dependency type="enable" operator="!is" setting="plugin_{sid}">false</dependency>
+\t\t\t\t\t\t<dependency type="visible" operator="!is" setting="plugin_{sid}">false</dependency>
+\t\t\t\t\t</dependencies>
+\t\t\t\t\t<control type="edit" format="string">
+\t\t\t\t\t\t<heading>30826</heading>
+\t\t\t\t\t</control>
+\t\t\t\t</setting>
+\t\t\t\t<setting id="plugin_{sid}_bypassUserAgent" type="string" label="30827" help="30828">
+\t\t\t\t\t<level>3</level>
+\t\t\t\t\t<default/>
+\t\t\t\t\t<constraints>
+\t\t\t\t\t\t<allowempty>true</allowempty>
+\t\t\t\t\t</constraints>
+\t\t\t\t\t<dependencies>
+\t\t\t\t\t\t<dependency type="enable" operator="!is" setting="plugin_{sid}">false</dependency>
+\t\t\t\t\t\t<dependency type="visible" operator="!is" setting="plugin_{sid}">false</dependency>
+\t\t\t\t\t</dependencies>
+\t\t\t\t\t<control type="edit" format="string">
+\t\t\t\t\t\t<heading>30827</heading>
+\t\t\t\t\t</control>
+\t\t\t\t</setting>
 \t\t\t\t<setting id="plugin_{sid}.domain" type="string" label="30278" help="">
 \t\t\t\t\t<level>3</level>
 \t\t\t\t\t<default/>

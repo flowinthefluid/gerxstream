@@ -1783,3 +1783,15 @@ msgstr "Anime Toast"
 msgctxt "#30825"
 msgid "German language selection"
 msgstr "Deutschsprachige Auswahl"
+
+msgctxt "#30826"
+msgid "Bot protection: cookie from the browser"
+msgstr "Bot-Schutz: Cookie aus dem Browser"
+
+msgctxt "#30827"
+msgid "Bot protection: matching user agent"
+msgstr "Bot-Schutz: passender User-Agent"
+
+msgctxt "#30828"
+msgid "Only needed if the source is behind Cloudflare or DDoS-Guard. Confirm the check once in your browser, then copy the cookie and the user agent here. Both belong together."
+msgstr "Nur noetig, wenn die Quelle hinter Cloudflare oder DDoS-Guard steht. Die Pruefung einmal im Browser bestaetigen, danach Cookie und User-Agent von dort hier eintragen. Beides gehoert zusammen."

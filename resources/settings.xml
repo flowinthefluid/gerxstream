@@ -295,6 +295,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_aniworld_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_aniworld">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_aniworld">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_aniworld_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_aniworld">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_aniworld">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_aniworld.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default>aniworld.to</default>
@@ -342,6 +370,34 @@
 						<dependency type="enable" operator="!is" setting="plugin_api_all">False</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_api_all_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_api_all">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_api_all">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_api_all_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_api_all">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_api_all">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_api_all.domain" type="string" label="30278" help="">
 					<level>0</level>
@@ -406,6 +462,34 @@
 						<dependency type="visible" operator="!is" setting="plugin_burningseries">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_burningseries_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_burningseries">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_burningseries">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_burningseries_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_burningseries">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_burningseries">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_burningseries.domain" type="string" label="30278" help="">
 					<level>3</level>
@@ -492,6 +576,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_einschalten_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_einschalten">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_einschalten">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_einschalten_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_einschalten">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_einschalten">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_einschalten.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -544,6 +656,34 @@
 						<dependency type="visible" operator="!is" setting="plugin_filmpalast">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_filmpalast_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_filmpalast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_filmpalast">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_filmpalast_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_filmpalast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_filmpalast">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_filmpalast.domain" type="string" label="30278" help="">
 					<level>3</level>
@@ -598,6 +738,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_hdfilme_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_hdfilme">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_hdfilme">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_hdfilme_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_hdfilme">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_hdfilme">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_hdfilme.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -651,6 +819,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_hdfilme_1_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_hdfilme_1">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_hdfilme_1">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_hdfilme_1_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_hdfilme_1">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_hdfilme_1">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_hdfilme_1.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -693,6 +889,34 @@
 						<dependency type="enable" operator="!is" setting="plugin_internetarchive">False</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_internetarchive_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_internetarchive">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_internetarchive">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_internetarchive_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_internetarchive">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_internetarchive">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_internetarchive_status" type="string" label="Dummy" help="">
 					<visible>false</visible>
@@ -768,6 +992,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_kinoger_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoger">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoger">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_kinoger_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoger">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoger">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_kinoger.domain" type="string" label="30051">
 					<level>3</level>
 					<default>kinoger.com</default>
@@ -823,6 +1075,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_kinokiste_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinokiste">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinokiste">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_kinokiste_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinokiste">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinokiste">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_kinokiste.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -875,6 +1155,34 @@
 						<dependency type="visible" operator="!is" setting="plugin_kinox">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinox_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinox">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinox">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_kinox_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinox">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinox">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_kinox.domain" type="string" label="30278" help="">
 					<level>3</level>
@@ -945,6 +1253,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_kkiste_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kkiste">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kkiste">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_kkiste_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kkiste">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kkiste">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_kkiste.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -997,6 +1333,34 @@
 						<dependency type="visible" operator="!is" setting="plugin_megakino">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_megakino_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_megakino">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_megakino">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_megakino_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_megakino">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_megakino">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_megakino.domain" type="string" label="30278" help="">
 					<level>3</level>
@@ -1051,6 +1415,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_moflix-stream_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_moflix-stream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_moflix-stream">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_moflix-stream_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_moflix-stream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_moflix-stream">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_moflix-stream.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -1104,6 +1496,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_movie2k_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_movie2k">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_movie2k">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_movie2k_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_movie2k">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_movie2k">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_movie2k.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -1156,6 +1576,34 @@
 						<dependency type="visible" operator="!is" setting="plugin_movie4k">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_movie4k_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_movie4k">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_movie4k">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_movie4k_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_movie4k">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_movie4k">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_movie4k.domain" type="string" label="30278" help="">
 					<level>3</level>
@@ -1234,6 +1682,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_serienstream_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_serienstream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_serienstream">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_serienstream_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_serienstream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_serienstream">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_serienstream.domain" type="string" label="30051">
 					<level>3</level>
 					<default>s.to</default>
@@ -1292,6 +1768,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_streamcloud_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_streamcloud">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_streamcloud">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_streamcloud_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_streamcloud">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_streamcloud">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_streamcloud.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -1344,6 +1848,34 @@
 						<dependency type="visible" operator="!is" setting="plugin_topstreamfilm">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_topstreamfilm_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_topstreamfilm">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_topstreamfilm">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_topstreamfilm_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_topstreamfilm">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_topstreamfilm">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_topstreamfilm.domain" type="string" label="30278" help="">
 					<level>3</level>
@@ -1398,6 +1930,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_xcine_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_xcine">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_xcine">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_xcine_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_xcine">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_xcine">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_xcine.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -1448,6 +2008,34 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_mediaccc_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_mediaccc">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_mediaccc">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_mediaccc_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_mediaccc">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_mediaccc">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_mediaccc.domain" type="string" label="30278" help="">
 					<level>3</level>
@@ -1500,6 +2088,34 @@
 					<default>true</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_ardmediathek_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_ardmediathek">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_ardmediathek">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_ardmediathek_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_ardmediathek">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_ardmediathek">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_ardmediathek.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -1550,6 +2166,34 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_arte_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_arte">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_arte">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_arte_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_arte">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_arte">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_arte.domain" type="string" label="30278" help="">
 					<level>3</level>
@@ -1602,6 +2246,34 @@
 					<default>true</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_kinoking_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoking">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoking">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_kinoking_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoking">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoking">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_kinoking.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -1653,6 +2325,34 @@
 					<default>true</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_animetoast_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animetoast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animetoast">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_animetoast_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animetoast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animetoast">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_animetoast.domain" type="string" label="30278" help="">
 					<level>3</level>
 					<default/>
@@ -1693,6 +2393,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_vod_huhu_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_huhu">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_huhu">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_vod_huhu_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_huhu">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_huhu">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_vod_huhu_status" type="string" label="Dummy" help="">
 					<visible>false</visible>
 					<default>true</default>
@@ -1721,6 +2449,34 @@
 						<dependency type="enable" operator="!is" setting="plugin_vod_kool">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_vod_kool_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_kool">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_kool">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_vod_kool_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_kool">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_kool">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_vod_kool_status" type="string" label="Dummy" help="">
 					<visible>false</visible>
@@ -1751,6 +2507,34 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="plugin_vod_oha_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_oha">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_oha">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_vod_oha_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_oha">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_oha">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
 				<setting id="plugin_vod_oha_status" type="string" label="Dummy" help="">
 					<visible>false</visible>
 					<default>true</default>
@@ -1779,6 +2563,34 @@
 						<dependency type="enable" operator="!is" setting="plugin_vod_vavoo">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_vod_vavoo_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_vavoo">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_vavoo">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_vod_vavoo_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vod_vavoo">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vod_vavoo">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_vod_vavoo_status" type="string" label="Dummy" help="">
 					<visible>false</visible>
@@ -2307,6 +3119,34 @@
 						<dependency type="enable" operator="!is" setting="plugin_testplugin">False</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_testplugin_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_testplugin">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_testplugin">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_testplugin_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_testplugin">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_testplugin">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
 				</setting>
 				<setting id="plugin_testplugin.domain" type="string" label="30278" help="">
 					<level>3</level>

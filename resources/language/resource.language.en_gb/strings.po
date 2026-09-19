@@ -1784,3 +1784,15 @@ msgstr ""
 msgctxt "#30825"
 msgid "German language selection"
 msgstr ""
+
+msgctxt "#30826"
+msgid "Bot protection: cookie from the browser"
+msgstr ""
+
+msgctxt "#30827"
+msgid "Bot protection: matching user agent"
+msgstr ""
+
+msgctxt "#30828"
+msgid "Only needed if the source is behind Cloudflare or DDoS-Guard. Confirm the check once in your browser, then copy the cookie and the user agent here. Both belong together."
+msgstr ""

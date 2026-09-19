@@ -7,13 +7,13 @@ import re
 import os
 import hashlib
 import json
-import traceback
 import ssl
 import socket
 import zlib
 import http.client
 
 from resources.lib.config import cConfig
+from resources.lib.handler import protection
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.tools import logger, cCache
 from xbmcvfs import translatePath
@@ -163,6 +163,26 @@ class cRequestHandler:
             self.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
         self.addHeaderEntry('Connection', 'keep-alive')
         self.addHeaderEntry('Keep-Alive', 'timeout=5')
+        self.__applyManualSession()
+
+    def __applyManualSession(self):
+        """Uebernimmt eine im Browser bestaetigte Sitzung, falls hinterlegt.
+
+        Cloudflare und DDoS-Guard binden ihr Cookie an den User-Agent, mit
+        dem es ausgestellt wurde. Deshalb wird der hinterlegte User-Agent
+        vorrangig vor dem zufaelligen verwendet - sonst ist das Cookie
+        wertlos.
+        """
+        siteId = ParameterHandler().getValue('site')
+        if not isinstance(siteId, str) or not siteId:
+            return
+        cookieHeader, userAgent = protection.getManualSession(siteId)
+        if userAgent:
+            self._USER_AGENT = userAgent
+            self.addHeaderEntry('User-Agent', userAgent)
+        if cookieHeader:
+            self.addHeaderEntry('Cookie', cookieHeader)
+            self._manualSessionSite = siteId
 
     @staticmethod
     def __getDefaultHandler(ssl_verify, ip=None):
@@ -175,6 +195,15 @@ class cRequestHandler:
             ssl_context.check_hostname = False
             ssl_context.verify_mode = ssl.CERT_NONE
             return [HTTPSHandler(context=ssl_context)]
+
+    @staticmethod
+    def __siteId():
+        """Kennung der aufrufenden Quelle, gegen dieselbe Regel geprueft
+        wie beim TLS-Opt-out."""
+        siteId = ParameterHandler().getValue('site')
+        if isinstance(siteId, str) and re.fullmatch(r'[a-z0-9_-]+', siteId):
+            return siteId
+        return ''
 
     @staticmethod
     def __isInsecureTLSAllowed():
@@ -269,6 +298,15 @@ class cRequestHandler:
             if e.code >= 400:
                 self._Status = str(e.code)
                 data = e.fp.read()
+                # Schutzsysteme zuerst pruefen: sie antworten mit 403 und
+                # einer Hinweisseite, die ohne diese Behandlung als leerer
+                # Inhalt in der Liste landet.
+                kind = protection.detect(data, e.headers, e.code)
+                if kind:
+                    # notifyOnce unterscheidet selbst, ob bereits eine
+                    # Sitzung hinterlegt ist (dann abgelaufen) oder nicht.
+                    protection.notifyOnce(self.__siteId(), kind, self._sUrl)
+                    return ''
                 if 'DDOS-GUARD' in str(data):
                     opener = build_opener(HTTPCookieProcessor(cookieJar))
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]
@@ -287,13 +325,13 @@ class cRequestHandler:
                         logger.error(' -> [requestHandler]: Failed DDOS-GUARD active: ' + self._sUrl)
                         return 'DDOS GUARD SCHUTZ'
                 elif 'cloudflare' in str(e.headers):
+                    # Frueher stand hier ein Fehlerdialog mit Traceback, aus
+                    # dem niemand ableiten konnte, was zu tun ist. Jetzt
+                    # erklaert der Hinweis den Weg ueber das Browser-Cookie.
                     if not self.ignoreErrors:
-                        trace_lines = traceback.format_exc().splitlines()
-                        trace_line = trace_lines[-3] if len(trace_lines) >= 3 else trace_lines[-1] if trace_lines else ''
-                        value = ('!!! CLOUDFLARE-SCHUTZ AKTIV !!! Weitere Informationen: ' + str(e.__class__.__name__) + ' : ' + str(e), str(trace_line.split('addons')[-1]))
-                        xbmcgui.Dialog().ok(cConfig().getLocalizedString(30166), str(value))  # Error
+                        protection.notifyOnce(self.__siteId(), protection.CLOUDFLARE, self._sUrl)
                     logger.error(' -> [requestHandler]: Failed Cloudflare active: ' + self._sUrl)
-                    return 'CLOUDFLARE-SCHUTZ AKTIV' # Meldung geht als "e.doc" in die exception nach default.py
+                    return ''
                 else:
                     if not self.ignoreErrors:
                         xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
