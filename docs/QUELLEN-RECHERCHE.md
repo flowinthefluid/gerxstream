@@ -72,15 +72,25 @@ veroeffentlichten Titel (The Odyssey), beide ohne jeden Streaming-Link.
 
 ## 5. Domain nicht sicher identifizierbar
 
-**Flixi** und **XCineRU** standen ohne eindeutige Domain auf der Liste. Ein
-Rateversuch (`flixi.cc`) traf auf eine themenfremde chinesische Seite -
-falsch geraten haette einen Nutzer auf die falsche Adresse geschickt, deshalb
-absichtlich nicht weiter geraten. XCineRU ist vermutlich ein weiterer Domain-
-Alias des bereits vorhandenen `sites/xcine.py` (wie `burningseries.ac` und
-`bs.cine.to` Aliase desselben Netzwerks sind), aber ohne bestaetigte Adresse
-nicht sauber zuzuordnen.
+**XCineRU** ist geklaert: eine Web-Recherche (kodi-tipps.de) bestaetigt,
+dass xCine bereits in die Indexseiten von xStream eingefuegt wurde, auf dem
+dieses Projekt aufbaut - XCineRU bezeichnet also keine neue Quelle, sondern
+das bereits vorhandene `sites/xcine.py`. Zwei zusaetzliche, live erreichbare
+Domains desselben Netzwerks gefunden (Stand dieser Recherche, HTTP 200):
+`xcine.hair`, `xcine.online`. Nicht als neuen Standard gesetzt, weil
+`cine.to` (siehe Domain-Fix-Commit) bereits erreichbar ist und ohne
+konkreten Ausfall kein Grund besteht, den gerade erst reparierten
+Standardwert erneut zu aendern - als bekannte Ausweichadressen hier
+vermerkt, falls `cine.to` kuenftig ausfaellt.
 
-**Ruecksprache noetig:** die genaue Adresse fuer beide.
+**Flixi** bleibt offen. Ein Rateversuch (`flixi.cc`) traf auf eine
+themenfremde chinesische Seite - falsch geraten haette einen Nutzer auf die
+falsche Adresse geschickt, deshalb nicht weiter geraten. Eine Websuche nach
+"Flixi Streaming Portal deutsch" fand keine eindeutige Uebereinstimmung,
+nur thematisch aehnliche, aber erkennbar andere Seiten (Flix-Deutsch,
+FlixFilm+, Flixio, Filmix).
+
+**Ruecksprache noetig:** die genaue Adresse fuer Flixi.
 
 ## 6. Bewusst nicht aufgenommen: Erwachseneninhalte
 
