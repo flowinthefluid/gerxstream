@@ -26,7 +26,7 @@ Wenn möglich füge ein oder mehrere Screenshots hinzu um den Fehler zu erkläre
 **Technische Informationen (Bitte die folgenden Infos vervollständigen):**
  - Hardware und Betriebssystem: [z.B. Nvidia Shield, Android TV 11]
  - Kodi Version: [z.B. Kodi 20]
- - Gerxstream Version: [z.B. 4.0.2~nightly1]
+ - GerXStream Version: [z.B. 1.0.0]
  - Resolver Version: [z.B. 5.1.8.9]
 
 **Zusätzliche Informationen**
