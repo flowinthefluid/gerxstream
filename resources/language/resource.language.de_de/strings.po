@@ -1771,3 +1771,11 @@ msgstr "ARD Mediathek"
 msgctxt "#30796"
 msgid "Arte"
 msgstr "Arte"
+
+msgctxt "#30797"
+msgid "KinoKing"
+msgstr "KinoKing"
+
+msgctxt "#30798"
+msgid "Anime Toast"
+msgstr "Anime Toast"

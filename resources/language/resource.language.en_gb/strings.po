@@ -1772,3 +1772,11 @@ msgstr ""
 msgctxt "#30796"
 msgid "Arte"
 msgstr ""
+
+msgctxt "#30797"
+msgid "KinoKing"
+msgstr ""
+
+msgctxt "#30798"
+msgid "Anime Toast"
+msgstr ""

@@ -1566,6 +1566,108 @@
 					</control>
 				</setting>
 			</group>
+			<group id="kinoking" label="30797">
+				<setting id="plugin_kinoking" type="boolean" label="30050" help="30411">
+					<level>0</level>
+					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinoking_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoking">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoking">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="global_search_kinoking" type="boolean" label="30052">
+					<level>0</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoking">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinoking_checkDomain" type="boolean" label="30051">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoking">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinoking_status" type="string" label="Dummy" help="">
+					<visible>false</visible>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinoking.domain" type="string" label="30278" help="">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoking">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoking">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30278</heading>
+					</control>
+				</setting>
+			</group>
+			<group id="animetoast" label="30798">
+				<setting id="plugin_animetoast" type="boolean" label="30050" help="30411">
+					<level>0</level>
+					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animetoast_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animetoast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animetoast">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="global_search_animetoast" type="boolean" label="30052">
+					<level>0</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animetoast">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animetoast_checkDomain" type="boolean" label="30051">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animetoast">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animetoast_status" type="string" label="Dummy" help="">
+					<visible>false</visible>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animetoast.domain" type="string" label="30278" help="">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animetoast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animetoast">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30278</heading>
+					</control>
+				</setting>
+			</group>
 		</category>
 		<category id="indexsiteVoD" label="30407" help="">
 			<group id="plugin_vod_huhu" label="30790">
