@@ -100,6 +100,9 @@ class cRequestHandler:
         self._cookiePath = ''
         self._Status = ''
         self._sResponseHeader = ''
+        # Verhindert eine Endlosschleife, falls die geloeste Sitzung
+        # ebenfalls abgelehnt wird.
+        self._protectionRetried = False
         self._ssl_verify = bool(ssl_verify)
         if self._ssl_verify and allow_insecure_tls and self.__isInsecureTLSAllowed():
             self._ssl_verify = False
@@ -173,16 +176,15 @@ class cRequestHandler:
         vorrangig vor dem zufaelligen verwendet - sonst ist das Cookie
         wertlos.
         """
-        siteId = ParameterHandler().getValue('site')
-        if not isinstance(siteId, str) or not siteId:
+        siteId = self.__siteId()
+        if not siteId:
             return
-        cookieHeader, userAgent = protection.getManualSession(siteId)
+        cookieHeader, userAgent = protection.getSession(siteId)
         if userAgent:
             self._USER_AGENT = userAgent
             self.addHeaderEntry('User-Agent', userAgent)
         if cookieHeader:
             self.addHeaderEntry('Cookie', cookieHeader)
-            self._manualSessionSite = siteId
 
     @staticmethod
     def __getDefaultHandler(ssl_verify, ip=None):
@@ -195,6 +197,32 @@ class cRequestHandler:
             ssl_context.check_hostname = False
             ssl_context.verify_mode = ssl.CERT_NONE
             return [HTTPSHandler(context=ssl_context)]
+
+    def __handleProtection(self, kind, sParameters=None):
+        """Reaktion auf eine erkannte Sperre.
+
+        Ist ein FlareSolverr-Dienst eingerichtet, wird die Pruefung dort
+        geloest und der Abruf genau einmal wiederholt - der Nutzer merkt
+        davon nichts. Sonst bleibt nur der Hinweis, wie sich die Sitzung von
+        Hand hinterlegen laesst.
+        """
+        siteId = self.__siteId()
+        if self._protectionRetried or not siteId:
+            protection.notifyOnce(siteId, kind, self._sUrl)
+            return ''
+        self._protectionRetried = True
+
+        cookieHeader, userAgent = protection.recover(siteId, self._sUrl)
+        if not cookieHeader:
+            protection.notifyOnce(siteId, kind, self._sUrl)
+            return ''
+
+        logger.info(' -> [requestHandler]: Sperre geloest, wiederhole %s' % self._sUrl)
+        if userAgent:
+            self._USER_AGENT = userAgent
+            self.addHeaderEntry('User-Agent', userAgent)
+        self.addHeaderEntry('Cookie', cookieHeader)
+        return self.request()
 
     @staticmethod
     def __siteId():
@@ -303,10 +331,7 @@ class cRequestHandler:
                 # Inhalt in der Liste landet.
                 kind = protection.detect(data, e.headers, e.code)
                 if kind:
-                    # notifyOnce unterscheidet selbst, ob bereits eine
-                    # Sitzung hinterlegt ist (dann abgelaufen) oder nicht.
-                    protection.notifyOnce(self.__siteId(), kind, self._sUrl)
-                    return ''
+                    return self.__handleProtection(kind, sParameters)
                 if 'DDOS-GUARD' in str(data):
                     opener = build_opener(HTTPCookieProcessor(cookieJar))
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]

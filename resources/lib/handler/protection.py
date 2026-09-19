@@ -19,7 +19,10 @@ Cookie an den User-Agent, mit dem es ausgestellt wurde. Wird nur das Cookie
 hinterlegt, laeuft die Pruefung sofort wieder an.
 """
 
+import json
+import os
 import re
+import time
 
 from resources.lib.config import cConfig
 from resources.lib.tools import logger
@@ -62,6 +65,83 @@ RELEVANT_COOKIES = {
 
 # Ein Hinweis je Quelle und Sitzung reicht.
 _notified = set()
+
+# Abgelegte Sitzungen: damit die Bestaetigung nicht bei jedem Kodi-Start
+# erneut noetig ist. Cloudflare setzt cf_clearance ueblicherweise auf einige
+# Stunden bis Tage; 12 Stunden sind ein Kompromiss zwischen "haelt lange" und
+# "merkt rechtzeitig, dass es abgelaufen ist".
+SESSION_FILE = 'protection_sessions.json'
+SESSION_MAX_AGE = 12 * 60 * 60
+
+_sessionCache = None
+
+
+def _sessionPath():
+    profile = cConfig().getAddonInfo('profile')
+    try:
+        from xbmcvfs import translatePath
+        profile = translatePath(profile)
+    except Exception:
+        pass
+    return os.path.join(profile, SESSION_FILE)
+
+
+def _loadStore():
+    global _sessionCache
+    if _sessionCache is not None:
+        return _sessionCache
+    _sessionCache = {}
+    path = _sessionPath()
+    try:
+        if os.path.isfile(path):
+            with open(path, encoding='utf-8') as handle:
+                data = json.load(handle)
+            if isinstance(data, dict):
+                _sessionCache = data
+    except Exception as exc:
+        logger.info('-> [protection]: Sitzungsspeicher nicht lesbar: %s' % exc)
+    return _sessionCache
+
+
+def _saveStore(store):
+    path = _sessionPath()
+    try:
+        directory = os.path.dirname(path)
+        if directory and not os.path.isdir(directory):
+            os.makedirs(directory, exist_ok=True)
+        with open(path, 'w', encoding='utf-8') as handle:
+            json.dump(store, handle)
+    except Exception as exc:
+        logger.info('-> [protection]: Sitzungsspeicher nicht schreibbar: %s' % exc)
+
+
+def storeSession(siteId, cookieHeader, userAgent, kind=''):
+    """Haelt eine funktionierende Sitzung ueber Neustarts hinweg fest."""
+    if not siteId or not cookieHeader:
+        return
+    store = _loadStore()
+    store[siteId] = {'cookie': cookieHeader, 'userAgent': userAgent or '',
+                     'kind': kind, 'ts': int(time.time())}
+    _saveStore(store)
+    logger.info('-> [protection]: Sitzung fuer %s gespeichert' % siteId)
+
+
+def loadSession(siteId):
+    """Gespeicherte Sitzung, sofern noch nicht zu alt."""
+    entry = _loadStore().get(siteId)
+    if not isinstance(entry, dict):
+        return '', ''
+    if int(time.time()) - int(entry.get('ts') or 0) > SESSION_MAX_AGE:
+        return '', ''
+    return entry.get('cookie') or '', entry.get('userAgent') or ''
+
+
+def dropSession(siteId):
+    """Verwirft eine Sitzung, die von der Gegenstelle abgelehnt wurde."""
+    store = _loadStore()
+    if store.pop(siteId, None) is not None:
+        _saveStore(store)
+        logger.info('-> [protection]: abgelaufene Sitzung fuer %s verworfen' % siteId)
 
 
 def _settingName(siteId, suffix):
@@ -127,6 +207,63 @@ def parseCookieString(value):
     return cookies
 
 
+def flaresolverrUrl():
+    """Adresse eines FlareSolverr-Dienstes, falls eingerichtet.
+
+    FlareSolverr faehrt einen echten Browser und loest die Pruefung dort.
+    Damit erneuert sich die Sitzung von selbst, sobald sie ablaeuft - das
+    ist der Unterschied zwischen "einmal eintragen" und "bei jedem Start
+    erneut bestaetigen".
+    """
+    if not cConfig().getSettingBool('flaresolverrEnabled', False):
+        return ''
+    url = (cConfig().getSetting('flaresolverrUrl') or '').strip()
+    if not url:
+        return ''
+    if not url.startswith('http'):
+        url = 'http://' + url
+    return url.rstrip('/')
+
+
+def solveWithFlaresolverr(siteId, targetUrl, timeout=60):
+    """Laesst FlareSolverr die Pruefung loesen. Liefert (cookie, userAgent)."""
+    endpoint = flaresolverrUrl()
+    if not endpoint or not targetUrl:
+        return '', ''
+    payload = json.dumps({'cmd': 'request.get', 'url': targetUrl,
+                          'maxTimeout': timeout * 1000}).encode('utf-8')
+    try:
+        # Bewusst urllib statt cRequestHandler: dieser Aufruf geht an einen
+        # lokalen Dienst und darf nicht selbst wieder durch die
+        # Schutzerkennung laufen.
+        from urllib.request import Request, urlopen
+        request = Request(endpoint + '/v1', data=payload,
+                          headers={'Content-Type': 'application/json'})
+        with urlopen(request, timeout=timeout + 10) as response:
+            data = json.loads(response.read().decode('utf-8'))
+    except Exception as exc:
+        logger.info('-> [protection]: FlareSolverr nicht erreichbar (%s): %s'
+                    % (endpoint, exc))
+        return '', ''
+
+    if data.get('status') != 'ok':
+        logger.info('-> [protection]: FlareSolverr meldet %s: %s'
+                    % (data.get('status'), str(data.get('message'))[:180]))
+        return '', ''
+
+    solution = data.get('solution') or {}
+    cookies = solution.get('cookies') or []
+    header = '; '.join('%s=%s' % (c.get('name'), c.get('value'))
+                       for c in cookies
+                       if isinstance(c, dict) and c.get('name'))
+    userAgent = solution.get('userAgent') or ''
+    if header:
+        storeSession(siteId, header, userAgent, 'flaresolverr')
+        logger.info('-> [protection]: FlareSolverr hat %s geloest (%d Cookies)'
+                    % (siteId, len(cookies)))
+    return header, userAgent
+
+
 def getManualSession(siteId):
     """Hinterlegtes Cookie und User-Agent einer Quelle.
 
@@ -146,6 +283,39 @@ def getManualSession(siteId):
 def hasManualSession(siteId):
     header, _ = getManualSession(siteId)
     return bool(header)
+
+
+def getSession(siteId):
+    """Die zu verwendende Sitzung, in dieser Reihenfolge:
+
+    1. was der Nutzer ausdruecklich eingetragen hat,
+    2. eine gespeicherte, noch gueltige Sitzung,
+    3. nichts - dann wird erst beim Blockieren geloest.
+
+    Punkt 2 ist der Grund, warum nach dem ersten Mal keine erneute
+    Bestaetigung noetig ist.
+    """
+    if not siteId or not re.fullmatch(r'[a-z0-9_-]+', str(siteId)):
+        return '', ''
+    header, userAgent = getManualSession(siteId)
+    if header:
+        return header, userAgent
+    return loadSession(siteId)
+
+
+def recover(siteId, targetUrl):
+    """Nach einer erkannten Sperre eine neue Sitzung beschaffen.
+
+    Eine gespeicherte Sitzung, die gerade abgelehnt wurde, ist wertlos und
+    wird verworfen - sonst wuerde sie bei jedem Abruf erneut probiert.
+    Liefert (cookie, userAgent) oder ('', ''), wenn nichts zu holen ist.
+    """
+    if not siteId:
+        return '', ''
+    dropSession(siteId)
+    if not flaresolverrUrl():
+        return '', ''
+    return solveWithFlaresolverr(siteId, targetUrl)
 
 
 def notifyOnce(siteId, kind, url=''):

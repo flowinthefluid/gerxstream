@@ -1796,3 +1796,15 @@ msgstr ""
 msgctxt "#30828"
 msgid "Only needed if the source is behind Cloudflare or DDoS-Guard. Confirm the check once in your browser, then copy the cookie and the user agent here. Both belong together."
 msgstr ""
+
+msgctxt "#30829"
+msgid "Use FlareSolverr for bot protection"
+msgstr ""
+
+msgctxt "#30830"
+msgid "FlareSolverr address"
+msgstr ""
+
+msgctxt "#30831"
+msgid "FlareSolverr runs a real browser and solves the check itself, so the session renews automatically instead of having to be entered again. Runs as a separate service, by default on http://127.0.0.1:8191."
+msgstr ""

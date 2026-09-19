@@ -18,6 +18,24 @@
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="flaresolverrEnabled" type="boolean" label="30829" help="30831">
+					<level>3</level>
+					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="flaresolverrUrl" type="string" label="30830" help="30831">
+					<level>3</level>
+					<default>http://127.0.0.1:8191</default>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="flaresolverrEnabled">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30830</heading>
+					</control>
+				</setting>
 				<setting id="replacefanart" type="boolean" label="30019" help="">
 					<level>0</level>
 					<default>True</default>
