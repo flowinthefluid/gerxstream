@@ -38,7 +38,7 @@ def _writeMarker(marker_path, content):
         with open(marker_path, mode='w', encoding='utf-8') as marker_file:
             marker_file.write(content)
     except Exception as e:
-        log('[tools] Failed to write marker %s: %s' % (marker_path, e), LOGERROR)
+        xbmc.log('[tools] Failed to write marker %s: %s' % (marker_path, e), xbmc.LOGERROR)
 
 
 def migrateLegacyAddonData():
@@ -70,7 +70,7 @@ def migrateLegacyAddonData():
                     shutil.copy2(src_file, dst_file)
                     copied_files += 1
                 except Exception as e:
-                    log('[tools] Could not migrate %s: %s' % (src_file, e), LOGERROR)
+                    xbmc.log('[tools] Could not migrate %s: %s' % (src_file, e), xbmc.LOGERROR)
 
     marker_content = 'migrated_from=%s\ntime=%s\nfiles=%s\n' % (
         LEGACY_ADDON_ID,
@@ -78,7 +78,7 @@ def migrateLegacyAddonData():
         copied_files)
     _writeMarker(marker_path, marker_content)
     if copied_files:
-        log('[tools] Migrated %s addon_data files from %s to %s' % (copied_files, LEGACY_ADDON_ID, CURRENT_ADDON_ID), LOGDEBUG)
+        xbmc.log('[tools] Migrated %s addon_data files from %s to %s' % (copied_files, LEGACY_ADDON_ID, CURRENT_ADDON_ID), xbmc.LOGINFO)
     return copied_files > 0
 
 
