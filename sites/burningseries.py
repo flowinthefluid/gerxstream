@@ -1,9 +1,9 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 
 # Always pay attention to the translations in the menu!
 
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showValue:     24 Stunden
 # showAllSeries: 24 Stunden
 # showEpisodes:   24 Stunden
@@ -39,7 +39,7 @@ if cConfig().getSetting('2captcha.pass') == '':
     logger.info('-> [SitePlugin]: 2Captcha API Key not set')
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'bs.to') # Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'bs.to') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -142,8 +142,8 @@ def showAllSeries(entryUrl=False, sGui=False, sSearchText=False):
     #logger.info('BurningSeries: showAllSeries: entryUrl request done: %s, sSearchText: %s' % (entryUrl, sSearchText))
 
     # pattern = '<a[^>]*href="(serie\\/[^"]*)"\\stitle="(.*?)"[^>]*>.*</a>' # Original Pattern funktioniert
-    # Optimiertes Pattern: weniger Backtracking, keine unnÃ¶tigen Gruppen, kein .* am Ende
-    # UrsprÃ¼nglich: pattern = '<a[^>]*href="(serie\/[^"]*)"[^>]*title="([^"]*)"'
+    # Optimiertes Pattern: weniger Backtracking, keine unnötigen Gruppen, kein .* am Ende
+    # Ursprünglich: pattern = '<a[^>]*href="(serie\/[^"]*)"[^>]*title="([^"]*)"'
     # Optimiert:
     pattern = r'<a[^>]+href="(serie/[^"]+)"[^>]+title="([^"]+)"'
 
@@ -348,11 +348,11 @@ def showHosters():
     sQuality = '720'
     if isMatch:
         for sUrl, sName in aResult:
-            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
             # sLanguage = cConfig().getSetting('prefLanguage')
             sName = sName.strip()
 
-            hoster = {'link': [sUrl, sName], 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'quality': sQuality, 'languageCode': sLang} # Language Code fÃ¼r hoster.py Sprache Prio
+            hoster = {'link': [sUrl, sName], 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'quality': sQuality, 'languageCode': sLang} # Language Code für hoster.py Sprache Prio
             hosters.append(hoster)
         if hosters:
             hosters.append('getHosterUrl')

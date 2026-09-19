@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showValue:     48 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
@@ -24,7 +24,7 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www.movie4k.food') # Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www.movie4k.food') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -104,7 +104,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
             continue
         isInfoEpisode, sInfo = cParser.parseSingleResult(sInfo, r'</span>([\d]+)')  # Episodenanzahl
         isThumbnail, sThumbnail = cParser.parseSingleResult(sDummy, 'data-src="([^"]+)')  # Thumbnail
-        isQuality, sQuality = cParser.parseSingleResult(sDummy, '<li>([^<]+)')  # QualitÃ¤t
+        isQuality, sQuality = cParser.parseSingleResult(sDummy, '<li>([^<]+)')  # Qualität
         isYear, sYear = cParser.parseSingleResult(sDummy, r'class="white">([\d]+)')  # Release Jahr
         isTvshow = True if 'taffel' in sName else False
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showEpisodes' if isTvshow else 'showHosters')
@@ -123,7 +123,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         params.setParam('sThumbnail', sThumbnail)
         oGui.addFolder(oGuiElement, params, isTvshow, total)
     if not sGui and not sSearchText and not sSearchPageText:
-        isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'NÃ¤chste[^>]Seite">[^>]*<a[^>]href="([^"]+)')
+        isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'Nächste[^>]Seite">[^>]*<a[^>]href="([^"]+)')
         # Start Page Function
         isMatchSiteSearch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, 'class="row page_numbers">(.*?)</div></div></div>')
         if isMatchSiteSearch:
@@ -190,7 +190,7 @@ def showHosters():
             elif sUrl.startswith('//'):
                 sUrl = 'https:' + sUrl
             sName = cParser.urlparse(sUrl).split('.')[0].strip()
-            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+            if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
             hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I][%s][/I]' % (sName, sQuality), 'quality': sQuality}
             hosters.append(hoster)
     if hosters:
@@ -213,11 +213,11 @@ def _search(oGui, sSearchText):
     showEntries(URL_SEARCH % cParser.quotePlus(sSearchText), oGui, sSearchText)
 
 
-def showSearchPage(): # Suche fÃ¼r die Page Funktion
+def showSearchPage(): # Suche für die Page Funktion
     params = ParameterHandler()
-    sNextPage = params.getValue('sNextPage') # URL mit nÃ¤chster Seite
+    sNextPage = params.getValue('sNextPage') # URL mit nächster Seite
     sPageLast = params.getValue('sPageLast') # Anzahl gefundener Seiten
-    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wÃ¤hlen.'
+    #sHeading = 'Bitte eine Zahl zwischen 1 und ' + str(sPageLast) + ' wählen.'
     sHeading = cConfig().getLocalizedString(30282) + str(sPageLast)
     sSearchPageText = cGui().showKeyBoard(sHeading=sHeading)
     if not sSearchPageText: return

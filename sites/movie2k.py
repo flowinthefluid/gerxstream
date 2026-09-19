@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
 
@@ -30,7 +30,7 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www2.movie2k.ch') # Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www2.movie2k.ch') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -45,7 +45,7 @@ def load():
     logger.info('Load %s' % SITE_NAME)
     params = ParameterHandler()
     sLanguage = cConfig().getSetting('prefLanguage')
-    # Ã„nderung des Sprachcodes nach voreigestellter Sprache
+    # Änderung des Sprachcodes nach voreigestellter Sprache
     if sLanguage == '0':  # prefLang Alle Sprachen
         sLang = 'all'
     if sLanguage == '1':  # prefLang Deutsch
@@ -264,7 +264,7 @@ def showHosters():
                     isMatch, aName = cParser.parse(stream['stream'], '//([^/]+)/')
                     if isMatch:
                         sName = aName[0][:aName[0].rindex('.')]
-                        if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+                        if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
                         sHoster = sHoster + ' ' + sName
                     if 'release' in stream and str(stream['release']) != '':
                         sHoster = sHoster + ' [I][' + _getQuality(stream['release']) + '][/I]'

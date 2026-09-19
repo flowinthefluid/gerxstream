@@ -1,8 +1,8 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showGenre:     48 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden

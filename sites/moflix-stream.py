@@ -1,11 +1,11 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showEntries:    6 Stunden
 # showSeasons:    6 Stunden
 # showEpisodes:   4 Stunden
-# Seite vollstÃ¤ndig mit JSON erstellt
+# Seite vollständig mit JSON erstellt
 
 
 import json
@@ -27,7 +27,7 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'moflix-stream.xyz') # Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'moflix-stream.xyz') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -121,7 +121,7 @@ def showEntries(entryUrl=False, sGui=False):
         if not sGui: oGui.showInfo()
         return
     for i in aResults:
-        sId = str(i['id'])  # ID des Films / Serie fÃ¼r die weitere URL
+        sId = str(i['id'])  # ID des Films / Serie für die weitere URL
         sName = str(i['name'])  # Name des Films / Serie
         if 'is_series' in i: isTvshow = i['is_series']  # Wenn True dann Serie
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
@@ -141,7 +141,7 @@ def showEntries(entryUrl=False, sGui=False):
         if 'rating' in i and i['rating'] != None: 
             oGuiElement.addItemValue('rating', str(i['rating']))  # Suche nach Rating wenn nicht leer dann setze GuiElement
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
-        # Parameter Ã¼bergeben
+        # Parameter übergeben
         params.setParam('entryUrl', URL_HOSTER % sId)
         params.setParam('sThumbnail', i['poster'])
         params.setParam('sName', sName)
@@ -181,7 +181,7 @@ def showSeasons(sGui=False):
         if not sGui: oGui.showInfo()
         return
     for i in aResults:
-        sId = str(i['title_id']) # ID Ã¤ndert sich !!!
+        sId = str(i['title_id']) # ID ändert sich !!!
         sSeasonNr = str(i['number']) # Staffel Nummer
         oGuiElement = cGuiElement('Staffel ' + sSeasonNr, SITE_IDENTIFIER, 'showEpisodes')
         oGuiElement.setMediaType('season')
@@ -208,7 +208,7 @@ def showEpisodes(sGui=False):
     # Parameter laden
     sId = params.getValue('sId')
     sSeasonNr = params.getValue('sSeasonNr')
-    sUrl = URL_MAIN + 'api/v1/titles/%s/seasons/%s/episodes?perPage=100&query=&page=1' % (sId, sSeasonNr) #Hep 02.12.23: Abfrage fÃ¼r einzelne Episoden per query force auf 100 erhÃ¶ht
+    sUrl = URL_MAIN + 'api/v1/titles/%s/seasons/%s/episodes?perPage=100&query=&page=1' % (sId, sSeasonNr) #Hep 02.12.23: Abfrage für einzelne Episoden per query force auf 100 erhöht
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('Referer', sUrl)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
@@ -260,7 +260,7 @@ def showSearchEntries(entryUrl=False, sGui=False, sSearchText=''):
     isTvshow = False
     for i in aResults:
         if 'person' in i['model_type']: continue # Personen in der Suche ausblenden
-        sId = str(i['id'])   # ID des Films / Serie fÃ¼r die weitere URL
+        sId = str(i['id'])   # ID des Films / Serie für die weitere URL
         sName = str(i['name']) # Name des Films / Serie
         sYear = str(i['release_date'].split('-')[0].strip())
         if sSearchText.lower() and not cParser.search(sSearchText, sName.lower()): continue
@@ -302,9 +302,9 @@ def showHosters(sGui=False):
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # Wenn Suche erfolglos - Abbruch
     if ParameterHandler().getValue('mediaType') == 'movie': #Bei MediaTyp Filme nutze das Result
-        aResults = jSearch['title']['videos'] # Ausgabe der Suchresultate von jSearch fÃ¼r Filme
+        aResults = jSearch['title']['videos'] # Ausgabe der Suchresultate von jSearch für Filme
     else:
-        aResults = jSearch['episode']['videos'] # Ausgabe der Suchresultate von jSearch fÃ¼r Episoden
+        aResults = jSearch['episode']['videos'] # Ausgabe der Suchresultate von jSearch für Episoden
     # total = len(aResults)  # Anzahl aller Ergebnisse
     if len(aResults) == 0:
         if not sGui: oGui.showInfo()
@@ -318,7 +318,7 @@ def showHosters(sGui=False):
             sName = cParser.urlparse(sUrl)
         else:
             sName = str(i['name'].split('-')[0].strip())
-        if cConfig().isBlockedHoster(sUrl)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+        if cConfig().isBlockedHoster(sUrl)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
         if 'youtube' in sUrl: continue # Trailer ausblenden
         hoster = {'link': sUrl, 'name': sName, 'displayedName': '%s [I][%s][/I]' % (sName, sQuality), 'quality': sQuality}
         hosters.append(hoster)

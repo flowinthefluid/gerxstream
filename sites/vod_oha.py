@@ -1,8 +1,8 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showGenre:     48 Stunden
 # showEntries:    6 Stunden
 # showSeasons:    6 Stunden
@@ -48,7 +48,7 @@ def load():  # Menu structure of the site plugin
     logger.info('Load %s' % SITE_NAME)
     params = ParameterHandler()
     params.setParam('icon', SITE_ICON)
-    params.setParam('sUrl', URL_VALUE % 'movie.popular') # Url (.null.1) fÃ¼r Seiten Aufbau 60 EintrÃ¤ge pro Seite weiter in +3er Schritten (.null.4) 1/4/7/10/13 usw.
+    params.setParam('sUrl', URL_VALUE % 'movie.popular') # Url (.null.1) für Seiten Aufbau 60 Einträge pro Seite weiter in +3er Schritten (.null.4) 1/4/7/10/13 usw.
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30521), SITE_IDENTIFIER, 'showEntries'), params)  # Popular Movies
     params.setParam('sUrl', URL_VALUE % 'movie.trending')
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30545), SITE_IDENTIFIER, 'showEntries'), params)  # Trending Movies
@@ -78,7 +78,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # Wenn Suche erfolglos - Abbruch
     aResults = jSearch['data']
-    sNextUrl = jSearch['next'] # FÃ¼r die nÃ¤chste Seite
+    sNextUrl = jSearch['next'] # Für die nächste Seite
     total = len(aResults)
     if len(aResults) == 0:
         if not sGui: oGui.showInfo()
@@ -87,7 +87,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     for i in aResults:
         if sSearchText and not cParser.search(sSearchText, i['name']):
             continue
-        sId = str(i['id'])  # ID des Films / Serie fÃ¼r die weitere URL
+        sId = str(i['id'])  # ID des Films / Serie für die weitere URL
         sName = str(i['name'])  # Name des Films / Serie
         isTvshow = True if 'series' in i['id'] else False
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
@@ -104,7 +104,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         else:
             oGuiElement.setFanart('default.png')
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
-        # Parameter Ã¼bergeben
+        # Parameter übergeben
         params.setParam('sUrl', URL_ITEM % sId)
         params.setParam('sId', sId)
         params.setParam('sName', sName)
@@ -153,7 +153,7 @@ def showSeasons(entryUrl=False, sGui=False):
         if not sGui: oGui.showInfo()
         return
     for sSeasonNr in aResults:
-        if sSeasonNr == '0': # Wenn Staffel 0 verfÃ¼gbar
+        if sSeasonNr == '0': # Wenn Staffel 0 verfügbar
             oGuiElement = cGuiElement('Extras', SITE_IDENTIFIER, 'showEpisodes')
         else:
             oGuiElement = cGuiElement('Staffel ' + sSeasonNr, SITE_IDENTIFIER, 'showEpisodes')
@@ -233,7 +233,7 @@ def showHosters(sGui=False):
     for i in aResults:
         hUrl = str(i['url'])
         sName = str(i['name'].split('(')[0].strip())
-        if '(' in i['name']: # Wenn QualitÃ¤t in Klammern angegeben (1080p)
+        if '(' in i['name']: # Wenn Qualität in Klammern angegeben (1080p)
             sQuality = str(i['name'].split('(')[1].strip())
             sQuality = sQuality.replace('p)','')
         else:
@@ -264,7 +264,7 @@ def showHosters(sGui=False):
             if sLang == 'en':
                 sLang = '(EN)'  # Anzeige der Sprache Englisch
         if sLanguage == '3':  # Voreingestellte Sprache Japanisch in settings.xml
-            cGui().showLanguage() # Kein Eintrag in der ausgewÃ¤hlten Sprache verfÃ¼gbar
+            cGui().showLanguage() # Kein Eintrag in der ausgewählten Sprache verfügbar
             continue
         if sLanguage == '0':  # Alle Sprachen
             if sLang == 'de':

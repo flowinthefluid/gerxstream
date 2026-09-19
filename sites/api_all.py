@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showGenre:     48 Stunden
 # showEntries:    6 Stunden
 # showEpisodes:   4 Stunden
@@ -17,7 +17,7 @@ from resources.lib.gui.gui import cGui
 from json import loads
 from datetime import datetime
 
-# Globale Variable fÃ¼r die JSON-Daten
+# Globale Variable für die JSON-Daten
 apiJson = None
 
 # Domain Abfrage ###
@@ -52,7 +52,7 @@ def load():
     logger.info('Load %s' % SITE_NAME)
     params = ParameterHandler()
     sLanguage = cConfig().getSetting('prefLanguage')
-    # Ã„nderung des Sprachcodes nach voreigestellter Sprache
+    # Änderung des Sprachcodes nach voreigestellter Sprache
     if sLanguage == '0':  # prefLang Alle Sprachen
         sLang = 'all'
     if sLanguage == '1':  # prefLang Deutsch
@@ -112,7 +112,7 @@ def _showGenreMenu():
             'Fantasy': 'Fantasy',
             'Geschichte': 'Geschichte',
             'Horror': 'Horror',
-            'KomÃ¶die': 'KomÃ¶die',
+            'Komödie': 'Komödie',
             'Krieg': 'Krieg',
             'Krimi': 'Krimi',
             'Musik': 'Musik',
@@ -130,7 +130,7 @@ def _showGenreMenu():
             'Adventure': 'Abenteuer',
             'Animation': 'Animation',
             'Biography': 'Biographie',
-            'Comedy': 'KomÃ¶die',
+            'Comedy': 'Komödie',
             'Crime': 'Krimi',
             'Documentation': 'Dokumentation',
             'Drama': 'Drama',
@@ -293,7 +293,7 @@ def showYearsMenu():
     params = ParameterHandler()
     sLanguage = params.getValue('sLanguage')
 
-    # Anfangs- und Endjahr fÃ¼r das menÃ¼ eintragen
+    # Anfangs- und Endjahr für das menü eintragen
     start_jahr = 1931
     end_jahr = datetime.now().year
 
@@ -452,7 +452,7 @@ def showHosters():
 #                        sName = cParser.urlparse(sUrl) ### angezeigter hostername api
                         
                         sName = aName[0][:aName[0].rindex('.')]
-                        if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+                        if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
                         sHoster = sHoster + ' ' + sName
                     if 'release' in stream and str(stream['release']) != '':
                         sHoster = sHoster + ' [I][' + _getQuality(stream['release']) + '][/I]'

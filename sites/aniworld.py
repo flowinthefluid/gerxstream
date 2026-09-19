@@ -1,16 +1,16 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 
 #Always pay attention to the translations in the menu!
-# Sprachauswahl fÃ¼r Hoster enthalten.
+# Sprachauswahl für Hoster enthalten.
 # Ajax Suchfunktion enthalten.
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showValue:     24 Stunden
 # showAllSeries: 24 Stunden
 # showEpisodes:   4 Stunden
 # SSsearch:      24 Stunden
     
-# 2022-12-06 Heptamer - Suchfunktion Ã¼berarbeitet
+# 2022-12-06 Heptamer - Suchfunktion überarbeitet
 
 from ast import literal_eval
 
@@ -33,7 +33,7 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain') # Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -300,11 +300,11 @@ def showHosters():
         aResult2 = cParser.parse(sHtmlContent, pattern2)  # pattern 2 auslesen
         if isMatch:
             for sID, sLang, sUrl, sName, sQuality in aResult:
-                # Die Funktion gibt 2 werte zurÃ¼ck!
+                # Die Funktion gibt 2 werte zurück!
                 # element 1 aus array "[0]" True bzw. False
                 # element 2 aus array "[1]" Name von domain / hoster - wird hier nicht gebraucht!
                 sUrl = sUrl.replace('/dl/2010', '/redirect/' + sID)
-                if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+                if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
                 sLanguage = cConfig().getSetting('prefLanguage')
                 if sLanguage == '1':        # Voreingestellte Sprache Deutsch in settings.xml
                     if '2' in sLang:        # data-lang-key="2" Japanisch mit englischen Untertitel
@@ -314,7 +314,7 @@ def showHosters():
                     elif sLang == '1':        # data-lang-key="1" Deutsch
                         sLang = '(DE)'      # Anzeige der Sprache Deutsch
                 if sLanguage == '2':        # Voreingestellte Sprache Englisch in settings.xml
-                    cGui().showLanguage()   # Kein Eintrag in der ausgewÃ¤hlten Sprache verfÃ¼gbar
+                    cGui().showLanguage()   # Kein Eintrag in der ausgewählten Sprache verfügbar
                     continue
                 if sLanguage == '3':        # Voreingestellte Sprache Japanisch in settings.xml
                     if '1' in sLang:        # data-lang-key="1" Deutsch
@@ -330,7 +330,7 @@ def showHosters():
                         sLang = '(JPN) Sub: (DE)'  # Anzeige der Sprache Japanisch mit deutschen Untertitel
                     elif sLang == '2':    # data-lang-key="2"
                         sLang = '(JPN) Sub: (EN)'   # Anzeige der Sprache Japanisch mit englischen Untertitel
-                if 'HD' in aResult2[1]:  # PrÃ¼fen ob tuple aResult2 das Kennzeichen HD enthÃ¤lt, dann Ã¼bersteuern
+                if 'HD' in aResult2[1]:  # Prüfen ob tuple aResult2 das Kennzeichen HD enthält, dann übersteuern
                     sQuality = '720'
                 else:
                     sQuality = '480'
@@ -338,7 +338,7 @@ def showHosters():
                     # aus dem Log [serienstream]: ['/redirect/12286260', 'VOE']
                     # hier ist die sUrl = '/redirect/12286260' und der sName 'VOE'
                     # hoster.py 194
-                hoster = {'link': [sUrl, sName], 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'quality': sQuality, 'languageCode': sLang} # Language Code fÃ¼r hoster.py Sprache Prio
+                hoster = {'link': [sUrl, sName], 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'quality': sQuality, 'languageCode': sLang} # Language Code für hoster.py Sprache Prio
                 hosters.append(hoster)
             if hosters:
                 hosters.append('getHosterUrl')
@@ -355,10 +355,10 @@ def showHosters():
         aResult2 = cParser.parse(sHtmlContent, pattern2)  # pattern 2 auslesen
         if isMatch:
             for sLang, sUrl, sName, sQuality in aResult:
-                # Die Funktion gibt 2 werte zurÃ¼ck!
+                # Die Funktion gibt 2 werte zurück!
                 # element 1 aus array "[0]" True bzw. False
                 # element 2 aus array "[1]" Name von domain / hoster - wird hier nicht gebraucht!
-                if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+                if cConfig().isBlockedHoster(sName)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
                 sLanguage = cConfig().getSetting('prefLanguage')
                 if sLanguage == '1':  # Voreingestellte Sprache Deutsch in settings.xml
                     if '2' in sLang:  # data-lang-key="2" Japanisch mit englischen Untertitel
@@ -368,7 +368,7 @@ def showHosters():
                     elif sLang == '1':  # data-lang-key="1" Deutsch
                         sLang = '(DE)'  # Anzeige der Sprache Deutsch
                 if sLanguage == '2':  # Voreingestellte Sprache Englisch in settings.xml
-                    cGui().showLanguage()  # Kein Eintrag in der ausgewÃ¤hlten Sprache verfÃ¼gbar
+                    cGui().showLanguage()  # Kein Eintrag in der ausgewählten Sprache verfügbar
                     continue
                 if sLanguage == '3':  # Voreingestellte Sprache Japanisch in settings.xml
                     if '1' in sLang:  # data-lang-key="1" Deutsch
@@ -384,7 +384,7 @@ def showHosters():
                         sLang = '(JPN) Sub: (DE)'  # Anzeige der Sprache Japanisch mit deutschen Untertitel
                     elif sLang == '2':  # data-lang-key="2"
                         sLang = '(JPN) Sub: (EN)'  # Anzeige der Sprache Japanisch mit englischen Untertitel
-                if 'HD' in aResult2[1]:  # PrÃ¼fen ob tuple aResult2 das Kennzeichen HD enthÃ¤lt, dann Ã¼bersteuern
+                if 'HD' in aResult2[1]:  # Prüfen ob tuple aResult2 das Kennzeichen HD enthält, dann übersteuern
                     sQuality = '720'
                 else:
                     sQuality = '480'
@@ -392,7 +392,7 @@ def showHosters():
                     # aus dem Log [serienstream]: ['/redirect/12286260', 'VOE']
                     # hier ist die sUrl = '/redirect/12286260' und der sName 'VOE'
                     # hoster.py 194
-                hoster = {'link': [sUrl, sName], 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'quality': sQuality, 'languageCode': sLang} # Language Code fÃ¼r hoster.py Sprache Prio
+                hoster = {'link': [sUrl, sName], 'name': sName, 'displayedName': '%s [I]%s [%sp][/I]' % (sName, sLang, sQuality), 'quality': sQuality, 'languageCode': sLang} # Language Code für hoster.py Sprache Prio
                 hosters.append(hoster)
             if hosters:
                 hosters.append('getHosterUrl')
@@ -423,7 +423,7 @@ def getHosterUrl(hUrl):
     sUrl = Request.getRealUrl()
 
     if 'voe' in hUrl[1].lower():
-        isBlocked, sDomain = cConfig().isBlockedHoster(sUrl)  # Die funktion gibt 2 werte zurÃ¼ck!
+        isBlocked, sDomain = cConfig().isBlockedHoster(sUrl)  # Die funktion gibt 2 werte zurück!
         if isBlocked:  # Voe Pseudo sDomain nicht bekannt in resolveUrl
             sUrl = sUrl.replace(sDomain, 'voe.sx')
             return [{'streamUrl': sUrl, 'resolved': False}]

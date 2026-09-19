@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
-# HTML LangzeitCache hinzugefÃ¼gt
+# HTML LangzeitCache hinzugefügt
 # showEntries:      6 Stunden
 # showEntriesUnJson:6 Stunden
 
@@ -25,7 +25,7 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www.netzkino.de') # Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www.netzkino.de') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -71,7 +71,7 @@ def showStart():
     params.setParam('sUrl', URL_START % 'Thriller-frontpage')
     cGui().addFolder(cGuiElement('Thriller', SITE_IDENTIFIER, 'showEntriesUnJson'), params)
     params.setParam('sUrl', URL_MAIN % 'komodien-frontpage')
-    cGui().addFolder(cGuiElement('KomÃ¶dien', SITE_IDENTIFIER, 'showEntries'), params)
+    cGui().addFolder(cGuiElement('Komödien', SITE_IDENTIFIER, 'showEntries'), params)
     params.setParam('sUrl', URL_START % 'Zombiefilme-frontpage')
     cGui().addFolder(cGuiElement('Zombiefilme', SITE_IDENTIFIER, 'showEntriesUnJson'), params)
     params.setParam('sUrl', URL_START % 'Hollywood-Filme-frontpage')
@@ -81,7 +81,7 @@ def showStart():
     params.setParam('sUrl', URL_MAIN % 'mockbuster-frontpage')
     cGui().addFolder(cGuiElement('Mockbuster', SITE_IDENTIFIER, 'showEntries'), params)
     params.setParam('sUrl', URL_MAIN % 'frontpage-exklusiv-frontpage')
-    cGui().addFolder(cGuiElement('Die schÃ¶nsten MÃ¤rchen', SITE_IDENTIFIER, 'showEntries'), params)
+    cGui().addFolder(cGuiElement('Die schönsten Märchen', SITE_IDENTIFIER, 'showEntries'), params)
     params.setParam('sUrl', URL_MAIN % 'empfehlungen_woche-frontpage')
     cGui().addFolder(cGuiElement('Unsere Empfehlungen der Woche', SITE_IDENTIFIER, 'showEntries'), params)
     params.setParam('sUrl', URL_MAIN % 'filme_mit_auszeichnungen-frontpage')

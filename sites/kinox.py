@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Python 3
 # Always pay attention to the translations in the menu!
 
@@ -22,11 +22,11 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinoz.to') # Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinoz.to') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
-# Domain Auswahl Ã¼ber die GerXStream Einstellungen mÃ¶glich
+# Domain Auswahl über die GerXStream Einstellungen möglich
 URL_MAIN = 'https://' + DOMAIN
 # URL_MAIN = 'https://ww19.kinox.to'
 URL_NEWS = URL_MAIN + '/index.php'
@@ -119,7 +119,7 @@ def showDocuMenu():
     oGui.setEndOfDirectory()
 
 
-def __createLanguage(sLangID): # SprachenkÃ¼rzel nach der internationalen Norm ISO-639-1
+def __createLanguage(sLangID): # Sprachenkürzel nach der internationalen Norm ISO-639-1
     return {'1': 'DE', '2': 'EN', '4': 'ZA', '5': 'ES', '6': 'FR', '7': 'TR',
             '8': 'JA', '9': 'AR', '11': 'IT', '12': 'HR', '13': 'SR',
             '14': 'BS', '15': 'DE / EN', '16': 'NL', '17': 'KO',
@@ -585,7 +585,7 @@ def showHosters():
     if aResult[0]:
         for aEntry in aResult[1]:
             sHoster = aEntry[1]
-            if cConfig().isBlockedHoster(sHoster)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschlieÃŸen
+            if cConfig().isBlockedHoster(sHoster)[0]: continue # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
             pattern = '<b>Mirror</b>: [0-9]+/([0-9]+)'
             aResult = cParser.parse(aEntry[2], pattern)
             mirrors = 1
