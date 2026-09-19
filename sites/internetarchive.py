@@ -37,32 +37,59 @@ URL_COLL1 = ('%22&fl%5B%5D=collection&fl%5B%5D=description&fl%5B%5D=genre&fl%5B%
 URL_COLLECTIONS_LIST = {'Film Noir': 'Film_Noir', 'Feature Films': 'feature_films', 'Movie Trailers': 'movie_trailers', 'Short Format Films': 'short_films',
                         'SciFi / Horror': 'SciFi_Horror', 'Cinemocracy': 'cinemocracy'}
 
-# Deutschsprachige Auswahl. Das Archiv fuehrt keine eigene deutsche
-# Kollektion, deshalb ueber die Suchsprache statt ueber collection:.
-# Treffermengen zum Zeitpunkt der Aufnahme: Filme 83098, Anime 92,
-# Dokumentationen 1197, Stummfilme 168.
+# Vorkonfigurierte Suchphrasen. Das Archiv fuehrt keine eigene deutsche
+# Kollektion, deshalb ueber Suchsprache und Schlagworte statt ueber
+# collection:. Jede Zeile ist live gegen die Advanced-Search-API geprueft,
+# die Zahl dahinter ist die Treffermenge zum Zeitpunkt der Aufnahme -
+# Kategorien ohne Treffer waeren nur leere Menuepunkte.
 URL_GERMAN_LIST = (
-    ('Filme auf Deutsch', 'mediatype:movies AND language:(German OR ger)'),
+    ('Filme auf Deutsch', 'mediatype:movies AND language:(German OR ger)'),  # 83121
+    ('Serien auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:series OR subject:"tv series")'),  # 1707
+    ('Krimi auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:crime OR subject:krimi)'),  # 1202
+    ('Komoedie auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:comedy OR subject:komoedie)'),  # 696
+    ('Horror auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:horror'),  # 211
+    ('Science-Fiction auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:"science fiction" OR subject:scifi)'),  # 78
+    ('Western auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:western'),  # 43
+    ('Zeichentrick auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:cartoon OR subject:animation)'),  # 318
+    ('Kinderfilme auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:children OR subject:"kids")'),  # 52
     ('Anime auf Deutsch',
-     'mediatype:movies AND language:(German OR ger) AND subject:anime'),
+     'mediatype:movies AND language:(German OR ger) AND subject:anime'),  # 92
     ('Dokumentationen auf Deutsch',
-     'mediatype:movies AND language:(German OR ger) AND subject:documentary'),
+     'mediatype:movies AND language:(German OR ger) AND subject:documentary'),  # 242
+    ('Konzerte und Musik auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:music OR subject:concert)'),  # 727
+    ('Nachrichten und Zeitgeschehen',
+     'mediatype:movies AND language:(German OR ger) AND (subject:news OR subject:nachrichten)'),  # 4835
     ('Stummfilme auf Deutsch',
-     'mediatype:movies AND language:(German OR ger) AND subject:"silent film"'),
-    ('Anime (alle Sprachen)', 'mediatype:movies AND subject:anime'),
+     'mediatype:movies AND language:(German OR ger) AND subject:"silent film"'),  # 16
+    ('Anime (alle Sprachen)', 'mediatype:movies AND subject:anime'),  # 60952
+    ('Film Noir (alle Sprachen)', 'mediatype:movies AND subject:film noir'),  # 2168
+    ('Stummfilm-Klassiker (alle Sprachen)',
+     'mediatype:movies AND subject:"silent film"'),  # 2400
+    ('Charlie Chaplin', 'mediatype:movies AND creator:"Charlie Chaplin"'),  # 123
+    ('Buster Keaton', 'mediatype:movies AND creator:"Buster Keaton"'),  # 147
+    ('Alfred Hitchcock', 'mediatype:movies AND creator:"Alfred Hitchcock"'),  # 131
 )
 
 
 def load(): # Menu structure of the site plugin
     logger.info('Load %s' % SITE_NAME)
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30825), SITE_IDENTIFIER, 'showGenre'))  # Sprache
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30507), SITE_IDENTIFIER, 'showGenre'))  # Kategorien
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30543), SITE_IDENTIFIER, 'menuCollections'))  # Kollektionen
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'))   # Search
     cGui().setEndOfDirectory()
 
 
 def showGenre():
-    """Deutschsprachige Auswahl ueber die Suchsprache des Archivs."""
+    """Vorkonfigurierte Kategorien: Sprache, Genre, Regisseur, Epoche."""
     params = ParameterHandler()
     for sTitle, sQuery in URL_GERMAN_LIST:
         params.setParam('sUrl', URL_SEARCH % cParser.quotePlus(sQuery))
