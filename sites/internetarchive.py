@@ -37,11 +37,36 @@ URL_COLL1 = ('%22&fl%5B%5D=collection&fl%5B%5D=description&fl%5B%5D=genre&fl%5B%
 URL_COLLECTIONS_LIST = {'Film Noir': 'Film_Noir', 'Feature Films': 'feature_films', 'Movie Trailers': 'movie_trailers', 'Short Format Films': 'short_films',
                         'SciFi / Horror': 'SciFi_Horror', 'Cinemocracy': 'cinemocracy'}
 
+# Deutschsprachige Auswahl. Das Archiv fuehrt keine eigene deutsche
+# Kollektion, deshalb ueber die Suchsprache statt ueber collection:.
+# Treffermengen zum Zeitpunkt der Aufnahme: Filme 83098, Anime 92,
+# Dokumentationen 1197, Stummfilme 168.
+URL_GERMAN_LIST = (
+    ('Filme auf Deutsch', 'mediatype:movies AND language:(German OR ger)'),
+    ('Anime auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:anime'),
+    ('Dokumentationen auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:documentary'),
+    ('Stummfilme auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:"silent film"'),
+    ('Anime (alle Sprachen)', 'mediatype:movies AND subject:anime'),
+)
+
 
 def load(): # Menu structure of the site plugin
     logger.info('Load %s' % SITE_NAME)
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30825), SITE_IDENTIFIER, 'showGenre'))  # Sprache
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30543), SITE_IDENTIFIER, 'menuCollections'))  # Kollektionen
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'))   # Search
+    cGui().setEndOfDirectory()
+
+
+def showGenre():
+    """Deutschsprachige Auswahl ueber die Suchsprache des Archivs."""
+    params = ParameterHandler()
+    for sTitle, sQuery in URL_GERMAN_LIST:
+        params.setParam('sUrl', URL_SEARCH % cParser.quotePlus(sQuery))
+        cGui().addFolder(cGuiElement(sTitle, SITE_IDENTIFIER, 'showEntries'), params)
     cGui().setEndOfDirectory()
 
 

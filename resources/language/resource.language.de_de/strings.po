@@ -1779,3 +1779,7 @@ msgstr "KinoKing"
 msgctxt "#30798"
 msgid "Anime Toast"
 msgstr "Anime Toast"
+
+msgctxt "#30825"
+msgid "German language selection"
+msgstr "Deutschsprachige Auswahl"

@@ -1780,3 +1780,7 @@ msgstr ""
 msgctxt "#30798"
 msgid "Anime Toast"
 msgstr ""
+
+msgctxt "#30825"
+msgid "German language selection"
+msgstr ""
