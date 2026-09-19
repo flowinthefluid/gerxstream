@@ -277,6 +277,29 @@
 					</control>
 				</setting>
 			</group>
+			<group id="proxeracc" label="30837">
+				<setting id="proxer.user" type="string" label="30083" help="">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="edit" format="string">
+						<heading>30083</heading>
+					</control>
+				</setting>
+				<setting id="proxer.pass" type="string" label="30084" help="">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="edit" format="string">
+						<heading>30084</heading>
+						<hidden>true</hidden>
+					</control>
+				</setting>
+			</group>
 		</category>
 		<!-- Kategorie Indexseiten 1 (30094) und Indexseiten 2 (30095) werden vom PluginHandler gesetzt und sind somit kein fester Bestandteil der settings.xml -->
 		<category id="indexsite1" label="30094">
@@ -2696,6 +2719,85 @@
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_anime4">false</dependency>
 						<dependency type="visible" operator="!is" setting="plugin_anime4">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30278</heading>
+					</control>
+				</setting>
+			</group>
+			<group id="proxer" label="30838">
+				<setting id="plugin_proxer" type="boolean" label="30050" help="30411">
+					<level>0</level>
+					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_proxer_allowInsecureTLS" type="boolean" label="30813" help="30814">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_proxer">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_proxer">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="global_search_proxer" type="boolean" label="30052">
+					<level>0</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_proxer">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_proxer_checkDomain" type="boolean" label="30051">
+					<level>3</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_proxer">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_proxer_status" type="string" label="Dummy" help="">
+					<visible>false</visible>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_proxer_bypassCookie" type="string" label="30826" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_proxer">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_proxer">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30826</heading>
+					</control>
+				</setting>
+				<setting id="plugin_proxer_bypassUserAgent" type="string" label="30827" help="30828">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_proxer">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_proxer">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30827</heading>
+					</control>
+				</setting>
+				<setting id="plugin_proxer.domain" type="string" label="30278" help="">
+					<level>3</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_proxer">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_proxer">false</dependency>
 					</dependencies>
 					<control type="edit" format="string">
 						<heading>30278</heading>

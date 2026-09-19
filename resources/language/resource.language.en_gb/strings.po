@@ -1832,3 +1832,11 @@ msgstr ""
 msgctxt "#30836"
 msgid "Switch address"
 msgstr ""
+
+msgctxt "#30837"
+msgid "Proxer.Me account"
+msgstr ""
+
+msgctxt "#30838"
+msgid "Proxer.Me"
+msgstr ""
