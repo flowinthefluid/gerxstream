@@ -1815,3 +1815,7 @@ msgstr "Anime-Loads"
 msgctxt "#30832"
 msgid "KayoAnime"
 msgstr "KayoAnime"
+
+msgctxt "#30833"
+msgid "Anime-Stream"
+msgstr "Anime-Stream"
