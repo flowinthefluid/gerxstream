@@ -28,7 +28,7 @@ SITE_NAME = 'BurningSeries'
 SITE_ICON = 'burningseries.png'
 
 # Global search function is thus deactivated!
-if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 

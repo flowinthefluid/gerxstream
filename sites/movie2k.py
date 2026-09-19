@@ -25,7 +25,7 @@ URL_SEARCH = 'https://movie2k.ch/data/browse/?lang=%s&keyword=%s&page=%s&limit=0
 URL_THUMBNAIL = 'https://image.tmdb.org/t/p/w300%s'
 URL_WATCH = 'https://movie2k.ch/data/watch/?_id=%s'
 # Global search function is thus deactivated!
-if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
