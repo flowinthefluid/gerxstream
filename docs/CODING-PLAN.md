@@ -87,7 +87,18 @@ python -W error::SyntaxWarning -m compileall -q -f -x "\.tmp|design|__pycache__"
 python -m pyflakes .
 ```
 
-Beide Kommandos müssen sauber durchlaufen (Exit-Code 0 / keine neuen Findings)
+Das installierbare Archiv wird nicht von Hand gepackt, sondern gebaut:
+
+```powershell
+python tools/build_release.py          # schreibt dist/<addon-id>-<version>.zip
+python tools/build_release.py --list   # zeigt nur den Umfang
+```
+
+Das Skript nimmt ausschließlich von Git verwaltete Dateien auf und prüft das
+fertige Archiv (genau ein Wurzelordner, Pflichtdateien vorhanden, nichts
+Ausgeschlossenes enthalten), bevor es Erfolg meldet.
+
+Beide Prüfkommandos müssen sauber durchlaufen (Exit-Code 0 / keine neuen Findings)
 bevor committet wird. Bei Bulk-Edits über mehrere Dateien (Regex-Ersetzungen,
 Encoding-Fixes) zusätzlich gegen eine bekannte gute Referenzversion prüfen
 (`ast.literal_eval`-Wertevergleich für String-Literale, byteweiser Vergleich

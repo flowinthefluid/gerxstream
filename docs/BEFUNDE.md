@@ -91,7 +91,7 @@ N9	resources/lib/gui/guiElement.py:335	if 'cover_url' in meta != '' — Verkettu
 N10	resources/lib/gui/hoster.py:226-261	for resolver in hmf.get_resolvers() überschreibt das Modul resolver; danach del(resolver) und Re-Import pro Schleifendurchlauf. Macht jede künftige ResolveURL-API-Prüfung schwerer, weil ein Name zwei Dinge bedeutet.	Schleifenvariable umbenennen, Import nach oben.	erledigt (39bfcd0)
 N11	resources/lib/utils.py:147	def help(): return 'OK' — Platzhalter, überschattet das Builtin.	Entfernen.	erledigt (895142c)
 N12	resources/lib/tmdbinfo.py:22	print("TMDB - error") statt xbmc.log. Danach if 'tmdb_id' not in meta ⇒ NameError, falls der try scheiterte.	Logging + meta = {} initialisieren.	erledigt (5ae0e6c)
-N13	Paketinhalt	8 __pycache__-Ordner, .github/, ScraperInfo.txt im Release.	.gitignore (erledigt) + Build-Schritt für das Zip.	teilweise erledigt (.gitignore steht; Build-Schritt fuer das Release-Zip offen)
+N13	Paketinhalt	8 __pycache__-Ordner, .github/, ScraperInfo.txt im Release.	.gitignore (erledigt) + Build-Schritt für das Zip.	erledigt (512a9cc: tools/build_release.py, baut aus git ls-files und verifiziert das Archiv)
 N14	xstream.py, 4 Suchfunktionen	searchGlobal, searchAlter, searchTMDB zu ~80 % identisch (je ~50 Zeilen Thread-Fan-out + Dialog).	Gemeinsame Hilfsfunktion.	erledigt (aeeb7e7)
 N15	Logging, projektweit	Drei parallele Stile: cConfig().getLocalizedString(30166) + ' -> [modul]: ', logger.info('-> [modul]: '), '[xStream] -> [...]'. Ein lokalisierter String als Log-Präfix ist ungewöhnlich.	Auf logger vereinheitlichen. Berührt D3.2 (Präfix trägt den alten Namen).	erledigt (fdb8324)
 M2 — betroffene Dateien (24)
