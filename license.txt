@@ -1,3 +1,8 @@
+GerXStream · Lizenz: GPL-3.0-only.
+Basiert in Teilen auf frühem Kodi-Addon-Code, der mit Zustimmung des
+ursprünglichen Autors übernommen wurde; das Ursprungsprojekt wird nicht mehr
+weitergeführt.
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

@@ -14,8 +14,8 @@
 	</extension>
     <extension point="xbmc.service" library="service.py" start="startup" />
 	<extension point="xbmc.addon.metadata">
-		<summary lang="de_de">GerXStream: Das Original</summary>
-		<summary lang="en_GB">GerXStream: The Original</summary>
+		<summary lang="de_de">GerXStream – deine Suchmaschine für Filme &amp; Serien in Kodi</summary>
+		<summary lang="en_GB">GerXStream – your search engine for movies &amp; series in Kodi</summary>
 		<description lang="de_de">GerXStream ist ein Video-Addon für Kodi. GerXStream dient als Suchmaschine für Filme und Serien auf verschiedenen Webseiten.</description>
 		<description lang="en_GB">GerXStream is a video add-on for Kodi. GerXStream serves as a search engine for films and series on various websites.</description>
 		<disclaimer lang="de_de">Sie können dieses Video Addon gerne verwenden. Der bereitgestellte Inhalt der Webseiten steht in keinem Bezug zu GerXStream oder den Entwicklern! Weitere Informationen finden Sie in unserer Wiki und FaQ.</disclaimer>
@@ -23,7 +23,7 @@
 		<language>de en</language>
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
-		<news>1.0.0 - Kodi 21/22 compatibility hardening and security fixes.</news>
+		<news>1.0.0 - Erstveröffentlichung von GerXStream.</news>
 		<website>https://github.com/flowinthefluid/gerxstream4kodi</website>
 		<source>https://github.com/flowinthefluid/gerxstream4kodi</source>
 		<assets>
@@ -31,10 +31,6 @@
 			<fanart>resources/fanart.jpg</fanart>
 			<banner>resources/banner.png</banner>
 			<clearlogo>resources/clearlogo.png</clearlogo>
-			<screenshot>resources/screenshot-01.jpg</screenshot>
-			<screenshot>resources/screenshot-02.jpg</screenshot>
-			<screenshot>resources/screenshot-03.jpg</screenshot>
-			<screenshot>resources/screenshot-04.jpg</screenshot>
 		</assets>
 	</extension>
 </addon>

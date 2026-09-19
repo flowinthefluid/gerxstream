@@ -85,64 +85,8 @@ def delHtmlCache():
         cRequestHandler('').clearCache() # Cache löschen
         cConfig().setSetting('lastdelhtml', str(currentTime))
 
-# kasi - Code für Zwangsupdate - erweiterte version
-def checkVersion(xs='gerxstream'):
-    try:
-        import requests, re, xbmc
-        if xs.lower() == 'xship':
-            addonId = 'plugin.video.xship'
-            if not xbmc.getCondVisibility("System.HasAddon(%s)" % addonId):
-                xbmc.executebuiltin('InstallAddon(%s)' % addonId)
-                xbmc.executebuiltin('SendClick(11)')
-            try: addonInfo = cConfig(addonId).getAddonInfo
-            except: return
-            url = 'https://raw.githubusercontent.com/watchone/watchone.github.io/refs/heads/repo/plugin.video.xship/addon.xml'
-            url2 = 'https://github.com/watchone/watchone.github.io/raw/refs/heads/repo/plugin.video.xship/%s'
-        elif xs.lower() == 'gerxstream':
-            addonId = 'plugin.video.xstream'
-            if not xbmc.getCondVisibility("System.HasAddon(%s)" % addonId):
-                xbmc.executebuiltin('InstallAddon(%s)' % addonId)
-                xbmc.executebuiltin('SendClick(11)')
-            try: addonInfo = cConfig(addonId).getAddonInfo
-            except: return
-            url = 'https://raw.githubusercontent.com/streamxstream/xStreamRepo/refs/heads/repo/zips/plugin.video.xstream/addon.xml'
-            url2 = 'https://github.com/streamxstream/xstreamRepo/raw/refs/heads/repo/zips/plugin.video.xstream/%s'
-        else: return
-
-        addonVersion = addonInfo('version')
-        r = requests.get(url, timeout=10)
-        if r.status_code != 200 : return
-        remoteVersion = re.findall('version="([^"]+)', str(r.content))[1]
-        if addonVersion == remoteVersion: return
-
-        ## TODO
-        # addonVersionInt = int(addonVersion.replace('.', ''))
-        # remoteVersionInt = int(remoteVersion.replace('.', ''))
-        # if addonVersionInt > remoteVersionInt + 100 and xs == 'gerxstream':
-        #     from resources.lib.utils import countdown, kill, remove_dir
-        #     remove_dir(translatePath('special://home/addons/'))
-        #     # Kodi beenden
-        #     xbmc.executebuiltin('Quit')
-        #     exit()
-
-        from os import path
-        from xbmcvfs import delete
-        from resources.lib.utils import download_url, unzip, remove_dir
-        addonPath = translatePath('special://home/addons/%s') % addonId
-        zipfile = '%s-%s.zip' % (addonId, remoteVersion)
-        url =  url2 % zipfile
-        src = translatePath(path.join('special://temp', url.split('/')[-1]))
-        dest = translatePath('special://home/addons')
-        download_url(url, src, dp=True)  # dp - progressDialog nicht anzeigen
-        remove_dir(addonPath)
-        unzip(src, dest, folder=None)
-        delete(src)
-        from xbmc import executebuiltin, getInfoLabel
-        # executebuiltin("UpdateLocalAddons()") # kasi - ist das nötig?
-        profil = getInfoLabel('System.ProfileName')
-        if profil:  executebuiltin('LoadProfile(' + profil + ',prompt)')
-    except Exception:
-        pass
+# Zwangsupdate-Pfad: bewusst deaktiviert, solange kein eigenes Repo befuellt ist.
+# Spezifikation fuer die spaetere Verdrahtung: docs/REPO-SPEC.md Abschnitt 4.
 
 
 def logSelfUpdateDisabledOnce():
