@@ -4,9 +4,9 @@
 # Multi Scraper für Kinder Videos
 
 
+import json
 import os
 import xbmc
-import xbmcgui, sys
 
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -56,9 +56,6 @@ def load(): # Menu structure of the site plugin
         main_list()
     else:
         sub_list(params.getValue("action"))
-    cGui().setEndOfDirectory()
-
-def loads():
     cGui().setEndOfDirectory()
 
 
@@ -317,19 +314,24 @@ sublists = {
 
 def sub_list(action):
     params = ParameterHandler()
-    apikey = cConfig('plugin.video.youtube').getSetting('youtube.api.key')
+    apikey = _youtubeApiKey()
     for List in sublists[str(action)]:
         name = List[0]
         id = List[1]
         icon = List[2]
-        if apikey == '' or apikey == None:
+        if not apikey:
             sUrl="plugin://plugin.video.youtube/" + id + "/?addon_id=" + ADDON_ID
         else:
             sUrl="plugin://plugin.video.youtube/" + id + "/"
         params.setParam('trumb', icon)
         params.setParam('sUrl', sUrl)
         cGui().addFolder(cGuiElement(name,SITE_IDENTIFIER,''),params,bIsFolder=True)
-    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+    params.setParam('action', str(action))
+    params.setParam('sUrl', '')
+    params.setParam('trumb', KIDS_TUBE_ICON_PATH)
+    if str(action) != 'Kanäle':
+        cGui().addFolder(cGuiElement('[B][I]%s[/I][/B]' % cConfig().getLocalizedString(30243), SITE_IDENTIFIER, 'showYTMore'), params, bIsFolder=True)  # Weitere Quellen
+    cGui().addFolder(cGuiElement('[B][I]%s[/I][/B]' % cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showYTSearch'), params, bIsFolder=True)  # Suche
 
 
 def main_list():
@@ -338,5 +340,66 @@ def main_list():
         params.setParam('action', id)
         params.setParam('trumb', icon)
         cGui().addFolder(cGuiElement(name, SITE_IDENTIFIER, 'load'),params,bIsFolder=True)
-    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+
+#################### YouTube Playlist-Suche (Data API v3, Key aus plugin.video.youtube) ####################
+
+URL_YT_SEARCH = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=playlist&maxResults=%d&q=%s&key=%s'
+
+
+def _youtubeApiKey():
+    apikey = cConfig('plugin.video.youtube').getSetting('youtube.api.key')
+    return apikey.strip() if apikey else ''
+
+
+def search_playlists(query, max_results=50):
+    apikey = _youtubeApiKey()
+    if not apikey:
+        cGui().showInfo(SITE_NAME, cConfig().getLocalizedString(30291))  # API Schluessel fehlt
+        return []
+    sUrl = URL_YT_SEARCH % (max_results, cParser.quotePlus(query), apikey)
+    sContent = cRequestHandler(sUrl, caching=False, ignoreErrors=True).request()
+    try:
+        items = json.loads(sContent).get('items', [])
+    except (TypeError, ValueError, AttributeError):
+        items = []
+    playlists = []
+    for item in items:
+        try:
+            playlists.append({'title': item['snippet']['title'],
+                              'id': 'playlist/' + item['id']['playlistId'],
+                              'icon': item['snippet']['thumbnails']['default']['url']})
+        except (KeyError, TypeError):
+            continue
+    if not playlists:
+        cGui().showInfo(SITE_NAME, cConfig().getLocalizedString(30253))  # Kein Eintrag gefunden
+    return playlists
+
+
+def _listPlaylists(playlists):
+    params = ParameterHandler()
+    apikey = _youtubeApiKey()
+    for entry in playlists:
+        if not apikey:
+            sUrl = "plugin://plugin.video.youtube/" + entry['id'] + "/?addon_id=" + ADDON_ID
+        else:
+            sUrl = "plugin://plugin.video.youtube/" + entry['id'] + "/"
+        params.setParam('trumb', entry['icon'])
+        params.setParam('sUrl', sUrl)
+        cGui().addFolder(cGuiElement("[B]%s[/B]" % entry['title'], SITE_IDENTIFIER, ''), params, bIsFolder=True)
+    cGui().setEndOfDirectory()
+
+
+def showYTMore():
+    action = ParameterHandler().getValue('action')
+    _listPlaylists(search_playlists('%s deutsch für kinder' % action))
+
+
+def showYTSearch():
+    action = ParameterHandler().getValue('action')
+    sSearchText = cGui().showKeyBoard(sHeading=cConfig().getLocalizedString(30280))  # Bitte den Suchbegriff eingeben
+    if not sSearchText:
+        cGui().setEndOfDirectory()
+        return
+    _listPlaylists(search_playlists('%s %s deutsch' % (sSearchText, action)))
 

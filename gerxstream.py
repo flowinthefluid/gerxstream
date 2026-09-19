@@ -86,6 +86,8 @@ SCRAPER_ENTRY_FUNCTIONS = frozenset((
     'showYTChannels',
     'showYTGenre',
     'showYTLists',
+    'showYTMore',
+    'showYTSearch',
     'showYears',
     'showYearsMenu',
 ))
