@@ -29,7 +29,7 @@ def _getCredits(credits):
 def WindowsBoxes(sTitle, sFileName, metaType, year=''):
     meta = {}
     try:
-        meta = cTMDB().get_meta(metaType, sFileName, tmdb_id=xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year=year, advanced='true')
+        meta = cTMDB().get_meta(metaType, sFileName, tmdb_id=xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year=year, advanced=True)
         try:
             meta['plot'] = str(meta['plot'].encode('latin-1'), 'utf-8')
         except Exception:

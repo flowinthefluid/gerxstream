@@ -9,6 +9,16 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from urllib.parse import quote_plus
 
+
+def _asBool(value):
+    # advanced wurde frueher als String ('true'/'false') durchgereicht. Ein
+    # blosses "if advanced:" waere fuer den String 'false' wahr gewesen, also
+    # werden Alt-Aufrufer hier weiterhin korrekt ausgewertet.
+    if isinstance(value, str):
+        return value.strip().lower() in ('true', '1', 'yes', 'on')
+    return bool(value)
+
+
 class cTMDB:
     TMDB_GENRES = {12: 'Abenteuer', 14: 'Fantasy', 16: 'Animation', 18: 'Drama', 27: 'Horror', 28: 'Action', 35: 'Komödie', 36: 'Historie', 37: 'Western', 53: 'Thriller', 80: 'Krimi', 99: 'Dokumentarfilm', 878: 'Science Fiction', 9648: 'Mystery', 10402: 'Musik', 10749: 'Liebesfilm', 10751: 'Familie', 10752: 'Kriegsfilm', 10759: 'Action & Adventure', 10762: 'Kids', 10763: 'News', 10764: 'Reality', 10765: 'Sci-Fi & Fantasy', 10766: 'Soap', 10767: 'Talk', 10768: 'War & Politics', 10770: 'TV-Film'}
     URL = 'https://api.themoviedb.org/3/'
@@ -22,7 +32,7 @@ class cTMDB:
         self.fanart = 'https://image.tmdb.org/t/p/%s' % cConfig().getSetting('backdrop_tmdb')
         
 
-    def search_movie_name(self, name, year='', page=1, advanced='false'):
+    def search_movie_name(self, name, year='', page=1, advanced=False):
         name = re.sub(' +', ' ', name)
         if year:
         #    term = quote_plus(name) + '&year=' + year
@@ -60,7 +70,7 @@ class cTMDB:
                                 break
                     if not movie:
                         movie = meta['results'][0]
-                if advanced == 'true':
+                if _asBool(advanced):
                     tmdb_id = movie['id']
                     meta = self.search_movie_id(tmdb_id)
                 else:
@@ -74,7 +84,7 @@ class cTMDB:
         result['tmdb_id'] = movie_id
         return result
 
-    def search_tvshow_name(self, name, year='', page=1, genre='', advanced='false'):
+    def search_tvshow_name(self, name, year='', page=1, genre='', advanced=False):
         name = name.lower()
         if '- staffel' in name:
             name = re.sub(r'\s-\s\wtaffel[^>]([1-9\-]+)', '', name)
@@ -114,7 +124,7 @@ class cTMDB:
                                 break
                     if not movie:
                         movie = meta['results'][0]
-                if advanced == 'true':
+                if _asBool(advanced):
                     tmdb_id = movie['id']
                     meta = self.search_tvshow_id(tmdb_id)
                 else:
@@ -128,7 +138,7 @@ class cTMDB:
         result['tmdb_id'] = show_id
         return result
 
-    def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', advanced='false'):
+    def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', advanced=False):
         name = re.sub(' +', ' ', name)
         meta = {}
         if media_type == 'movie':
@@ -187,7 +197,7 @@ class cTMDB:
         else:
             return Language
 
-    def get_meta_episodes(self, media_type, name, tmdb_id='', season='', episode='', advanced='false'):
+    def get_meta_episodes(self, media_type, name, tmdb_id='', season='', episode='', advanced=False):
         meta = {}
         if media_type == 'episode' and tmdb_id and season and episode:
             url = '%stv/%s/season/%s?api_key=%s&language=de' % (self.URL, tmdb_id, season, self.api_key)

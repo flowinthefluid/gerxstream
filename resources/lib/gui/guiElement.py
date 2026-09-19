@@ -297,16 +297,17 @@ class cGuiElement:
         if not oMetaget:
             return False
 
+        bAdvanced = cConfig().getSettingBool('advanced')
         if self._mediaType == 'movie':
             if self._sYear:
-                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), year=self._sYear, advanced=cConfig().getSetting('advanced'))
+                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), year=self._sYear, advanced=bAdvanced)
             else:
-                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), advanced=cConfig().getSetting('advanced'))
+                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), advanced=bAdvanced)
         elif self._mediaType == 'tvshow':
             if self._sYear:
-                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), year=self._sYear, advanced=cConfig().getSetting('advanced'))
+                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), year=self._sYear, advanced=bAdvanced)
             else:
-                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), advanced=cConfig().getSetting('advanced'))
+                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), advanced=bAdvanced)
         elif self._mediaType == 'season':
             meta = {}
         elif self._mediaType == 'episode':
