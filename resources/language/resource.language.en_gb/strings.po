@@ -1820,3 +1820,7 @@ msgstr ""
 msgctxt "#30833"
 msgid "Anime-Stream"
 msgstr ""
+
+msgctxt "#30834"
+msgid "4anime"
+msgstr ""
