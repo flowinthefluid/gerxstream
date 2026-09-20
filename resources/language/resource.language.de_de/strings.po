@@ -393,7 +393,7 @@ msgstr "Sie haben keinen funktionierenden ResolveUrl installiert, es können kei
 
 msgctxt "#30121"
 msgid "Start manual update"
-msgstr "Manuelle Aktualisierung starten"
+msgstr "Resolver aktualisieren"
 
 msgctxt "#30122"
 msgid "GerXStream search started ..."
@@ -2019,3 +2019,15 @@ msgstr "Standardreihenfolge wiederherstellen"
 msgctxt "#30883"
 msgid "Select an entry, then move it up or down. The order is saved automatically."
 msgstr "Eintrag waehlen und nach oben oder unten verschieben. Die Reihenfolge wird automatisch gespeichert."
+
+msgctxt "#30900"
+msgid "Global search timeout (seconds)"
+msgstr "Timeout der globalen Suche (Sekunden)"
+
+msgctxt "#30901"
+msgid "Maximum time a single provider may use during global search."
+msgstr "Maximale Zeit, die ein einzelner Anbieter in der globalen Suche verwenden darf."
+
+msgctxt "#30902"
+msgid "Update GerXStream"
+msgstr "GerXStream aktualisieren"

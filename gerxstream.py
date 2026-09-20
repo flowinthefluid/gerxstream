@@ -240,6 +240,9 @@ def parseUrl():
             from resources.lib import updateManager
             updateManager.devUpdates()
             return
+        elif sFunction == 'gerxstreamUpdate':
+            updateGerXStream()
+            return
         elif sFunction == 'pluginInfo':
             cPluginHandler().pluginInfo()
             return
@@ -343,6 +346,9 @@ def parseUrl():
     elif sSiteName == 'devUpdates':
         from resources.lib import updateManager
         updateManager.devUpdates()
+    # GerXStream aus dem installierten Kodi-Repository aktualisieren
+    elif sSiteName == 'gerxstreamUpdate':
+        updateGerXStream()
     # Scraper Domain-Check manuell
     elif sSiteName == 'checkDomain':
         cPluginHandler().checkDomain()
@@ -570,15 +576,6 @@ def vodGuiElements(sFunction): # Vod Menü
 def settingsGuiElements():
     ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
 
-    # GUI Plugin Informationen
-    oGuiElement = cGuiElement()
-    oGuiElement.setTitle(cConfig().getLocalizedString(30267))
-    oGuiElement.setSiteName('pluginInfo')
-    oGuiElement.setFunction('pluginInfo')
-    oGuiElement.setThumbnail(os.path.join(ART, 'plugin_info.png'))
-    PluginInfo = oGuiElement
-
-
     # GUI GerXStream Einstellungen
     oGuiElement = cGuiElement()
     oGuiElement.setTitle(cConfig().getLocalizedString(30042))
@@ -595,13 +592,29 @@ def settingsGuiElements():
     oGuiElement.setThumbnail(os.path.join(ART, 'resolveurl_settings.png'))
     resolveurlSettings = oGuiElement
     
-    # GUI Nightly Updatemanager
+    # GUI Resolver-Updatemanager
     oGuiElement = cGuiElement()
     oGuiElement.setTitle(cConfig().getLocalizedString(30121))
     oGuiElement.setSiteName('devUpdates')
     oGuiElement.setFunction('devUpdates')
     oGuiElement.setThumbnail(os.path.join(ART, 'manuel_update.png'))
-    DevUpdateMan = oGuiElement
+    ResolverUpdate = oGuiElement
+
+    # Kodi aktualisiert GerXStream ueber das installierte Repository.
+    oGuiElement = cGuiElement()
+    oGuiElement.setTitle(cConfig().getLocalizedString(30902))
+    oGuiElement.setSiteName('gerxstreamUpdate')
+    oGuiElement.setFunction('gerxstreamUpdate')
+    oGuiElement.setThumbnail(os.path.join(ART, 'manuel_update.png'))
+    GerXStreamUpdate = oGuiElement
+
+    # GUI Plugin Informationen
+    oGuiElement = cGuiElement()
+    oGuiElement.setTitle(cConfig().getLocalizedString(30267))
+    oGuiElement.setSiteName('pluginInfo')
+    oGuiElement.setFunction('pluginInfo')
+    oGuiElement.setThumbnail(os.path.join(ART, 'plugin_info.png'))
+    PluginInfo = oGuiElement
 
     # GUI Domain-Check der Scraper
     oGuiElement = cGuiElement()
@@ -610,7 +623,9 @@ def settingsGuiElements():
     oGuiElement.setFunction('checkDomain')
     oGuiElement.setThumbnail(os.path.join(ART, 'settings.png'))
     DomainCheck = oGuiElement
-    return PluginInfo, GerXStreamSettings, resolveurlSettings, DevUpdateMan, DomainCheck
+    # Reihenfolge bewusst wie im Einstellungsmenue angezeigt.
+    return (GerXStreamSettings, resolveurlSettings, ResolverUpdate,
+            GerXStreamUpdate, PluginInfo, DomainCheck)
 
 
 def globalSearchGuiElement():
@@ -763,10 +778,9 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
     progressPlugins = max(1, len(searchPlugins))
     maxWorkers = min(6, progressPlugins)
     completed = 0
-    # Eine Quelle darf die Gesamtsuche nicht dauerhaft festhalten. Ein
-    # einzelner Abruf hat bereits ein eigenes Timeout; 30 Sekunden lassen
-    # auch Quellen mit zwei Suchanfragen noch genug Spielraum.
-    workerTimeout = max(30, cConfig().getSettingInt('requestTimeout', 10) * 2)
+    # Eine Quelle darf die Gesamtsuche nicht dauerhaft festhalten. Der Wert
+    # ist bewusst von dem HTTP-Request-Timeout getrennt konfigurierbar.
+    workerTimeout = max(5, cConfig().getSettingInt('globalSearchTimeout', 30))
     futures = {}
     executor = ThreadPoolExecutor(max_workers=maxWorkers, thread_name_prefix='gerxstream-search')
     try:
@@ -954,12 +968,26 @@ def _pluginSearch(pluginEntry, sSearchText):
     oGui.globalSearch = True
     oGui._collectMode = True
     try:
+        log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: %s: search started' % pluginEntry['name'], LOGNOTICE)
         plugin = __import__(pluginEntry['id'], globals(), locals())
         function = getattr(plugin, '_search')
         function(oGui, sSearchText)
+        log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: %s: search finished (%s results)' %
+            (pluginEntry['name'], len(oGui.searchResults)), LOGNOTICE)
         return oGui.searchResults
     except Exception:
         log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: ' + pluginEntry['name'] + ': search failed', LOGERROR)
         import traceback
         log(traceback.format_exc())
         return []
+
+
+def updateGerXStream():
+    """Ask Kodi to check the installed GerXStream repository now."""
+    addonId = cConfig().getAddonInfo('id')
+    xbmc.executebuiltin('UpdateLocalAddons()')
+    xbmc.executebuiltin('UpdateAddon(%s)' % addonId)
+    xbmcgui.Dialog().ok('GerXStream',
+                         'Die Aktualisierung wurde im Kodi-Repository gesucht. '
+                         'Bitte die Add-on-Aktualisierungen kurz abschliessen lassen.')
+    return True

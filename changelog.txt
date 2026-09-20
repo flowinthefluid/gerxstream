@@ -1,3 +1,12 @@
+[B]Version: 1.0.13[/B]
+
+20.09.2026
+
+- Globale Suche sammelt Treffer im Hintergrund ohne Kodi-UI-Aufrufe aus Worker-Threads; das verhindert den bisherigen Stillstand nach einer Quelle
+- Timeout pro Anbieter ist unter GerXStream Einstellungen konfigurierbar (Standard: 30 Sekunden)
+- Support-Informationen repariert und um installierte GerXStream-Version, CPU und Arbeitsspeicher erweitert
+- Einstellungsmenue neu geordnet: GerXStream, Resolver, Resolver aktualisieren, GerXStream aktualisieren, Support, Domain-Aktualisierung
+
 [B]Version: 1.0.12[/B]
 
 20.09.2026

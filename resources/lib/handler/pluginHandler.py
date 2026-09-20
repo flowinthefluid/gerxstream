@@ -255,6 +255,10 @@ class cPluginHandler:
         except Exception:
             pluginData['categories'] = ()
         return pluginData
+
+
+    def __getPluginDataIndex(self, fileName, defaultFolder):
+        """Return the extra fields used by the support-information view."""
         pluginData = {}
         if not defaultFolder in sys.path: sys.path.append(defaultFolder)
         try:
@@ -311,7 +315,8 @@ class cPluginHandler:
         fileNames = self.__getFileNamesFromFolder(self.defaultFolder) # Hole Plugins aus GerXStream
         for fileName in fileNames:
             pluginData = self.__getPluginDataIndex(fileName, self.defaultFolder) # Hole Plugin Daten
-            list_of_plugins.append(pluginData)
+            if pluginData:
+                list_of_plugins.append(pluginData)
         result_list = [''.join([f"{key}:  {value}\n" for key, value in dictionary.items()]) for dictionary in list_of_plugins]
         # String Übersetzungen
         result_string = '\n'.join(result_list)
@@ -334,23 +339,41 @@ class cPluginHandler:
             BYPASS = cConfig().getLocalizedString(30418)  # Aktiv
         else:
             BYPASS = cConfig().getLocalizedString(30419)  # Inaktiv
-        if os.path.exists(ADDON_PATH % 'repository.resolveurl'):
-            RESOLVEURL = cConfig('repository.resolveurl').getAddonInfo('name') + ':  ' + cConfig('repository.resolveurl').getAddonInfo('id') + ' - ' + cConfig('repository.resolveurl').getAddonInfo('version') + '\n'
-        else:
-            RESOLVEURL = ''
+        def addonInfo(addonId):
+            try:
+                addon = cConfig(addonId)
+                return addon.getAddonInfo('name') + ':  ' + addon.getAddonInfo('id') + ' - ' + addon.getAddonInfo('version') + '\n'
+            except Exception:
+                return addonId + ': nicht installiert\n'
+
+        def infoLabel(label):
+            try:
+                return xbmc.getInfoLabel(label) or '-'
+            except Exception:
+                return '-'
+
+        RESOLVEURL = addonInfo('repository.resolveurl') if os.path.exists(ADDON_PATH % 'repository.resolveurl') else ''
+        resolverInfo = addonInfo('script.module.resolveurl')
+        repositoryInfo = addonInfo('repository.gerxstream')
+        try:
+            sourceRepo = getRepofromAddonsDB(cConfig().getAddonInfo('id'))
+        except Exception:
+            sourceRepo = '-'
 
         # Support Informationen anzeigen
         Dialog().textviewer(cConfig().getLocalizedString(30265),
             cConfig().getLocalizedString(30413) + '\n'  # Geräte Informationen
-            + 'Kodi Version:  ' + xbmc.getInfoLabel('System.BuildVersion')[:4] + ' (Code Version: ' + xbmc.getInfoLabel('System.BuildVersionCode') + ')' + '\n'  # Kodi Version
+            + 'Kodi Version:  ' + infoLabel('System.BuildVersion') + ' (Code Version: ' + infoLabel('System.BuildVersionCode') + ')' + '\n'  # Kodi Version
             + cConfig().getLocalizedString(30266) + '   {0}'.format(platform().title()) + '\n'  # System Plattform
+            + 'CPU:  ' + infoLabel('System.CpuModel') + '\n'
+            + 'Arbeitsspeicher:  ' + infoLabel('System.Memory(total)') + '\n'
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30414) + '\n'  # Plugin Informationen
-            + cConfig().getAddonInfo('name') + ' Version:  ' + cConfig().getAddonInfo('id') + ' - ' + cConfig().getAddonInfo('version') + '\n'  # GerXStream ID und Version
-            + 'Hinweis: Selbst-Update deaktiviert, kein Repo hinterlegt.\n'
-            + cConfig('script.module.resolveurl').getAddonInfo('name') + ' Version:  ' + cConfig('script.module.resolveurl').getAddonInfo('id') + ' - ' + cConfig('script.module.resolveurl').getAddonInfo('version') + '\n'  # Resolver ID und Version
-            + cConfig('script.module.resolveurl').getAddonInfo('name') + ' Status:  ' + UPDATERU + cConfig().getSettingString('resolver.branch') + '\n'  # Resolver Update Status und Branch
-            + cConfig().getLocalizedString(30435) + ' ' + getRepofromAddonsDB(cConfig().getAddonInfo('id')) + '\n' # Repo-Info
+            + 'Installierte GerXStream-Version:  ' + cConfig().getAddonInfo('version') + '\n'
+            + cConfig().getAddonInfo('name') + ':  ' + cConfig().getAddonInfo('id') + '\n'
+            + resolverInfo
+            + 'ResolveURL Status:  ' + UPDATERU + cConfig().getSettingString('resolver.branch') + '\n'  # Resolver Update Status und Branch
+            + cConfig().getLocalizedString(30435) + ' ' + sourceRepo + '\n' # Repo-Info
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30420) + '\n'  # DNS Informationen
             + cConfig().getLocalizedString(30417) + ' ' + BYPASS + '\n'  # GerXStream DNS Bypass aktiv/inaktiv
@@ -358,7 +381,7 @@ class cPluginHandler:
             + cConfig().getLocalizedString(30434) + '2' + ' ' + getDNS('Network.DNS2Address') + '\n' # DNS Nameserver 2
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30421) + '\n'  # Repo Informationen
-            + cConfig('repository.gerxstream').getAddonInfo('name') + ':  ' + cConfig('repository.gerxstream').getAddonInfo('id') + ' - ' + cConfig('repository.gerxstream').getAddonInfo('version') + '\n'  # GerXStream Repository ID und Version
+            + repositoryInfo
             + RESOLVEURL
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30422) + '\n'  # Indexseiten Informationen

@@ -38,15 +38,18 @@ class cGui:
 
     def addFolder(self, oGuiElement, params='', bIsFolder=True, iTotal=0, isHoster=False):
         # add GuiElement to Gui, adds listitem to a list
-        # abort xbmc list creation if user requests abort
-        if xbmc.Monitor().abortRequested():
-            self.setEndOfDirectory(False)
-            raise RuntimeError('UserAborted')
         # store result in list if we searched global for other sources
+        # Global-search providers run in background threads. Calling Kodi's
+        # Monitor or directory APIs from there can block the entire plugin.
+        # They only need to collect plain Python data at this point.
         if self._collectMode:
             import copy
             self.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(params), 'isFolder': bIsFolder})
             return
+        # abort xbmc list creation if user requests abort
+        if xbmc.Monitor().abortRequested():
+            self.setEndOfDirectory(False)
+            raise RuntimeError('UserAborted')
         if not oGuiElement._isMetaSet and self.isMetaOn and oGuiElement._mediaType and iTotal < 100:
             tmdbID = params.getValue('tmdbID')
             if tmdbID:

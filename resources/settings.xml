@@ -273,6 +273,18 @@
 						<popup>false</popup>
 					</control>
 				</setting>
+				<setting id="globalSearchTimeout" type="integer" label="30900" help="30901">
+					<level>0</level>
+					<default>30</default>
+					<constraints>
+						<minimum>5</minimum>
+						<step>5</step>
+						<maximum>180</maximum>
+					</constraints>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
 				<setting id="cacheDeltaDay" type="integer" label="30164" help="">
 					<level>0</level>
 					<default>2</default>
