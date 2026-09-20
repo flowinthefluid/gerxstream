@@ -794,7 +794,10 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
 
         pending = set(futures.keys())
         while pending:
-            if dialog.iscanceled() or monitor.waitForAbort(0):
+            # waitForAbort(0) blocks indefinitely in Kodi 22.  This loop
+            # must only test the flag; otherwise completed workers can never
+            # be collected or rendered.
+            if dialog.iscanceled() or monitor.abortRequested():
                 for future in pending:
                     future.cancel()
                 return False

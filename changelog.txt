@@ -1,3 +1,9 @@
+[B]Version: 1.0.15[/B]
+
+21.09.2026
+
+- Globale Suche: die Abbruchpruefung blockiert unter Kodi 22 nicht mehr den Hauptthread; fertiggestellte Quellen werden jetzt gesammelt und angezeigt
+
 [B]Version: 1.0.14[/B]
 
 21.09.2026
