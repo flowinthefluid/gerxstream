@@ -1,3 +1,10 @@
+[B]Version: 1.0.12[/B]
+
+20.09.2026
+
+- Globale Suche isoliert die Ergebnisse jeder Quelle und zeigt vorhandene Treffer trotz haengender Anbieter an
+- Quellen mit einer Suche laenger als 30 Sekunden werden protokolliert und uebersprungen
+
 [B]Version: 1.0.11[/B]
 
 20.09.2026

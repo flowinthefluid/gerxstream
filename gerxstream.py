@@ -763,15 +763,20 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
     progressPlugins = max(1, len(searchPlugins))
     maxWorkers = min(6, progressPlugins)
     completed = 0
+    # Eine Quelle darf die Gesamtsuche nicht dauerhaft festhalten. Ein
+    # einzelner Abruf hat bereits ein eigenes Timeout; 30 Sekunden lassen
+    # auch Quellen mit zwei Suchanfragen noch genug Spielraum.
+    workerTimeout = max(30, cConfig().getSettingInt('requestTimeout', 10) * 2)
     futures = {}
-    with ThreadPoolExecutor(max_workers=maxWorkers, thread_name_prefix='gerxstream-search') as executor:
+    executor = ThreadPoolExecutor(max_workers=maxWorkers, thread_name_prefix='gerxstream-search')
+    try:
         for count, pluginEntry in enumerate(searchPlugins):
             if dialog.iscanceled() or monitor.abortRequested():
                 return False
             dialog.update((count + 1) * 50 // progressPlugins, cConfig().getLocalizedString(30124) + str(pluginEntry['name']) + '...')
             log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: Searching for %s at %s' % (searchText, pluginEntry['id']), LOGNOTICE)
-            future = executor.submit(_pluginSearch, pluginEntry, searchText, oGui)
-            futures[future] = pluginEntry['name']
+            future = executor.submit(_pluginSearch, pluginEntry, searchText)
+            futures[future] = (pluginEntry['name'], time.monotonic())
 
         pending = set(futures.keys())
         while pending:
@@ -779,11 +784,39 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
                 for future in pending:
                     future.cancel()
                 return False
+            now = time.monotonic()
+            expired = [future for future in pending
+                       if now - futures[future][1] >= workerTimeout]
+            for future in expired:
+                pending.remove(future)
+                future.cancel()
+                completed += 1
+                name = futures[future][0]
+                log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: %s: search timed out after %ss' %
+                    (name, workerTimeout), LOGERROR)
+                dialog.update(completed * 50 // progressPlugins + 50,
+                              name + cConfig().getLocalizedString(30125))
             done, pending = wait(pending, timeout=0.25, return_when=FIRST_COMPLETED)
             for future in done:
                 completed += 1
-                dialog.update(completed * 50 // progressPlugins + 50, futures[future] + cConfig().getLocalizedString(30125))
-    return True
+                name = futures[future][0]
+                try:
+                    oGui.searchResults.extend(future.result() or [])
+                except Exception:
+                    log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: %s: collecting search results failed' % name, LOGERROR)
+                dialog.update(completed * 50 // progressPlugins + 50,
+                              name + cConfig().getLocalizedString(30125))
+        return True
+    finally:
+        # Bei einer defekten Quelle wird nicht auf deren Thread gewartet. Die
+        # Suche kann dadurch ihre vorhandenen Ergebnisse sofort anzeigen.
+        for future in futures:
+            if not future.done():
+                future.cancel()
+        try:
+            executor.shutdown(wait=False, cancel_futures=True)
+        except TypeError:  # Kodi-Versionen mit aelterem concurrent.futures
+            executor.shutdown(wait=False)
 
 
 def _collectGlobalSearchResults(searchText, includePlugin):
@@ -913,12 +946,20 @@ def searchTMDB(params):
     return _renderCollectedSearchResults(oGui)
 
 
-def _pluginSearch(pluginEntry, sSearchText, oGui):
+def _pluginSearch(pluginEntry, sSearchText):
+    # Nie das gemeinsame GUI-Objekt aus einem Worker veraendern: spaete oder
+    # defekte Quellen koennten sonst nach dem Rendern Ergebnisse nachreichen.
+    # Der Hauptthread uebernimmt die fertige Liste in _runPluginSearches().
+    oGui = cGui()
+    oGui.globalSearch = True
+    oGui._collectMode = True
     try:
         plugin = __import__(pluginEntry['id'], globals(), locals())
         function = getattr(plugin, '_search')
         function(oGui, sSearchText)
+        return oGui.searchResults
     except Exception:
         log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: ' + pluginEntry['name'] + ': search failed', LOGERROR)
         import traceback
         log(traceback.format_exc())
+        return []
