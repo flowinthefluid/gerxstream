@@ -1,3 +1,11 @@
+[B]Version: 1.0.17[/B]
+
+21.09.2026
+
+- Globale Suchen: movie2k kann bei Cloudflare keinen Hinweisdialog mehr aus dem Such-Worker oeffnen
+- Unpassende, zwischengespeicherte Treffer reiner Anime-Quellen werden aus allgemeinen Suchen entfernt
+- Die Ergebnisliste wird ohne zweiten Fortschrittsdialog direkt an Kodi uebergeben
+
 [B]Version: 1.0.16[/B]
 
 21.09.2026

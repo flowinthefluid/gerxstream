@@ -131,7 +131,11 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     sLanguage = params.getValue('sLanguage')
     if not entryUrl: entryUrl = params.getValue('sUrl')
     try:
-        oRequest = cRequestHandler(entryUrl)
+        # Bei der Sammelsuche darf eine Cloudflare-Seite niemals einen
+        # modalen Hinweisdialog aus einem Worker-Thread heraus oeffnen.
+        # Die anderen aktuellen Quellen reichen dieses Flag bereits durch;
+        # movie2k war der verbliebene Ausreisser.
+        oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
         if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
             oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
         oRequest.addHeaderEntry('Referer', REFERER)
@@ -298,4 +302,3 @@ def _search(oGui, sSearchText):
     if sLanguage == '2':  # prefLang Englisch
         sLang = '3'
     showEntries(URL_SEARCH % (sLang, cParser.quotePlus(sSearchText), '1'), oGui, sSearchText)
-

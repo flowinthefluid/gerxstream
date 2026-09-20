@@ -7,6 +7,7 @@ import xbmcgui
 import xbmcplugin
 import os
 import random
+import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from resources.lib.handler.ParameterHandler import ParameterHandler
@@ -870,6 +871,41 @@ def _collectGlobalSearchResults(searchText, includePlugin):
     if not completed:
         oGui.setEndOfDirectory()
         return None
+
+    # Manche reine Anime-Quellen liefern bei einer Suchseite die feste
+    # Startseitenliste zurueck, obwohl der Begriff dort nicht vorkommt. Diese
+    # Eintraege standen alphabetisch zuerst und sahen dadurch so aus, als
+    # wuerde die allgemeine Suche direkt zu einem Anime-Anbieter wechseln.
+    # Echte Anime-Treffer bleiben erhalten; nur nachweislich unpassende
+    # Treffer aus ausschliesslichen Anime-Quellen werden entfernt.
+    animeProviders = set(
+        plugin['id'] for plugin in searchPlugins
+        if 'animes' in plugin.get('categories', ())
+        and not any(category != 'animes' for category in plugin.get('categories', ()))
+    )
+    searchNeedle = re.sub(r'[^a-z0-9]+', '', searchText.lower())
+    searchWords = [word for word in re.findall(r'[a-z0-9]+', searchText.lower())
+                   if len(word) >= 4]
+    if animeProviders and (searchNeedle or searchWords):
+        matchingResults = []
+        discarded = 0
+        for result in oGui.searchResults:
+            element = result['guiElement']
+            if element.getSiteName() not in animeProviders:
+                matchingResults.append(result)
+                continue
+            resultTitle = element.getTitle().lower()
+            resultNeedle = re.sub(r'[^a-z0-9]+', '', resultTitle)
+            if ((searchNeedle and searchNeedle in resultNeedle)
+                    or any(word in resultNeedle for word in searchWords)):
+                matchingResults.append(result)
+            else:
+                discarded += 1
+        if discarded:
+            oGui.searchResults = matchingResults
+            log(cConfig().getLocalizedString(30166) +
+                ' -> [gerxstream]: discarded %s unrelated results from anime providers' % discarded,
+                LOGNOTICE)
     log(cConfig().getLocalizedString(30166) +
         ' -> [gerxstream]: rendering %s collected search results' % len(oGui.searchResults),
         LOGNOTICE)
@@ -880,20 +916,12 @@ def _renderCollectedSearchResults(oGui, results=None):
     oGui._collectMode = False
     collected = oGui.searchResults if results is None else results
     total = len(collected)
-    dialog = xbmcgui.DialogProgress()
-    dialog.create(cConfig().getLocalizedString(30126), cConfig().getLocalizedString(30127))
     if total == 0:
-        dialog.close()
         oGui.setView()
         oGui.setEndOfDirectory()
         return True
     for count, result in enumerate(sorted(collected, key=lambda k: k['guiElement'].getSiteName()), 1):
-        if dialog.iscanceled():
-            oGui.setEndOfDirectory()
-            return False
         oGui.addFolder(result['guiElement'], result['params'], bIsFolder=result['isFolder'], iTotal=total)
-        dialog.update(count * 100 // total, str(count) + cConfig().getLocalizedString(30128) + str(total) + ': ' + result['guiElement'].getTitle())
-    dialog.close()
     oGui.setView()
     oGui.setEndOfDirectory()
     return True
