@@ -22,7 +22,9 @@ hinterlegt, laeuft die Pruefung sofort wieder an.
 import json
 import os
 import re
+import threading
 import time
+from urllib.parse import urlparse
 
 from resources.lib.config import cConfig
 from resources.lib.tools import logger
@@ -65,6 +67,8 @@ RELEVANT_COOKIES = {
 
 # Ein Hinweis je Quelle und Sitzung reicht.
 _notified = set()
+_pendingNotifications = []
+_notificationLock = threading.Lock()
 
 # Abgelegte Sitzungen: damit die Bestaetigung nicht bei jedem Kodi-Start
 # erneut noetig ist. Cloudflare setzt cf_clearance ueblicherweise auf einige
@@ -318,7 +322,7 @@ def recover(siteId, targetUrl):
     return solveWithFlaresolverr(siteId, targetUrl)
 
 
-def notifyOnce(siteId, kind, url=''):
+def notifyOnce(siteId, kind, url='', interactive=True):
     """Erklaert einmal je Quelle, wie sich die Sperre aufloesen laesst.
 
     Ohne diesen Hinweis sieht der Nutzer nur eine leere Liste und hat keinen
@@ -326,9 +330,14 @@ def notifyOnce(siteId, kind, url=''):
     """
     label = {CLOUDFLARE: 'Cloudflare', DDOS_GUARD: 'DDoS-Guard'}.get(kind, kind)
     logger.info('-> [protection]: %s aktiv fuer %s (%s)' % (label, siteId, url))
-    if siteId in _notified:
-        return
-    _notified.add(siteId)
+    # Die globale Suche ruft Quellen parallel auf. Ein modaler Kodi-Dialog
+    # aus einem ihrer Worker kann diese Suche blockieren, obwohl alle anderen
+    # Quellen fertig sind. Solche Hinweise werden daher gesammelt und erst
+    # nach dem Fortschrittsdialog im Kodi-Hauptthread angezeigt.
+    with _notificationLock:
+        if siteId in _notified:
+            return
+        _notified.add(siteId)
 
     stored = hasManualSession(siteId)
     names = ', '.join(RELEVANT_COOKIES.get(kind, ()))
@@ -349,8 +358,28 @@ def notifyOnce(siteId, kind, url=''):
             'Quelle eintragen.\n\n'
             'Beide Angaben gehoeren zusammen - das Cookie gilt nur fuer den '
             'User-Agent, mit dem es ausgestellt wurde.' % (label, names))
+    source = urlparse(url).netloc or siteId
+    if source:
+        message += '\n\nBetroffene Quelle: %s' % source
+    if not interactive:
+        with _notificationLock:
+            _pendingNotifications.append(message)
+        return
+    _showNotification(message)
+
+
+def _showNotification(message):
     try:
         import xbmcgui
         xbmcgui.Dialog().ok('GerXStream', message)
     except Exception as exc:
         logger.info('-> [protection]: Hinweisdialog nicht moeglich: %s' % exc)
+
+
+def showPendingNotifications():
+    """Zeigt aus parallelen Such-Workern gesammelte Hinweise sicher an."""
+    with _notificationLock:
+        pending = list(_pendingNotifications)
+        del _pendingNotifications[:]
+    for message in pending:
+        _showNotification(message)

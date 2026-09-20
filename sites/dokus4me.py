@@ -3,6 +3,8 @@
 # Always pay attention to the translations in the menu!
 # Multi Scraper für Dokumentationen
 
+import json
+
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.tools import logger, cParser
@@ -14,9 +16,10 @@ import sys, xbmcplugin, xbmc
 
 #
 
-SITE_IDENTIFIER = 'dokus'
-SITE_NAME = cConfig().getLocalizedString(30505)
-SITE_ICON = 'dokus.png'
+SITE_IDENTIFIER = 'dokus4me'
+SITE_NAME = 'Dokus4.me'
+SITE_ICON = 'dokus4me.png'
+CONTENT_CATEGORIES = ('dokus',)
 SITE_GLOBAL_SEARCH = False
 cConfig().setSetting('global_search_' + SITE_IDENTIFIER, 'false')
 logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
@@ -27,39 +30,32 @@ ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert
 def load(): # Menu structure of the site plugin
 
     logger.info('Load %s' % SITE_NAME)
-    params = ParameterHandler()
-    # Abfrage ob Youtube installiert ist
+    # Doku-Streams liefert YouTube-Einbettungen. Die bestehende YouTube-
+    # Integration bleibt daher auch beim kategorisierten Menue erhalten.
     if cConfig().getSettingBool('plugin_' + SITE_IDENTIFIER, False):
         if not xbmc.getCondVisibility('System.HasAddon(%s)' % 'plugin.video.youtube'):
             xbmc.executebuiltin('InstallAddon(%s)' % 'plugin.video.youtube')
-    # Menü für Dokus4.me
-    logger.info('Load %s' % SITE_NAME_1)
-    params.setParam('sUrl', URL_MAIN_1)
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_1 + ': [/B]' + cConfig().getLocalizedString(30505), SITE_IDENTIFIER, 'showEntries_1'), params)  # Documentations
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_1 + ': [/B]' + cConfig().getLocalizedString(30506), SITE_IDENTIFIER, 'showGenre_1'), params) # Genre
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_1 + ': [/B]' + cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch_1'), params)    # Search
-    # Menü für DokusStreams.de
-    logger.info('Load %s' % SITE_NAME_2)
-    params.setParam('sUrl', URL_MAIN_2)
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_2 + ': [/B]' + cConfig().getLocalizedString(30505), SITE_IDENTIFIER, 'showEntries_2'), params)  # Documentations
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_2 + ': [/B]' + cConfig().getLocalizedString(30506), SITE_IDENTIFIER, 'showGenre_2'), params)  # Genre
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_2 + ': [/B]' + cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch_2'), params)  # Search
-    # Menü für Dokuh.de
-    logger.info('Load %s' % SITE_NAME_3)
-    params.setParam('sUrl', URL_MAIN_3)
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_3 + ': [/B]' + cConfig().getLocalizedString(30505), SITE_IDENTIFIER, 'showEntries_3'), params)  # Documentations
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_3 + ': [/B]' + cConfig().getLocalizedString(30506), SITE_IDENTIFIER, 'showGenre_3'), params)  # Genre
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_3 + ': [/B]' + cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch_3'), params)  # Search
-
-    # Menü für Videogold.de
-    logger.info('Load %s' % SITE_NAME_6)
-    params.setParam('sUrl', URL_MAIN_6)
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_6 + ': [/B]' + cConfig().getLocalizedString(30505), SITE_IDENTIFIER, 'showDoku_6'), params)  # Doku
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_6 + ': [/B]' + cConfig().getLocalizedString(30506), SITE_IDENTIFIER, 'showThemen_6'), params)  # Themen
-    cGui().addFolder(cGuiElement('[B]' + SITE_NAME_6 + ': [/B]' + cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch_6'), params)  # Search
-    cGui().addFolder(cGuiElement('[B]YouTube:[/B] Kanäle', SITE_IDENTIFIER, 'showYTChannels'), params)
-    cGui().addFolder(cGuiElement('[B]YouTube:[/B] Genre', SITE_IDENTIFIER, 'showYTGenre'), params)
+    for sourceId, sourceName in DOCU_SOURCES:
+        params = ParameterHandler()
+        params.setParam('source', sourceId)
+        cGui().addFolder(cGuiElement(sourceName, SITE_IDENTIFIER, 'showDocuMenu'), params)
     cGui().setEndOfDirectory()
+
+def showDocuMenu():
+    """Quellen sind eigene Kategorien statt flacher Eintraege im Hauptmenue."""
+    sourceId = ParameterHandler().getValue('source')
+    sourceMenu = DOCU_SOURCE_MENUS.get(sourceId)
+    if not sourceMenu:
+        cGui().showInfo()
+        return
+
+    for title, functionName, entryUrl in sourceMenu:
+        params = ParameterHandler()
+        if entryUrl:
+            params.setParam('sUrl', entryUrl)
+        cGui().addFolder(cGuiElement(title, SITE_IDENTIFIER, functionName), params)
+    cGui().setEndOfDirectory()
+
 
 #################### Dokus4.me ####################
 
@@ -334,6 +330,117 @@ def showSearch_3():
 
 def _search_3(oGui, sSearchText):
     showEntries_3(URL_SEARCH_3 % cParser.quotePlus(sSearchText), oGui, sSearchText)
+
+#################### Doku-Streams.com ####################
+
+SITE_NAME_4 = 'Doku-Streams.com'
+SITE_ICON_4 = 'doku-streams.png'
+URL_MAIN_4 = 'https://doku-streams.com/'
+URL_SEARCH_4 = URL_MAIN_4 + '?s=%s'
+URL_CATEGORIES_4 = URL_MAIN_4 + 'wp-json/wp/v2/categories?per_page=100&hide_empty=true'
+
+
+def _getJson_4(sUrl, sGui=False):
+    content = cRequestHandler(sUrl, ignoreErrors=(sGui is not False)).request()
+    if not content:
+        return []
+    try:
+        return json.loads(content)
+    except ValueError:
+        logger.info('-> [%s]: ungueltige JSON-Antwort: %s' % (SITE_NAME_4, sUrl))
+        return []
+
+
+def _isAllowedCategory_4(name, url):
+    value = ('%s %s' % (name, url)).lower()
+    return 'erotik' not in value and 'sex' not in value
+
+
+def showGenre_4():
+    categories = _getJson_4(URL_CATEGORIES_4)
+    if not isinstance(categories, list):
+        cGui().showInfo()
+        return
+
+    allowedCategories = []
+    for category in categories:
+        name = category.get('name') if isinstance(category, dict) else ''
+        url = category.get('link') if isinstance(category, dict) else ''
+        if not name or not url or not _isAllowedCategory_4(name, url):
+            continue
+        allowedCategories.append((name, url))
+
+    params = ParameterHandler()
+    total = len(allowedCategories)
+    for name, url in allowedCategories:
+        params.setParam('sUrl', url)
+        cGui().addFolder(cGuiElement(name, SITE_IDENTIFIER, 'showEntries_4'), params, True, total)
+    cGui().setEndOfDirectory()
+
+
+def showEntries_4(entryUrl=False, sGui=False, sSearchText=False):
+    oGui = sGui if sGui else cGui()
+    params = ParameterHandler()
+    if not entryUrl:
+        entryUrl = params.getValue('sUrl') or URL_MAIN_4
+    content = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False)).request()
+    pattern = (r'<article[^>]+class="[^"]*post[^"]*"[^>]*>.*?'
+               r'<h2 class="entry-title"><a href="([^"]+)"[^>]*>([^<]+)</a>')
+    isMatch, entries = cParser.parse(content, pattern)
+    if not isMatch:
+        if not sGui:
+            oGui.showInfo()
+        return
+
+    total = len(entries)
+    for url, name in entries:
+        if sSearchText and not cParser.search(sSearchText, name):
+            continue
+        element = cGuiElement(name, SITE_IDENTIFIER, 'showHosters_4')
+        element.setMediaType('movie')
+        params.setParam('entryUrl', url)
+        oGui.addFolder(element, params, False, total)
+
+    if not sGui and not sSearchText and total >= 10 and '?' not in entryUrl:
+        page = int(params.getValue('page'))
+        page = 2 if page == 0 else page + 1
+        params.setParam('page', page)
+        params.setParam('sUrl', entryUrl.rstrip('/') + '/page/%d/' % page)
+        oGui.addNextPage(SITE_IDENTIFIER, 'showEntries_4', params)
+    if not sGui:
+        oGui.setView('movies')
+        oGui.setEndOfDirectory()
+
+
+def showHosters_4():
+    hosters = []
+    entryUrl = ParameterHandler().getValue('entryUrl')
+    if not entryUrl:
+        return hosters
+    content = cRequestHandler(entryUrl, caching=False).request()
+    isMatch, urls = cParser.parse(content, r'<iframe[^>]+src="([^"]+)"')
+    if isMatch:
+        for url in urls:
+            if 'youtube' in url or 'vimeo' in url:
+                hosters.append({'link': url, 'name': cParser.urlparse(url)})
+    if hosters:
+        hosters.append('getHosterUrl_4')
+    return hosters
+
+
+def getHosterUrl_4(sUrl=False):
+    if sUrl and 'youtube' in sUrl and not xbmc.getCondVisibility('System.HasAddon(%s)' % 'plugin.video.youtube'):
+        xbmc.executebuiltin('InstallAddon(%s)' % 'plugin.video.youtube')
+    return [{'streamUrl': sUrl, 'resolved': False}]
+
+
+def showSearch_4():
+    searchText = cGui().showKeyBoard(sHeading=cConfig().getLocalizedString(30289))
+    if not searchText:
+        return
+    showEntries_4(URL_SEARCH_4 % cParser.quotePlus(searchText), False, searchText)
+    cGui().setEndOfDirectory()
+
 
 #################### VideoGold ####################
 
@@ -706,4 +813,48 @@ def showYTLists():
         params.setParam('sUrl', sUrl)
         cGui().addFolder(cGuiElement(name,SITE_IDENTIFIER,''),params,bIsFolder=True)
     xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
+
+
+# Die Quellen werden im Hauptmenue bewusst nicht flach vermischt. Jede Quelle
+# liefert ihre eigenen Inhalte, Kategorien und - sofern unterstuetzt - Suche.
+DOCU_SOURCES = (
+    ('dokus4', SITE_NAME_1),
+    ('dokustreams', SITE_NAME_2),
+    ('dokuh', SITE_NAME_3),
+    ('doku_streams', SITE_NAME_4),
+    ('videogold', SITE_NAME_6),
+    ('youtube', 'YouTube Doku-Kanaele'),
+)
+
+DOCU_SOURCE_MENUS = {
+    'dokus4': (
+        (cConfig().getLocalizedString(30505), 'showEntries_1', URL_MAIN_1),
+        (cConfig().getLocalizedString(30506), 'showGenre_1', URL_MAIN_1),
+        (cConfig().getLocalizedString(30520), 'showSearch_1', False),
+    ),
+    'dokustreams': (
+        (cConfig().getLocalizedString(30505), 'showEntries_2', URL_MAIN_2),
+        (cConfig().getLocalizedString(30506), 'showGenre_2', URL_MAIN_2),
+        (cConfig().getLocalizedString(30520), 'showSearch_2', False),
+    ),
+    'dokuh': (
+        (cConfig().getLocalizedString(30505), 'showEntries_3', URL_MAIN_3),
+        (cConfig().getLocalizedString(30506), 'showGenre_3', URL_MAIN_3),
+        (cConfig().getLocalizedString(30520), 'showSearch_3', False),
+    ),
+    'doku_streams': (
+        (cConfig().getLocalizedString(30505), 'showEntries_4', URL_MAIN_4),
+        (cConfig().getLocalizedString(30506), 'showGenre_4', URL_MAIN_4),
+        (cConfig().getLocalizedString(30520), 'showSearch_4', False),
+    ),
+    'videogold': (
+        (cConfig().getLocalizedString(30505), 'showDoku_6', URL_MAIN_6),
+        (cConfig().getLocalizedString(30506), 'showThemen_6', URL_MAIN_6),
+        (cConfig().getLocalizedString(30520), 'showSearch_6', False),
+    ),
+    'youtube': (
+        ('Kanaele', 'showYTChannels', False),
+        (cConfig().getLocalizedString(30506), 'showYTGenre', False),
+    ),
+}
 

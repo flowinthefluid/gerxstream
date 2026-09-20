@@ -21,6 +21,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'mediaccc'
 SITE_NAME = 'media.ccc.de'
 SITE_ICON = 'mediaccc.png'
+CONTENT_CATEGORIES = ('dokus',)
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

@@ -26,6 +26,7 @@ from resources.lib.captcha.captcha_helper import solve_recaptcha, extract_recapt
 SITE_IDENTIFIER = 'burningseries'
 SITE_NAME = 'BurningSeries'
 SITE_ICON = 'burningseries.png'
+CONTENT_CATEGORIES = ('serien', 'animes', 'dokus')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
@@ -39,7 +40,7 @@ if cConfig().getSetting('2captcha.pass') == '':
     logger.info('-> [SitePlugin]: 2Captcha API Key not set')
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'burningseries.ac') # Domain Auswahl über die GerXStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'bs.to') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -70,7 +71,6 @@ def load(): # Menu structure of the site plugin
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30506), SITE_IDENTIFIER, 'showValue'), params)    # Genre
     params.setParam('sUrl', URL_SERIES)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'), params)   # Search
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30836), SITE_IDENTIFIER, 'showDomains'), params)  # Adresse wechseln
     cGui().setEndOfDirectory()
 
 def showValue():

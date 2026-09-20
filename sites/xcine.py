@@ -18,12 +18,13 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'xcine'
 SITE_NAME = 'xCine'
 SITE_ICON = 'xcinetop.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'dokus')
 
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'xcine.hair') 
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'xcine.click')
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status')
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER)
 
@@ -51,7 +52,6 @@ def load():
     params.setParam('sUrl', URL_MAIN)
     #cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30506), SITE_IDENTIFIER, 'showGenre'), params)    #Suche ausgeblendet da diese auf der Site nicht funktioniert
     #cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'))
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30836), SITE_IDENTIFIER, 'showDomains'), params)  # Adresse wechseln
     cGui().setEndOfDirectory()
 
 
@@ -250,4 +250,3 @@ def showSearchPage():
     sNextSearchPage = sNextPage.split('page/')[0].strip() + 'page/' + sSearchPageText + '/'
     showEntries(sNextSearchPage)
     cGui().setEndOfDirectory()
-

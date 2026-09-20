@@ -38,6 +38,10 @@ EXCLUDED_DIRS = {
     'tools',
     '.idea',
     '.vscode',
+    # Zeiger-Addons fuer das eigene Hosting-Repo (docs/REPO-SPEC.md); die
+    # gehoeren als eigenstaendige Addons niemals ins Plugin-Zip.
+    'repository.gerxstream',
+    'repository.resolveurl',
 }
 
 # Dateien, die nie ins Release gehoeren. fnmatch-Muster gegen den Dateinamen.

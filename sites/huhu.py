@@ -20,9 +20,10 @@ from resources.lib.gui.gui import cGui
 
 PATH = cConfig().getAddonInfo('path')
 ART = os.path.join(PATH, 'resources', 'art')
-SITE_IDENTIFIER = 'vod_huhu'
-SITE_NAME = 'VoD - Huhu'
-SITE_ICON = 'vod_huhu.png'
+SITE_IDENTIFIER = 'huhu'
+SITE_NAME = 'Huhu'
+SITE_ICON = 'huhu.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'dokus')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

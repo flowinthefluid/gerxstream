@@ -1,3 +1,18 @@
+[B]Version: 1.0.11[/B]
+
+20.09.2026
+
+- Globale Suche bleibt nutzbar, wenn eine Quelle durch DDoS-Guard oder Cloudflare geschuetzt ist
+- Hinweis zum Bot-Schutz wird nach der Suche angezeigt und nennt die betroffene Quelle
+- Quellen, Kategorien, Favoriten und Anzeige wurden erweitert und ueberarbeitet
+
+[B]Version: 1.0.1[/B]
+
+20.09.2026
+
+- ResolveURL 5.1.209 wird jetzt direkt vom GerXStream Repository bereitgestellt
+- Nicht benoetigte Debug-Abhaengigkeiten pydevd und Web-PDB entfernt
+
 [B]Version: 1.0.0[/B]
 
 19.09.2026
@@ -24,4 +39,3 @@
 05.09.2026
 
 - Projektstart: Grundgerüst und Addon-ID plugin.video.gerxstream festgelegt
-

@@ -30,6 +30,13 @@ class cConfig:
 
     def getSetting(self, sName, default=''):
         result = self.__addon.getSetting(sName)
+        if sName.endswith('.domain'):
+            site_prefix = sName[:-7]
+            custom_result = (self.__addon.getSetting(site_prefix + '.domainCustom') or '').strip()
+            if custom_result:
+                return custom_result
+            if result == '__custom__':
+                return default
         if result:
             return result
         else:

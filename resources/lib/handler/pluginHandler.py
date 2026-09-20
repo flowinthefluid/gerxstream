@@ -18,6 +18,35 @@ from resources.lib.tools import platform, infoDialog, getDNS, getRepofromAddonsD
 
 ADDON_PATH = translatePath(os.path.join('special://home/addons/', '%s'))
 
+# Ein Site-Plugin kann mehreren Inhaltsgruppen angehoeren. Jedes Site-Plugin
+# traegt seine Zuordnung selbst als Modul-Attribut CONTENT_CATEGORIES
+# (Tupel aus den Kategorie-Kennungen unten). Das steuert ausschliesslich die
+# Navigation; die Scraper selbst bleiben unveraendert. Ein Plugin ohne
+# dieses Attribut - oder mit einer unbekannten Kennung - landet als
+# Sicherheitsnetz in "Weitere Quellen".
+CATEGORY_ORDER = (
+    ('alle', 30857),
+    ('filme', 30850),
+    ('serien', 30851),
+    ('animes', 30853),
+    ('dokus', 30852),
+    ('kinder', 30854),
+)
+
+# Oeffentliche Mediatheken/Archive bleiben als Kennung verfuegbar.
+# Ob sie im Index/Suche erscheinen, steuert allein der Nutzer ueber die
+# normalen Plugin- und Global-Search-Schalter in den Einstellungen.
+PUBLIC_MEDIA_SITES = frozenset((
+    'ardmediathek',
+    'arte',
+    'mediathekviewweb',
+    'kids_tube',
+    'mediaccc',
+    'internetarchive',
+    'netzkino',
+))
+
+
 class cPluginHandler:
     def __init__(self):
         self.rootFolder = translatePath(cConfig().getAddonInfo('path'))
@@ -38,7 +67,7 @@ class cPluginHandler:
         update = False
         fileNames = self.__getFileNamesFromFolder(self.defaultFolder)
         for fileName in fileNames:
-            plugin = {'name': '', 'identifier': '', 'icon': '', 'domain': '', 'globalsearch': '', 'modified': 0}
+            plugin = {'name': '', 'identifier': '', 'icon': '', 'domain': '', 'globalsearch': '', 'categories': (), 'modified': 0}
             if fileName in pluginDB:
                 plugin.update(pluginDB[fileName])
             try:
@@ -75,6 +104,70 @@ class cPluginHandler:
                 if not fileName.startswith('_')]
 
 
+    @staticmethod
+    def isPublicMediaSite(siteId):
+        return siteId in PUBLIC_MEDIA_SITES
+
+
+    def getContentCategories(self, available=None):
+        """Aktive Quellen nach Inhalt, mit gewollten Mehrfachzuordnungen.
+
+        Eine Quelle wird pro passender Kategorie ausgegeben. Das ist bewusst
+        kein ``elif``: Film-, Serien- und Dokuquellen muessen gleichzeitig
+        auffindbar sein. Ein unbekanntes, aber aktives Modul bleibt als
+        Sicherheitsnetz in ``other`` sichtbar, bis es explizit eingeordnet
+        wurde.
+        """
+        if available is None:
+            available = self.getAvailablePlugins()
+        categorizedIds = set()
+        result = []
+
+        for categoryId, stringId in CATEGORY_ORDER:
+            if categoryId == 'alle':
+                # Fuer "Alle" bewusst unsortiert: Reihenfolge wie in den
+                # aktivierten Plugins, damit der Ordner wie gewuenscht eine
+                # ungefilterte Sammelansicht bleibt.
+                plugins = [plugin for plugin in available]
+                categorizedIds.update(plugin['id'] for plugin in plugins)
+                if plugins:
+                    result.append({
+                        'id': categoryId,
+                        'name': cConfig().getLocalizedString(stringId),
+                        'plugins': plugins,
+                    })
+                continue
+            plugins = sorted(
+                [plugin for plugin in available
+                 if categoryId in plugin.get('categories', ())],
+                key=lambda plugin: plugin['name'].lower())
+            categorizedIds.update(plugin['id'] for plugin in plugins)
+            if plugins:
+                result.append({
+                    'id': categoryId,
+                    'name': cConfig().getLocalizedString(stringId),
+                    'plugins': plugins,
+                })
+
+        otherPlugins = [plugin for plugin in available
+                        if plugin['id'] not in categorizedIds]
+        if otherPlugins:
+            result.append({
+                'id': 'other',
+                'name': cConfig().getLocalizedString(30856),
+                'plugins': sorted(otherPlugins, key=lambda plugin: plugin['id']),
+            })
+        return result
+
+
+    def getPluginsForContentCategory(self, categoryId):
+        """Gibt nur eine der fest definierten Kategorien zurueck."""
+        for category in self.getContentCategories():
+            if category['id'] == categoryId:
+                return category['plugins']
+        return []
+
+
     def getAvailablePluginsFromDB(self):
         plugins = []
         iconFolder = os.path.join(self.rootFolder, 'resources', 'art', 'sites')
@@ -84,8 +177,14 @@ class cPluginHandler:
             plugin = pluginDB[pluginID] # Aus PluginDB lese PluginID
             pluginSettingsName = 'plugin_%s' % pluginID # Name des Siteplugins
             plugin['id'] = pluginID
+            # Die optionalen "sichtbar"-Schalter steuern sowohl Hauptmenue
+            # als auch globale Suche. Aeltere Quellen ohne eigenen Schalter
+            # bleiben aus Kompatibilitaetsgruenden sichtbar.
+            if not cConfig().getSettingBool(pluginSettingsName + '_visible', True):
+                continue
             if 'icon' in plugin:
-                plugin['icon'] = os.path.join(iconFolder, plugin['icon'])
+                iconPath = os.path.join(iconFolder, plugin['icon'])
+                plugin['icon'] = iconPath if os.path.isfile(iconPath) else ''
             else:
                 plugin['icon'] = ''
             # existieren zu diesem plugin die an/aus settings
@@ -151,10 +250,11 @@ class cPluginHandler:
         except Exception:
             pluginData['globalsearch'] = True
             pass
+        try:
+            pluginData['categories'] = tuple(plugin.CONTENT_CATEGORIES)
+        except Exception:
+            pluginData['categories'] = ()
         return pluginData
-
-
-    def __getPluginDataIndex(self, fileName, defaultFolder): # Hole Plugin Daten aus dem Siteplugin
         pluginData = {}
         if not defaultFolder in sys.path: sys.path.append(defaultFolder)
         try:

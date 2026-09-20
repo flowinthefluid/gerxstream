@@ -24,24 +24,28 @@ class cJDownloaderHandler:
     def __checkConfig(self):
         log(cConfig().getLocalizedString(30166) + ' -> [jdownloaderHandler]: check JD Addon settings', LOGNOTICE)
         
-        return cConfig().getSettingBool('jd_enabled')
+        bEnabled = cConfig().getSetting('jd_enabled')
+        if bEnabled == 'true':
+            return True
+        return False
 
     def __getHost(self):
         return cConfig().getSetting('jd_host')
 
     def __getPort(self):
-        return cConfig().getSettingInt('jd_port', 10025)
+        return cConfig().getSetting('jd_port')
 
     def __getAutomaticStart(self):
-        # Hinweis: jd_automatic_start ist in resources/settings.xml nicht
-        # definiert, der Wert ist daher immer der Default False. Verhalten
-        # unveraendert uebernommen, siehe N1.
-        return cConfig().getSettingBool('jd_automatic_start')
+        bAutomaticStart = cConfig().getSetting('jd_automatic_start')
+        if bAutomaticStart == 'true':
+            return True
+        return False
 
     def __getLinkGrabber(self):
-        # Hinweis: jd_grabber ist in resources/settings.xml ebenfalls nicht
-        # definiert, siehe __getAutomaticStart().
-        return cConfig().getSettingBool('jd_grabber')
+        bAutomaticStart = cConfig().getSetting('jd_grabber')
+        if bAutomaticStart == 'true':
+            return True
+        return False
 
     def __download(self, sFileUrl):
         sHost = self.__getHost()

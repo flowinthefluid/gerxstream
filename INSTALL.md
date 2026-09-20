@@ -6,13 +6,21 @@ Dieses Addon nutzt die ID `plugin.video.gerxstream`.
 
 1. Kodi 22 (primaer) oder Kodi 21 (weicher Fallback)
 2. `script.module.resolveurl` muss installiert sein
-3. Solange noch kein eigenes Repo aktiv verdrahtet ist, muss das ResolveURL-Repo vorab in Kodi hinzugefuegt werden
+3. Empfohlen: das GerXStream Repository (`repository.gerxstream`) als Quelle
+   hinzufuegen — darueber lassen sich sowohl GerXStream als auch die
+   ResolveURL-Repository-Quelle (`repository.resolveurl`) direkt installieren,
+   ohne das ResolveURL-Repo von Hand suchen zu muessen. Siehe
+   `docs/REPO-SPEC.md` fuer die Repo-Struktur.
 
 ## ResolveURL Mindeststand
 
-- Erwarteter Mindeststand: `5.1.208`
+- Empfohlener Mindeststand: `5.1.208` (aktuelle Hoster-Unterstuetzung)
+- Der Import in `addon.xml` verlangt lediglich `5.1.0` und ist `optional`,
+  damit eine bereits vorhandene, aeltere ResolveURL-Installation GerXStream
+  nicht am Start hindert (Kodi deaktiviert Addons sonst hart, wenn eine
+  vorhandene Abhaengigkeit die verlangte Version unterschreitet)
 - Beim Start wird die installierte Version immer ins Kodi-Log geschrieben
-- Liegt die Version darunter, erzeugt der Service eine `LOGWARNING` Meldung
+- Liegt die Version unter `5.1.208`, erzeugt der Service eine `LOGWARNING` Meldung
 
 ## Hinweise zum Selbst-Update
 

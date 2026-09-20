@@ -29,6 +29,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'kayoanime'
 SITE_NAME = 'KayoAnime'
 SITE_ICON = 'kayoanime.png'
+CONTENT_CATEGORIES = ('animes',)
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

@@ -26,6 +26,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'aniworld'
 SITE_NAME = 'AniWorld'
 SITE_ICON = 'aniworld.png'
+CONTENT_CATEGORIES = ('animes',)
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
@@ -33,7 +34,7 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'aniworld.to') # Domain Auswahl über die GerXStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 

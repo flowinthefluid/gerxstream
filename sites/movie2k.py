@@ -19,6 +19,7 @@ from json import loads
 SITE_IDENTIFIER = 'movie2k'
 SITE_NAME = 'Movie2K'
 SITE_ICON = 'movie2k.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'dokus')
 
 URL_MAIN = 'https://movie2k.ch/data/browse/?lang=%s&type=%s&order_by=%s&page=%s'  # lang=%s 2 = deutsch / 3 = englisch / all = Alles
 URL_SEARCH = 'https://movie2k.ch/data/browse/?lang=%s&keyword=%s&page=%s&limit=0'

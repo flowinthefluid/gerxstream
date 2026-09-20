@@ -26,6 +26,7 @@ from itertools import zip_longest as ziplist
 SITE_IDENTIFIER = 'kinoger'
 SITE_NAME = 'KinoGer'
 SITE_ICON = 'kinoger.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'animes')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

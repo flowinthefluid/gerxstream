@@ -1,12 +1,20 @@
 # Spezifikation: Kodi-Repository `gerxstream4kodi`
 
-Stand: 2026-09-18 · Ziel-Repo: `https://github.com/flowinthefluid/gerxstream4kodi` (Branch `main`)
+Stand: 2026-09-20 · Ziel-Repo: `https://github.com/flowinthefluid/gerxstream4kodi` (Branch `main`)
 
 Dieses Dokument beschreibt, welche Struktur das Repository haben muss, damit
 (a) Kodi es als Addon-Quelle akzeptiert und (b) der spaeter zu verdrahtende
 Update-Pfad in `service.py` darauf zugreifen kann.
 
-Strukturvorlage: `https://github.com/jinbinzh/kodi-xstream-mod-repo`
+Strukturvorlage: `https://github.com/jinbinzh/kodi-xstream-mod-repo` (analog zu
+frei verfuegbaren AllInOne-Kodi-Repos wie K.U.S).
+
+Umgesetzt: Die Zeiger-Addon-Quellen liegen als `repository.gerxstream/` und
+`repository.resolveurl/` in diesem Repo, `tools/build_repo.py` baut daraus den
+kompletten Hosting-Ordner (`dist/gerxstream4kodi/`) inklusive `addons.xml`,
+`addons.xml.md5` und `zips/`. Dessen Inhalt wird 1:1 in den Branch `main` von
+`gerxstream4kodi` committet — der Verdrahtungsschritt ist noch der Push
+selbst plus die spaetere Aktivierung von `checkVersion()` (Abschnitt 4).
 
 ---
 
@@ -135,13 +143,21 @@ Anforderungen an die Implementierung, wenn sie kommt:
 
 ## 5. ResolveURL
 
-Vorerst **nicht** ueber dieses Repo. Bis auf Weiteres gilt die Zwischenlage aus
-`INSTALL.md`: das ResolveURL-Repo muss vorher installiert sein.
+Umgesetzt: `repository.resolveurl` (Zeiger auf `Gujal00/smrzips`, **nicht**
+`script.module.resolveurl` selbst) wird unter `zips/repository.resolveurl/`
+mitgehostet. Nutzer installieren damit ueber unsere eigene Quelle sowohl
+GerXStream als auch die ResolveURL-Repository-Quelle, ohne das ResolveURL-Repo
+von Hand suchen zu muessen. Begruendung fuer den reinen Zeiger (statt eines
+gespiegelten `script.module.resolveurl`) siehe D1-Bericht: ein gespiegeltes
+ResolveURL veraltet und reisst die Hoster-Aufloesung mit.
 
-Wenn der Update-Pfad verdrahtet wird, kommt hier `repository.resolveurl`
-hinein — der Zeiger auf `Gujal00/smrzips`, **nicht** `script.module.resolveurl`
-selbst. Begruendung siehe D1-Bericht: ein gespiegeltes ResolveURL veraltet und
-reisst die Hoster-Aufloesung mit.
+Zusaetzlich wurde die Versionsangabe in `addon.xml` von `5.1.173` auf `5.1.0`
+gesenkt (weiterhin `optional="true"`): Kodi deaktiviert ein Addon auch bei
+*optionalen* Abhaengigkeiten hart, wenn eine bereits installierte Version die
+verlangte Untergrenze unterschreitet — das war die Ursache dafuer, dass
+GerXStream bei manchen Nutzern mit vorhandenem, aber aelterem ResolveURL gar
+nicht erst startete. Die inhaltliche Mindestempfehlung (`5.1.208`, Hoster-
+Aktualitaet) bleibt als reiner Laufzeit-`LOGWARNING` in `service.py` bestehen.
 
 ### Offener Punkt: `resolverUpdate()` faellt weg
 

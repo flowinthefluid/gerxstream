@@ -87,18 +87,7 @@ python -W error::SyntaxWarning -m compileall -q -f -x "\.tmp|design|__pycache__"
 python -m pyflakes .
 ```
 
-Das installierbare Archiv wird nicht von Hand gepackt, sondern gebaut:
-
-```powershell
-python tools/build_release.py          # schreibt dist/<addon-id>-<version>.zip
-python tools/build_release.py --list   # zeigt nur den Umfang
-```
-
-Das Skript nimmt ausschließlich von Git verwaltete Dateien auf und prüft das
-fertige Archiv (genau ein Wurzelordner, Pflichtdateien vorhanden, nichts
-Ausgeschlossenes enthalten), bevor es Erfolg meldet.
-
-Beide Prüfkommandos müssen sauber durchlaufen (Exit-Code 0 / keine neuen Findings)
+Beide Kommandos müssen sauber durchlaufen (Exit-Code 0 / keine neuen Findings)
 bevor committet wird. Bei Bulk-Edits über mehrere Dateien (Regex-Ersetzungen,
 Encoding-Fixes) zusätzlich gegen eine bekannte gute Referenzversion prüfen
 (`ast.literal_eval`-Wertevergleich für String-Literale, byteweiser Vergleich
@@ -136,8 +125,3 @@ enthalten.
 | Lokalisierung | [resources/language/](../resources/language/) |
 | Sicherheitsfunde & Status | [BEFUNDE.md](BEFUNDE.md) |
 | Ziel-Repo-Struktur / Update-Verdrahtung | [REPO-SPEC.md](REPO-SPEC.md) |
-| Bot-Schutz (Cloudflare/DDoS-Guard) je Quelle | [resources/lib/handler/protection.py](../resources/lib/handler/protection.py) |
-| Kategorie-Engine (TMDB-gestuetzt) | [resources/lib/categories.py](../resources/lib/categories.py) |
-| Quellen-Recherche (gewuenscht, geprueft, abgelehnt) | [QUELLEN-RECHERCHE.md](QUELLEN-RECHERCHE.md) |
-| Alternative Adressen je Quelle | [resources/lib/domains.py](../resources/lib/domains.py) |
-| Live-Angebote und Backlog | [LIVE-UND-BACKLOG.md](LIVE-UND-BACKLOG.md) |

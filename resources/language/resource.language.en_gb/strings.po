@@ -99,6 +99,26 @@ msgctxt "#30025"
 msgid "Evade DNS lock"
 msgstr ""
 
+msgctxt "#30843"
+msgid "Use custom proxy"
+msgstr ""
+
+msgctxt "#30844"
+msgid "Proxy address (host:port)"
+msgstr ""
+
+msgctxt "#30845"
+msgid "Proxy username (optional)"
+msgstr ""
+
+msgctxt "#30846"
+msgid "Proxy password (optional)"
+msgstr ""
+
+msgctxt "#30847"
+msgid "Only HTTP/HTTPS proxies are supported (no SOCKS5). A public proxy or VPN can slow down every request considerably."
+msgstr ""
+
 msgctxt "#30026"
 msgid "Enable Watch Trailer in the context menu"
 msgstr ""
@@ -371,7 +391,7 @@ msgstr ""
 
 msgctxt "#30120"
 msgid "You don't have a working ResolveUrl installed, no videos can be played please reinstall the resolver."
-msgstr ""
+msgstr "You don't have a working ResolveUrl installed, no videos can be played. Reinstall script.module.resolveurl, e.g. via the 'ResolveURL Repository' source inside the GerXStream Repository."
 
 msgctxt "#30121"
 msgid "Start manual update"
@@ -1641,22 +1661,26 @@ msgctxt "#30728"
 msgid "Moflix-Stream"
 msgstr ""
 
+msgctxt "#30729"
+msgid "Dokus4.me"
+msgstr ""
+
 ############### VoD Plugins ###############
 
 msgctxt "#30790"
-msgid "Video on Demand - Huhu"
+msgid "Huhu"
 msgstr ""
 
 msgctxt "#30791"
-msgid "Video on Demand - Kool"
+msgid "Kool"
 msgstr ""
 
 msgctxt "#30792"
-msgid "Video on Demand - Oha"
+msgid "Oha"
 msgstr ""
 
 msgctxt "#30793"
-msgid "Video on Demand - Vavoo"
+msgid "Vavoo"
 msgstr ""
 
 ############### Genre ###############
@@ -1847,4 +1871,152 @@ msgstr ""
 
 msgctxt "#30840"
 msgid "MediathekViewWeb"
+msgstr ""
+
+msgctxt "#30841"
+msgid "Flash-Moviez.Tv"
+msgstr ""
+
+msgctxt "#30842"
+msgid "Flixitv-Stream.eu"
+msgstr ""
+
+msgctxt "#30850"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#30851"
+msgid "Series"
+msgstr ""
+
+msgctxt "#30852"
+msgid "Documentaries"
+msgstr ""
+
+msgctxt "#30853"
+msgid "Anime"
+msgstr ""
+
+msgctxt "#30854"
+msgid "Children's content"
+msgstr ""
+
+msgctxt "#30855"
+msgid "Media libraries and archives"
+msgstr ""
+
+msgctxt "#30856"
+msgid "Other sources"
+msgstr ""
+
+msgctxt "#30857"
+msgid "All"
+msgstr ""
+
+msgctxt "#30859"
+msgid "Themes"
+msgstr ""
+
+msgctxt "#30860"
+msgid "Popular directors"
+msgstr ""
+
+msgctxt "#30848"
+msgid "Show in source index"
+msgstr ""
+
+msgctxt "#30849"
+msgid "If disabled, this source stays installed but is hidden in index and global search."
+msgstr ""
+
+msgctxt "#30861"
+msgid "Select blocked hosters"
+msgstr ""
+
+msgctxt "#30862"
+msgid "Opens a clickable multi-selection list and writes the blockedHoster setting automatically."
+msgstr ""
+
+msgctxt "#30863"
+msgid "Use custom DNS-over-HTTPS"
+msgstr ""
+
+msgctxt "#30864"
+msgid "DoH server (URL or host)"
+msgstr ""
+
+msgctxt "#30865"
+msgid "Examples: https://dns.google/dns-query or cloudflare-dns.com. Used only when DNS bypass is enabled."
+msgstr ""
+
+msgctxt "#30866"
+msgid "Choose domain from list"
+msgstr ""
+
+msgctxt "#30867"
+msgid "Opens known alternative domains for this source. If no alternates are known yet, only the custom field applies."
+msgstr ""
+
+msgctxt "#30868"
+msgid "Random movies"
+msgstr ""
+
+msgctxt "#30869"
+msgid "Number of random movies"
+msgstr ""
+
+msgctxt "#30870"
+msgid "Number of movies shown in the Random menu."
+msgstr ""
+
+msgctxt "#30871"
+msgid "My actors"
+msgstr ""
+
+msgctxt "#30872"
+msgid "Enter names separated by commas. Actors added from the extended movie info are saved here automatically."
+msgstr ""
+
+msgctxt "#30873"
+msgid "Actor"
+msgstr ""
+
+msgctxt "#30874"
+msgid "Show filmography"
+msgstr ""
+
+msgctxt "#30875"
+msgid "Add to my actors"
+msgstr ""
+
+msgctxt "#30876"
+msgid "%s is already in your actors."
+msgstr ""
+
+msgctxt "#30877"
+msgid "%s was added to your actors."
+msgstr ""
+
+msgctxt "#30878"
+msgid "Sources"
+msgstr ""
+
+msgctxt "#30879"
+msgid "Arrange main menu"
+msgstr ""
+
+msgctxt "#30880"
+msgid "Move up"
+msgstr ""
+
+msgctxt "#30881"
+msgid "Move down"
+msgstr ""
+
+msgctxt "#30882"
+msgid "Restore default order"
+msgstr ""
+
+msgctxt "#30883"
+msgid "Select an entry, then move it up or down. The order is saved automatically."
 msgstr ""

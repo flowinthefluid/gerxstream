@@ -17,6 +17,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'movie4k'
 SITE_NAME = 'Movie4k'
 SITE_ICON = 'movie4k.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'animes', 'dokus')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

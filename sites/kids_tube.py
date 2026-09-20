@@ -20,6 +20,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'kids_tube'
 SITE_NAME = 'Kids Tube'
 SITE_ICON = 'kids_tube.png'
+CONTENT_CATEGORIES = ('dokus', 'kinder')
 
 SITE_GLOBAL_SEARCH = False
 

@@ -20,9 +20,10 @@ from resources.lib.gui.gui import cGui
 
 PATH = cConfig().getAddonInfo('path')
 ART = os.path.join(PATH, 'resources', 'art')
-SITE_IDENTIFIER = 'vod_kool'
-SITE_NAME = 'VoD - Kool'
-SITE_ICON = 'vod_kool.png'
+SITE_IDENTIFIER = 'oha'
+SITE_NAME = 'Oha'
+SITE_ICON = 'oha.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'dokus')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
@@ -33,9 +34,9 @@ if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
 #logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Globale Variablen
-DOMAIN = 'www.kool.to'
+DOMAIN = 'www.oha.to'
 URL_MAIN = 'https://' + DOMAIN + '/web-vod/'
-# URL_MAIN = 'https://www.kool.to/web-vod/'
+# URL_MAIN = 'https://www.oha.to/web-vod/'
 URL_VALUE = URL_MAIN + 'api/list?id=%s'
 URL_ITEM = URL_MAIN + 'api/links?id=%s'
 URL_HOSTER = URL_MAIN + 'api/get?link='

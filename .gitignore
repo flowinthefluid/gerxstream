@@ -18,6 +18,3 @@ Thumbs.db
 
 # Lokale Arbeits-/Quelldateien (Sprite-Sheets, Skripte, Backups)
 .tmp/
-
-# Build-Ausgabe
-dist/

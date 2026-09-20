@@ -77,11 +77,11 @@ def checkDependence(ADDONID):
 
 def delHtmlCache():
     # Html Cache beim KodiStart nach (X) Tage löschen
-    deltaDay = cConfig().getSettingInt('cacheDeltaDay', 2)
+    deltaDay = int(cConfig().getSetting('cacheDeltaDay', 2))
     deltaTime = 60*60*24*deltaDay # Tage
     currentTime = int(time.time())
     # alle x Tage
-    if currentTime >= cConfig().getSettingInt('lastdelhtml', 0) + deltaTime:
+    if currentTime >= int(cConfig().getSetting('lastdelhtml', 0)) + deltaTime:
         cRequestHandler('').clearCache() # Cache löschen
         cConfig().setSetting('lastdelhtml', str(currentTime))
 

@@ -77,7 +77,6 @@ def GerXStreamDevUpdate(silent=False):
 def UpdateResolve(username, resolve_dir, resolve_id, branch, token, silent):
     REMOTE_PLUGIN_COMMITS = "https://api.github.com/repos/%s/%s/commits/%s" % (username, resolve_dir, branch)   # Github Commits
     REMOTE_PLUGIN_DOWNLOADS = "https://api.github.com/repos/%s/%s/zipball/%s" % (username, resolve_dir, branch) # Github Downloads
-    PACKAGES_PATH = translatePath(os.path.join('special://home/addons/packages/'))  # Packages Ordner für Downloads
     ADDON_PATH = translatePath(os.path.join('special://home/addons/packages/', '%s') % resolve_id)  # Addon Ordner in Packages
     INSTALL_PATH = translatePath(os.path.join('special://home/addons/', '%s') % resolve_id) # Installation Ordner
     
@@ -92,14 +91,18 @@ def UpdateResolve(username, resolve_dir, resolve_id, branch, token, silent):
         if cConfig().getSettingBool('enforceUpdate', False):
             if os.path.exists(LOCAL_PLUGIN_VERSION): os.remove(LOCAL_PLUGIN_VERSION)
             
+        if not os.path.exists(ADDON_PATH): os.makedirs(ADDON_PATH)
+
         commitXML = _getXmlString(REMOTE_PLUGIN_COMMITS, auth)  # Commit Update
         if commitXML:
-            isTrue = commitUpdate(commitXML, LOCAL_PLUGIN_VERSION, REMOTE_PLUGIN_DOWNLOADS, PACKAGES_PATH, resolve_dir, LOCAL_FILE_NAME_PLUGIN, silent, auth)
+            isTrue = commitUpdate(commitXML, LOCAL_PLUGIN_VERSION, REMOTE_PLUGIN_DOWNLOADS, ADDON_PATH, resolve_dir, LOCAL_FILE_NAME_PLUGIN, silent, auth)
             
             if isTrue is True:
                 log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: %s: - download new update.' % resolve_id, LOGNOTICE)
                 shutil.make_archive(ADDON_PATH, 'zip', ADDON_PATH)
                 shutil.unpack_archive(ADDON_PATH + '.zip', INSTALL_PATH)
+                # Kodi kennt den Ordner in special://home/addons/ erst ab hier - Rescan erzwingen
+                executebuiltin("UpdateLocalAddons()")
                 log(cConfig().getLocalizedString(30166) + ' -> [updateManager]: %s: - install new update.' % resolve_id, LOGNOTICE)
                 if os.path.exists(ADDON_PATH + '.zip'): os.remove(ADDON_PATH + '.zip')                
                 if silent is False: Dialog().ok(cConfig().getLocalizedString(30166), cConfig().getLocalizedString(30158) + resolve_id + cConfig().getLocalizedString(30159))

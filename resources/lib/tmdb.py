@@ -9,16 +9,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from urllib.parse import quote_plus
 
-
-def _asBool(value):
-    # advanced wurde frueher als String ('true'/'false') durchgereicht. Ein
-    # blosses "if advanced:" waere fuer den String 'false' wahr gewesen, also
-    # werden Alt-Aufrufer hier weiterhin korrekt ausgewertet.
-    if isinstance(value, str):
-        return value.strip().lower() in ('true', '1', 'yes', 'on')
-    return bool(value)
-
-
 class cTMDB:
     TMDB_GENRES = {12: 'Abenteuer', 14: 'Fantasy', 16: 'Animation', 18: 'Drama', 27: 'Horror', 28: 'Action', 35: 'Komödie', 36: 'Historie', 37: 'Western', 53: 'Thriller', 80: 'Krimi', 99: 'Dokumentarfilm', 878: 'Science Fiction', 9648: 'Mystery', 10402: 'Musik', 10749: 'Liebesfilm', 10751: 'Familie', 10752: 'Kriegsfilm', 10759: 'Action & Adventure', 10762: 'Kids', 10763: 'News', 10764: 'Reality', 10765: 'Sci-Fi & Fantasy', 10766: 'Soap', 10767: 'Talk', 10768: 'War & Politics', 10770: 'TV-Film'}
     URL = 'https://api.themoviedb.org/3/'
@@ -32,7 +22,7 @@ class cTMDB:
         self.fanart = 'https://image.tmdb.org/t/p/%s' % cConfig().getSetting('backdrop_tmdb')
         
 
-    def search_movie_name(self, name, year='', page=1, advanced=False):
+    def search_movie_name(self, name, year='', page=1, advanced='false'):
         name = re.sub(' +', ' ', name)
         if year:
         #    term = quote_plus(name) + '&year=' + year
@@ -70,7 +60,7 @@ class cTMDB:
                                 break
                     if not movie:
                         movie = meta['results'][0]
-                if _asBool(advanced):
+                if advanced == 'true':
                     tmdb_id = movie['id']
                     meta = self.search_movie_id(tmdb_id)
                 else:
@@ -79,12 +69,12 @@ class cTMDB:
             meta = {}
         return meta
 
-    def search_movie_id(self, movie_id, append_to_response='append_to_response=trailers,credits'):
+    def search_movie_id(self, movie_id, append_to_response='append_to_response=videos,credits,external_ids'):
         result = self._call('movie/' + str(movie_id), append_to_response)
         result['tmdb_id'] = movie_id
         return result
 
-    def search_tvshow_name(self, name, year='', page=1, genre='', advanced=False):
+    def search_tvshow_name(self, name, year='', page=1, genre='', advanced='false'):
         name = name.lower()
         if '- staffel' in name:
             name = re.sub(r'\s-\s\wtaffel[^>]([1-9\-]+)', '', name)
@@ -124,7 +114,7 @@ class cTMDB:
                                 break
                     if not movie:
                         movie = meta['results'][0]
-                if _asBool(advanced):
+                if advanced == 'true':
                     tmdb_id = movie['id']
                     meta = self.search_tvshow_id(tmdb_id)
                 else:
@@ -138,7 +128,7 @@ class cTMDB:
         result['tmdb_id'] = show_id
         return result
 
-    def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', advanced=False):
+    def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', advanced='false'):
         name = re.sub(' +', ' ', name)
         meta = {}
         if media_type == 'movie':
@@ -166,12 +156,21 @@ class cTMDB:
             return False
         return result
 
+    def imageUrl(self, imagePath, size=None):
+        """Gibt nur fuer einen echten TMDB-Bildpfad eine Bild-URL zurueck.
+
+        TMDB liefert bei vielen Personen ``null``. Die alte Verkettung
+        erzeugte daraus eine kaputte ``.../None``-URL, die Kodi nicht als
+        fehlendes Profilbild erkennen konnte.
+        """
+        if not isinstance(imagePath, str) or not imagePath.startswith('/'):
+            return ''
+        return 'https://image.tmdb.org/t/p/%s%s' % (size or cConfig().getSetting('poster_tmdb', 'w342'), imagePath)
+
     def _call(self, action, append_to_response=''):
         url = '%s%s?language=%s&api_key=%s' % (self.URL, action, self.lang, self.api_key)
         if append_to_response:
             url += '&%s' % append_to_response
-        if 'person' in url:
-            url = url.replace('&page=', '')
         oRequestHandler = cRequestHandler(url, ignoreErrors=True, allow_insecure_tls=False)
         name = oRequestHandler.request()
         try:
@@ -197,7 +196,7 @@ class cTMDB:
         else:
             return Language
 
-    def get_meta_episodes(self, media_type, name, tmdb_id='', season='', episode='', advanced=False):
+    def get_meta_episodes(self, media_type, name, tmdb_id='', season='', episode='', advanced='false'):
         meta = {}
         if media_type == 'episode' and tmdb_id and season and episode:
             url = '%stv/%s/season/%s?api_key=%s&language=de' % (self.URL, tmdb_id, season, self.api_key)
@@ -252,7 +251,7 @@ class cTMDB:
         if 'guest_stars' in meta and meta['guest_stars']:
             licast = []
             for c in meta['guest_stars']:
-                licast.append((c['name'], c['character'], self.poster + str(c['profile_path'])))
+                licast.append((c.get('name', ''), c.get('character', ''), self.imageUrl(c.get('profile_path'))))
             _meta['cast'] = licast
         return _meta
 
@@ -261,6 +260,10 @@ class cTMDB:
         _meta['genre'] = ''
         if 'id' in meta:
             _meta['tmdb_id'] = meta['id']
+        if meta.get('imdb_id'):
+            _meta['imdb_id'] = meta['imdb_id']
+        elif isinstance(meta.get('external_ids'), dict) and meta['external_ids'].get('imdb_id'):
+            _meta['imdb_id'] = meta['external_ids']['imdb_id']
         if 'backdrop_path' in meta and meta['backdrop_path']:
             _meta['backdrop_url'] = self.fanart + str(meta['backdrop_path'])
         if 'original_language' in meta and meta['original_language']:
@@ -339,7 +342,9 @@ class cTMDB:
                     _meta['credits']['crew'] = crews
                 licast = []
                 for cast in casts:
-                    licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
+                    licast.append((cast.get('name', ''), cast.get('character', ''),
+                                   self.imageUrl(cast.get('profile_path')),
+                                   str(cast.get('id', ''))))
                 _meta['cast'] = licast
             if len(crews) > 0:
                 _meta['writer'] = ''

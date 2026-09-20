@@ -20,7 +20,7 @@ from xbmcvfs import translatePath
 
 from urllib.parse import quote, urlencode, urlparse, quote_plus
 from urllib.error import HTTPError, URLError
-from urllib.request import HTTPHandler, HTTPSHandler, Request, HTTPCookieProcessor, build_opener, urlopen, HTTPRedirectHandler
+from urllib.request import HTTPHandler, HTTPSHandler, ProxyHandler, Request, HTTPCookieProcessor, build_opener, urlopen, HTTPRedirectHandler
 from http.cookiejar import LWPCookieJar, Cookie
 from http.client import HTTPException
 from random import choice
@@ -121,6 +121,8 @@ class cRequestHandler:
         self.cacheTime = cConfig().getSettingInt('cacheTime', 360) * 60 # 360 Minuten * 60 = 6 Stunden Cachetime
         self.requestTimeout = cConfig().getSettingInt('requestTimeout', 10)
         self.bypassDNSlock = cConfig().getSettingBool('bypassDNSlock', False)
+        self._dohServer = self.__getDoHServer()
+        self._proxyUrl = self.__getCustomProxyUrl()
         self.removeBreakLines(True)
         self.removeNewLines(True)
         self.__setDefaultHeader()
@@ -198,6 +200,36 @@ class cRequestHandler:
             ssl_context.verify_mode = ssl.CERT_NONE
             return [HTTPSHandler(context=ssl_context)]
 
+    @staticmethod
+    def __getCustomProxyUrl():
+        """Vom Nutzer hinterlegter HTTP(S)-Proxy, z. B. um eine DNS-Sperre
+        oder eine IP-Sperre ueber ein oeffentliches VPN/Proxy zu umgehen.
+
+        Nur HTTP/HTTPS-Proxys werden unterstuetzt - SOCKS5 braucht eine
+        Zusatzbibliothek (PySocks), die dieses Addon nicht mitbringt.
+        """
+        if not cConfig().getSettingBool('customProxyEnabled', False):
+            return ''
+        sAddress = cConfig().getSetting('customProxyAddress', '').strip()
+        if not sAddress:
+            return ''
+        sUser = cConfig().getSetting('customProxyUser', '').strip()
+        sPass = cConfig().getSetting('customProxyPass', '').strip()
+        if sUser:
+            return 'http://%s:%s@%s' % (quote(sUser, safe=''), quote(sPass, safe=''), sAddress)
+        return 'http://%s' % sAddress
+
+    @staticmethod
+    def __getDoHServer():
+        if not cConfig().getSettingBool('customDnsEnabled', False):
+            return 'https://cloudflare-dns.com/dns-query'
+        custom = cConfig().getSetting('customDnsAddress', '').strip()
+        if not custom:
+            return 'https://cloudflare-dns.com/dns-query'
+        if custom.startswith('http://') or custom.startswith('https://'):
+            return custom
+        return 'https://%s/dns-query' % custom
+
     def __handleProtection(self, kind, sParameters=None):
         """Reaktion auf eine erkannte Sperre.
 
@@ -208,13 +240,15 @@ class cRequestHandler:
         """
         siteId = self.__siteId()
         if self._protectionRetried or not siteId:
-            protection.notifyOnce(siteId, kind, self._sUrl)
+            protection.notifyOnce(siteId, kind, self._sUrl,
+                                  interactive=not self.ignoreErrors)
             return ''
         self._protectionRetried = True
 
         cookieHeader, userAgent = protection.recover(siteId, self._sUrl)
         if not cookieHeader:
-            protection.notifyOnce(siteId, kind, self._sUrl)
+            protection.notifyOnce(siteId, kind, self._sUrl,
+                                  interactive=not self.ignoreErrors)
             return ''
 
         logger.info(' -> [requestHandler]: Sperre geloest, wiederhole %s' % self._sUrl)
@@ -270,7 +304,7 @@ class cRequestHandler:
         # nur ausführen wenn der übergabeparameter und die konfiguration passen
         if self._bypass_dns and self.bypassDNSlock:
             ### DNS lock bypass
-            ip_override = self.__doh_request(self._sUrl)
+            ip_override = self.__doh_request(self._sUrl, self._dohServer)
             ### DNS lock bypass
         else:
             ip_override = None
@@ -282,11 +316,13 @@ class cRequestHandler:
             logger.debug(e)
         
         domain = urlparse(self._sUrl).netloc
-        opener_key = (domain, self._ssl_verify, ip_override)
+        opener_key = (domain, self._ssl_verify, ip_override, self._proxyUrl)
         if opener_key in cRequestHandler.persistent_openers:
             opener = cRequestHandler.persistent_openers[opener_key]
         else:
-            handlers = self.__getDefaultHandler(self._ssl_verify, ip_override)        
+            handlers = self.__getDefaultHandler(self._ssl_verify, ip_override)
+            if self._proxyUrl:
+                handlers.append(ProxyHandler({'http': self._proxyUrl, 'https': self._proxyUrl}))
             handlers += [HTTPHandler(), HTTPCookieProcessor(cookiejar=cookieJar), RedirectFilter()]
             opener = build_opener(*handlers)
             cRequestHandler.persistent_openers[opener_key] = opener
@@ -353,8 +389,8 @@ class cRequestHandler:
                     # Frueher stand hier ein Fehlerdialog mit Traceback, aus
                     # dem niemand ableiten konnte, was zu tun ist. Jetzt
                     # erklaert der Hinweis den Weg ueber das Browser-Cookie.
-                    if not self.ignoreErrors:
-                        protection.notifyOnce(self.__siteId(), protection.CLOUDFLARE, self._sUrl)
+                    protection.notifyOnce(self.__siteId(), protection.CLOUDFLARE,
+                                          self._sUrl, interactive=not self.ignoreErrors)
                     logger.error(' -> [requestHandler]: Failed Cloudflare active: ' + self._sUrl)
                     return ''
                 else:
@@ -460,7 +496,7 @@ class cRequestHandler:
     def ignoreExpired(self, bIgnoreExpired):
         self.__bIgnoreExpired = bIgnoreExpired
 
-    def __doh_request(self, url, doh_server="https://cloudflare-dns.com/dns-query"):
+    def __doh_request(self, url, doh_server):
         # Parse the URL
         parsed_url = urlparse(url)
         hostname = parsed_url.hostname

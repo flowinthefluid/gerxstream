@@ -16,6 +16,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'hdfilme'
 SITE_NAME = 'HD Filme'
 SITE_ICON = 'hdfilme.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'animes', 'dokus')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

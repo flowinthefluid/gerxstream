@@ -18,6 +18,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'netzkino'
 SITE_NAME = 'NetzKino'
 SITE_ICON = 'netzkino.png'
+CONTENT_CATEGORIES = ('filme', 'dokus')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

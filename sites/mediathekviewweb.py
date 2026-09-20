@@ -37,6 +37,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'mediathekviewweb'
 SITE_NAME = 'MediathekViewWeb'
 SITE_ICON = 'mediathekviewweb.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'dokus', 'kinder')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

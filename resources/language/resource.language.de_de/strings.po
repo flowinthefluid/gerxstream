@@ -99,6 +99,26 @@ msgctxt "#30025"
 msgid "Evade DNS lock"
 msgstr "DNS Sperre umgehen"
 
+msgctxt "#30843"
+msgid "Use custom proxy"
+msgstr "Eigenen Proxy verwenden"
+
+msgctxt "#30844"
+msgid "Proxy address (host:port)"
+msgstr "Proxy-Adresse (Host:Port)"
+
+msgctxt "#30845"
+msgid "Proxy username (optional)"
+msgstr "Proxy-Benutzername (optional)"
+
+msgctxt "#30846"
+msgid "Proxy password (optional)"
+msgstr "Proxy-Passwort (optional)"
+
+msgctxt "#30847"
+msgid "Only HTTP/HTTPS proxies are supported (no SOCKS5). A public proxy or VPN can slow down every request considerably."
+msgstr "Es werden nur HTTP/HTTPS-Proxys unterstuetzt (kein SOCKS5). Ein oeffentlicher Proxy oder VPN kann jede Anfrage spuerbar verlangsamen."
+
 msgctxt "#30026"
 msgid "Enable Watch Trailer in the context menu"
 msgstr "Trailer ansehen im Kontextmenü aktivieren"
@@ -369,7 +389,7 @@ msgstr "ResolveURL Fehler"
 
 msgctxt "#30120"
 msgid "You don't have a working ResolveUrl installed, no videos can be played please reinstall the resolver."
-msgstr "Sie haben keinen funktionierenden ResolveUrl installiert, es können keine Videos abgespielt werden bitte installieren Sie den Resolver erneut."
+msgstr "Sie haben keinen funktionierenden ResolveUrl installiert, es können keine Videos abgespielt werden. Installieren Sie script.module.resolveurl erneut, z.B. über die 'ResolveURL Repository'-Quelle im GerXStream Repository."
 
 msgctxt "#30121"
 msgid "Start manual update"
@@ -1640,22 +1660,26 @@ msgctxt "#30728"
 msgid "Moflix-Stream"
 msgstr ""
 
+msgctxt "#30729"
+msgid "Dokus4.me"
+msgstr "Dokus4.me"
+
 ############### VoD Plugins ###############
 
 msgctxt "#30790"
-msgid "Video on Demand Huhu"
+msgid "Huhu"
 msgstr ""
 
 msgctxt "#30791"
-msgid "Video on Demand Kool"
+msgid "Kool"
 msgstr ""
 
 msgctxt "#30792"
-msgid "Video on Demand Oha"
+msgid "Oha"
 msgstr ""
 
 msgctxt "#30793"
-msgid "Video on Demand Vavoo"
+msgid "Vavoo"
 msgstr ""
 
 ############### Genre ###############
@@ -1847,3 +1871,151 @@ msgstr "Sender"
 msgctxt "#30840"
 msgid "MediathekViewWeb"
 msgstr "MediathekViewWeb"
+
+msgctxt "#30841"
+msgid "Flash-Moviez.Tv"
+msgstr "Flash-Moviez.Tv"
+
+msgctxt "#30842"
+msgid "Flixitv-Stream.eu"
+msgstr "Flixitv-Stream.eu"
+
+msgctxt "#30850"
+msgid "Movies"
+msgstr "Filme"
+
+msgctxt "#30851"
+msgid "Series"
+msgstr "Serien"
+
+msgctxt "#30852"
+msgid "Documentaries"
+msgstr "Dokumentationen"
+
+msgctxt "#30853"
+msgid "Anime"
+msgstr "Anime"
+
+msgctxt "#30854"
+msgid "Children's content"
+msgstr "Kinder"
+
+msgctxt "#30855"
+msgid "Media libraries and archives"
+msgstr "Mediatheken und Archive"
+
+msgctxt "#30856"
+msgid "Other sources"
+msgstr "Weitere Quellen"
+
+msgctxt "#30857"
+msgid "All"
+msgstr "Alle"
+
+msgctxt "#30859"
+msgid "Themes"
+msgstr "Themen"
+
+msgctxt "#30860"
+msgid "Popular directors"
+msgstr "Beliebte Regisseure"
+
+msgctxt "#30848"
+msgid "Show in source index"
+msgstr "Im Quellenindex anzeigen"
+
+msgctxt "#30849"
+msgid "If disabled, this source stays installed but is hidden in index and global search."
+msgstr "Wenn deaktiviert, bleibt die Quelle installiert, wird aber im Index und in der globalen Suche ausgeblendet."
+
+msgctxt "#30861"
+msgid "Select blocked hosters"
+msgstr "Blockierte Hoster auswaehlen"
+
+msgctxt "#30862"
+msgid "Opens a clickable multi-selection list and writes the blockedHoster setting automatically."
+msgstr "Oeffnet eine klickbare Mehrfachauswahl und schreibt die blockedHoster-Einstellung automatisch."
+
+msgctxt "#30863"
+msgid "Use custom DNS-over-HTTPS"
+msgstr "Eigenes DNS-over-HTTPS verwenden"
+
+msgctxt "#30864"
+msgid "DoH server (URL or host)"
+msgstr "DoH-Server (URL oder Hostname)"
+
+msgctxt "#30865"
+msgid "Examples: https://dns.google/dns-query or cloudflare-dns.com. Used only when DNS bypass is enabled."
+msgstr "Beispiele: https://dns.google/dns-query oder cloudflare-dns.com. Wird nur genutzt, wenn DNS-Umgehung aktiv ist."
+
+msgctxt "#30866"
+msgid "Choose domain from list"
+msgstr "Domain aus Liste waehlen"
+
+msgctxt "#30867"
+msgid "Opens known alternative domains for this source. If no alternates are known yet, only the custom field applies."
+msgstr "Oeffnet bekannte Alternativdomains fuer diese Quelle. Wenn noch keine Alternativen bekannt sind, greift nur das benutzerdefinierte Feld."
+
+msgctxt "#30868"
+msgid "Random movies"
+msgstr "Zufallsfilme"
+
+msgctxt "#30869"
+msgid "Number of random movies"
+msgstr "Anzahl Zufallsfilme"
+
+msgctxt "#30870"
+msgid "Number of movies shown in the Random menu."
+msgstr "Legt fest, wie viele Filme im Menue Zufall angezeigt werden."
+
+msgctxt "#30871"
+msgid "My actors"
+msgstr "Meine Schauspieler"
+
+msgctxt "#30872"
+msgid "Enter names separated by commas. Actors added from the extended movie info are saved here automatically."
+msgstr "Namen mit Komma trennen. Aus der erweiterten Filminfo hinzugefuegte Schauspieler werden hier automatisch gespeichert."
+
+msgctxt "#30873"
+msgid "Actor"
+msgstr "Schauspieler"
+
+msgctxt "#30874"
+msgid "Show filmography"
+msgstr "Filmografie anzeigen"
+
+msgctxt "#30875"
+msgid "Add to my actors"
+msgstr "Zu meinen Schauspielern hinzufuegen"
+
+msgctxt "#30876"
+msgid "%s is already in your actors."
+msgstr "%s ist bereits in deinen Schauspielern."
+
+msgctxt "#30877"
+msgid "%s was added to your actors."
+msgstr "%s wurde zu deinen Schauspielern hinzugefuegt."
+
+msgctxt "#30878"
+msgid "Sources"
+msgstr "Quellen"
+
+msgctxt "#30879"
+msgid "Arrange main menu"
+msgstr "Hauptmenue anordnen"
+
+msgctxt "#30880"
+msgid "Move up"
+msgstr "Nach oben verschieben"
+
+msgctxt "#30881"
+msgid "Move down"
+msgstr "Nach unten verschieben"
+
+msgctxt "#30882"
+msgid "Restore default order"
+msgstr "Standardreihenfolge wiederherstellen"
+
+msgctxt "#30883"
+msgid "Select an entry, then move it up or down. The order is saved automatically."
+msgstr "Eintrag waehlen und nach oben oder unten verschieben. Die Reihenfolge wird automatisch gespeichert."

@@ -31,6 +31,7 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'animeloads'
 SITE_NAME = 'Anime-Loads'
 SITE_ICON = 'animeloads.png'
+CONTENT_CATEGORIES = ('animes',)
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):

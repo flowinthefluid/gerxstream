@@ -47,13 +47,16 @@ class cJDownloader2Handler:
 
     def __checkConfig(self):
         log(cConfig().getLocalizedString(30166) + ' -> [jdownloader2Handler]: check JD2 Addon settings', LOGNOTICE)
-        return cConfig().getSettingBool('jd2_enabled')
+        bEnabled = cConfig().getSetting('jd2_enabled')
+        if bEnabled == 'true':
+            return True
+        return False
 
     def __getHost(self):
         return cConfig().getSetting('jd2_host')
 
     def __getPort(self):
-        return cConfig().getSettingInt('jd2_port', 9666)
+        return cConfig().getSetting('jd2_port')
 
     def __checkConnection(self):
         log(cConfig().getLocalizedString(30166) + ' -> [jdownloader2Handler]: check JD2 Connection', LOGNOTICE)

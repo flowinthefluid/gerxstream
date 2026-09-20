@@ -15,6 +15,7 @@ from json import loads
 SITE_IDENTIFIER = 'kinox'
 SITE_NAME = 'KinoX'
 SITE_ICON = 'kinox.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'animes', 'dokus')
 
 # Global search function is thus deactivated!
 if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
@@ -67,7 +68,6 @@ def load(): # Menu structure of the site plugin
     parms.setParam('sUrl', URL_SEARCH)
     parms.setParam('mediaType', '')
     oGui.addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'), parms)  # Search
-    oGui.addFolder(cGuiElement(cConfig().getLocalizedString(30836), SITE_IDENTIFIER, 'showDomains'), parms)  # Adresse wechseln
     oGui.setEndOfDirectory()
 
 

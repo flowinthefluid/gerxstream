@@ -6,6 +6,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 import os
+import random
 import time
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from resources.lib.handler.ParameterHandler import ParameterHandler
@@ -24,6 +25,7 @@ SCRAPER_ENTRY_FUNCTIONS = frozenset((
     'getHosterUrl_1',
     'getHosterUrl_2',
     'getHosterUrl_3',
+    'getHosterUrl_4',
     'getHosterUrl_6',
     'load',
     'menuCollections',
@@ -44,6 +46,7 @@ SCRAPER_ENTRY_FUNCTIONS = frozenset((
     'showEntries_1',
     'showEntries_2',
     'showEntries_3',
+    'showEntries_4',
     'showEntries_6',
     'showEpisodeHosters',
     'showEpisodes',
@@ -57,12 +60,14 @@ SCRAPER_ENTRY_FUNCTIONS = frozenset((
     'showGenre_1',
     'showGenre_2',
     'showGenre_3',
+    'showGenre_4',
     'showGenres',
     'showHosters',
     'showHostersUnJson',
     'showHosters_1',
     'showHosters_2',
     'showHosters_3',
+    'showHosters_4',
     'showHosters_6',
     'showMovieMenu',
     'showNewEpisodes',
@@ -76,6 +81,7 @@ SCRAPER_ENTRY_FUNCTIONS = frozenset((
     'showSearch_1',
     'showSearch_2',
     'showSearch_3',
+    'showSearch_4',
     'showSearch_6',
     'showSeasons',
     'showSeries',
@@ -102,6 +108,61 @@ HOSTER_GUI_FUNCTIONS = frozenset((
     'sendToMyJDownloader',
     'sendToPyLoad',
 ))
+
+
+MAIN_MENU_ORDER_SETTING = 'mainMenuOrder'
+MAIN_MENU_ORDER_DEFAULT = ('globalSearch', 'sourceCategories', 'categories', 'random', 'settings')
+
+
+def _mainMenuOrder():
+    """Liest die gespeicherte Hauptmenue-Reihenfolge defensiv ein.
+
+    Ein altes oder manuell veraendertes Setting kann keine Eintraege
+    verschwinden lassen: unbekannte Kennungen werden verworfen, neue
+    Standardpunkte werden hinten angehaengt.
+    """
+    raw = cConfig().getSetting(MAIN_MENU_ORDER_SETTING, '')
+    chosen = []
+    for key in (raw or '').split(','):
+        key = key.strip()
+        if key in MAIN_MENU_ORDER_DEFAULT and key not in chosen:
+            chosen.append(key)
+    for key in MAIN_MENU_ORDER_DEFAULT:
+        if key not in chosen:
+            chosen.append(key)
+    return chosen
+
+
+def showMainMenuOrder():
+    """Kleiner Kodi-Dialog zum schrittweisen Verschieben der Hauptmenuepunkte."""
+    labels = {
+        'globalSearch': cConfig().getLocalizedString(30040),
+        'sourceCategories': cConfig().getLocalizedString(30878),
+        'categories': cConfig().getLocalizedString(30507),
+        'random': cConfig().getLocalizedString(30868),
+        'settings': cConfig().getLocalizedString(30041),
+    }
+    order = _mainMenuOrder()
+    dialog = xbmcgui.Dialog()
+    while True:
+        display = ['%s. %s' % (index + 1, labels[key])
+                   for index, key in enumerate(order)]
+        selected = dialog.select(cConfig().getLocalizedString(30879), display)
+        if selected < 0:
+            break
+        action = dialog.select(labels[order[selected]],
+                               [cConfig().getLocalizedString(30880),
+                                cConfig().getLocalizedString(30881),
+                                cConfig().getLocalizedString(30882)])
+        if action == 0 and selected > 0:
+            order[selected - 1], order[selected] = order[selected], order[selected - 1]
+        elif action == 1 and selected < len(order) - 1:
+            order[selected + 1], order[selected] = order[selected], order[selected + 1]
+        elif action == 2:
+            order = list(MAIN_MENU_ORDER_DEFAULT)
+
+    cConfig().setSetting(MAIN_MENU_ORDER_SETTING, ','.join(order))
+    xbmc.executebuiltin('Container.Refresh')
 
 
 def _endFailedDirectory():
@@ -189,11 +250,23 @@ def parseUrl():
             from resources.lib import categories
             categories.showMenu()
             return
+        elif sFunction == 'randomMovies':
+            showRandomMovies()
+            return
+        elif sFunction == 'mainMenuOrder':
+            showMainMenuOrder()
+            return
+        elif sFunction == 'showContentCategory':
+            showContentCategory(params)
+            return
         elif sFunction == 'showDomains':
             showDomainMenu(params)
             return
         elif sFunction == 'setSiteDomain':
             setSiteDomain(params)
+            return
+        elif sFunction == 'blockedHosterMenu':
+            showBlockedHosterMenu()
             return
         elif sFunction == 'changelog':
             from resources.lib import tools
@@ -247,10 +320,11 @@ def parseUrl():
         showHosterGui(sFunction)
     # If global search is called
     elif sSiteName == 'globalSearch':
-        searchterm = False
-        if params.exist('searchterm'):
-            searchterm = params.getValue('searchterm')
-        searchGlobal(searchterm)
+        if sFunction == 'searchGlobal':
+            scope = params.getValue('searchScope') if params.exist('searchScope') else 'alle'
+            searchGlobal(params.getValue('searchterm'), scope)
+        else:
+            showGlobalSearchMenu()
     elif sSiteName == 'GerXStream':
         oGui = cGui()
         oGui.openSettings()
@@ -315,10 +389,7 @@ def showMainMenu(sFunction):
             return
     
     oGui = cGui()
-
-    # Setzte die globale Suche an erste Stelle
-    if cConfig().getSettingBool('GlobalSearchPosition', False):
-        oGui.addFolder(globalSearchGuiElement())
+    menuGroups = dict((key, []) for key in MAIN_MENU_ORDER_DEFAULT)
 
     oPluginHandler = cPluginHandler()
     aPlugins = oPluginHandler.getAvailablePlugins()
@@ -328,19 +399,44 @@ def showMainMenu(sFunction):
         oGui.openSettings()
         oGui.updateDirectory()
     else:
-        # Create a gui element for every plugin found
-        for aPlugin in sorted(aPlugins, key=lambda k: k['id']):
-            if 'vod_' in aPlugin['id']:
-                continue
+        # Alle Site-Plugins erscheinen nach Inhalt statt als flache Liste.
+        # Mehrfachzuordnungen sind gewollt: eine Quelle kann Filme, Serien
+        # und Dokumentationen gleichzeitig anbieten.
+        category_art = {
+            'alle': 'all.png',
+            'filme': 'movies.png',
+            'serien': 'series.png',
+            'animes': 'anime.png',
+            'dokus': 'dokus.png',
+            'kinder': 'kinder.png',
+            'other': 'sources.png',
+        }
+        categories = oPluginHandler.getContentCategories(aPlugins)
+
+        # "Alle" ist ein eigener Hauptordner (alle Anbieter unsortiert),
+        # explizit zwischen Globaler Suche und "Filme".
+        allCategory = next((entry for entry in categories if entry['id'] == 'alle'), None)
+        if allCategory:
+            params = ParameterHandler()
+            params.setParam('category', allCategory['id'])
             oGuiElement = cGuiElement()
-            oGuiElement.setTitle(aPlugin['name'])
-            oGuiElement.setSiteName(aPlugin['id'])
-            oGuiElement.setFunction(sFunction)
-            if 'icon' in aPlugin and aPlugin['icon']:
-                oGuiElement.setThumbnail(aPlugin['icon'])
-            oGui.addFolder(oGuiElement)
-        if not cConfig().getSettingBool('GlobalSearchPosition', False):
-            oGui.addFolder(globalSearchGuiElement())
+            oGuiElement.setTitle(allCategory['name'])
+            oGuiElement.setSiteName('sourceCategory')
+            oGuiElement.setFunction('showContentCategory')
+            oGuiElement.setThumbnail(os.path.join(ART, category_art.get(allCategory['id'], 'categories.png')))
+            menuGroups['sourceCategories'].append((oGuiElement, params))
+
+        for category in categories:
+            if category['id'] == 'alle':
+                continue
+            params = ParameterHandler()
+            params.setParam('category', category['id'])
+            oGuiElement = cGuiElement()
+            oGuiElement.setTitle(category['name'])
+            oGuiElement.setSiteName('sourceCategory')
+            oGuiElement.setFunction('showContentCategory')
+            oGuiElement.setThumbnail(os.path.join(ART, category_art.get(category['id'], 'categories.png')))
+            menuGroups['sourceCategories'].append((oGuiElement, params))
     # Kategorien im Hauptmenü anzeigen. Speist sich aus TMDB und gilt damit
     # fuer alle aktivierten Quellen gleichzeitig, nicht nur fuer eine Seite.
     if cConfig().getSettingBool('showCategories', True):
@@ -348,18 +444,12 @@ def showMainMenu(sFunction):
         oGuiElement.setTitle(cConfig().getLocalizedString(30507))  # Kategorien
         oGuiElement.setSiteName('categories')
         oGuiElement.setFunction('categories')
-        oGuiElement.setThumbnail(os.path.join(ART, 'categories.png'))
-        oGui.addFolder(oGuiElement)
+        oGuiElement.setThumbnail(os.path.join(ART, 'kategorien.png'))
+        menuGroups['categories'].append((oGuiElement, None))
+
+    menuGroups['random'].append((randomGuiElement(), None))
 
     # VoD Ordner im Hauptmenü anzeigen
-    oGuiElement = cGuiElement()
-    oGuiElement.setTitle(cConfig().getLocalizedString(30412))
-    oGuiElement.setSiteName('vod')
-    oGuiElement.setFunction(sFunction)
-    oGuiElement.setThumbnail(os.path.join(ART, 'vod.png'))
-    oGuiElement.setIcon(os.path.join(ART, 'settings.png'))
-    oGui.addFolder(oGuiElement)
-
     if cConfig().getSettingBool('SettingsFolder', False):
         # Einstellung im Menü mit Untereinstellungen
         oGuiElement = cGuiElement()
@@ -367,10 +457,41 @@ def showMainMenu(sFunction):
         oGuiElement.setSiteName('settings')
         oGuiElement.setFunction('showSettingsFolder')
         oGuiElement.setThumbnail(os.path.join(ART, 'settings.png'))
-        oGui.addFolder(oGuiElement)
+        menuGroups['settings'].append((oGuiElement, None))
     else:
         for folder in settingsGuiElements():
-            oGui.addFolder(folder)
+            menuGroups['settings'].append((folder, None))
+    menuGroups['globalSearch'].append((globalSearchGuiElement(), None))
+    for group in _mainMenuOrder():
+        for element, params in menuGroups[group]:
+            if params is None:
+                oGui.addFolder(element)
+            else:
+                oGui.addFolder(element, params)
+    oGui.setEndOfDirectory()
+
+
+def showContentCategory(params):
+    """Zeigt die aktivierten Quellen einer Inhaltskategorie.
+
+    Der Kategoriename kommt ausschliesslich aus cPluginHandler. Ein
+    manipulierter plugin://-Parameter kann deshalb weder eine freie
+    Modulbezeichnung einschleusen noch auf ein deaktiviertes Plugin zeigen.
+    """
+    categoryId = params.getValue('category')
+    plugins = cPluginHandler().getPluginsForContentCategory(categoryId)
+    oGui = cGui()
+    if not plugins:
+        oGui.showInfo()
+        return
+    for plugin in plugins:
+        oGuiElement = cGuiElement()
+        oGuiElement.setTitle(plugin['name'])
+        oGuiElement.setSiteName(plugin['id'])
+        oGuiElement.setFunction('load')
+        if plugin.get('icon'):
+            oGuiElement.setThumbnail(plugin['icon'])
+        oGui.addFolder(oGuiElement)
     oGui.setEndOfDirectory()
 
 
@@ -499,9 +620,129 @@ def globalSearchGuiElement():
     oGuiElement = cGuiElement()
     oGuiElement.setTitle(cConfig().getLocalizedString(30040))
     oGuiElement.setSiteName('globalSearch')
-    oGuiElement.setFunction('globalSearch')
+    oGuiElement.setFunction('searchGlobal')
+    oGuiElement.setThumbnail(os.path.join(ART, 'all.png'))
+    return oGuiElement
+
+
+def randomGuiElement():
+    ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
+    count = max(1, min(cConfig().getSettingInt('randomItemsCount', 250), 1000))
+    title = '%s (%s)' % (cConfig().getLocalizedString(30868), count)
+
+    oGuiElement = cGuiElement()
+    oGuiElement.setTitle(title)
+    oGuiElement.setSiteName('random')
+    oGuiElement.setFunction('randomMovies')
     oGuiElement.setThumbnail(os.path.join(ART, 'search.png'))
     return oGuiElement
+
+
+def showRandomMovies():
+    """Zeigt zufaellige TMDB-Filme, deren Klick in die globale Suche fuehrt."""
+    from resources.lib.tmdb import cTMDB
+
+    limit = max(1, min(cConfig().getSettingInt('randomItemsCount', 250), 1000))
+    targetPool = max(limit * 2, 180)
+    maxAttempts = 80
+    extra = 'sort_by=popularity.desc&vote_count.gte=80&include_adult=false'
+
+    tmdb = cTMDB()
+    pool = []
+    seenIds = set()
+    attempts = 0
+    while len(pool) < targetPool and attempts < maxAttempts:
+        attempts += 1
+        page = random.randint(1, 500)
+        data = tmdb.getUrl('discover/movie', page, extra) or {}
+        results = data.get('results') or []
+        for item in results:
+            itemId = item.get('id')
+            title = item.get('title')
+            if not itemId or not title or itemId in seenIds:
+                continue
+            seenIds.add(itemId)
+            pool.append(item)
+
+    if not pool:
+        cGui().showInfo()
+        return
+
+    random.shuffle(pool)
+    selected = pool[:limit]
+    oGui = cGui()
+    total = len(selected)
+    for item in selected:
+        title = item.get('title')
+        if not title:
+            continue
+
+        oGuiElement = cGuiElement(title, 'random', 'searchTMDB')
+        released = (item.get('release_date') or '')[:4]
+        if released.isdigit():
+            oGuiElement.setYear(released)
+        if item.get('overview'):
+            oGuiElement.setDescription(item['overview'])
+        if item.get('poster_path'):
+            oGuiElement.setThumbnail('https://image.tmdb.org/t/p/w342' + item['poster_path'])
+        if item.get('backdrop_path'):
+            oGuiElement.setFanart('https://image.tmdb.org/t/p/w1280' + item['backdrop_path'])
+
+        params = ParameterHandler()
+        params.setParam('searchTitle', title)
+        oGui.addFolder(oGuiElement, params, True, total)
+
+    oGui.setView('movies')
+    oGui.setEndOfDirectory()
+
+
+def showGlobalSearchMenu():
+    """Globale Suche mit Filterordnern, inkl. Alle."""
+    ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
+    scopes = (
+        ('alle', 30857, 'all.png'),
+        ('filme', 30850, 'movies.png'),
+        ('serien', 30851, 'series.png'),
+        ('animes', 30853, 'anime.png'),
+        ('dokus', 30852, 'dokus.png'),
+        ('kinder', 30854, 'kinder.png'),
+    )
+    oGui = cGui()
+    for scope, stringId, artName in scopes:
+        params = ParameterHandler()
+        params.setParam('searchScope', scope)
+        oGuiElement = cGuiElement(cConfig().getLocalizedString(stringId), 'globalSearch', 'searchGlobal')
+        oGuiElement.setThumbnail(os.path.join(ART, artName))
+        oGui.addFolder(oGuiElement, params)
+    oGui.setEndOfDirectory()
+
+
+def showBlockedHosterMenu():
+    """Mehrfachauswahl fuer blockierte Hoster statt Freitext."""
+    domains = []
+    try:
+        for resolverCls in resolver.relevant_resolvers(order_matters=False):
+            for domain in getattr(resolverCls, 'domains', ()):
+                if domain and domain not in domains:
+                    domains.append(domain)
+    except Exception:
+        pass
+    domains = sorted(domains)
+    if not domains:
+        xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(30166) + ': keine Hosterliste verfuegbar')
+        return
+
+    selected_raw = cConfig().getSetting('blockedHoster', '')
+    selected = [x.strip().lower() for x in selected_raw.replace(' ', ',').split(',') if x.strip()]
+    preselect = [idx for idx, domain in enumerate(domains)
+                 if domain.lower() in selected or domain.split('.')[0].lower() in selected]
+
+    picked = xbmcgui.Dialog().multiselect(cConfig().getLocalizedString(30404), domains, preselect=preselect)
+    if picked is None:
+        return
+    chosen = [domains[i] for i in picked]
+    cConfig().setSetting('blockedHoster', ','.join(chosen))
+    cGui().showInfo(cConfig().getLocalizedString(30166), '%s: %s' % (cConfig().getLocalizedString(30404), len(chosen)))
 
 
 def showHosterGui(sFunction):
@@ -546,6 +787,8 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
 
 
 def _collectGlobalSearchResults(searchText, includePlugin):
+    from resources.lib.handler import protection
+
     oGui = cGui()
     monitor = xbmc.Monitor()
     oGui.globalSearch = True
@@ -556,12 +799,17 @@ def _collectGlobalSearchResults(searchText, includePlugin):
     dialog = xbmcgui.DialogProgress()
     dialog.create(cConfig().getLocalizedString(30122), cConfig().getLocalizedString(30123))
     try:
-        if not _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
-            oGui.setEndOfDirectory()
-            return None
-        return oGui
+        completed = _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor)
     finally:
         dialog.close()
+
+    # Kein Dialog aus einem Worker: erst jetzt ist der Fortschrittsdialog
+    # geschlossen und Kodi kann den Hinweis ohne Such-Deadlock anzeigen.
+    protection.showPendingNotifications()
+    if not completed:
+        oGui.setEndOfDirectory()
+        return None
+    return oGui
 
 
 def _renderCollectedSearchResults(oGui, results=None):
@@ -587,13 +835,21 @@ def _renderCollectedSearchResults(oGui, results=None):
     return True
 
 
-def searchGlobal(sSearchText=False):
+def searchGlobal(sSearchText=False, scope='alle'):
     if not sSearchText:
         sSearchText = cGui().showKeyBoard(sHeading=cConfig().getLocalizedString(30280)) # Bitte Suchbegriff eingeben
     if not sSearchText:
         cGui().setEndOfDirectory()
         return True
-    oGui = _collectGlobalSearchResults(sSearchText, lambda pluginEntry: pluginEntry['globalsearch'] != 'false' and pluginEntry['globalsearch'] != '')
+
+    def _includePlugin(pluginEntry):
+        if pluginEntry['globalsearch'] == 'false' or pluginEntry['globalsearch'] == '':
+            return False
+        if scope == 'alle':
+            return True
+        return scope in pluginEntry.get('categories', ())
+
+    oGui = _collectGlobalSearchResults(sSearchText, _includePlugin)
     if oGui is None:
         return False
     return _renderCollectedSearchResults(oGui)
@@ -623,7 +879,10 @@ def searchAlter(params):
         elif ' Staffel' in searchTitle:
             searchTitle = searchTitle.split(' Staffel')[0].strip()
 
-    oGui = _collectGlobalSearchResults(searchTitle, lambda pluginEntry: pluginEntry['globalsearch'] != 'false' and pluginEntry['globalsearch'] != '')
+    oGui = _collectGlobalSearchResults(
+        searchTitle,
+        lambda pluginEntry: pluginEntry['globalsearch'] != 'false'
+        and pluginEntry['globalsearch'] != '')
     if oGui is None:
         return False
     # check results, put this to the threaded part, too
@@ -646,7 +905,9 @@ def searchTMDB(params):
     if not sSearchText: 
         cGui().setEndOfDirectory()
         return True
-    oGui = _collectGlobalSearchResults(sSearchText, lambda pluginEntry: pluginEntry['globalsearch'] != 'false')
+    oGui = _collectGlobalSearchResults(
+        sSearchText,
+        lambda pluginEntry: pluginEntry['globalsearch'] != 'false')
     if oGui is None:
         return False
     return _renderCollectedSearchResults(oGui)
