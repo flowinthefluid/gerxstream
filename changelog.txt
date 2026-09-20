@@ -1,3 +1,9 @@
+[B]Version: 1.0.16[/B]
+
+21.09.2026
+
+- Cloudflare- und DDoS-Hinweise unterbrechen automatische globale Suchen nicht mehr; die betroffene Quelle wird protokolliert und uebersprungen
+
 [B]Version: 1.0.15[/B]
 
 21.09.2026

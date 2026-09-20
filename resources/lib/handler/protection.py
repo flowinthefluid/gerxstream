@@ -331,9 +331,9 @@ def notifyOnce(siteId, kind, url='', interactive=True):
     label = {CLOUDFLARE: 'Cloudflare', DDOS_GUARD: 'DDoS-Guard'}.get(kind, kind)
     logger.info('-> [protection]: %s aktiv fuer %s (%s)' % (label, siteId, url))
     # Die globale Suche ruft Quellen parallel auf. Ein modaler Kodi-Dialog
-    # aus einem ihrer Worker kann diese Suche blockieren, obwohl alle anderen
-    # Quellen fertig sind. Solche Hinweise werden daher gesammelt und erst
-    # nach dem Fortschrittsdialog im Kodi-Hauptthread angezeigt.
+    # aus einem Worker (oder danach vor dem Rendern) unterbricht den gesamten
+    # Suchablauf. Automatische Suchen protokollieren die Sperre daher nur;
+    # der Hinweis bleibt bei einem direkten Aufruf der betroffenen Quelle.
     with _notificationLock:
         if siteId in _notified:
             return
@@ -362,8 +362,7 @@ def notifyOnce(siteId, kind, url='', interactive=True):
     if source:
         message += '\n\nBetroffene Quelle: %s' % source
     if not interactive:
-        with _notificationLock:
-            _pendingNotifications.append(message)
+        logger.info('-> [protection]: Automatische Suche ueberspringt Hinweisdialog fuer %s' % source)
         return
     _showNotification(message)
 
@@ -383,3 +382,9 @@ def showPendingNotifications():
         del _pendingNotifications[:]
     for message in pending:
         _showNotification(message)
+
+
+def discardPendingNotifications():
+    """Discard notifications left by older automatic-search code paths."""
+    with _notificationLock:
+        del _pendingNotifications[:]

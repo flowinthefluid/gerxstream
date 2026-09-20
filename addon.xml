@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.15" provider-name="flowinthefluid">
+<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.16" provider-name="flowinthefluid">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 		<import addon="script.module.requests"/>
@@ -21,7 +21,7 @@
 		<language>de en</language>
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
-		<news>1.0.15 - Behebt die blockierende Abbruchpruefung der globalen Suche unter Kodi 22.</news>
+		<news>1.0.16 - Globale Suche wird nicht mehr durch Cloudflare-/DDoS-Hinweise unterbrochen.</news>
 		<website>https://github.com/flowinthefluid/gerxstream4kodi</website>
 		<source>https://github.com/flowinthefluid/gerxstream4kodi</source>
 		<assets>

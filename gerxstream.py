@@ -863,9 +863,10 @@ def _collectGlobalSearchResults(searchText, includePlugin):
     finally:
         dialog.close()
 
-    # Kein Dialog aus einem Worker: erst jetzt ist der Fortschrittsdialog
-    # geschlossen und Kodi kann den Hinweis ohne Such-Deadlock anzeigen.
-    protection.showPendingNotifications()
+    # Globale Suchen duerfen nicht durch Cloudflare-/DDoS-Hinweise in eine
+    # einzelne Quelle springen. Direkt aufgerufene Quellen zeigen den Hinweis
+    # weiterhin selbst; hier werden nur eventuell alte Warteschlangen geleert.
+    protection.discardPendingNotifications()
     if not completed:
         oGui.setEndOfDirectory()
         return None
