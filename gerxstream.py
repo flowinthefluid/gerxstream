@@ -8,7 +8,7 @@ import xbmcplugin
 import os
 import random
 import time
-from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+from concurrent.futures import ThreadPoolExecutor
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
@@ -810,8 +810,15 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
                     (name, workerTimeout), LOGERROR)
                 dialog.update(completed * 50 // progressPlugins + 50,
                               name + cConfig().getLocalizedString(30125))
-            done, pending = wait(pending, timeout=0.25, return_when=FIRST_COMPLETED)
+            # concurrent.futures.wait() remains asleep in Kodi 22's embedded
+            # Python 3.14 although every worker has completed. Polling the
+            # futures directly avoids that deadlock and still yields the GIL.
+            done = {future for future in pending if future.done()}
+            if not done:
+                time.sleep(0.05)
+                continue
             for future in done:
+                pending.remove(future)
                 completed += 1
                 name = futures[future][0]
                 try:
@@ -820,6 +827,9 @@ def _runPluginSearches(searchPlugins, searchText, oGui, dialog, monitor):
                     log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: %s: collecting search results failed' % name, LOGERROR)
                 dialog.update(completed * 50 // progressPlugins + 50,
                               name + cConfig().getLocalizedString(30125))
+        log(cConfig().getLocalizedString(30166) +
+            ' -> [gerxstream]: collected results from %s providers' % completed,
+            LOGNOTICE)
         return True
     finally:
         # Bei einer defekten Quelle wird nicht auf deren Thread gewartet. Die
@@ -856,6 +866,9 @@ def _collectGlobalSearchResults(searchText, includePlugin):
     if not completed:
         oGui.setEndOfDirectory()
         return None
+    log(cConfig().getLocalizedString(30166) +
+        ' -> [gerxstream]: rendering %s collected search results' % len(oGui.searchResults),
+        LOGNOTICE)
     return oGui
 
 

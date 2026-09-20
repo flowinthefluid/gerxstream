@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.13" provider-name="flowinthefluid">
+<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.14" provider-name="flowinthefluid">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 		<import addon="script.module.requests"/>
@@ -21,7 +21,7 @@
 		<language>de en</language>
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
-		<news>1.0.13 - Globale Suche ohne Kodi-UI-Zugriffe aus Hintergrundthreads; Timeout konfigurierbar; Support-Informationen repariert.</news>
+		<news>1.0.14 - Behebt den Stillstand der globalen Suche nach fertiggestellten Quellen unter Kodi 22/Python 3.14.</news>
 		<website>https://github.com/flowinthefluid/gerxstream4kodi</website>
 		<source>https://github.com/flowinthefluid/gerxstream4kodi</source>
 		<assets>
