@@ -1,6 +1,6 @@
-# Spezifikation: Kodi-Repository `gerxstream4kodi`
+# Spezifikation: Kodi-Repository `gerxstream/repo`
 
-Stand: 2026-09-20 · Ziel-Repo: `https://github.com/flowinthefluid/gerxstream4kodi` (Branch `main`)
+Stand: 2026-09-21 · Ziel-Repo: `https://github.com/flowinthefluid/gerxstream` (Branch `main`, Unterordner `repo/`)
 
 Dieses Dokument beschreibt, welche Struktur das Repository haben muss, damit
 (a) Kodi es als Addon-Quelle akzeptiert und (b) der spaeter zu verdrahtende
@@ -11,9 +11,9 @@ frei verfuegbaren AllInOne-Kodi-Repos wie K.U.S).
 
 Umgesetzt: Die Zeiger-Addon-Quellen liegen als `repository.gerxstream/` und
 `repository.resolveurl/` in diesem Repo, `tools/build_repo.py` baut daraus den
-kompletten Hosting-Ordner (`dist/gerxstream4kodi/`) inklusive `addons.xml`,
+kompletten Hosting-Ordner (`dist/gerxstream-repo/`) inklusive `addons.xml`,
 `addons.xml.md5` und `zips/`. Dessen Inhalt wird 1:1 in den Branch `main` von
-`gerxstream4kodi` committet — der Verdrahtungsschritt ist noch der Push
+`gerxstream/repo` committet — der Verdrahtungsschritt ist noch der Push
 selbst plus die spaetere Aktivierung von `checkVersion()` (Abschnitt 4).
 
 ---
@@ -21,14 +21,14 @@ selbst plus die spaetere Aktivierung von `checkVersion()` (Abschnitt 4).
 ## 1. Dateibaum
 
 ```
-gerxstream4kodi/                     (Branch: main)
+gerxstream/repo/                     (Branch: main)
 ├── addons.xml                       Katalog aller ausgelieferten Addons
 ├── addons.xml.md5                   MD5 von addons.xml, roh, ohne Dateiname
 ├── repository.gerxstream/
 │   ├── addon.xml                    Das Repo-Zeiger-Addon (Quelle)
 │   ├── icon.png                     512x512
 │   └── fanart.jpg                   1280x720 oder 1920x1080
-├── repository.gerxstream-1.0.0.zip  Installierbares Zip des Repo-Addons
+├── repository.gerxstream-<version>.zip  Installierbares Zip des Repo-Addons
 └── zips/
     ├── plugin.video.gerxstream/
     │   ├── addon.xml                Kopie der addon.xml der neuesten Version
@@ -56,9 +56,9 @@ entspricht — also `plugin.video.gerxstream/…` als oberste Ebene im Archiv.
        provider-name="flowinthefluid">
   <extension point="xbmc.addon.repository" name="GeerXStream Repository">
     <dir>
-      <info compressed="false">https://raw.githubusercontent.com/flowinthefluid/gerxstream4kodi/main/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/flowinthefluid/gerxstream4kodi/main/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/flowinthefluid/gerxstream4kodi/main/zips/</datadir>
+      <info compressed="false">https://flowinthefluid.github.io/gerxstream/repo/addons.xml</info>
+      <checksum>https://flowinthefluid.github.io/gerxstream/repo/addons.xml.md5</checksum>
+      <datadir zip="true">https://flowinthefluid.github.io/gerxstream/repo/zips/</datadir>
     </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -117,8 +117,8 @@ nicht erneut umgebaut werden muss, hier die Festlegung:
 
 | Zweck | URL |
 |---|---|
-| Versionsabfrage | `https://raw.githubusercontent.com/flowinthefluid/gerxstream4kodi/main/zips/plugin.video.gerxstream/addon.xml` |
-| Zip-Download | `https://raw.githubusercontent.com/flowinthefluid/gerxstream4kodi/main/zips/plugin.video.gerxstream/plugin.video.gerxstream-<version>.zip` |
+| Versionsabfrage | `https://flowinthefluid.github.io/gerxstream/repo/zips/plugin.video.gerxstream/addon.xml` |
+| Zip-Download | `https://flowinthefluid.github.io/gerxstream/repo/zips/plugin.video.gerxstream/plugin.video.gerxstream-<version>.zip` |
 
 Gelesene Felder:
 

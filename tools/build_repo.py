@@ -2,8 +2,8 @@
 # Python 3
 """Baut den Inhalt des Hosting-Repos fuer die eigene GerXStream-Quelle.
 
-Ziel ist die Struktur aus docs/REPO-SPEC.md: der Ordner, den man 1:1 in den
-Branch `main` von https://github.com/flowinthefluid/gerxstream4kodi legt,
+Ziel ist die Struktur aus docs/REPO-SPEC.md: der Ordner `repo/`, den man in
+den Branch `main` von https://github.com/flowinthefluid/gerxstream legt,
 damit Kodi ihn als Addon-Repository lesen kann (Referenz: Aufbau von
 K.U.S AllInOne Repository / anderer freier Kodi-Repos - ein Zeiger-Addon
 `repository.<name>` plus `addons.xml`/`addons.xml.md5` plus `zips/`).
@@ -24,7 +24,7 @@ Aufruf aus dem Projektverzeichnis:
     python tools/build_repo.py
 
 Optionen:
-    --out-dir DIR   Zielverzeichnis (Vorgabe: dist/gerxstream4kodi)
+    --out-dir DIR   Zielverzeichnis (Vorgabe: dist/gerxstream-repo)
 """
 
 import argparse
@@ -135,10 +135,32 @@ def buildAddonsXml(addonXmlPaths, outDir):
     return addonsXmlPath
 
 
+def buildIndex(repoVersion, pluginVersion, outDir):
+    """Erzeugt die Seite hinter der kurzen Kodi-Quelladresse."""
+    content = '''<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GerXStream Kodi-Repository</title>
+</head>
+<body>
+  <h1>GerXStream Kodi-Repository</h1>
+  <p>Diese Adresse als Medienquelle in Kodi eintragen:</p>
+  <p><code>https://flowinthefluid.github.io/gerxstream/repo/</code></p>
+  <p><a href="repository.gerxstream-%s.zip">GerXStream Repository %s installieren</a></p>
+  <p><a href="zips/plugin.video.gerxstream/plugin.video.gerxstream-%s.zip">GerXStream %s direkt installieren</a></p>
+</body>
+</html>
+''' % (repoVersion, repoVersion, pluginVersion, pluginVersion)
+    with open(os.path.join(outDir, 'index.html'), 'w', encoding='utf-8', newline='\n') as fh:
+        fh.write(content)
+
+
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='Baut den Hosting-Repo-Ordner fuer gerxstream4kodi.')
-    parser.add_argument('--out-dir', default=os.path.join(PROJECT_ROOT, 'dist', 'gerxstream4kodi'),
-                        help='Zielverzeichnis (Vorgabe: dist/gerxstream4kodi)')
+    parser = argparse.ArgumentParser(description='Baut den Hosting-Repo-Ordner fuer gerxstream/repo.')
+    parser.add_argument('--out-dir', default=os.path.join(PROJECT_ROOT, 'dist', 'gerxstream-repo'),
+                        help='Zielverzeichnis (Vorgabe: dist/gerxstream-repo)')
     args = parser.parse_args(argv)
 
     outDir = args.out_dir
@@ -180,6 +202,7 @@ def main(argv=None):
     _id, repoVersion = readAddonXml(os.path.join(gerxstreamRepoDir, 'addon.xml'))
     buildPointerZip(gerxstreamRepoDir, 'repository.gerxstream', repoVersion, outDir)
     copyAddonAssets(gerxstreamRepoDir, os.path.join(outDir, 'repository.gerxstream'))
+    buildIndex(repoVersion, pluginVersion, outDir)
 
     # 4. addons.xml + addons.xml.md5 ueber alle Addons
     buildAddonsXml(addonXmlPaths, outDir)
@@ -188,8 +211,8 @@ def main(argv=None):
     print('Enthaelt: addons.xml, addons.xml.md5, repository.gerxstream(-%s.zip), '
             'zips/plugin.video.gerxstream, zips/repository.gerxstream, '
             'zips/repository.resolveurl, zips/script.module.resolveurl' % repoVersion)
-    print('Naechster Schritt: Inhalt 1:1 in Branch main von '
-          'https://github.com/flowinthefluid/gerxstream4kodi committen und pushen.')
+    print('Naechster Schritt: Inhalt in repo/ auf Branch main von '
+          'https://github.com/flowinthefluid/gerxstream committen und pushen.')
     return 0
 
 

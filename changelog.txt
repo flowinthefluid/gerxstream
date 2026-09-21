@@ -1,3 +1,9 @@
+[B]Version: 1.0.20[/B]
+
+21.09.2026
+
+- Kodi-Repository auf die kurze Adresse flowinthefluid.github.io/gerxstream/repo umgestellt
+
 [B]Version: 1.0.19[/B]
 
 21.09.2026
