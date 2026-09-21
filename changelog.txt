@@ -1,3 +1,9 @@
+[B]Version: 1.0.19[/B]
+
+21.09.2026
+
+- Anzahl der beliebten Schauspieler und Regisseure getrennt einstellbar (Standard: 500 / 100)
+
 [B]Version: 1.0.18[/B]
 
 21.09.2026

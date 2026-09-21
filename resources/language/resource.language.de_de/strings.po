@@ -2022,11 +2022,11 @@ msgstr "Eintrag waehlen und nach oben oder unten verschieben. Die Reihenfolge wi
 
 msgctxt "#30884"
 msgid "People list size"
-msgstr "Anzahl beliebter Personen"
+msgstr "Anzahl Schauspieler"
 
 msgctxt "#30885"
 msgid "Higher values need more TMDB requests, especially for directors."
-msgstr "Hoehere Werte benoetigen mehr TMDB-Abfragen, besonders bei Regisseuren."
+msgstr "Hoehere Werte benoetigen mehr TMDB-Abfragen."
 
 msgctxt "#30886"
 msgid "People sorting"
@@ -2043,6 +2043,14 @@ msgstr "Name (A-Z)"
 msgctxt "#30889"
 msgid "Best known TMDB rating"
 msgstr "Beste bekannte TMDB-Wertung"
+
+msgctxt "#30890"
+msgid "Director list size"
+msgstr "Anzahl Regisseure"
+
+msgctxt "#30891"
+msgid "Higher values can take considerably longer because TMDB has no director-only list."
+msgstr "Hoehere Werte koennen deutlich laenger dauern, da TMDB keine reine Regisseur-Liste anbietet."
 
 msgctxt "#30900"
 msgid "Global search timeout (seconds)"

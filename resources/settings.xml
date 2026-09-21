@@ -116,7 +116,19 @@
 						<heading>30871</heading>
 					</control>
 				</setting>
-				<setting id="peopleLimit" type="integer" label="30884" help="30885">
+				<setting id="actorPeopleLimit" type="integer" label="30884" help="30885">
+					<level>0</level>
+					<default>500</default>
+					<constraints>
+						<minimum>25</minimum>
+						<step>25</step>
+						<maximum>500</maximum>
+					</constraints>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="directorPeopleLimit" type="integer" label="30890" help="30891">
 					<level>0</level>
 					<default>100</default>
 					<constraints>

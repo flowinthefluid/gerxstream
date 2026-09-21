@@ -2045,6 +2045,14 @@ msgctxt "#30889"
 msgid "Best known TMDB rating"
 msgstr ""
 
+msgctxt "#30890"
+msgid "Director list size"
+msgstr ""
+
+msgctxt "#30891"
+msgid "Higher values can take considerably longer because TMDB has no director-only list."
+msgstr ""
+
 msgctxt "#30900"
 msgid "Global search timeout (seconds)"
 msgstr ""

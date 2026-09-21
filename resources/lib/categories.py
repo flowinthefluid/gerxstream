@@ -58,10 +58,11 @@ CHARTS_TV_ALIAS = {'now_playing': 'on_the_air', 'upcoming': 'airing_today'}
 
 DECADES = (2020, 2010, 2000, 1990, 1980, 1970, 1960)
 
-# Die People-API wird seitenweise abgefragt. 500 Eintraege bedeuten besonders
-# fuer Regisseure viele aufeinanderfolgende Netzabrufe und konnten Kodi lange
-# ohne Ergebnis warten lassen. Der Wert ist deshalb begrenzt konfigurierbar.
-PEOPLE_DEFAULT_LIMIT = 100
+# Die People-API wird seitenweise abgefragt. Die Zahl der beliebten
+# Regisseure ist deutlich kleiner als die der Schauspieler, weshalb beide
+# Grenzen getrennt einstellbar sind.
+ACTOR_DEFAULT_LIMIT = 500
+DIRECTOR_DEFAULT_LIMIT = 100
 PEOPLE_MIN_LIMIT = 25
 PEOPLE_MAX_LIMIT = 500
 KEYWORD_SEARCH_CACHE = {}
@@ -493,14 +494,15 @@ def _locations(params):
 
 
 def _peopleMenu(params):
-    peopleLimit = _peopleLimit()
+    actorLimit = _peopleLimit('Acting')
+    directorLimit = _peopleLimit('Directing')
     ownActors = len(favoriteActors())
-    actorTitle = _label(30823, 'Beliebte Schauspieler') + ' (%s' % peopleLimit
+    actorTitle = _label(30823, 'Beliebte Schauspieler') + ' (%s' % actorLimit
     if ownActors:
         actorTitle += ' + %s eigene' % ownActors
     actorTitle += ')'
     for title, role in ((actorTitle, 'Acting'),
-                        (_label(30860, 'Beliebte Regisseure') + ' (%s)' % peopleLimit, 'Directing')):
+                        (_label(30860, 'Beliebte Regisseure') + ' (%s)' % directorLimit, 'Directing')):
         params.setParam('catLevel', 'people')
         params.setParam('catRole', role)
         _addFolder(title, 'categories', params)
@@ -573,10 +575,12 @@ def _findPersonByName(name):
     return {}
 
 
-def _peopleLimit():
+def _peopleLimit(role):
+    setting = 'directorPeopleLimit' if role == 'Directing' else 'actorPeopleLimit'
+    default = DIRECTOR_DEFAULT_LIMIT if role == 'Directing' else ACTOR_DEFAULT_LIMIT
     return max(PEOPLE_MIN_LIMIT, min(
         PEOPLE_MAX_LIMIT,
-        cConfig().getSettingInt('peopleLimit', PEOPLE_DEFAULT_LIMIT)))
+        cConfig().getSettingInt(setting, default)))
 
 
 def _knownForRating(person):
@@ -608,7 +612,7 @@ def _personSortKey(person, sortMode):
 def _people(params):
     """TMDB-Popular-Liste nach Rolle, erweitert um eigene Schauspieler."""
     role = params.getValue('catRole') or 'Acting'
-    peopleLimit = _peopleLimit()
+    peopleLimit = _peopleLimit(role)
     sortMode = cConfig().getSetting('peopleSort', 'popularity')
     if sortMode not in ('popularity', 'name', 'rating'):
         sortMode = 'popularity'
