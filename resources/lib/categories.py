@@ -58,10 +58,12 @@ CHARTS_TV_ALIAS = {'now_playing': 'on_the_air', 'upcoming': 'airing_today'}
 
 DECADES = (2020, 2010, 2000, 1990, 1980, 1970, 1960)
 
-# TMDB liefert die Rangfolge selbst (person/popular); eigene Namen werden
-# davor angezeigt. 500 statt der bisherigen 250 deckt auch etablierte
-# Darsteller ab, ohne eine unendliche, nicht navigierbare Liste zu bauen.
-PEOPLE_LIMIT = 500
+# Die People-API wird seitenweise abgefragt. 500 Eintraege bedeuten besonders
+# fuer Regisseure viele aufeinanderfolgende Netzabrufe und konnten Kodi lange
+# ohne Ergebnis warten lassen. Der Wert ist deshalb begrenzt konfigurierbar.
+PEOPLE_DEFAULT_LIMIT = 100
+PEOPLE_MIN_LIMIT = 25
+PEOPLE_MAX_LIMIT = 500
 KEYWORD_SEARCH_CACHE = {}
 
 # Vorgefertigte Themenabfragen ueber TMDB-Keywords.
@@ -491,13 +493,14 @@ def _locations(params):
 
 
 def _peopleMenu(params):
+    peopleLimit = _peopleLimit()
     ownActors = len(favoriteActors())
-    actorTitle = _label(30823, 'Beliebte Schauspieler') + ' (%s' % PEOPLE_LIMIT
+    actorTitle = _label(30823, 'Beliebte Schauspieler') + ' (%s' % peopleLimit
     if ownActors:
         actorTitle += ' + %s eigene' % ownActors
     actorTitle += ')'
     for title, role in ((actorTitle, 'Acting'),
-                        (_label(30860, 'Beliebte Regisseure') + ' (%s)' % PEOPLE_LIMIT, 'Directing')):
+                        (_label(30860, 'Beliebte Regisseure') + ' (%s)' % peopleLimit, 'Directing')):
         params.setParam('catLevel', 'people')
         params.setParam('catRole', role)
         _addFolder(title, 'categories', params)
@@ -570,9 +573,45 @@ def _findPersonByName(name):
     return {}
 
 
+def _peopleLimit():
+    return max(PEOPLE_MIN_LIMIT, min(
+        PEOPLE_MAX_LIMIT,
+        cConfig().getSettingInt('peopleLimit', PEOPLE_DEFAULT_LIMIT)))
+
+
+def _knownForRating(person):
+    """Beste belastbare TMDB-Wertung aus den bekannten Werken einer Person."""
+    best = (0.0, 0)
+    for item in person.get('known_for') or []:
+        try:
+            rating = float(item.get('vote_average') or 0)
+            votes = int(item.get('vote_count') or 0)
+        except (TypeError, ValueError):
+            continue
+        # Eine 10/10-Wertung aus wenigen Stimmen ist kein brauchbares
+        # Popularitaetssignal. 200 Stimmen lassen grosse Ausreisser weg.
+        if votes >= 200 and (rating, votes) > best:
+            best = (rating, votes)
+    return best
+
+
+def _personSortKey(person, sortMode):
+    name = (person.get('name') or '').casefold()
+    if sortMode == 'name':
+        return (name,)
+    if sortMode == 'rating':
+        rating, votes = _knownForRating(person)
+        return (-rating, -votes, -float(person.get('popularity') or 0), name)
+    return (-float(person.get('popularity') or 0), name)
+
+
 def _people(params):
     """TMDB-Popular-Liste nach Rolle, erweitert um eigene Schauspieler."""
     role = params.getValue('catRole') or 'Acting'
+    peopleLimit = _peopleLimit()
+    sortMode = cConfig().getSetting('peopleSort', 'popularity')
+    if sortMode not in ('popularity', 'name', 'rating'):
+        sortMode = 'popularity'
     page = 1
     listed = 0
     popularListed = 0
@@ -591,32 +630,37 @@ def _people(params):
                 listedIds.add(person.get('id'))
                 listed += 1
 
-    while popularListed < PEOPLE_LIMIT and page <= total_pages:
+    people = []
+    while popularListed < peopleLimit and page <= total_pages:
         data = cTMDB().getUrl('person/popular', page) or {}
         results = data.get('results') or []
         total_pages = data.get('total_pages', 1)
         if not results:
             break
         for person in results:
-            if popularListed >= PEOPLE_LIMIT:
+            if popularListed >= peopleLimit:
                 break
             if role and person.get('known_for_department') and person.get('known_for_department') != role:
                 continue
             personId = person.get('id')
             if not personId or personId in listedIds:
                 continue
-            if _addPersonFolder(params, person):
-                listedIds.add(personId)
-                listed += 1
-                popularListed += 1
+            listedIds.add(personId)
+            people.append(person)
+            popularListed += 1
         page += 1
+
+    for person in sorted(people, key=lambda item: _personSortKey(item, sortMode)):
+        if _addPersonFolder(params, person):
+            listed += 1
 
     if listed == 0:
         cGui().showInfo()
         return
 
-    if page <= total_pages and popularListed >= PEOPLE_LIMIT:
-        logger.info('-> [categories]: People list capped at %s entries (%s)' % (PEOPLE_LIMIT, role))
+    if page <= total_pages and popularListed >= peopleLimit:
+        logger.info('-> [categories]: People list capped at %s entries (%s, %s)' %
+                    (peopleLimit, role, sortMode))
     cGui().setEndOfDirectory()
 
 
@@ -629,7 +673,11 @@ def _buildQuery(params):
     keywordId = _int(params, 'catKeyword')
     decade = _int(params, 'catDecade')
     personId = _int(params, 'catPerson')
-    presetKey = params.getValue('catPreset')
+    # ParameterHandler liefert False, wenn der optionale Parameter in einem
+    # alten oder manuell erzeugten Kodi-Link fehlt. startswith() auf diesem
+    # bool war die Ursache fuer den Absturz bei Schauspielern, Charts und
+    # Jahrzehnten.
+    presetKey = params.getValue('catPreset') or ''
 
     if presetKey.startswith('kw:'):
         keywordId = _keywordIdByTerm(presetKey[3:])

@@ -302,6 +302,9 @@ class cHosterGui:
             if not type(siteResult) is list:
                 temp = [siteResult]
                 siteResult = temp
+            if not siteResult or not isinstance(siteResult[0], dict):
+                cGui().showInfo('GerXStream', cConfig().getLocalizedString(30141))
+                return
             # field "name" marks hosters
             if 'name' in siteResult[0]:
                 functionName = siteResult[-1]
@@ -339,6 +342,9 @@ class cHosterGui:
                 if not type(siteResult) is list:
                     temp = [siteResult]
                     siteResult = temp
+                if not siteResult or not isinstance(siteResult[0], dict):
+                    cGui().showInfo('GerXStream', cConfig().getLocalizedString(30141))
+                    return
             # choose part
             if len(siteResult) > 1:
                 siteResult = self._choosePart(siteResult)
@@ -388,6 +394,10 @@ class cHosterGui:
         if not type(siteResult) is list:
             temp = [siteResult]
             siteResult = temp
+        if not siteResult or not isinstance(siteResult[0], dict):
+            self.dialog.close()
+            cGui().showInfo('GerXStream', cConfig().getLocalizedString(30141))
+            return False
         # field "name" marks hosters
         if 'name' in siteResult[0]:
             self.dialog.update(90, cConfig().getLocalizedString(30143))

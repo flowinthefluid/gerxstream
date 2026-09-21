@@ -2021,6 +2021,30 @@ msgctxt "#30883"
 msgid "Select an entry, then move it up or down. The order is saved automatically."
 msgstr ""
 
+msgctxt "#30884"
+msgid "People list size"
+msgstr ""
+
+msgctxt "#30885"
+msgid "Higher values need more TMDB requests, especially for directors."
+msgstr ""
+
+msgctxt "#30886"
+msgid "People sorting"
+msgstr ""
+
+msgctxt "#30887"
+msgid "TMDB popularity"
+msgstr ""
+
+msgctxt "#30888"
+msgid "Name (A-Z)"
+msgstr ""
+
+msgctxt "#30889"
+msgid "Best known TMDB rating"
+msgstr ""
+
 msgctxt "#30900"
 msgid "Global search timeout (seconds)"
 msgstr ""

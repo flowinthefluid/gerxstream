@@ -2020,6 +2020,30 @@ msgctxt "#30883"
 msgid "Select an entry, then move it up or down. The order is saved automatically."
 msgstr "Eintrag waehlen und nach oben oder unten verschieben. Die Reihenfolge wird automatisch gespeichert."
 
+msgctxt "#30884"
+msgid "People list size"
+msgstr "Anzahl beliebter Personen"
+
+msgctxt "#30885"
+msgid "Higher values need more TMDB requests, especially for directors."
+msgstr "Hoehere Werte benoetigen mehr TMDB-Abfragen, besonders bei Regisseuren."
+
+msgctxt "#30886"
+msgid "People sorting"
+msgstr "Sortierung beliebter Personen"
+
+msgctxt "#30887"
+msgid "TMDB popularity"
+msgstr "TMDB-Popularitaet"
+
+msgctxt "#30888"
+msgid "Name (A-Z)"
+msgstr "Name (A-Z)"
+
+msgctxt "#30889"
+msgid "Best known TMDB rating"
+msgstr "Beste bekannte TMDB-Wertung"
+
 msgctxt "#30900"
 msgid "Global search timeout (seconds)"
 msgstr "Timeout der globalen Suche (Sekunden)"

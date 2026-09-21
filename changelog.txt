@@ -1,3 +1,12 @@
+[B]Version: 1.0.18[/B]
+
+21.09.2026
+
+- Kategorien, Jahrzehnte und Schauspieler-Suchen akzeptieren wieder fehlende optionale Filterparameter
+- Beliebte Schauspieler/Regisseure: Standard auf 100 reduziert, Anzahl (25 bis 500) und Sortierung einstellbar
+- Leere Hoster-Antworten werden als fehlender Stream behandelt statt mit IndexError abzubrechen
+- Quellfehler zeigen keinen abgeschnittenen Python-Trace mehr auf dem Fernseher; Details bleiben im Kodi-Protokoll
+
 [B]Version: 1.0.17[/B]
 
 21.09.2026

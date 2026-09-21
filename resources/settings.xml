@@ -116,6 +116,30 @@
 						<heading>30871</heading>
 					</control>
 				</setting>
+				<setting id="peopleLimit" type="integer" label="30884" help="30885">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>25</minimum>
+						<step>25</step>
+						<maximum>500</maximum>
+					</constraints>
+					<control type="slider" format="integer">
+						<popup>false</popup>
+					</control>
+				</setting>
+				<setting id="peopleSort" type="string" label="30886" help="">
+					<level>0</level>
+					<default>popularity</default>
+					<constraints>
+						<options>
+							<option label="30887">popularity</option>
+							<option label="30888">name</option>
+							<option label="30889">rating</option>
+						</options>
+					</constraints>
+					<control type="spinner" format="string"/>
+				</setting>
 			</group>
 			<group id="hoster" label="30034">
 				<setting id="hosterSelect" type="string" label="30005" help="">
