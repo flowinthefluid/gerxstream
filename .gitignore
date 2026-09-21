@@ -15,3 +15,6 @@ Thumbs.db
 
 # Build-Artefakte
 *.zip
+
+# Veröffentlichte Kodi-Repository-Pakete werden versioniert.
+!repo/**/*.zip

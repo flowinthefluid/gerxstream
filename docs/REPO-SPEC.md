@@ -1,5 +1,13 @@
 # Spezifikation: Kodi-Repository `gerxstream4kodi`
 
+> **Historischer Plan, nicht die aktuelle Auslieferung:** Dieses Dokument
+> beschreibt das damals vorgesehene, separate Repository `gerxstream4kodi`.
+> Die tatsaechlich gebaute Quelle dieses Projekts liegt nun in
+> [`repo/`](../repo/README.md) und ist fuer
+> `https://flowinthefluid.github.io/gerxstream/repo/` vorbereitet. Sie bleibt
+> bei `plugin.video.xstream`, bis die hier beschriebene ID-Migration vollstaendig
+> umgesetzt ist.
+
 Stand: 2026-09-18 · Ziel-Repo: `https://github.com/flowinthefluid/gerxstream4kodi` (Branch `main`)
 
 Dieses Dokument beschreibt, welche Struktur das Repository haben muss, damit
