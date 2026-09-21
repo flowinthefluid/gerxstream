@@ -28,6 +28,8 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: repo
+          # The repository addon refers to /gerxstream/repo/..., so preserve
+          # that directory beneath the GitHub Pages project-site root.
+          path: .
       - id: deployment
         uses: actions/deploy-pages@v4
