@@ -136,7 +136,7 @@ def buildAddonsXml(addonXmlPaths, outDir):
 
 
 def buildIndex(repoVersion, outDir):
-    """Erzeugt die Seite hinter der kurzen Kodi-Quelladresse."""
+    """Erzeugt eine Kodi-lesbare Liste fuer die Repository-ZIP."""
     content = '''<!doctype html>
 <html lang="de">
 <head>
@@ -187,6 +187,8 @@ def main(argv=None):
         pointerZipDir = os.path.join(zipsDir, repoId)
         buildPointerZip(sourceDir, repoId, version, pointerZipDir)
         copyAddonAssets(sourceDir, pointerZipDir)
+        if repoId == 'repository.gerxstream':
+            buildIndex(version, pointerZipDir)
         addonXmlPaths.append(os.path.join(sourceDir, 'addon.xml'))
 
     # 3. ResolveURL direkt in diesem Katalog, damit die zwingende Abhaengigkeit
