@@ -135,7 +135,7 @@ def buildAddonsXml(addonXmlPaths, outDir):
     return addonsXmlPath
 
 
-def buildIndex(repoVersion, pluginVersion, outDir):
+def buildIndex(repoVersion, outDir):
     """Erzeugt die Seite hinter der kurzen Kodi-Quelladresse."""
     content = '''<!doctype html>
 <html lang="de">
@@ -145,14 +145,11 @@ def buildIndex(repoVersion, pluginVersion, outDir):
   <title>GerXStream Kodi-Repository</title>
 </head>
 <body>
-  <h1>GerXStream Kodi-Repository</h1>
-  <p>Diese Adresse als Medienquelle in Kodi eintragen:</p>
-  <p><code>https://flowinthefluid.github.io/gerxstream/repo/</code></p>
-  <p><a href="repository.gerxstream-%s.zip">GerXStream Repository %s installieren</a></p>
-  <p><a href="zips/plugin.video.gerxstream/plugin.video.gerxstream-%s.zip">GerXStream %s direkt installieren</a></p>
+  <h1>Index of /gerxstream/repo/</h1>
+  <a href="repository.gerxstream-%s.zip">repository.gerxstream-%s.zip</a><br>
 </body>
 </html>
-''' % (repoVersion, repoVersion, pluginVersion, pluginVersion)
+''' % (repoVersion, repoVersion)
     with open(os.path.join(outDir, 'index.html'), 'w', encoding='utf-8', newline='\n') as fh:
         fh.write(content)
 
@@ -202,7 +199,7 @@ def main(argv=None):
     _id, repoVersion = readAddonXml(os.path.join(gerxstreamRepoDir, 'addon.xml'))
     buildPointerZip(gerxstreamRepoDir, 'repository.gerxstream', repoVersion, outDir)
     copyAddonAssets(gerxstreamRepoDir, os.path.join(outDir, 'repository.gerxstream'))
-    buildIndex(repoVersion, pluginVersion, outDir)
+    buildIndex(repoVersion, outDir)
 
     # 4. addons.xml + addons.xml.md5 ueber alle Addons
     buildAddonsXml(addonXmlPaths, outDir)
