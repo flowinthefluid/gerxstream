@@ -200,6 +200,9 @@ def main(argv=None):
     gerxstreamRepoDir = os.path.join(PROJECT_ROOT, 'repository.gerxstream')
     _id, repoVersion = readAddonXml(os.path.join(gerxstreamRepoDir, 'addon.xml'))
     buildPointerZip(gerxstreamRepoDir, 'repository.gerxstream', repoVersion, outDir)
+    # Die Medienquelle zeigt direkt auf repo/. Darum liegen die Dateien des
+    # Repository-Addons zusaetzlich dort - nicht nur unter zips/.
+    copyAddonAssets(gerxstreamRepoDir, outDir)
     copyAddonAssets(gerxstreamRepoDir, os.path.join(outDir, 'repository.gerxstream'))
     buildIndex(repoVersion, outDir)
 
