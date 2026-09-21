@@ -1,0 +1,481 @@
+# -*- coding: utf-8 -*-
+# Python 3
+
+import json
+import os
+import sys
+import xbmc
+
+from resources.lib.config import cConfig
+from xbmc import LOGINFO as LOGNOTICE, LOGERROR
+from resources.lib import utils
+from resources.lib.handler.requestHandler import cRequestHandler
+from urllib.parse import urlparse
+from xbmcgui import Dialog
+from xbmcvfs import translatePath
+from resources.lib.tools import platform, infoDialog, getDNS, getRepofromAddonsDB, addon_log as log
+
+
+ADDON_PATH = translatePath(os.path.join('special://home/addons/', '%s'))
+
+# Ein Site-Plugin kann mehreren Inhaltsgruppen angehoeren. Jedes Site-Plugin
+# traegt seine Zuordnung selbst als Modul-Attribut CONTENT_CATEGORIES
+# (Tupel aus den Kategorie-Kennungen unten). Das steuert ausschliesslich die
+# Navigation; die Scraper selbst bleiben unveraendert. Ein Plugin ohne
+# dieses Attribut - oder mit einer unbekannten Kennung - landet als
+# Sicherheitsnetz in "Weitere Quellen".
+CATEGORY_ORDER = (
+    ('alle', 30857),
+    ('filme', 30850),
+    ('serien', 30851),
+    ('animes', 30853),
+    ('dokus', 30852),
+    ('kinder', 30854),
+)
+
+# Oeffentliche Mediatheken/Archive bleiben als Kennung verfuegbar.
+# Ob sie im Index/Suche erscheinen, steuert allein der Nutzer ueber die
+# normalen Plugin- und Global-Search-Schalter in den Einstellungen.
+PUBLIC_MEDIA_SITES = frozenset((
+    'ardmediathek',
+    'arte',
+    'mediathekviewweb',
+    'kids_tube',
+    'mediaccc',
+    'internetarchive',
+    'netzkino',
+))
+
+
+class cPluginHandler:
+    def __init__(self):
+        self.rootFolder = translatePath(cConfig().getAddonInfo('path'))
+        self.settingsFile = os.path.join(self.rootFolder, 'resources', 'settings.xml')
+        self.profilePath = translatePath(cConfig().getAddonInfo('profile'))
+        self.pluginDBFile = os.path.join(self.profilePath, 'pluginDB')
+
+        log(cConfig().getLocalizedString(30166) + ' -> [pluginHandler]: profile folder: %s' % self.profilePath, LOGNOTICE)
+        log(cConfig().getLocalizedString(30166) + ' -> [pluginHandler]: root folder: %s' % self.rootFolder, LOGNOTICE)
+        self.defaultFolder = os.path.join(self.rootFolder, 'sites')
+        log(cConfig().getLocalizedString(30166) + ' -> [pluginHandler]: default sites folder: %s' % self.defaultFolder, LOGNOTICE)
+
+
+    def getAvailablePlugins(self):
+        global globalSearchStatus
+        pluginDB = self.__getPluginDB()
+        # default plugins
+        update = False
+        fileNames = self.__getFileNamesFromFolder(self.defaultFolder)
+        for fileName in fileNames:
+            plugin = {'name': '', 'identifier': '', 'icon': '', 'domain': '', 'globalsearch': '', 'categories': (), 'modified': 0}
+            if fileName in pluginDB:
+                plugin.update(pluginDB[fileName])
+            try:
+                modTime = os.path.getmtime(os.path.join(self.defaultFolder, fileName + '.py'))
+            except OSError:
+                modTime = 0
+            try:
+                globalSearchStatus = cConfig().getSetting('global_search_' + fileName)
+            except Exception:
+                pass
+            if fileName not in pluginDB or modTime > plugin['modified'] or globalSearchStatus:
+                log(cConfig().getLocalizedString(30166) + ' -> [pluginHandler]: load plugin Informations for ' + str(fileName), LOGNOTICE)
+                # try to import plugin
+                pluginData = self.__getPluginData(fileName, self.defaultFolder)
+                if pluginData:
+                    pluginData['globalsearch'] = globalSearchStatus
+                    pluginData['modified'] = modTime # Wenn Datei (Zeitstempel) verändert, werden die Daten aktualisiert
+                    pluginDB[fileName] = pluginData
+                    update = True
+        # check pluginDB for obsolete entries
+        deletions = []
+        for pluginID in pluginDB:
+            if pluginID not in fileNames:
+                deletions.append(pluginID)
+        for id in deletions:
+            del pluginDB[id]
+        if update or deletions:
+            self.__updatePluginDB(pluginDB) # Aktualisiert PluginDB in Addon_data
+            log(cConfig().getLocalizedString(30166) + ' -> [pluginHandler]: PluginDB informations updated.', LOGNOTICE)
+        return self.getAvailablePluginsFromDB()
+
+    def getPluginNames(self):
+        return [fileName for fileName in self.__getFileNamesFromFolder(self.defaultFolder)
+                if not fileName.startswith('_')]
+
+
+    @staticmethod
+    def isPublicMediaSite(siteId):
+        return siteId in PUBLIC_MEDIA_SITES
+
+
+    def getContentCategories(self, available=None):
+        """Aktive Quellen nach Inhalt, mit gewollten Mehrfachzuordnungen.
+
+        Eine Quelle wird pro passender Kategorie ausgegeben. Das ist bewusst
+        kein ``elif``: Film-, Serien- und Dokuquellen muessen gleichzeitig
+        auffindbar sein. Ein unbekanntes, aber aktives Modul bleibt als
+        Sicherheitsnetz in ``other`` sichtbar, bis es explizit eingeordnet
+        wurde.
+        """
+        if available is None:
+            available = self.getAvailablePlugins()
+        categorizedIds = set()
+        result = []
+
+        for categoryId, stringId in CATEGORY_ORDER:
+            if categoryId == 'alle':
+                # Fuer "Alle" bewusst unsortiert: Reihenfolge wie in den
+                # aktivierten Plugins, damit der Ordner wie gewuenscht eine
+                # ungefilterte Sammelansicht bleibt.
+                plugins = [plugin for plugin in available]
+                categorizedIds.update(plugin['id'] for plugin in plugins)
+                if plugins:
+                    result.append({
+                        'id': categoryId,
+                        'name': cConfig().getLocalizedString(stringId),
+                        'plugins': plugins,
+                    })
+                continue
+            plugins = sorted(
+                [plugin for plugin in available
+                 if categoryId in plugin.get('categories', ())],
+                key=lambda plugin: plugin['name'].lower())
+            categorizedIds.update(plugin['id'] for plugin in plugins)
+            if plugins:
+                result.append({
+                    'id': categoryId,
+                    'name': cConfig().getLocalizedString(stringId),
+                    'plugins': plugins,
+                })
+
+        otherPlugins = [plugin for plugin in available
+                        if plugin['id'] not in categorizedIds]
+        if otherPlugins:
+            result.append({
+                'id': 'other',
+                'name': cConfig().getLocalizedString(30856),
+                'plugins': sorted(otherPlugins, key=lambda plugin: plugin['id']),
+            })
+        return result
+
+
+    def getPluginsForContentCategory(self, categoryId):
+        """Gibt nur eine der fest definierten Kategorien zurueck."""
+        for category in self.getContentCategories():
+            if category['id'] == categoryId:
+                return category['plugins']
+        return []
+
+
+    def getAvailablePluginsFromDB(self):
+        plugins = []
+        iconFolder = os.path.join(self.rootFolder, 'resources', 'art', 'sites')
+        pluginDB = self.__getPluginDB() # Erstelle PluginDB
+        # PluginID = Siteplugin Name
+        for pluginID in pluginDB:
+            plugin = pluginDB[pluginID] # Aus PluginDB lese PluginID
+            pluginSettingsName = 'plugin_%s' % pluginID # Name des Siteplugins
+            plugin['id'] = pluginID
+            # Die optionalen "sichtbar"-Schalter steuern sowohl Hauptmenue
+            # als auch globale Suche. Aeltere Quellen ohne eigenen Schalter
+            # bleiben aus Kompatibilitaetsgruenden sichtbar.
+            if not cConfig().getSettingBool(pluginSettingsName + '_visible', True):
+                continue
+            if 'icon' in plugin:
+                iconPath = os.path.join(iconFolder, plugin['icon'])
+                plugin['icon'] = iconPath if os.path.isfile(iconPath) else ''
+            else:
+                plugin['icon'] = ''
+            # existieren zu diesem plugin die an/aus settings
+            if cConfig().getSettingBool(pluginSettingsName, False): # Lese aus settings.xml welche Plugins eingeschaltet sind
+                plugins.append(plugin)
+        return plugins
+
+
+    def __updatePluginDB(self, data): # Aktualisiere PluginDB
+        if not os.path.exists(self.profilePath):
+            os.makedirs(self.profilePath)
+        file = open(self.pluginDBFile, 'w')
+        json.dump(data, file)
+        file.close()
+
+
+    def __getPluginDB(self): # Erstelle PluginDB
+        if not os.path.exists(self.pluginDBFile): # Wenn Datei nicht verfügbar dann erstellen
+            return dict()
+        file = open(self.pluginDBFile, 'r')
+        try:
+            data = json.load(file)
+        except ValueError:
+            log(cConfig().getLocalizedString(30166) + ' -> [pluginHandler]: pluginDB seems corrupt, creating new one', LOGERROR)
+            data = dict()
+        file.close()
+        return data
+
+
+    def __getFileNamesFromFolder(self, sFolder): # Hole Namen vom Dateiname.py
+        aNameList = []
+        items = os.listdir(sFolder)
+        for sItemName in items:
+            if sItemName.endswith('.py'):
+                sItemName = os.path.basename(sItemName[:-3])
+                aNameList.append(sItemName)
+        return aNameList
+
+
+    def __getPluginData(self, fileName, defaultFolder): # Hole Plugin Daten aus dem Siteplugin
+        pluginData = {}
+        if not defaultFolder in sys.path: sys.path.append(defaultFolder)
+        try:
+            plugin = __import__(fileName, globals(), locals())
+            pluginData['name'] = plugin.SITE_NAME
+        except Exception as e:
+            log(cConfig().getLocalizedString(30166) + " -> [pluginHandler]: Can't import plugin: %s" % fileName, LOGERROR)
+            return False
+        try:
+            pluginData['identifier'] = plugin.SITE_IDENTIFIER
+        except Exception:
+            pass
+        try:
+            pluginData['icon'] = plugin.SITE_ICON
+        except Exception:
+            pass
+        try:
+            pluginData['domain'] = plugin.DOMAIN
+        except Exception:
+            pass
+        try:
+            pluginData['globalsearch'] = plugin.SITE_GLOBAL_SEARCH
+        except Exception:
+            pluginData['globalsearch'] = True
+            pass
+        try:
+            pluginData['categories'] = tuple(plugin.CONTENT_CATEGORIES)
+        except Exception:
+            pluginData['categories'] = ()
+        return pluginData
+
+
+    def __getPluginDataIndex(self, fileName, defaultFolder):
+        """Return the extra fields used by the support-information view."""
+        pluginData = {}
+        if not defaultFolder in sys.path: sys.path.append(defaultFolder)
+        try:
+            plugin = __import__(fileName, globals(), locals())
+            pluginData['name'] = plugin.SITE_NAME
+        except Exception as e:
+            log(cConfig().getLocalizedString(30166) + " -> [pluginHandler]: Can't import plugin: %s" % fileName, LOGERROR)
+            return False
+        try:
+            pluginData['active'] = plugin.ACTIVE
+        except Exception:
+            pass
+        try:
+            pluginData['domain'] = plugin.DOMAIN
+        except Exception:
+            pass
+        try:
+            pluginData['status'] = plugin.STATUS
+            if '403' <= pluginData['status'] <= '503':
+                pluginData['status'] = pluginData['status'] + ' - ' + cConfig().getLocalizedString(30429)
+            elif '300' <= pluginData['status'] <= '400':
+                pluginData['status'] = pluginData['status'] + ' - ' + cConfig().getLocalizedString(30428)
+            elif pluginData['status'] == '200':
+                pluginData['status'] = pluginData['status'] + ' - ' + cConfig().getLocalizedString(30427)
+        except Exception:
+            pass
+        try:
+            pluginData['globalsearch'] = plugin.SITE_GLOBAL_SEARCH
+        except Exception:
+            pluginData['globalsearch'] = True
+            pass
+        return pluginData
+
+
+    def __getPluginDataDomain(self, fileName, defaultFolder): # Hole Plugin Daten für Domains
+        pluginDataDomain = {}
+        if not defaultFolder in sys.path: sys.path.append(defaultFolder)
+        try:
+            plugin = __import__(fileName, globals(), locals())
+            pluginDataDomain['identifier'] = plugin.SITE_IDENTIFIER
+        except Exception as e:
+            log(cConfig().getLocalizedString(30166) + " -> [pluginHandler]: Can't import plugin: %s" % fileName, LOGERROR)
+            return False
+        try:
+            pluginDataDomain['domain'] = plugin.DOMAIN
+        except Exception:
+            pass
+        return pluginDataDomain
+
+    # Plugin Support Informationen
+    def pluginInfo(self):
+        # Erstelle Liste mit den Indexseiten Informationen
+        list_of_plugins = []
+        fileNames = self.__getFileNamesFromFolder(self.defaultFolder) # Hole Plugins aus GerXStream
+        for fileName in fileNames:
+            pluginData = self.__getPluginDataIndex(fileName, self.defaultFolder) # Hole Plugin Daten
+            if pluginData:
+                list_of_plugins.append(pluginData)
+        result_list = [''.join([f"{key}:  {value}\n" for key, value in dictionary.items()]) for dictionary in list_of_plugins]
+        # String Übersetzungen
+        result_string = '\n'.join(result_list)
+        result_string = result_string.replace('name', cConfig().getLocalizedString(30423))
+        result_string = result_string.replace('active', cConfig().getLocalizedString(30430))
+        result_string = result_string.replace('domain', cConfig().getLocalizedString(30424))
+        result_string = result_string.replace('status', cConfig().getLocalizedString(30425))
+        result_string = result_string.replace('globalsearch', cConfig().getLocalizedString(30426))
+        result_string = result_string.replace('True', cConfig().getLocalizedString(30418))
+        result_string = result_string.replace('False', cConfig().getLocalizedString(30419))
+        result_string = result_string.replace('true', cConfig().getLocalizedString(30418))
+        result_string = result_string.replace('false', cConfig().getLocalizedString(30419))
+        list_of_PluginData = (result_string) # Ergebnis der Liste
+        # Settings Abragen
+        if cConfig().getSettingBool('githubUpdateResolver', False):  # Resolver Update An/Aus
+            UPDATERU = cConfig().getLocalizedString(30415)  # Aktiv
+        else:
+            UPDATERU = cConfig().getLocalizedString(30416)  # Inaktiv
+        if cConfig().getSettingBool('bypassDNSlock', False):  # DNS Bypass
+            BYPASS = cConfig().getLocalizedString(30418)  # Aktiv
+        else:
+            BYPASS = cConfig().getLocalizedString(30419)  # Inaktiv
+        def addonInfo(addonId):
+            try:
+                addon = cConfig(addonId)
+                return addon.getAddonInfo('name') + ':  ' + addon.getAddonInfo('id') + ' - ' + addon.getAddonInfo('version') + '\n'
+            except Exception:
+                return addonId + ': nicht installiert\n'
+
+        def infoLabel(label):
+            try:
+                return xbmc.getInfoLabel(label) or '-'
+            except Exception:
+                return '-'
+
+        RESOLVEURL = addonInfo('repository.resolveurl') if os.path.exists(ADDON_PATH % 'repository.resolveurl') else ''
+        resolverInfo = addonInfo('script.module.resolveurl')
+        repositoryInfo = addonInfo('repository.gerxstream')
+        try:
+            sourceRepo = getRepofromAddonsDB(cConfig().getAddonInfo('id'))
+        except Exception:
+            sourceRepo = '-'
+
+        # Support Informationen anzeigen
+        Dialog().textviewer(cConfig().getLocalizedString(30265),
+            cConfig().getLocalizedString(30413) + '\n'  # Geräte Informationen
+            + 'Kodi Version:  ' + infoLabel('System.BuildVersion') + ' (Code Version: ' + infoLabel('System.BuildVersionCode') + ')' + '\n'  # Kodi Version
+            + cConfig().getLocalizedString(30266) + '   {0}'.format(platform().title()) + '\n'  # System Plattform
+            + 'CPU:  ' + infoLabel('System.CpuModel') + '\n'
+            + 'Arbeitsspeicher:  ' + infoLabel('System.Memory(total)') + '\n'
+            + '\n'  # Absatz
+            + cConfig().getLocalizedString(30414) + '\n'  # Plugin Informationen
+            + 'Installierte GerXStream-Version:  ' + cConfig().getAddonInfo('version') + '\n'
+            + cConfig().getAddonInfo('name') + ':  ' + cConfig().getAddonInfo('id') + '\n'
+            + resolverInfo
+            + 'ResolveURL Status:  ' + UPDATERU + cConfig().getSettingString('resolver.branch') + '\n'  # Resolver Update Status und Branch
+            + cConfig().getLocalizedString(30435) + ' ' + sourceRepo + '\n' # Repo-Info
+            + '\n'  # Absatz
+            + cConfig().getLocalizedString(30420) + '\n'  # DNS Informationen
+            + cConfig().getLocalizedString(30417) + ' ' + BYPASS + '\n'  # GerXStream DNS Bypass aktiv/inaktiv
+            + cConfig().getLocalizedString(30434) + '1' + ' ' + getDNS('Network.DNS1Address') + '\n' # DNS Nameserver 1
+            + cConfig().getLocalizedString(30434) + '2' + ' ' + getDNS('Network.DNS2Address') + '\n' # DNS Nameserver 2
+            + '\n'  # Absatz
+            + cConfig().getLocalizedString(30421) + '\n'  # Repo Informationen
+            + repositoryInfo
+            + RESOLVEURL
+            + '\n'  # Absatz
+            + cConfig().getLocalizedString(30422) + '\n'  # Indexseiten Informationen
+            + list_of_PluginData # Liste mit den Indexseiten Informationen
+            )
+
+    # Überprüfung des Domain Namens. Leite um und hole neue URL und schreibe in die settings.xml. Bei nicht erreichen der Seite deaktiviere Globale Suche bis zum nächsten Start und überprüfe erneut.
+    def checkDomain(self):
+        from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+        log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Query status code of the provider', LOGNOTICE)
+        fileNames = self.__getFileNamesFromFolder(self.defaultFolder)
+        tasks = []
+        monitor = xbmc.Monitor()
+        for fileName in fileNames:
+            try:
+                pluginDataDomain = self.__getPluginDataDomain(fileName, self.defaultFolder)
+                provider = pluginDataDomain['identifier']
+                if provider == 'api_all': #api_all bei der Überprüfung ignorieren da eh keine saubere Antwort kommt
+                    continue
+                _domain = pluginDataDomain['domain']
+                domain = cConfig().getSetting('plugin_' + provider + '.domain', _domain)
+                base_link = 'http://' + domain + '/'  # URL_MAIN
+                wrongDomain = 'site-maps.cc', 'www.drei.at', 'notice.cuii.info'
+                if domain in wrongDomain:  # Falsche Umleitung ausschliessen
+                    cConfig().setSetting('plugin_' + provider + '.domain', '')  # Falls doch dann lösche Settings Eintrag
+                    cConfig().setSetting('plugin_' + provider + '_status', '')  # lösche Status Code in den Settings
+                    continue
+                
+                if not cConfig().getSettingBool('plugin_' + provider, False):  # Wenn SitePlugin deaktiviert
+                    cConfig().setSetting('global_search_' + provider, 'false')  # setzte Globale Suche auf aus
+                    cConfig().setSetting('plugin_' + provider + '_checkDomain', 'false')  # setzte Domain Check auf aus
+                    cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
+                    cConfig().setSetting('plugin_' + provider + '_status', '')  # lösche Settings Eintrag
+
+                legacyCheck = cConfig().getSetting('plugin_' + provider + '_checkdomain')
+                checkDomainEnabled = cConfig().getSetting('plugin_' + provider + '_checkDomain', legacyCheck)
+                if legacyCheck and not cConfig().getSetting('plugin_' + provider + '_checkDomain'):
+                    cConfig().setSetting('plugin_' + provider + '_checkDomain', legacyCheck)
+
+                if cConfig().getSettingBool('plugin_' + provider + '_checkDomain', bool(legacyCheck and str(legacyCheck).strip().lower() == 'true')):  # aut. Domainüberprüfung an ist überprüfe Status der Sitplugins
+                    tasks.append((provider, base_link))
+            except Exception:
+                pass
+
+        if tasks:
+            maxWorkers = min(6, max(1, len(tasks)))
+            with ThreadPoolExecutor(max_workers=maxWorkers, thread_name_prefix='checkDomain') as executor:
+                pending = {executor.submit(self._checkdomain, provider, base_link) for provider, base_link in tasks}
+                while pending and not monitor.abortRequested():
+                    done, pending = wait(pending, timeout=0.5, return_when=FIRST_COMPLETED)
+                for future in pending:
+                    future.cancel()
+            if monitor.abortRequested():
+                log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Domain check aborted by monitor shutdown signal', LOGNOTICE)
+
+        log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Domains for all available Plugins updated', LOGNOTICE)
+        infoDialog("Domain-Überprüfung aller Plugins abgeschlossen", sound=False, icon='INFO', time=6000)
+
+
+    def _checkdomain(self, provider, base_link):
+        try:
+            oRequest = cRequestHandler(base_link, caching=False, ignoreErrors=True)
+            oRequest.request()
+            status_code = int(oRequest.getStatus())
+            cConfig().setSetting('plugin_' + provider + '_status', str(status_code))  # setzte Status Code in die settings
+            log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Status Code ' + str(status_code) + '  ' + provider + ': - ' + base_link, LOGNOTICE)
+
+            # Status 403 - bedeutet, dass der Zugriff auf eine angeforderte Ressource blockiert ist.
+            # Status 404 - Seite nicht gefunden. Diese Meldung zeigt an, dass die Seite oder der Ordner auf dem Server, die aufgerufen werden sollten, nicht unter der angegebenen URL zu finden sind.
+            if 403 <= status_code <= 503:  # Domain Interner Server Error und nicht erreichbar
+                cConfig().setSetting('global_search_' + provider, 'false')  # deaktiviere Globale Suche
+                log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Internal Server Error for ' + provider + ' (DDOS Guard, HTTP Error, Cloudflare or BlazingFast active)', LOGNOTICE)
+
+            # Status 301 - richtet Ihr auf Eurem Server ein, wenn sich die URL geändert hat, Eure Domain umgezogen ist oder sich ein Inhalt anderweitig verschoben hat.
+            elif 300 <= status_code <= 400:  # Domain erreichbar mit Umleitung
+                url = oRequest.getRealUrl()
+                cConfig().setSetting('plugin_' + provider + '.domain', urlparse(url).hostname)  # setze Domain in die settings.xml
+                cConfig().setSetting('global_search_' + provider, 'true')  # aktiviere Globale Suche
+                log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: globalSearch for ' + provider + ' is activated.', LOGNOTICE)
+
+            # Status 200 - Dieser Code wird vom Server zurückgegeben, wenn er den Request eines Browsers korrekt zurückgeben kann. Für die Ausgabe des Codes und des Inhalts der Seite muss der Server die Anfrage zunächst akzeptieren.
+            elif status_code == 200:  # Domain erreichbar
+                cConfig().setSetting('plugin_' + provider + '.domain', urlparse(base_link).hostname)  # setze URL_MAIN in die settings.xml
+                cConfig().setSetting('global_search_' + provider, 'true')  # aktiviere Globale Suche
+                log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: globalSearch for ' + provider + ' is activated.', LOGNOTICE)
+            # Wenn keiner der Status oben greift
+            else:
+                log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Error ' + provider + ' not available.', LOGNOTICE)
+                cConfig().setSetting('global_search_' + provider, 'false')  # deaktiviere Globale Suche
+                cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
+                log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: globalSearch for ' + provider + ' is deactivated.', LOGNOTICE)
+        except Exception:
+            # Wenn Timeout und die Seite Offline ist
+            cConfig().setSetting('global_search_' + provider, 'false')  # deaktiviere Globale Suche
+            cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
+            log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Error ' + provider + ' not available.', LOGNOTICE)
+            pass
