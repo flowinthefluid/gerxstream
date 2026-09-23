@@ -4,7 +4,7 @@
 
 - Staffeln werden bei aktivierter Funktion als echte Kodi-Wiedergabeliste gestartet
 - Kodi "Naechster Titel" wechselt waehrend der Wiedergabe direkt zur folgenden Episode
-- Automatischer Wechsel bleibt nur nach regulaerem Ende aktiv
+- Der Wechsel erfolgt ohne Unterbrechung; manuelles Stoppen beendet die Wiedergabe
 
 [B]Version: 1.0.23[/B]
 

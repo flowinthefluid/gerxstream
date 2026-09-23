@@ -64,38 +64,6 @@ class cHosterGui:
             return data
         return False
 
-    @staticmethod
-    def _playNextEpisode(params):
-        """Start the next entry only after a naturally finished episode.
-
-        The queue contains the Kodi plugin calls produced for the displayed
-        episode directory, not resolved media URLs. A cancelled countdown is
-        intentionally a normal stop: the viewer stays in the episode list.
-        """
-        if not cConfig().getSettingBool('autoNextEpisodeEnabled', False):
-            return
-        from resources.lib import episodequeue
-
-        target = episodequeue.nextTarget(params.getValue('episodeQueue'),
-                                         params.getValue('episodeIndex'))
-        if not target:
-            return
-        delay = max(0, min(cConfig().getSettingInt('autoNextEpisodeDelay', 5), 60))
-        dialog = None
-        if delay:
-            dialog = xbmcgui.DialogProgress()
-            dialog.create('GerXStream', cConfig().getLocalizedString(30937))
-            monitor = xbmc.Monitor()
-            for remaining in range(delay, 0, -1):
-                dialog.update(int((delay - remaining) * 100 / delay),
-                              cConfig().getLocalizedString(30938) % remaining)
-                if dialog.iscanceled() or monitor.abortRequested():
-                    dialog.close()
-                    return
-                monitor.waitForAbort(1)
-            dialog.close()
-        xbmc.executebuiltin('RunPlugin(%s)' % target)
-
     @classmethod
     def _playlistState(cls):
         """Return the queue id and first index of a native episode playlist."""
@@ -260,14 +228,6 @@ class cHosterGui:
                                params.getValue('episode'), data.get('showTitle', ''))
             except Exception:
                 logger.error('-> [hoster]: could not store playback history')
-            # Kodi signalisiert "ended" nur beim regulären Ende. Ein
-            # Stoppen mit der Fernbedienung oder ein Wiedergabefehler startet
-            # deshalb niemals ungefragt die nächste Episode.
-            if player.playbackEnded and not episodePlaylist:
-                try:
-                    self._playNextEpisode(ParameterHandler())
-                except Exception:
-                    logger.error('-> [hoster]: could not start next episode')
         return started
 
     def addToPlaylist(self, siteResult=False):

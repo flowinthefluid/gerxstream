@@ -95,17 +95,3 @@ def getTargets(queueId):
     targets = queue.get('targets', [])
     _save(data)  # Opportunistically discard expired entries.
     return list(targets) if isinstance(targets, list) else []
-
-
-def nextTarget(queueId, index):
-    """Return the next route from a fresh queue, never a stream URL."""
-    if not _validQueueId(queueId):
-        return ''
-    try:
-        index = int(index)
-    except (TypeError, ValueError):
-        return ''
-    targets = getTargets(queueId)
-    if 0 <= index < len(targets) - 1:
-        return targets[index + 1]
-    return ''

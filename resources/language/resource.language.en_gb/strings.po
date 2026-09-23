@@ -2190,19 +2190,3 @@ msgstr ""
 msgctxt "#30934"
 msgid "Creates a Kodi playlist for the remaining episodes. It advances after a normal end and supports Kodi's Next item action."
 msgstr ""
-
-msgctxt "#30935"
-msgid "Wait before next episode (seconds)"
-msgstr ""
-
-msgctxt "#30936"
-msgid "0 starts immediately. During the countdown, select Cancel to stay in the episode list."
-msgstr ""
-
-msgctxt "#30937"
-msgid "Next episode"
-msgstr ""
-
-msgctxt "#30938"
-msgid "Next episode starts in %d seconds."
-msgstr ""

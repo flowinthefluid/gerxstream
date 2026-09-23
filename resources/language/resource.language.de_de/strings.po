@@ -2189,19 +2189,3 @@ msgstr "Naechste Episode automatisch abspielen"
 msgctxt "#30934"
 msgid "Creates a Kodi playlist for the remaining episodes. It advances after a normal end and supports Kodi's Next item action."
 msgstr "Erstellt eine Kodi-Wiedergabeliste fuer die restlichen Episoden. Sie wechselt nach regulaerem Ende weiter und unterstuetzt Kodi 'Naechster Titel'."
-
-msgctxt "#30935"
-msgid "Wait before next episode (seconds)"
-msgstr "Wartezeit vor naechster Episode (Sekunden)"
-
-msgctxt "#30936"
-msgid "0 starts immediately. During the countdown, select Cancel to stay in the episode list."
-msgstr "0 startet sofort. Waerend des Countdowns kann mit Abbrechen in der Episodenliste geblieben werden."
-
-msgctxt "#30937"
-msgid "Next episode"
-msgstr "Naechste Episode"
-
-msgctxt "#30938"
-msgid "Next episode starts in %d seconds."
-msgstr "Naechste Episode startet in %d Sekunden."
