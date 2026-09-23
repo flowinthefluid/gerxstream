@@ -2190,3 +2190,95 @@ msgstr ""
 msgctxt "#30934"
 msgid "Creates a Kodi playlist for the remaining episodes. It advances after a normal end and supports Kodi's Next item action."
 msgstr ""
+
+msgctxt "#30935"
+msgid "Backup and restore"
+msgstr ""
+
+msgctxt "#30936"
+msgid "Export and import GerXStream settings, accounts and Epic-Favorites."
+msgstr ""
+
+msgctxt "#30937"
+msgid "Export complete backup"
+msgstr ""
+
+msgctxt "#30938"
+msgid "Import complete backup"
+msgstr ""
+
+msgctxt "#30939"
+msgid "Export settings"
+msgstr ""
+
+msgctxt "#30940"
+msgid "Import settings"
+msgstr ""
+
+msgctxt "#30941"
+msgid "Export accounts"
+msgstr ""
+
+msgctxt "#30942"
+msgid "Import accounts"
+msgstr ""
+
+msgctxt "#30943"
+msgid "Export Epic-Favorites"
+msgstr ""
+
+msgctxt "#30944"
+msgid "Import Epic-Favorites"
+msgstr ""
+
+msgctxt "#30945"
+msgid "Select backup folder"
+msgstr ""
+
+msgctxt "#30946"
+msgid "Select backup file"
+msgstr ""
+
+msgctxt "#30947"
+msgid "Backup exported"
+msgstr ""
+
+msgctxt "#30948"
+msgid "Backup imported"
+msgstr ""
+
+msgctxt "#30949"
+msgid "Invalid or unreadable backup file."
+msgstr ""
+
+msgctxt "#30950"
+msgid "This backup contains accounts and passwords. Store it safely."
+msgstr ""
+
+msgctxt "#30951"
+msgid "Import replaces current %s. Continue?"
+msgstr ""
+
+msgctxt "#30952"
+msgid "Backup contains no %s data."
+msgstr ""
+
+msgctxt "#30953"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#30954"
+msgid "Accounts"
+msgstr ""
+
+msgctxt "#30955"
+msgid "Epic-Favorites"
+msgstr ""
+
+msgctxt "#30956"
+msgid "Complete backup"
+msgstr ""
+
+msgctxt "#30957"
+msgid "Backup file already exists. Overwrite?"
+msgstr ""

@@ -2189,3 +2189,95 @@ msgstr "Naechste Episode automatisch abspielen"
 msgctxt "#30934"
 msgid "Creates a Kodi playlist for the remaining episodes. It advances after a normal end and supports Kodi's Next item action."
 msgstr "Erstellt eine Kodi-Wiedergabeliste fuer die restlichen Episoden. Sie wechselt nach regulaerem Ende weiter und unterstuetzt Kodi 'Naechster Titel'."
+
+msgctxt "#30935"
+msgid "Backup and restore"
+msgstr "Sichern und Wiederherstellen"
+
+msgctxt "#30936"
+msgid "Export and import GerXStream settings, accounts and Epic-Favorites."
+msgstr "GerXStream-Einstellungen, Konten und Epic-Favorites exportieren und importieren."
+
+msgctxt "#30937"
+msgid "Export complete backup"
+msgstr "Gesamtsicherung exportieren"
+
+msgctxt "#30938"
+msgid "Import complete backup"
+msgstr "Gesamtsicherung importieren"
+
+msgctxt "#30939"
+msgid "Export settings"
+msgstr "Einstellungen exportieren"
+
+msgctxt "#30940"
+msgid "Import settings"
+msgstr "Einstellungen importieren"
+
+msgctxt "#30941"
+msgid "Export accounts"
+msgstr "Konten exportieren"
+
+msgctxt "#30942"
+msgid "Import accounts"
+msgstr "Konten importieren"
+
+msgctxt "#30943"
+msgid "Export Epic-Favorites"
+msgstr "Epic-Favorites exportieren"
+
+msgctxt "#30944"
+msgid "Import Epic-Favorites"
+msgstr "Epic-Favorites importieren"
+
+msgctxt "#30945"
+msgid "Select backup folder"
+msgstr "Sicherungsordner waehlen"
+
+msgctxt "#30946"
+msgid "Select backup file"
+msgstr "Sicherungsdatei waehlen"
+
+msgctxt "#30947"
+msgid "Backup exported"
+msgstr "Sicherung exportiert"
+
+msgctxt "#30948"
+msgid "Backup imported"
+msgstr "Sicherung importiert"
+
+msgctxt "#30949"
+msgid "Invalid or unreadable backup file."
+msgstr "Ungueltige oder nicht lesbare Sicherungsdatei."
+
+msgctxt "#30950"
+msgid "This backup contains accounts and passwords. Store it safely."
+msgstr "Diese Sicherung enthaelt Konten und Passwoerter. Bitte sicher aufbewahren."
+
+msgctxt "#30951"
+msgid "Import replaces current %s. Continue?"
+msgstr "Der Import ersetzt die aktuellen Daten: %s. Fortfahren?"
+
+msgctxt "#30952"
+msgid "Backup contains no %s data."
+msgstr "Die Sicherung enthaelt keine Daten fuer: %s."
+
+msgctxt "#30953"
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgctxt "#30954"
+msgid "Accounts"
+msgstr "Konten"
+
+msgctxt "#30955"
+msgid "Epic-Favorites"
+msgstr "Epic-Favorites"
+
+msgctxt "#30956"
+msgid "Complete backup"
+msgstr "Gesamtsicherung"
+
+msgctxt "#30957"
+msgid "Backup file already exists. Overwrite?"
+msgstr "Die Sicherungsdatei existiert bereits. Ueberschreiben?"

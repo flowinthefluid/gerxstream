@@ -277,6 +277,12 @@ def parseUrl():
         elif sFunction == 'mainMenuOrder':
             showMainMenuOrder()
             return
+        elif sFunction == 'showBackupMenu':
+            showBackupMenu()
+            return
+        elif sFunction == 'runBackupAction':
+            runBackupAction(params)
+            return
         elif sFunction == 'showContentCategory':
             showContentCategory(params)
             return
@@ -653,6 +659,15 @@ def settingsGuiElements():
     oGuiElement.setThumbnail(os.path.join(ART, 'manuel_update.png'))
     GerXStreamUpdate = oGuiElement
 
+    # Sicherungen der lokalen Einstellungen, Konten und Epic-Favorites.
+    oGuiElement = cGuiElement()
+    oGuiElement.setTitle(cConfig().getLocalizedString(30935))
+    oGuiElement.setSiteName('backup')
+    oGuiElement.setFunction('showBackupMenu')
+    oGuiElement.setDescription(cConfig().getLocalizedString(30936))
+    oGuiElement.setThumbnail(os.path.join(ART, 'settings.png'))
+    BackupRestore = oGuiElement
+
     # GUI Plugin Informationen
     oGuiElement = cGuiElement()
     oGuiElement.setTitle(cConfig().getLocalizedString(30267))
@@ -670,7 +685,48 @@ def settingsGuiElements():
     DomainCheck = oGuiElement
     # Reihenfolge bewusst wie im Einstellungsmenue angezeigt.
     return (GerXStreamSettings, resolveurlSettings, ResolverUpdate,
-            GerXStreamUpdate, PluginInfo, DomainCheck)
+            GerXStreamUpdate, BackupRestore, PluginInfo, DomainCheck)
+
+
+def showBackupMenu():
+    """Show all portable-backup actions alongside the other settings tools."""
+    ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
+    actions = (
+        (30937, 'export', 'all'),
+        (30938, 'import', 'all'),
+        (30939, 'export', 'settings'),
+        (30940, 'import', 'settings'),
+        (30941, 'export', 'accounts'),
+        (30942, 'import', 'accounts'),
+        (30943, 'export', 'epic_favorites'),
+        (30944, 'import', 'epic_favorites'),
+    )
+    oGui = cGui()
+    for labelId, action, section in actions:
+        element = cGuiElement(cConfig().getLocalizedString(labelId),
+                              'backup', 'runBackupAction')
+        element.setThumbnail(os.path.join(ART, 'settings.png'))
+        actionParams = ParameterHandler()
+        actionParams.setParam('action', action)
+        actionParams.setParam('section', section)
+        oGui.addFolder(element, actionParams)
+    oGui.setEndOfDirectory()
+
+
+def runBackupAction(params):
+    """Perform a selected backup action and finish the transient action view."""
+    from resources.lib import backup
+
+    action = params.getValue('action')
+    section = params.getValue('section')
+    if action == 'export':
+        backup.exportBackup(section)
+    elif action == 'import':
+        backup.importBackup(section)
+    else:
+        _rejectPluginRoute('backup', 'runBackupAction', 'unknown backup action')
+        return
+    cGui().setEndOfDirectory()
 
 
 def globalSearchGuiElement():

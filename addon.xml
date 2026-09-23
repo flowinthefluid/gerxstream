@@ -21,7 +21,7 @@
 		<language>de en</language>
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
-		<news>1.0.22 - Epic-Favorites und Episoden-Wiedergabeliste hinzugefuegt.</news>
+		<news>1.0.22 - Epic-Favorites, Episoden-Wiedergabeliste sowie Ex-/Import hinzugefuegt.</news>
 		<website>https://gitlab.com/gerxstream/gerxstream</website>
 		<source>https://gitlab.com/gerxstream/gerxstream</source>
 		<assets>

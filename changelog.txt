@@ -9,6 +9,7 @@
 - Staffeln werden optional als echte Kodi-Wiedergabeliste gestartet
 - Kodi "Naechster Titel" wechselt waehrend der Wiedergabe direkt zur folgenden Episode
 - Der Wechsel erfolgt ohne Unterbrechung; manuelles Stoppen beendet die Wiedergabe
+- Ex-/Import fuer Gesamtsicherungen sowie einzelne Einstellungen, Konten und Epic-Favorites ergaenzt
 
 [B]Version: 1.0.21[/B]
 

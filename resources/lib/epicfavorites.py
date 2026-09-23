@@ -99,12 +99,8 @@ def _cleanEntry(entry):
     }
 
 
-def _load():
-    try:
-        with open(_profilePath(), 'r', encoding='utf-8') as handle:
-            raw = json.load(handle)
-    except (IOError, OSError, ValueError, TypeError):
-        return _emptyData()
+def _normaliseData(raw):
+    """Return a safe Epic-Favorites tree, suitable for imported data too."""
     if not isinstance(raw, dict):
         return _emptyData()
     data = _emptyData()
@@ -117,6 +113,15 @@ def _load():
         if valid:
             data['entries'].append(valid)
     return data
+
+
+def _load():
+    try:
+        with open(_profilePath(), 'r', encoding='utf-8') as handle:
+            raw = json.load(handle)
+    except (IOError, OSError, ValueError, TypeError):
+        return _emptyData()
+    return _normaliseData(raw)
 
 
 def _save(data):
@@ -134,6 +139,19 @@ def _save(data):
         except OSError:
             pass
     return False
+
+
+def exportData():
+    """Return a validated, JSON-serialisable snapshot of all Epic-Favorites."""
+    return _load()
+
+
+def importData(data):
+    """Replace Epic-Favorites with a validated backup snapshot."""
+    if (not isinstance(data, dict) or not isinstance(data.get('folders'), list) or
+            not isinstance(data.get('entries'), list)):
+        return False
+    return _save(_normaliseData(data))
 
 
 def _pathParts(path):
