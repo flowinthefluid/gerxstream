@@ -2,12 +2,13 @@
 # Python 3
 
 def main():
-    from xstream import parseUrl
+    from gerxstream import parseUrl
     from os.path import join
     from sys import path
     import platform
 
     from resources.lib.config import cConfig
+    from resources.lib import tools
     from xbmc import LOGINFO as LOGNOTICE, log
     from xbmcvfs import translatePath
 
@@ -17,12 +18,15 @@ def main():
     path.append(join(_addonPath_, 'resources', 'lib', 'handler'))
     path.append(join(_addonPath_, 'resources', 'art', 'sites'))
     path.append(join(_addonPath_, 'resources', 'art'))
-    path.append(join(_addonPath_, 'sites'))    
-    
+    path.append(join(_addonPath_, 'sites'))
+
     LOGMESSAGE = cConfig().getLocalizedString(30166)
     log('-----------------------------------------------------------------------', LOGNOTICE)
-    log(LOGMESSAGE + ' -> [default]: Start xStream Log, Version %s ' % cConfig().getAddonInfo('version'), LOGNOTICE)
+    log(LOGMESSAGE + ' -> [default]: Start GerXStream Log, Version %s ' % cConfig().getAddonInfo('version'), LOGNOTICE)
     log(LOGMESSAGE + ' -> [default]: Python-Version: %s' % platform.python_version(), LOGNOTICE)
+
+    tools.migrateLegacyAddonData()
+    tools.showLegacyInstallHintOnce()
 
     try:
         parseUrl()
@@ -33,8 +37,13 @@ def main():
             import traceback
             import xbmcgui
             log(traceback.format_exc(), LOGNOTICE)
-            value = (str(e.__class__.__name__) + ' : ' + str(e), str(traceback.format_exc().splitlines()[-3].split('addons')[-1]))
-            dialog = xbmcgui.Dialog().ok(cConfig().getLocalizedString(257), str(value)) # Error
+            # Die technische Ausnahme steht vollstaendig im Kodi-Protokoll.
+            # Im Fernseher-Dialog hilft ein abgeschnittener Python-Trace nicht
+            # weiter und verdeckt die eigentliche Bedienung der Quelle.
+            message = ('Die Quelle konnte nicht verarbeitet werden.\n\n'
+                       'Technischer Grund: %s\n\n'
+                       'Details stehen im Kodi-Protokoll.') % e.__class__.__name__
+            xbmcgui.Dialog().ok('GerXStream', message)
 
 if __name__ == "__main__":
     main()

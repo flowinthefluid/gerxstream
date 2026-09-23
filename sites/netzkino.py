@@ -18,14 +18,15 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'netzkino'
 SITE_NAME = 'NetzKino'
 SITE_ICON = 'netzkino.png'
+CONTENT_CATEGORIES = ('filme', 'dokus')
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www.netzkino.de') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www.netzkino.de') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -149,7 +150,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=sGui is not False)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # # Wenn Suche erfolglos - Abbruch
@@ -173,13 +174,13 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
             if 'Duration' in item['custom_fields'] and item['custom_fields']['Duration'][0]:
                 oGuiElement.addItemValue('duration', item['custom_fields']['Duration'][0])
             urls = ''
-            if 'Streaming' in item['custom_fields'] and item['custom_fields']['Streaming'][0]:                                  
+            if 'Streaming' in item['custom_fields'] and item['custom_fields']['Streaming'][0]:
                 urls += 'https://pmd.netzkino-seite.netzkino.de/%s.mp4' % item['custom_fields']['Streaming'][0]
             if 'Youtube_Delivery_Id' in item['custom_fields'] and item['custom_fields']['Youtube_Delivery_Id'][0]:
                 urls += '#' + 'plugin://plugin.video.youtube/play/?video_id=%s' % item['custom_fields']['Youtube_Delivery_Id'][0]
             params.setParam('entryUrl', urls)
             oGui.addFolder(oGuiElement, params, False, total)
-        except:
+        except Exception:
             continue
 
     if not sGui:
@@ -192,7 +193,7 @@ def showEntriesUnJson(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
     #Aufbau pattern
@@ -201,7 +202,7 @@ def showEntriesUnJson(entryUrl=False, sGui=False, sSearchText=False):
     #'name":\s.*?([^"]+).*?'  # Name
     #'url":\s.*?([^"]+).*?'  # URL
     #'(.*?)}'  # Dummy
-    pattern = 'item":.*?image.*?(https[^"]+).*?name":\s.*?([^"]+).*?url":\s.*?([^"]+).*?(.*?)}'
+    pattern = r'item":.*?image.*?(https[^"]+).*?name":\s.*?([^"]+).*?url":\s.*?([^"]+).*?(.*?)}'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
 
     if not isMatch:
@@ -213,8 +214,8 @@ def showEntriesUnJson(entryUrl=False, sGui=False, sSearchText=False):
         try:
             if sSearchText and not cParser.search(sSearchText, sName):
                 continue
-            isDuration, sDurationH = cParser.parseSingleResult(sDummy, 'duration":\s"([\d]+).*?')  # Laufzeit Stunden
-            isDuration, sDurationM = cParser.parseSingleResult(sDummy, 'H([\d]+).*?')  # Laufzeit Minuten
+            isDuration, sDurationH = cParser.parseSingleResult(sDummy, r'duration":\s"([\d]+).*?')  # Laufzeit Stunden
+            isDuration, sDurationM = cParser.parseSingleResult(sDummy, r'H([\d]+).*?')  # Laufzeit Minuten
             oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHostersUnJson')
             oGuiElement.setThumbnail(sThumbnail)
             if isDuration:
@@ -224,7 +225,7 @@ def showEntriesUnJson(entryUrl=False, sGui=False, sSearchText=False):
             params.setParam('sName', sName)
             params.setParam('sThumbnail', sThumbnail)
             oGui.addFolder(oGuiElement, params, False, total)
-        except:
+        except Exception:
             continue
     if not sGui:
         oGui.setView('movies')

@@ -1,52 +1,104 @@
-[B]Version: 4.3.0.5[/B]
+[B]Version: 1.0.20[/B]
 
+21.09.2026
 
-06.07.2025
+- Kodi-Repository auf GitLab Pages umgestellt
 
-- [bs.to] Recaptcha Code in den Solver überführt
-- [Recaptcha] Captchasolver und helper integriert
-- [Recaptcha] Solver Dienst 2Captcha in eigene Klasse ausgelagert
-- [Recaptcha] 9kw.eu als zweiten Solver Dienst hinzugefügt, nicht so stabil wie 2Captcha
+[B]Version: 1.0.19[/B]
 
+21.09.2026
 
-05.07.2025
+- Anzahl der beliebten Schauspieler und Regisseure getrennt einstellbar (Standard: 500 / 100)
 
-- [xStream] Domains aktualisiert
-- [xStream] Bugfixes und Fehlerbeseitigungen im Rahmen der Performanceverbesserungen
+[B]Version: 1.0.18[/B]
 
+21.09.2026
 
-30.06.2025
+- Kategorien, Jahrzehnte und Schauspieler-Suchen akzeptieren wieder fehlende optionale Filterparameter
+- Beliebte Schauspieler/Regisseure: Standard auf 100 reduziert, Anzahl (25 bis 500) und Sortierung einstellbar
+- Leere Hoster-Antworten werden als fehlender Stream behandelt statt mit IndexError abzubrechen
+- Quellfehler zeigen keinen abgeschnittenen Python-Trace mehr auf dem Fernseher; Details bleiben im Kodi-Protokoll
 
-- [Kinox] Fix für Menüpunkt Neues, Bei Filme Menüpunkt Neue Filme hinzugefügt
-- [xStream] weitere Verbesserungen Performance und Menüaufbau
-- [xStream] Bugfixes und fehlende Funktionen nachgerüstet
+[B]Version: 1.0.17[/B]
 
+21.09.2026
 
-28.06.2025
+- Globale Suchen: movie2k kann bei Cloudflare keinen Hinweisdialog mehr aus dem Such-Worker oeffnen
+- Unpassende, zwischengespeicherte Treffer reiner Anime-Quellen werden aus allgemeinen Suchen entfernt
+- Die Ergebnisliste wird ohne zweiten Fortschrittsdialog direkt an Kodi uebergeben
 
-- [Requesthandler] POST Methode hinzugefügt
-- [BurningSeries] Benutzt nun Requesthandler, Suche verbessert, Optische Verbesserungen
-- [Aniworld] Performanceverbesserungen
-- [Serienstream] Performanceverbesserungen
-- [Generell] Performanceschub im Aufbau und Wechsel der Menüs
-- [Generell] Diverse Bugfixes
+[B]Version: 1.0.16[/B]
 
-22.06.2025
+21.09.2026
 
-- [Burningseries] Einen Fehler korrigiert, dass sich die Domain nicht automatisch in die
-  Settings schreibt
+- Cloudflare- und DDoS-Hinweise unterbrechen automatische globale Suchen nicht mehr; die betroffene Quelle wird protokolliert und uebersprungen
 
+[B]Version: 1.0.15[/B]
 
-21.06.2025
+21.09.2026
 
-- [BurningSeries] Neuer Scraper Thx @ Alex für den Code und an Kyle fürs Logo.
-- [BurningSeries] Exception Handler für fehlenden API Key hinzugefügt
+- Globale Suche: die Abbruchpruefung blockiert unter Kodi 22 nicht mehr den Hauptthread; fertiggestellte Quellen werden jetzt gesammelt und angezeigt
 
-[color yellow] WICHTIG! BurningSeries ist im Standard deaktiviert. Ihr benötigt zwingend
-ein Konto bei 2Captcha und müsst einen API Key mit Guthaben in xStream hinterlegen,
-sonst funktioniert BurningSeries nicht! Anleitung findet sich in unserer Wiki unter
-Punkt 5.4.2.9[/color]
+[B]Version: 1.0.14[/B]
 
-- [API_Suche] Caching für Hoster-Listen aktiviert
-- [TMDB Helper] Neue Player zum Download verfügbar
+21.09.2026
 
+- Globale Suche nutzt unter Kodi 22/Python 3.14 keine blockierende ThreadPool-Wartefunktion mehr; alle fertiggestellten Quellen werden anschliessend gerendert
+
+[B]Version: 1.0.13[/B]
+
+20.09.2026
+
+- Globale Suche sammelt Treffer im Hintergrund ohne Kodi-UI-Aufrufe aus Worker-Threads; das verhindert den bisherigen Stillstand nach einer Quelle
+- Timeout pro Anbieter ist unter GerXStream Einstellungen konfigurierbar (Standard: 30 Sekunden)
+- Support-Informationen repariert und um installierte GerXStream-Version, CPU und Arbeitsspeicher erweitert
+- Einstellungsmenue neu geordnet: GerXStream, Resolver, Resolver aktualisieren, GerXStream aktualisieren, Support, Domain-Aktualisierung
+
+[B]Version: 1.0.12[/B]
+
+20.09.2026
+
+- Globale Suche isoliert die Ergebnisse jeder Quelle und zeigt vorhandene Treffer trotz haengender Anbieter an
+- Quellen mit einer Suche laenger als 30 Sekunden werden protokolliert und uebersprungen
+
+[B]Version: 1.0.11[/B]
+
+20.09.2026
+
+- Globale Suche bleibt nutzbar, wenn eine Quelle durch DDoS-Guard oder Cloudflare geschuetzt ist
+- Hinweis zum Bot-Schutz wird nach der Suche angezeigt und nennt die betroffene Quelle
+- Quellen, Kategorien, Favoriten und Anzeige wurden erweitert und ueberarbeitet
+
+[B]Version: 1.0.1[/B]
+
+20.09.2026
+
+- ResolveURL 5.1.209 wird jetzt direkt vom GerXStream Repository bereitgestellt
+- Nicht benoetigte Debug-Abhaengigkeiten pydevd und Web-PDB entfernt
+
+[B]Version: 1.0.0[/B]
+
+19.09.2026
+
+- Erste öffentliche Version von GerXStream
+- Neues Branding: Icon, Banner, Clearlogo im violett-smaragdgrünen GerXStream-Design
+- Kodi 22 "Piers" als Zielplattform, Kodi 21 "Omega" als Fallback unterstützt
+- InfoTag-Metadaten vervollständigt: Titel, Regie, Drehbuch, Bewertung, Erstausstrahlung und Serienstatus werden jetzt korrekt übernommen
+- Kids-Tube: YouTube-Suche wiederhergestellt, nutzt ausschließlich den eigenen API-Schlüssel aus dem YouTube-Addon
+- Zahlreiche Encoding- und Regex-Fehler in den Site-Plugins bereinigt (Umlaute, Sonderzeichen, Suchmuster)
+- Selbst-Update-Mechanismus deaktiviert, bis ein eigenes Repository bereitsteht
+
+14.09.2026
+
+- Sicherheitshärtung: URL-Routing auf eine feste Whitelist an Einstiegsfunktionen beschränkt
+- TLS-Zertifikatsprüfung standardmäßig aktiv, kein eval() mehr auf Fremddaten
+- Timeouts für alle HTTP-Anfragen ergänzt
+
+09.09.2026
+
+- Automatische Übernahme bestehender Einstellungen, Favoriten und Daten beim ersten Start (sofern eine ältere Installation vorhanden ist)
+- Diverse Bugfixes in den Site-Plugins (globale Suche, Paginierung, Genres)
+
+05.09.2026
+
+- Projektstart: Grundgerüst und Addon-ID plugin.video.gerxstream festgelegt

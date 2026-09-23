@@ -2,11 +2,13 @@
 # Python 3
 
 import xbmc
+import time
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
-from xbmc import LOGINFO as LOGNOTICE, LOGERROR, log
+from xbmc import LOGINFO as LOGNOTICE, LOGERROR
+from resources.lib.tools import addon_log as log
 
-class XstreamPlayer(xbmc.Player):
+class GerxstreamPlayer(xbmc.Player):
     def __init__(self, *args, **kwargs):
         # super() statt unbound Base-Call: xbmc.Player.__init__(self, ...) wirft
         # unter Kodi 22 / Python 3.14 einen TypeError (xbmc/xbmc#29309).
@@ -32,6 +34,11 @@ class XstreamPlayer(xbmc.Player):
         log(cConfig().getLocalizedString(30166) + ' -> [player]: Playback completed', LOGNOTICE)
         self.onPlayBackStopped()
 
+    def onPlayBackError(self):
+        log(cConfig().getLocalizedString(30166) + ' -> [player]: Playback error', LOGERROR)
+        self.streamSuccess = False
+        self.streamFinished = True
+
 
 class cPlayer:
     def clearPlayList(self):
@@ -51,10 +58,18 @@ class cPlayer:
 
     def startPlayer(self):
         log(cConfig().getLocalizedString(30166) + ' -> [player]: start player', LOGNOTICE)
-        xbmcPlayer = XstreamPlayer()
+        xbmcPlayer = GerxstreamPlayer()
         monitor = xbmc.Monitor()
-        while (not monitor.abortRequested()) & (not xbmcPlayer.streamFinished):
+        startTime = time.time()
+        streamStarted = False
+        while (not monitor.abortRequested()) and (not xbmcPlayer.streamFinished):
             if xbmcPlayer.isPlayingVideo():
+                streamStarted = True
                 xbmcPlayer.playedTime = xbmcPlayer.getTime()
-            monitor.waitForAbort(10)
+            elif not streamStarted and (time.time() - startTime) >= 60:
+                xbmcPlayer.streamSuccess = False
+                xbmcPlayer.streamFinished = True
+                log(cConfig().getLocalizedString(30166) + ' -> [player]: Playback start timeout after 60s', LOGERROR)
+                break
+            monitor.waitForAbort(1)
         return xbmcPlayer.streamSuccess

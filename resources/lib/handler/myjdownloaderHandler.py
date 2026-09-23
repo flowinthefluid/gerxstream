@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-import myjdapi
+from resources.lib.handler import myjdapi
 
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
-from xbmc import LOGINFO as LOGNOTICE, log
+from xbmc import LOGINFO as LOGNOTICE
+from resources.lib.tools import addon_log as log
 
 class cMyJDownloaderHandler:
 
@@ -31,7 +32,7 @@ class cMyJDownloaderHandler:
 
     def __checkConfig(self):
         log(cConfig().getLocalizedString(30166) + ' -> [myjdownloaderHandler]: check MYJD Addon setings', LOGNOTICE)
-        if cConfig().getSetting('myjd_enabled') == 'true':
+        if cConfig().getSettingBool('myjd_enabled', False):
             return True
         return False
 

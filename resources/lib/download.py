@@ -8,13 +8,14 @@ import xbmcgui
 from resources.lib import utils
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
-from xbmc import LOGINFO as LOGNOTICE, log
+from xbmc import LOGINFO as LOGNOTICE
+from resources.lib.tools import addon_log as log
 from xbmcvfs import translatePath
 from urllib.request import Request, urlopen
 
 class cDownload:
     def __createProcessDialog(self, downloadDialogTitle):
-        if cConfig().getSetting('backgrounddownload') == 'true':
+        if cConfig().getSettingBool('backgrounddownload', False):
             oDialog = xbmcgui.DialogProgressBG()
         else:
             oDialog = xbmcgui.DialogProgress()
@@ -57,27 +58,34 @@ class cDownload:
 
 
     def __prepareDownload(self, url, header, sDownloadPath, downloadDialogTitle):
+        self.__oDialog = None
         try:
             log(cConfig().getLocalizedString(30166) + ' -> [download]: download file: ' + str(url) + ' to ' + str(sDownloadPath), LOGNOTICE)
             self.__createProcessDialog(downloadDialogTitle)
             request = Request(url, headers=header)
             self.__download(urlopen(request, timeout=240), sDownloadPath)
         except Exception as e:
-            log(e)
-        self.__oDialog.close()
+            log(cConfig().getLocalizedString(30166) + ' -> [download]: prepare download failed: %s' % e, LOGNOTICE)
+        finally:
+            if self.__oDialog:
+                self.__oDialog.close()
 
 
     def __download(self, oUrlHandler, fpath):
         headers = oUrlHandler.info()
-        iTotalSize = -1
-        if 'content-length' in headers:
-            iTotalSize = (headers['Content-Length'])
+        iTotalSize = 0
+        content_length = headers.get('Content-Length') or headers.get('content-length')
+        if content_length:
+            try:
+                iTotalSize = int(content_length)
+            except (TypeError, ValueError):
+                iTotalSize = 0
         chunk = 4096
-        #f = open(r'%s' % fpath, 'wb')
         import xbmcvfs
-        f = xbmcvfs.File(fpath, 'w')
+        f = None
         log(cConfig().getLocalizedString(30166) + ' -> [download]: start download', LOGNOTICE)
         try:
+            f = xbmcvfs.File(fpath, 'w')
             iCount = 0
             self._startTime = time.time()
             while 1:
@@ -86,12 +94,13 @@ class cDownload:
                 if not data or self.__processIsCanceled == True:
                     break
                 f.write(data)
-                self.__stateCallBackFunction(iCount, chunk, iTotalSize)              
-            f.close()
-            
-        except:
-            log(cConfig().getLocalizedString(30166) + '-> [download]: download failed', LOGNOTICE)     
-            f.close()
+                self.__stateCallBackFunction(iCount, chunk, iTotalSize)
+
+        except Exception:
+            log(cConfig().getLocalizedString(30166) + '-> [download]: download failed', LOGNOTICE)
+        finally:
+            if f:
+                f.close()
 
 
     def __createTitle(self, sUrl, sTitle):
@@ -108,14 +117,15 @@ class cDownload:
     def __stateCallBackFunction(self, iCount, iBlocksize, iTotalSize):
         timedif = time.time() - self._startTime
         currentLoaded = int(iCount) * iBlocksize
-        iPercent = (currentLoaded * 100 // int(iTotalSize))
+        iPercent = (currentLoaded * 100 // int(iTotalSize)) if iTotalSize > 0 else 0
         if timedif > 0.0:
             avgSpd = (currentLoaded // timedif // 1024.0)
         else:
             avgSpd = 5
-        value = self.__sTitle, str('%s/%s@%dKB/s' % (self.__formatFileSize(currentLoaded), self.__formatFileSize(iTotalSize), avgSpd))
+        totalSize = self.__formatFileSize(iTotalSize) if iTotalSize > 0 else '?'
+        value = self.__sTitle, str('%s/%s@%dKB/s' % (self.__formatFileSize(currentLoaded), totalSize, avgSpd))
         self.__oDialog.update(iPercent, str(value))
-        if cConfig().getSetting('backgrounddownload') == 'false' and self.__oDialog.iscanceled():
+        if not cConfig().getSettingBool('backgrounddownload', False) and self.__oDialog.iscanceled():
             self.__processIsCanceled = True
             self.__oDialog.close()
 

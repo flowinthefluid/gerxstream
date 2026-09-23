@@ -1,8 +1,8 @@
-# Addon Name: xStream
-# Addon id: plugin.video.xStream
-# Addon Provider: xStream
+# Addon Name: GerXStream
+# Addon id: plugin.video.gerxstream
+# Addon Provider: GerXStream
 # Benutze folgenden Eintrag für die Übersetzung
-# from resources.lib.config import cConfig + cConfig().getLocalizedString(30041)	
+# from resources.lib.config import cConfig + cConfig().getLocalizedString(30041)
 
 msgid ""
 msgstr ""
@@ -48,8 +48,8 @@ msgid "Pre-validate and sort hosterlist (slow on weak systems)"
 msgstr "Hoster-Liste prüfen und sortieren (langsam auf schwachen Systemen)"
 
 msgctxt "#30010"
-msgid "Enable automatic xStream Update"
-msgstr "Automatisches xStream Update aktivieren"
+msgid "Enable automatic GerXStream Update"
+msgstr "Automatisches GerXStream Update aktivieren"
 
 msgctxt "#30011"
 msgid "Global Search at first position"
@@ -98,6 +98,26 @@ msgstr "Konten"
 msgctxt "#30025"
 msgid "Evade DNS lock"
 msgstr "DNS Sperre umgehen"
+
+msgctxt "#30843"
+msgid "Use custom proxy"
+msgstr "Eigenen Proxy verwenden"
+
+msgctxt "#30844"
+msgid "Proxy address (host:port)"
+msgstr "Proxy-Adresse (Host:Port)"
+
+msgctxt "#30845"
+msgid "Proxy username (optional)"
+msgstr "Proxy-Benutzername (optional)"
+
+msgctxt "#30846"
+msgid "Proxy password (optional)"
+msgstr "Proxy-Passwort (optional)"
+
+msgctxt "#30847"
+msgid "Only HTTP/HTTPS proxies are supported (no SOCKS5). A public proxy or VPN can slow down every request considerably."
+msgstr "Es werden nur HTTP/HTTPS-Proxys unterstuetzt (kein SOCKS5). Ein oeffentlicher Proxy oder VPN kann jede Anfrage spuerbar verlangsamen."
 
 msgctxt "#30026"
 msgid "Enable Watch Trailer in the context menu"
@@ -148,8 +168,8 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 msgctxt "#30042"
-msgid "xStream Settings"
-msgstr "xStream Einstellungen"
+msgid "GerXStream Settings"
+msgstr "GerXStream Einstellungen"
 
 msgctxt "#30043"
 msgid "ResolverURL Settings"
@@ -272,8 +292,8 @@ msgid "Site-Plugins 2"
 msgstr "Indexseiten 2"
 
 msgctxt "#30096"
-msgid "xStream Updates"
-msgstr "xStream Aktualisierung"
+msgid "GerXStream Updates"
+msgstr "GerXStream Aktualisierung"
 
 msgctxt "#30097"
 msgid "[COLOR red]Nightly versions can contain new functions, but also bugs."
@@ -288,12 +308,12 @@ msgid "Branch Info:		[COLOR green]Release - Version directly from Guial00´s Git
 msgstr "Branch Info:		[COLOR green]Release - Version direkt von Guial00´s Github.[/COLOR]"
 
 msgctxt "#30100"
-msgid "Branch Info:		[COLOR orange]Nightly - Version with hotfixes from the xStream team.[/COLOR]"
-msgstr "Branch Info:		[COLOR orange]Nightly - Version mit Hotfixes vom xStream Team.[/COLOR]"
+msgid "Branch Info:		[COLOR orange]Nightly - Version with hotfixes from the GerXStream team.[/COLOR]"
+msgstr "Branch Info:		[COLOR orange]Nightly - Version mit Hotfixes vom GerXStream Team.[/COLOR]"
 
 msgctxt "#30101"
-msgid "[COLOR green]Release - Version directly from Guial00´s Github.[/COLOR][CR][COLOR orange]Nightly - Version with hotfixes from the xStream team.[/COLOR]"
-msgstr "[COLOR green]Release - Version direkt von Guial00´s Github.[/COLOR][CR][COLOR orange]Nightly - Version mit Hotfixes vom xStream Team.[/COLOR]"
+msgid "[COLOR green]Release - Version directly from Guial00´s Github.[/COLOR][CR][COLOR orange]Nightly - Version with hotfixes from the GerXStream team.[/COLOR]"
+msgstr "[COLOR green]Release - Version direkt von Guial00´s Github.[/COLOR][CR][COLOR orange]Nightly - Version mit Hotfixes vom GerXStream Team.[/COLOR]"
 
 msgctxt "#30102"
 msgid "Perform manual update (only once)"
@@ -340,16 +360,16 @@ msgid "Search for updates ..."
 msgstr "Suche nach Aktualisierungen ..."
 
 msgctxt "#30113"
-msgid "xStream update installed successfully."
-msgstr "xStream Aktualisierung erfolgreich installiert."
+msgid "GerXStream update installed successfully."
+msgstr "GerXStream Aktualisierung erfolgreich installiert."
 
 msgctxt "#30114"
-msgid "xStream update finished with errors."
-msgstr "xStream Aktualisierung mit Fehlern beendet."
+msgid "GerXStream update finished with errors."
+msgstr "GerXStream Aktualisierung mit Fehlern beendet."
 
 msgctxt "#30115"
-msgid "No xStream update available."
-msgstr "Keine xStream Aktualisierung verfügbar."
+msgid "No GerXStream update available."
+msgstr "Keine GerXStream Aktualisierung verfügbar."
 
 msgctxt "#30116"
 msgid " update installed successfully."
@@ -369,15 +389,15 @@ msgstr "ResolveURL Fehler"
 
 msgctxt "#30120"
 msgid "You don't have a working ResolveUrl installed, no videos can be played please reinstall the resolver."
-msgstr "Sie haben keinen funktionierenden ResolveUrl installiert, es können keine Videos abgespielt werden bitte installieren Sie den Resolver erneut."
+msgstr "Sie haben keinen funktionierenden ResolveUrl installiert, es können keine Videos abgespielt werden. Installieren Sie script.module.resolveurl erneut, z.B. über die 'ResolveURL Repository'-Quelle im GerXStream Repository."
 
 msgctxt "#30121"
 msgid "Start manual update"
-msgstr "Manuelle Aktualisierung starten"
+msgstr "Resolver aktualisieren"
 
 msgctxt "#30122"
-msgid "xStream search started ..."
-msgstr "xStream Suche gestartet ..."
+msgid "GerXStream search started ..."
+msgstr "GerXStream Suche gestartet ..."
 
 msgctxt "#30123"
 msgid "Searching ..."
@@ -392,8 +412,8 @@ msgid " search complete"
 msgstr " Suche abgeschlossen"
 
 msgctxt "#30126"
-msgid "xStream search complete !"
-msgstr "xStream Suche abgeschlossen !"
+msgid "GerXStream search complete !"
+msgstr "GerXStream Suche abgeschlossen !"
 
 msgctxt "#30127"
 msgid "Gathering info..."
@@ -492,12 +512,12 @@ msgid "Please select part"
 msgstr "Bitte Teil auswählen"
 
 msgctxt "#30151"
-msgid "xStream Update Manager"
-msgstr "xStream Aktualisierungsmanager"
+msgid "GerXStream Update Manager"
+msgstr "GerXStream Aktualisierungsmanager"
 
 msgctxt "#30152"
-msgid "Welcome to the xStream update manager. For automatic update please set the desired branch selection in the settings, for manual update please choose what should be updated in the following windows."
-msgstr "Willkommen beim xStream Aktualisierungsmanager. Für die automatische Aktualisierung setzen Sie bitte die gewünschte Branch-Auswahl in den Einstellungen, für die manuelle Aktualisierung wählen Sie bitte in den nachfolgenden Fenstern, was aktualisiert werden soll."
+msgid "Welcome to the GerXStream update manager. For automatic update please set the desired branch selection in the settings, for manual update please choose what should be updated in the following windows."
+msgstr "Willkommen beim GerXStream Aktualisierungsmanager. Für die automatische Aktualisierung setzen Sie bitte die gewünschte Branch-Auswahl in den Einstellungen, für die manuelle Aktualisierung wählen Sie bitte in den nachfolgenden Fenstern, was aktualisiert werden soll."
 
 msgctxt "#30153"
 msgid "Update all addons"
@@ -508,8 +528,8 @@ msgid "perform"
 msgstr "durchführen"
 
 msgctxt "#30155"
-msgid "Please select whether you want to perform the xStream [Release] or [Nightly] update.[CR][COLOR green]Release versions have been tested and contain hardly any errors.[/COLOR][CR][COLOR orange ]Nightly - versions are experimental and may contain bugs.[/COLOR]"
-msgstr "Wählen Sie bitte aus, ob sie die xStream [Release] oder [Nightly] Aktualisierung durchführen möchten.[CR][COLOR green]Release - Versionen sind getestet und enthalten kaum Fehler.[/COLOR][CR][COLOR orange]Nightly - Versionen sind experimentell und können Fehler enthalten.[/COLOR]"
+msgid "Please select whether you want to perform the GerXStream [Release] or [Nightly] update.[CR][COLOR green]Release versions have been tested and contain hardly any errors.[/COLOR][CR][COLOR orange ]Nightly - versions are experimental and may contain bugs.[/COLOR]"
+msgstr "Wählen Sie bitte aus, ob sie die GerXStream [Release] oder [Nightly] Aktualisierung durchführen möchten.[CR][COLOR green]Release - Versionen sind getestet und enthalten kaum Fehler.[/COLOR][CR][COLOR orange]Nightly - Versionen sind experimentell und können Fehler enthalten.[/COLOR]"
 
 msgctxt "#30156"
 msgid "When updating "
@@ -552,20 +572,20 @@ msgid "Delete HTML cache now"
 msgstr "HTML Cache jetzt löschen"
 
 msgctxt "#30166"
-msgid "[xStream]"
-msgstr "[xStream]"
+msgid "[GerXStream]"
+msgstr "[GerXStream]"
 
 msgctxt "#30167"
-msgid "Choose xStream Github Branch"
-msgstr "Wähle xStream Github Branch"
+msgid "Choose GerXStream Github Branch"
+msgstr "Wähle GerXStream Github Branch"
 
 msgctxt "#30168"
-msgid "Branch Info:		[COLOR green]Release - Version directly from xStream Github.[/COLOR]"
-msgstr "Branch Info:		[COLOR green]Release - Version direkt vom xStream Github.[/COLOR]"
+msgid "Branch Info:		[COLOR green]Release - Version directly from GerXStream Github.[/COLOR]"
+msgstr "Branch Info:		[COLOR green]Release - Version direkt vom GerXStream Github.[/COLOR]"
 
 msgctxt "#30169"
-msgid "Branch Info:		[COLOR orange]Nightly - Version with hotfixes from the xStream team.[/COLOR]"
-msgstr "Branch Info:		[COLOR orange]Nightly - Version mit Hotfixes vom xStream Team.[/COLOR]"
+msgid "Branch Info:		[COLOR orange]Nightly - Version with hotfixes from the GerXStream team.[/COLOR]"
+msgstr "Branch Info:		[COLOR orange]Nightly - Version mit Hotfixes vom GerXStream Team.[/COLOR]"
 
 msgctxt "#30170"
 msgid "Posters Size"
@@ -581,8 +601,8 @@ msgstr "TMDB Spracheinstellung"
 
 
 msgctxt "#30173"
-msgid "[COLOR green]Release - Version directly from xStream Github.[/COLOR][CR][COLOR orange]Nightly - Version with hotfixes from the xStream team.[/COLOR]"
-msgstr "[COLOR green]Release - Version direkt vom xStream Github.[/COLOR][CR][COLOR orange]Nightly - Version mit Hotfixes vom xStream Team.[/COLOR]"
+msgid "[COLOR green]Release - Version directly from GerXStream Github.[/COLOR][CR][COLOR orange]Nightly - Version with hotfixes from the GerXStream team.[/COLOR]"
+msgstr "[COLOR green]Release - Version direkt vom GerXStream Github.[/COLOR][CR][COLOR orange]Nightly - Version mit Hotfixes vom GerXStream Team.[/COLOR]"
 
 msgctxt "#30174"
 msgid "TMDB"
@@ -929,24 +949,24 @@ msgid "Your ISP censors your Internet access!"
 msgstr "Ihr Internetanbieter zensiert ihren Internetzugang!"
 
 msgctxt "#30261"
-msgid "To protect yourself from censorship, we recommend to use the new setting in xStream called 'Evade DNS lock' or change your DNS at your router and/or boxes to Google or Cloudflare - for both IPvV4 and IPv6 protocols. Instructions can be found with a Google search, e.g. 'Change Fritzbox DNS Server'"
-msgstr "Um sich vor der Zensur zu schützen, empfehlen wir die neue Funktion 'DNS Sperre umgehen' in xStream zu aktivieren oder Euren DNS Server im Router bzw. auf Euren Geräten auf Google oder Cloudflare umzustellen - für die Protokolle IPv4 UND IPv6! Anleitungen findet Ihr per Googlesuche z.B. 'Fritzbox DNS Server ändern'"
+msgid "To protect yourself from censorship, we recommend to use the new setting in GerXStream called 'Evade DNS lock' or change your DNS at your router and/or boxes to Google or Cloudflare - for both IPvV4 and IPv6 protocols. Instructions can be found with a Google search, e.g. 'Change Fritzbox DNS Server'"
+msgstr "Um sich vor der Zensur zu schützen, empfehlen wir die neue Funktion 'DNS Sperre umgehen' in GerXStream zu aktivieren oder Euren DNS Server im Router bzw. auf Euren Geräten auf Google oder Cloudflare umzustellen - für die Protokolle IPv4 UND IPv6! Anleitungen findet Ihr per Googlesuche z.B. 'Fritzbox DNS Server ändern'"
 
 msgctxt "#30262"
-msgid "[COLOR red]This page requires a free user account. Please register at http://flimmerstube.com and enter your account details in the xStream settings.[/COLOR]"
-msgstr "[COLOR red]Für diese Seite ist ein kostenloses Benutzerkonto nötig, bitte registrieren Sie sich unter http://flimmerstube.com und tragen Sie ihre Kontodaten in den xStream-Einstellungen ein.[/COLOR]"
+msgid "[COLOR red]This page requires a free user account. Please register at http://flimmerstube.com and enter your account details in the GerXStream settings.[/COLOR]"
+msgstr "[COLOR red]Für diese Seite ist ein kostenloses Benutzerkonto nötig, bitte registrieren Sie sich unter http://flimmerstube.com und tragen Sie ihre Kontodaten in den GerXStream-Einstellungen ein.[/COLOR]"
 
 msgctxt "#30263"
-msgid "[COLOR red]This page requires a free user account. Please register at https://aniworld.to/ and enter your account details in the xStream settings.[/COLOR]"
-msgstr "[COLOR red]Für diese Seite ist ein kostenloses Benutzerkonto nötig, bitte registrieren Sie sich unter https://aniworld.to/ und tragen Sie ihre Kontodaten in den xStream-Einstellungen ein.[/COLOR]"
+msgid "[COLOR red]This page requires a free user account. Please register at https://aniworld.to/ and enter your account details in the GerXStream settings.[/COLOR]"
+msgstr "[COLOR red]Für diese Seite ist ein kostenloses Benutzerkonto nötig, bitte registrieren Sie sich unter https://aniworld.to/ und tragen Sie ihre Kontodaten in den GerXStream-Einstellungen ein.[/COLOR]"
 
 msgctxt "#30264"
-msgid "[COLOR red]This page requires a free user account. Please register at https://s.to/ and enter your account details in the xStream settings.[/COLOR]"
-msgstr "[COLOR red]Für diese Seite ist ein kostenloses Benutzerkonto nötig, bitte registrieren Sie sich unter https://s.to/ und tragen Sie ihre Kontodaten in den xStream-Einstellungen ein.[/COLOR]"
+msgid "[COLOR red]This page requires a free user account. Please register at https://s.to/ and enter your account details in the GerXStream settings.[/COLOR]"
+msgstr "[COLOR red]Für diese Seite ist ein kostenloses Benutzerkonto nötig, bitte registrieren Sie sich unter https://s.to/ und tragen Sie ihre Kontodaten in den GerXStream-Einstellungen ein.[/COLOR]"
 
 msgctxt "#30265"
-msgid "xStream Support Information"
-msgstr "xStream Support Informationen"
+msgid "GerXStream Support Information"
+msgstr "GerXStream Support Informationen"
 
 msgctxt "#30266"
 msgid "System platform: "
@@ -957,8 +977,8 @@ msgid "View support information"
 msgstr "Support Information anzeigen"
 
 msgctxt "#30268"
-msgid "Please select whether you want to perform the ResolveURL [Release] or [Nightly] update.[CR][COLOR green]Release - Version directly from Guial00's Github.[/COLOR][CR][COLOR orange ]Nightly - version with hotfixes from the xStream team.[/COLOR]"
-msgstr "Wählen Sie bitte aus, ob sie die ResolveURL [Release] oder [Nightly] Aktualisierung durchführen möchten.[CR][COLOR green]Release - Version direkt von Guial00´s Github.[/COLOR][CR][COLOR orange]Nightly - Version mit Hotfixes vom xStream Team.[/COLOR]"
+msgid "Please select whether you want to perform the ResolveURL [Release] or [Nightly] update.[CR][COLOR green]Release - Version directly from Guial00's Github.[/COLOR][CR][COLOR orange ]Nightly - version with hotfixes from the GerXStream team.[/COLOR]"
+msgstr "Wählen Sie bitte aus, ob sie die ResolveURL [Release] oder [Nightly] Aktualisierung durchführen möchten.[CR][COLOR green]Release - Version direkt von Guial00´s Github.[/COLOR][CR][COLOR orange]Nightly - Version mit Hotfixes vom GerXStream Team.[/COLOR]"
 
 msgctxt "#30269"
 msgid "The presettings are now complete. Please note that the update manager will overwrite your existing installations, but not your user data & settings. Press [Install] to start the update now or [Cancel] to exit."
@@ -985,8 +1005,8 @@ msgid "View change log after update"
 msgstr "Änderungsprotokoll nach Aktualisierung anzeigen"
 
 msgctxt "#30275"
-msgid "[B][COLOR cyan]xStream[/COLOR] [COLOR white]Changelog[/COLOR][/B]"
-msgstr "[B][COLOR cyan]xStream[/COLOR] [COLOR white]Änderungsprotokoll (Changelog)[/COLOR][/B]"
+msgid "[B][COLOR cyan]GerXStream[/COLOR] [COLOR white]Changelog[/COLOR][/B]"
+msgstr "[B][COLOR cyan]GerXStream[/COLOR] [COLOR white]Änderungsprotokoll (Changelog)[/COLOR][/B]"
 
 msgctxt "#30276"
 msgid "Show changelog now"
@@ -1013,6 +1033,10 @@ msgid "Please enter the movie or series title."
 msgstr "Bitte den Film oder Serien Titel eingeben."
 
 msgctxt "#30282"
+msgid "Please choose a number between 1 and "
+msgstr "Bitte wähle eine Zahl zwischen 1 und "
+
+msgctxt "#30283"
 msgid "Please choose a number between 1 and "
 msgstr "Bitte wähle eine Zahl zwischen 1 und "
 
@@ -1085,12 +1109,12 @@ msgid "Developer Options"
 msgstr "Entwickler Optionen"
 
 msgctxt "#30311"
-msgid "xStream Developer Menu"
-msgstr "xStream Entwickler Menü"
+msgid "GerXStream Developer Menu"
+msgstr "GerXStream Entwickler Menü"
 
 msgctxt "#30312"
-msgid "Enable automatic xStream Dev Update"
-msgstr "Automatisches xStream Dev Update aktivieren"
+msgid "Enable automatic GerXStream Dev Update"
+msgstr "Automatisches GerXStream Dev Update aktivieren"
 
 msgctxt "#30313"
 msgid "Developer ID"
@@ -1129,8 +1153,8 @@ msgid "[COLOR red]Show warning about handling developer options now![/COLOR]"
 msgstr "[COLOR red]Warnung vor dem Umgang der Entwickler Optionen jetzt anzeigen![/COLOR]"
 
 msgctxt "#30322"
-msgid "[B][COLOR cyan]xStream[/COLOR] [COLOR white]Warning (Developer Options)[/COLOR][/B]"
-msgstr "[B][COLOR cyan]xStream[/COLOR] [COLOR white]Warnhinweis (Entwickler Optionen)[/COLOR][/B]"
+msgid "[B][COLOR cyan]GerXStream[/COLOR] [COLOR white]Warning (Developer Options)[/COLOR][/B]"
+msgstr "[B][COLOR cyan]GerXStream[/COLOR] [COLOR white]Warnhinweis (Entwickler Optionen)[/COLOR][/B]"
 
 msgctxt "#30323"
 msgid "ReCaptcha"
@@ -1177,8 +1201,8 @@ msgid "HTML cache folder has been cleaned"
 msgstr "HTML Cache Ordner wurde bereinigt"
 
 msgctxt "#30406"
-msgid "Choose xStream Version"
-msgstr "Wähle xStream Version"
+msgid "Choose GerXStream Version"
+msgstr "Wähle GerXStream Version"
 
 msgctxt "#30407"
 msgid "Site-Plugins VoD"
@@ -1221,8 +1245,8 @@ msgid "Update disabled - Branch: "
 msgstr "Aktualisierung deaktiviert - Branch: "
 
 msgctxt "#30417"
-msgid "xStream DNS Status: Bypass DNS block"
-msgstr "xStream DNS Status: DNS Sperre umgehen"
+msgid "GerXStream DNS Status: Bypass DNS block"
+msgstr "GerXStream DNS Status: DNS Sperre umgehen"
 
 msgctxt "#30418"
 msgid "enabled"
@@ -1273,8 +1297,8 @@ msgid "Domain is currently unavailable"
 msgstr "Domain ist derzeit nicht erreichbar"
 
 msgctxt "#30430"
-msgid "Index page in xStream"
-msgstr "Indexseite in xStream"
+msgid "Index page in GerXStream"
+msgstr "Indexseite in GerXStream"
 
 msgctxt "#30431"
 msgid "[COLORred][I]Youtube required! Please create API key and enter it here.[/I][/COLOR]"
@@ -1636,22 +1660,26 @@ msgctxt "#30728"
 msgid "Moflix-Stream"
 msgstr ""
 
+msgctxt "#30729"
+msgid "Dokus4.me"
+msgstr "Dokus4.me"
+
 ############### VoD Plugins ###############
 
 msgctxt "#30790"
-msgid "Video on Demand Huhu"
+msgid "Huhu"
 msgstr ""
 
 msgctxt "#30791"
-msgid "Video on Demand Kool"
+msgid "Kool"
 msgstr ""
 
 msgctxt "#30792"
-msgid "Video on Demand Oha"
+msgid "Oha"
 msgstr ""
 
 msgctxt "#30793"
-msgid "Video on Demand Vavoo"
+msgid "Vavoo"
 msgstr ""
 
 ############### Genre ###############
@@ -1707,3 +1735,331 @@ msgstr "Thriller"
 msgctxt "#30812"
 msgid "Western film"
 msgstr "Western"
+
+msgctxt "#30813"
+msgid "Allow insecure TLS connections"
+msgstr "Unsichere TLS-Verbindungen erlauben"
+
+msgctxt "#30814"
+msgid "Disables TLS certificate checks for this scraper. Enable only when its server has an invalid certificate."
+msgstr "Deaktiviert die TLS-Zertifikatspruefung fuer diesen Scraper. Nur bei einem ungueltigen Serverzertifikat aktivieren."
+
+msgctxt "#30794"
+msgid "media.ccc.de"
+msgstr "media.ccc.de"
+
+msgctxt "#30815"
+msgid "Collections"
+msgstr "Sammlungen"
+
+msgctxt "#30816"
+msgid "Charts"
+msgstr "Charts"
+
+msgctxt "#30817"
+msgid "Decades"
+msgstr "Jahrzehnte"
+
+msgctxt "#30818"
+msgid "Trending this week"
+msgstr "Im Trend diese Woche"
+
+msgctxt "#30819"
+msgid "Popular"
+msgstr "Beliebt"
+
+msgctxt "#30820"
+msgid "Top rated"
+msgstr "Bestbewertet"
+
+msgctxt "#30821"
+msgid "Now playing"
+msgstr "Jetzt im Kino"
+
+msgctxt "#30822"
+msgid "Upcoming"
+msgstr "Demnächst"
+
+msgctxt "#30823"
+msgid "Popular actors"
+msgstr "Beliebte Schauspieler"
+
+msgctxt "#30824"
+msgid "Show categories in the main menu"
+msgstr "Kategorien im Hauptmenü anzeigen"
+
+msgctxt "#30795"
+msgid "ARD Mediathek"
+msgstr "ARD Mediathek"
+
+msgctxt "#30796"
+msgid "Arte"
+msgstr "Arte"
+
+msgctxt "#30797"
+msgid "KinoKing"
+msgstr "KinoKing"
+
+msgctxt "#30798"
+msgid "Anime Toast"
+msgstr "Anime Toast"
+
+msgctxt "#30825"
+msgid "German language selection"
+msgstr "Deutschsprachige Auswahl"
+
+msgctxt "#30826"
+msgid "Bot protection: cookie from the browser"
+msgstr "Bot-Schutz: Cookie aus dem Browser"
+
+msgctxt "#30827"
+msgid "Bot protection: matching user agent"
+msgstr "Bot-Schutz: passender User-Agent"
+
+msgctxt "#30828"
+msgid "Only needed if the source is behind Cloudflare or DDoS-Guard. Confirm the check once in your browser, then copy the cookie and the user agent here. Both belong together."
+msgstr "Nur noetig, wenn die Quelle hinter Cloudflare oder DDoS-Guard steht. Die Pruefung einmal im Browser bestaetigen, danach Cookie und User-Agent von dort hier eintragen. Beides gehoert zusammen."
+
+msgctxt "#30829"
+msgid "Use FlareSolverr for bot protection"
+msgstr "FlareSolverr fuer Bot-Schutz verwenden"
+
+msgctxt "#30830"
+msgid "FlareSolverr address"
+msgstr "FlareSolverr-Adresse"
+
+msgctxt "#30831"
+msgid "FlareSolverr runs a real browser and solves the check itself, so the session renews automatically instead of having to be entered again. Runs as a separate service, by default on http://127.0.0.1:8191."
+msgstr "FlareSolverr faehrt einen echten Browser und loest die Pruefung selbst - die Sitzung erneuert sich dadurch automatisch, statt erneut eingetragen werden zu muessen. Laeuft als eigener Dienst, standardmaessig unter http://127.0.0.1:8191."
+
+msgctxt "#30799"
+msgid "Anime-Loads"
+msgstr "Anime-Loads"
+
+msgctxt "#30832"
+msgid "KayoAnime"
+msgstr "KayoAnime"
+
+msgctxt "#30833"
+msgid "Anime-Stream"
+msgstr "Anime-Stream"
+
+msgctxt "#30834"
+msgid "4anime"
+msgstr "4anime"
+
+msgctxt "#30835"
+msgid "Domain switched"
+msgstr "Adresse gewechselt"
+
+msgctxt "#30836"
+msgid "Switch address"
+msgstr "Adresse wechseln"
+
+msgctxt "#30837"
+msgid "Proxer.Me account"
+msgstr "Proxer.Me Konto"
+
+msgctxt "#30838"
+msgid "Proxer.Me"
+msgstr "Proxer.Me"
+
+msgctxt "#30839"
+msgid "Channels"
+msgstr "Sender"
+
+msgctxt "#30840"
+msgid "MediathekViewWeb"
+msgstr "MediathekViewWeb"
+
+msgctxt "#30841"
+msgid "Flash-Moviez.Tv"
+msgstr "Flash-Moviez.Tv"
+
+msgctxt "#30842"
+msgid "Flixitv-Stream.eu"
+msgstr "Flixitv-Stream.eu"
+
+msgctxt "#30850"
+msgid "Movies"
+msgstr "Filme"
+
+msgctxt "#30851"
+msgid "Series"
+msgstr "Serien"
+
+msgctxt "#30852"
+msgid "Documentaries"
+msgstr "Dokumentationen"
+
+msgctxt "#30853"
+msgid "Anime"
+msgstr "Anime"
+
+msgctxt "#30854"
+msgid "Children's content"
+msgstr "Kinder"
+
+msgctxt "#30855"
+msgid "Media libraries and archives"
+msgstr "Mediatheken und Archive"
+
+msgctxt "#30856"
+msgid "Other sources"
+msgstr "Weitere Quellen"
+
+msgctxt "#30857"
+msgid "All"
+msgstr "Alle"
+
+msgctxt "#30859"
+msgid "Themes"
+msgstr "Themen"
+
+msgctxt "#30860"
+msgid "Popular directors"
+msgstr "Beliebte Regisseure"
+
+msgctxt "#30848"
+msgid "Show in source index"
+msgstr "Im Quellenindex anzeigen"
+
+msgctxt "#30849"
+msgid "If disabled, this source stays installed but is hidden in index and global search."
+msgstr "Wenn deaktiviert, bleibt die Quelle installiert, wird aber im Index und in der globalen Suche ausgeblendet."
+
+msgctxt "#30861"
+msgid "Select blocked hosters"
+msgstr "Blockierte Hoster auswaehlen"
+
+msgctxt "#30862"
+msgid "Opens a clickable multi-selection list and writes the blockedHoster setting automatically."
+msgstr "Oeffnet eine klickbare Mehrfachauswahl und schreibt die blockedHoster-Einstellung automatisch."
+
+msgctxt "#30863"
+msgid "Use custom DNS-over-HTTPS"
+msgstr "Eigenes DNS-over-HTTPS verwenden"
+
+msgctxt "#30864"
+msgid "DoH server (URL or host)"
+msgstr "DoH-Server (URL oder Hostname)"
+
+msgctxt "#30865"
+msgid "Examples: https://dns.google/dns-query or cloudflare-dns.com. Used only when DNS bypass is enabled."
+msgstr "Beispiele: https://dns.google/dns-query oder cloudflare-dns.com. Wird nur genutzt, wenn DNS-Umgehung aktiv ist."
+
+msgctxt "#30866"
+msgid "Choose domain from list"
+msgstr "Domain aus Liste waehlen"
+
+msgctxt "#30867"
+msgid "Opens known alternative domains for this source. If no alternates are known yet, only the custom field applies."
+msgstr "Oeffnet bekannte Alternativdomains fuer diese Quelle. Wenn noch keine Alternativen bekannt sind, greift nur das benutzerdefinierte Feld."
+
+msgctxt "#30868"
+msgid "Random movies"
+msgstr "Zufallsfilme"
+
+msgctxt "#30869"
+msgid "Number of random movies"
+msgstr "Anzahl Zufallsfilme"
+
+msgctxt "#30870"
+msgid "Number of movies shown in the Random menu."
+msgstr "Legt fest, wie viele Filme im Menue Zufall angezeigt werden."
+
+msgctxt "#30871"
+msgid "My actors"
+msgstr "Meine Schauspieler"
+
+msgctxt "#30872"
+msgid "Enter names separated by commas. Actors added from the extended movie info are saved here automatically."
+msgstr "Namen mit Komma trennen. Aus der erweiterten Filminfo hinzugefuegte Schauspieler werden hier automatisch gespeichert."
+
+msgctxt "#30873"
+msgid "Actor"
+msgstr "Schauspieler"
+
+msgctxt "#30874"
+msgid "Show filmography"
+msgstr "Filmografie anzeigen"
+
+msgctxt "#30875"
+msgid "Add to my actors"
+msgstr "Zu meinen Schauspielern hinzufuegen"
+
+msgctxt "#30876"
+msgid "%s is already in your actors."
+msgstr "%s ist bereits in deinen Schauspielern."
+
+msgctxt "#30877"
+msgid "%s was added to your actors."
+msgstr "%s wurde zu deinen Schauspielern hinzugefuegt."
+
+msgctxt "#30878"
+msgid "Sources"
+msgstr "Quellen"
+
+msgctxt "#30879"
+msgid "Arrange main menu"
+msgstr "Hauptmenue anordnen"
+
+msgctxt "#30880"
+msgid "Move up"
+msgstr "Nach oben verschieben"
+
+msgctxt "#30881"
+msgid "Move down"
+msgstr "Nach unten verschieben"
+
+msgctxt "#30882"
+msgid "Restore default order"
+msgstr "Standardreihenfolge wiederherstellen"
+
+msgctxt "#30883"
+msgid "Select an entry, then move it up or down. The order is saved automatically."
+msgstr "Eintrag waehlen und nach oben oder unten verschieben. Die Reihenfolge wird automatisch gespeichert."
+
+msgctxt "#30884"
+msgid "People list size"
+msgstr "Anzahl Schauspieler"
+
+msgctxt "#30885"
+msgid "Higher values need more TMDB requests, especially for directors."
+msgstr "Hoehere Werte benoetigen mehr TMDB-Abfragen."
+
+msgctxt "#30886"
+msgid "People sorting"
+msgstr "Sortierung beliebter Personen"
+
+msgctxt "#30887"
+msgid "TMDB popularity"
+msgstr "TMDB-Popularitaet"
+
+msgctxt "#30888"
+msgid "Name (A-Z)"
+msgstr "Name (A-Z)"
+
+msgctxt "#30889"
+msgid "Best known TMDB rating"
+msgstr "Beste bekannte TMDB-Wertung"
+
+msgctxt "#30890"
+msgid "Director list size"
+msgstr "Anzahl Regisseure"
+
+msgctxt "#30891"
+msgid "Higher values can take considerably longer because TMDB has no director-only list."
+msgstr "Hoehere Werte koennen deutlich laenger dauern, da TMDB keine reine Regisseur-Liste anbietet."
+
+msgctxt "#30900"
+msgid "Global search timeout (seconds)"
+msgstr "Timeout der globalen Suche (Sekunden)"
+
+msgctxt "#30901"
+msgid "Maximum time a single provider may use during global search."
+msgstr "Maximale Zeit, die ein einzelner Anbieter in der globalen Suche verwenden darf."
+
+msgctxt "#30902"
+msgid "Update GerXStream"
+msgstr "GerXStream aktualisieren"

@@ -19,18 +19,19 @@ from json import loads
 SITE_IDENTIFIER = 'movie2k'
 SITE_NAME = 'Movie2K'
 SITE_ICON = 'movie2k.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'dokus')
 
 URL_MAIN = 'https://movie2k.ch/data/browse/?lang=%s&type=%s&order_by=%s&page=%s'  # lang=%s 2 = deutsch / 3 = englisch / all = Alles
 URL_SEARCH = 'https://movie2k.ch/data/browse/?lang=%s&keyword=%s&page=%s&limit=0'
 URL_THUMBNAIL = 'https://image.tmdb.org/t/p/w300%s'
 URL_WATCH = 'https://movie2k.ch/data/watch/?_id=%s'
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'www2.movie2k.ch') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'movie2k.cx') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -130,14 +131,18 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     sLanguage = params.getValue('sLanguage')
     if not entryUrl: entryUrl = params.getValue('sUrl')
     try:
-        oRequest = cRequestHandler(entryUrl)
-        if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+        # Bei der Sammelsuche darf eine Cloudflare-Seite niemals einen
+        # modalen Hinweisdialog aus einem Worker-Thread heraus oeffnen.
+        # Die anderen aktuellen Quellen reichen dieses Flag bereits durch;
+        # movie2k war der verbliebene Ausreisser.
+        oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
+        if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
             oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
         aJson = loads(sJson)
-    except:
+    except Exception:
         if not sGui: oGui.showInfo()
         return
 
@@ -184,7 +189,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
                 oGuiElement.setLanguage('EN')
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
         if 'runtime' in movie:
-            isMatch, sRuntime = cParser.parseSingleResult(movie['runtime'], '\d+')
+            isMatch, sRuntime = cParser.parseSingleResult(movie['runtime'], r'\d+')
             if isMatch:
                 oGuiElement.addItemValue('duration', sRuntime)
         params.setParam('entryUrl', URL_WATCH % str(movie['_id']))
@@ -209,13 +214,13 @@ def showEpisodes():
     sThumbnail = params.getValue("sThumbnail")
     try:
         oRequest = cRequestHandler(sUrl)
-        if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+        if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
             oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
         aJson = loads(sJson)
-    except:
+    except Exception:
         cGui().showInfo()
         return
 
@@ -252,7 +257,7 @@ def showHosters():
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
-    except:
+    except Exception:
         return hosters
     if sJson:
         aJson = loads(sJson)

@@ -20,14 +20,15 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'moflix-stream'
 SITE_NAME = 'Moflix-Stream'
 SITE_ICON = 'moflix-stream.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'dokus')
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'moflix-stream.xyz') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'moflix-stream.xyz') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -111,7 +112,7 @@ def showEntries(entryUrl=False, sGui=False):
     iPage = int(params.getValue('page'))
     oRequest = cRequestHandler(entryUrl + '&page=' + str(iPage) if iPage > 0 else entryUrl, ignoreErrors=(sGui is not False))
     oRequest.addHeaderEntry('Referer', params.getValue('sUrl'))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # Wenn Suche erfolglos - Abbruch
@@ -125,20 +126,20 @@ def showEntries(entryUrl=False, sGui=False):
         sName = str(i['name'])  # Name des Films / Serie
         if 'is_series' in i: isTvshow = i['is_series']  # Wenn True dann Serie
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
-        if 'release_date' in i and len(str(i['release_date'].split('-')[0].strip())) != '': 
+        if 'release_date' in i and len(str(i['release_date'].split('-')[0].strip())) != '':
             oGuiElement.setYear(str(i['release_date'].split('-')[0].strip()))
         # sDesc = i['description']
-        if 'description' in i and i['description'] != '': 
+        if 'description' in i and i['description'] != '':
             oGuiElement.setDescription(str(i['description']))  # Suche nach Desc wenn nicht leer dann setze GuiElement
         # sThumbnail = i['poster']
-        if 'poster' in i and i['poster'] != '': 
+        if 'poster' in i and i['poster'] != '':
             oGuiElement.setThumbnail(str(i['poster']))  # Suche nach Poster wenn nicht leer dann setze GuiElement
         # sFanart = i['backdrop']
-        if 'backdrop' in i and i['backdrop'] != '': 
+        if 'backdrop' in i and i['backdrop'] != '':
             oGuiElement.setFanart(str(i['backdrop']))  # Suche nach Fanart wenn nicht leer dann setze GuiElement
-        if 'runtime' in i and i['runtime'] != None: 
+        if 'runtime' in i and i['runtime'] != None:
             oGuiElement.addItemValue('duration', str(i['runtime']))  # Suche nach Runtime wenn nicht leer dann setze GuiElement
-        if 'rating' in i and i['rating'] != None: 
+        if 'rating' in i and i['rating'] != None:
             oGuiElement.addItemValue('rating', str(i['rating']))  # Suche nach Rating wenn nicht leer dann setze GuiElement
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
         # Parameter übergeben
@@ -169,7 +170,7 @@ def showSeasons(sGui=False):
     iPage = int(params.getValue('seasonPage'))
     oRequest = cRequestHandler(entryUrl + '&page=' + str(iPage) if iPage > 0 else entryUrl)
     oRequest.addHeaderEntry('Referer', entryUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     jSearch = json.loads(oRequest.request()) # Lade JSON aus dem Request der URL
     if not jSearch: return  # Wenn Suche erfolglos - Abbruch
@@ -187,7 +188,7 @@ def showSeasons(sGui=False):
         oGuiElement.setMediaType('season')
         oGuiElement.setSeason(sSeasonNr)
         oGuiElement.setThumbnail(sThumbnail)
-        if sDesc != '': 
+        if sDesc != '':
             oGuiElement.setDescription(str(sDesc))
         params.setParam('sSeasonNr', sSeasonNr)
         params.setParam('sId', sId)
@@ -211,7 +212,7 @@ def showEpisodes(sGui=False):
     sUrl = URL_MAIN + 'api/v1/titles/%s/seasons/%s/episodes?perPage=100&query=&page=1' % (sId, sSeasonNr) #Hep 02.12.23: Abfrage für einzelne Episoden per query force auf 100 erhöht
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('Referer', sUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # 4 Stunden
     jSearch = json.loads(oRequest.request()) # Lade JSON aus dem Request der URL
     if not jSearch: return  # Wenn Suche erfolglos - Abbruch
@@ -232,9 +233,9 @@ def showEpisodes(sGui=False):
         oGuiElement.setSeason(sSeasonNr)
         oGuiElement.setMediaType('episode')
         oGuiElement.setThumbnail(sThumbnail)
-        if 'runtime' in i and i['runtime'] != None: 
+        if 'runtime' in i and i['runtime'] != None:
             oGuiElement.addItemValue('duration', str(i['runtime']))  # Suche nach Runtime wenn nicht leer dann setze GuiElement
-        if 'rating' in i and i['rating'] != None: 
+        if 'rating' in i and i['rating'] != None:
             oGuiElement.addItemValue('rating', str(i['rating']))  # Suche nach Rating wenn nicht leer dann setze GuiElement
         # Parameter setzen
         params.setParam('entryUrl', URL_MAIN + 'api/v1/titles/%s/seasons/%s/episodes/%s?load=videos,compactCredits,primaryVideo' % (sId, sSeasonNr, sEpisodeNr))
@@ -266,20 +267,20 @@ def showSearchEntries(entryUrl=False, sGui=False, sSearchText=''):
         if sSearchText.lower() and not cParser.search(sSearchText, sName.lower()): continue
         if 'is_series' in i: isTvshow = i['is_series'] # Wenn True dann Serie
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
-        if sYear != '': 
+        if sYear != '':
             oGuiElement.setYear(sYear) # Suche bei year nach 4 stelliger Zahl
         #sDesc = i['description']
-        if 'description' in i and i['description'] != '': 
+        if 'description' in i and i['description'] != '':
             oGuiElement.setDescription(str(i['description'])) # Suche nach Desc wenn nicht leer dann setze GuiElement
         # sThumbnail = i['poster']
-        if 'poster' in i and i['poster'] != '': 
+        if 'poster' in i and i['poster'] != '':
             oGuiElement.setThumbnail(str(i['poster'])) # Suche nach Poster wenn nicht leer dann setze GuiElement
         # sFanart = i['backdrop']
-        if 'backdrop' in i and i['backdrop'] != '': 
+        if 'backdrop' in i and i['backdrop'] != '':
             oGuiElement.setFanart(str(i['backdrop'])) # Suche nach Fanart wenn nicht leer dann setze GuiElement
-        if 'runtime' in i and i['runtime'] != None: 
+        if 'runtime' in i and i['runtime'] != None:
             oGuiElement.addItemValue('duration', str(i['runtime']))  # Suche nach Runtime wenn nicht leer dann setze GuiElement
-        if 'rating' in i and i['rating'] != None: 
+        if 'rating' in i and i['rating'] != None:
             oGuiElement.addItemValue('rating', str(i['rating']))  # Suche nach Rating wenn nicht leer dann setze GuiElement
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
         # Parameter setzen
@@ -311,7 +312,7 @@ def showHosters(sGui=False):
         return
     for i in aResults:
         sQuality = str(i['quality'])
-        if 'None' in sQuality: 
+        if 'None' in sQuality:
             sQuality = '720p'
         sUrl = str(i['src'])
         if 'Mirror' in i['name']: # Wenn Mirror als sName hole realen Name aus der URL

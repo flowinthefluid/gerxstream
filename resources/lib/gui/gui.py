@@ -3,7 +3,7 @@
 
 import sys
 import xbmc
-import xbmcgui 
+import xbmcgui
 import xbmcplugin
 
 from resources.lib import utils
@@ -19,14 +19,14 @@ class cGui:
     def __init__(self):
         try:
             self.pluginHandle = int(sys.argv[1])
-        except:
+        except Exception:
             self.pluginHandle = 0
         try:
             self.pluginPath = sys.argv[0]
-        except:
+        except Exception:
             self.pluginPath = ''
-        self.isMetaOn = cConfig().getSetting('TMDBMETA') == 'true'
-        if cConfig().getSetting('metaOverwrite') == 'true':
+        self.isMetaOn = cConfig().getSettingBool('TMDBMETA', False)
+        if cConfig().getSettingBool('metaOverwrite', False):
             self.metaMode = 'replace'
         else:
             self.metaMode = 'add'
@@ -38,15 +38,18 @@ class cGui:
 
     def addFolder(self, oGuiElement, params='', bIsFolder=True, iTotal=0, isHoster=False):
         # add GuiElement to Gui, adds listitem to a list
-        # abort xbmc list creation if user requests abort
-        if xbmc.Monitor().abortRequested():
-            self.setEndOfDirectory(False)
-            raise RuntimeError('UserAborted')
         # store result in list if we searched global for other sources
+        # Global-search providers run in background threads. Calling Kodi's
+        # Monitor or directory APIs from there can block the entire plugin.
+        # They only need to collect plain Python data at this point.
         if self._collectMode:
             import copy
             self.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(params), 'isFolder': bIsFolder})
             return
+        # abort xbmc list creation if user requests abort
+        if xbmc.Monitor().abortRequested():
+            self.setEndOfDirectory(False)
+            raise RuntimeError('UserAborted')
         if not oGuiElement._isMetaSet and self.isMetaOn and oGuiElement._mediaType and iTotal < 100:
             tmdbID = params.getValue('tmdbID')
             if tmdbID:
@@ -57,7 +60,7 @@ class cGui:
 #kasi
         try:
             if params.exist('trumb'): oGuiElement.setIcon(params.getValue('trumb'))
-        except:
+        except Exception:
             pass
 
         listitem = self.createListItem(oGuiElement)
@@ -91,7 +94,7 @@ class cGui:
         if oGuiElement._sQuality != '':
             infoString += ' [%s]' % oGuiElement._sQuality
         if oGuiElement._sInfo != '':
-            infoString += ' [%s]' % oGuiElement._sInfo    
+            infoString += ' [%s]' % oGuiElement._sInfo
         # if self.globalSearch:
         #     infoString += ' %s' % oGuiElement.getSiteName()
         if infoString:
@@ -100,17 +103,11 @@ class cGui:
         try:
             if not 'plot' in str(itemValues) or itemValues['plot'] == '':
                 itemValues['plot'] = ' ' #kasi Alt 255
-        except:
+        except Exception:
             pass
         #listitem = xbmcgui.ListItem(itemTitle + infoString, oGuiElement.getIcon(), oGuiElement.getThumbnail())
         listitem = xbmcgui.ListItem(itemTitle + infoString)
-        # Function: setInfo(type, infoLabels)
-        # listitem.setInfo('video', { 'genre': 'Comedy' })
-        listitem.setInfo(oGuiElement.getType(), itemValues)
-        #Wenn Kodi 19, dann ignoriere setinfotagvideo
-        kodi_version = xbmc.getInfoLabel('System.BuildVersion')
-        if kodi_version[:2]  > '19':
-            self.setInfoTagVideo(oGuiElement, listitem)
+        self.setInfoTagVideo(oGuiElement, listitem)
 
         listitem.setProperty('fanart_image', oGuiElement.getFanart())
         listitem.setArt({'icon': oGuiElement.getIcon(), 'thumb': oGuiElement.getThumbnail(), 'poster': oGuiElement.getThumbnail(), 'fanart': oGuiElement.getFanart()})
@@ -124,14 +121,14 @@ class cGui:
     def setInfoTagVideo(self, oGuiElement, listitem):
         itemValues = oGuiElement.getItemValues()
         vtag = listitem.getVideoInfoTag()
-        
+
         vtag.setMediaType(oGuiElement.getType())
-        
-        # Titel ist bereits gesetzt und der Infostring geht hier verloren, wenn man den Titel erneut setzt
-        #if 'title' in itemValues:
-        #    try:    
-        #        vtag.setTitle(itemValues['title'])
-        #    except: pass
+
+        # itemValues['title'] enthaelt bereits Label + Infostring (siehe createListItem)
+        if 'title' in itemValues:
+            try:
+                vtag.setTitle(str(itemValues['title']))
+            except: pass
         if 'plot' in itemValues:
             try:
                 vtag.setPlot(itemValues['plot'])
@@ -172,6 +169,15 @@ class cGui:
             try:
                 vtag.setDirectors(itemValues['directors'])
             except: pass
+        # tmdb.py liefert 'director' und 'writer' als ' / '-getrennte Strings
+        if 'director' in itemValues:
+            try:
+                vtag.setDirectors([d.strip() for d in str(itemValues['director']).split(' / ') if d.strip()])
+            except: pass
+        if 'writer' in itemValues:
+            try:
+                vtag.setWriters([w.strip() for w in str(itemValues['writer']).split(' / ') if w.strip()])
+            except: pass
         if 'duration' in itemValues:
             # minuten in sekunden umrechnen
             try:
@@ -181,9 +187,25 @@ class cGui:
             try:
                 vtag.setRating(float(itemValues['rating']))
             except: pass
+        if 'votes' in itemValues:
+            try:
+                vtag.setVotes(int(itemValues['votes']))
+            except: pass
+        if 'code' in itemValues:
+            try:
+                vtag.setProductionCode(str(itemValues['code']))
+            except: pass
+        if 'aired' in itemValues:
+            try:
+                vtag.setFirstAired(str(itemValues['aired']))
+            except: pass
+        if 'status' in itemValues:
+            try:
+                vtag.setTvShowStatus(str(itemValues['status']))
+            except: pass
         if 'genre' in itemValues:
             try:
-                vtag.setGenres(itemValues['genres'].split(' / '))
+                vtag.setGenres(itemValues['genre'].split(' / '))
             except: pass
         if 'imdb_id' in itemValues:
             try:
@@ -213,7 +235,7 @@ class cGui:
         if 'premiered' in itemValues:
             try:
                 vtag.setPremiered(itemValues['premiered'])
-            except: pass    
+            except: pass
     ### ÄNDERUNG ENDE ###
 
 
@@ -228,7 +250,7 @@ class cGui:
         itemValues = oGuiElement.getItemValues()
         contextitem = cContextElement()
         if oGuiElement._mediaType == 'movie' or oGuiElement._mediaType == 'tvshow':
-            if cConfig().getSetting('xstream.trailer') == 'true':
+            if cConfig().getSettingBool('gerxstream.trailer', False):
                 if not xbmc.getCondVisibility('System.HasAddon(%s)' % 'script.module.xstream.trailer'):  # Schauen ob Addon installiert
                     xbmc.executebuiltin('InstallAddon(%s)' % 'script.module.xstream.trailer')  # Addon installieren
                 contextitem.setTitle(cConfig().getLocalizedString(30027))  # Trailer Funktion
@@ -269,17 +291,17 @@ class cGui:
             contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=enqueue)" % (sUrl,),)]
             contextitem.setTitle(cConfig().getLocalizedString(30245))   # Download
             contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=download)" % (sUrl,),)]
-            if cConfig().getSetting('jd_enabled') == 'true':
+            if cConfig().getSettingBool('jd_enabled', False):
                 contextitem.setTitle(cConfig().getLocalizedString(30246))   # send JD
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=jd)" % (sUrl,),)]
-            if cConfig().getSetting('jd2_enabled') == 'true':
+            if cConfig().getSettingBool('jd2_enabled', False):
                 contextitem.setTitle(cConfig().getLocalizedString(30247))   # Send JD2
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=jd2)" % (sUrl,),)]
-            if cConfig().getSetting('myjd_enabled') == 'true':
+            if cConfig().getSettingBool('myjd_enabled', False):
                 contextitem.setTitle(cConfig().getLocalizedString(30248))   # Send myjd
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=myjd)" % (sUrl,),)]
-            if cConfig().getSetting('pyload_enabled') == 'true':
-                contextitem.setTitle(cConfig().getLocalizedString(30249))   # Send Pyload
+            if cConfig().getSettingBool('pyload_enabled', False):
+                contextitem.setTitle(cConfig().getLocalizedString(30250))   # Send Pyload
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=pyload)" % (sUrl,),)]
             if cConfig().getSetting('hosterSelect') == 'Auto':
                 contextitem.setTitle(cConfig().getLocalizedString(30149))   # select Hoster
@@ -305,7 +327,7 @@ class cGui:
 
     def setView(self, content='movies'):
         # set the listing to a certain content, makes special views available
-        # sets view to the viewID which is selected in xStream settings
+        # sets view to the viewID which is selected in GerXStream settings
         # see http://mirrors.xbmc.org/docs/python-docs/stable/xbmcplugin.html#-setContent
         # (seasons is also supported but not listed)
         content = content.lower()
@@ -313,7 +335,7 @@ class cGui:
         if content in supportedViews:
             self._isViewSet = True
             xbmcplugin.setContent(self.pluginHandle, content)
-        if cConfig().getSetting('auto-view') == 'true' and content:
+        if cConfig().getSettingBool('auto-view', False) and content:
             viewId = cConfig().getSetting(content + '-view')
             if viewId:
                 xbmc.executebuiltin("Container.SetViewMode(%s)" % viewId)
@@ -375,7 +397,9 @@ class cGui:
         return False
 
     @staticmethod
-    def showNumpad(defaultNum="", numPadTitle=cConfig().getLocalizedString(30251)):
+    def showNumpad(defaultNum="", numPadTitle=None):
+        if numPadTitle is None:
+            numPadTitle = cConfig().getLocalizedString(30251)
         defaultNum = str(defaultNum)
         dialog = xbmcgui.Dialog()
         num = dialog.numeric(0, numPadTitle, defaultNum)
@@ -402,7 +426,9 @@ class cGui:
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, cConfig().getAddonInfo('icon')))
 
     @staticmethod
-    def showInfo(sTitle='xStream', sDescription=cConfig().getLocalizedString(30253), iSeconds=0):
+    def showInfo(sTitle='GerXStream', sDescription=None, iSeconds=0):
+        if sDescription is None:
+            sDescription = cConfig().getLocalizedString(30253)
         if iSeconds == 0:
             iSeconds = 1000
         else:
@@ -410,7 +436,9 @@ class cGui:
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, cConfig().getAddonInfo('icon')))
 
     @staticmethod
-    def showLanguage(sTitle='xStream', sDescription=cConfig().getLocalizedString(30403), iSeconds=0):
+    def showLanguage(sTitle='GerXStream', sDescription=None, iSeconds=0):
+        if sDescription is None:
+            sDescription = cConfig().getLocalizedString(30403)
         if iSeconds == 0:
             iSeconds = 1000
         else:

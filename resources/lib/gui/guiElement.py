@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-from resources.lib.tools import cParser, cUtil
+from resources.lib.tools import cParser, cUtil, addon_log as log
 from resources.lib.config import cConfig
-from xbmc import LOGERROR, log
-from os import path
+from xbmc import LOGERROR
 
 class cGuiElement:
     '''
@@ -16,7 +15,7 @@ class cGuiElement:
         These arguments are mandatory. If not given on init, they have to be set by their setter-methods, before the GuiElement is added to the Gui.
     '''
     DEFAULT_FOLDER_ICON = 'DefaultFolder.png'
-    DEFAULT_FANART = path.join(cConfig().getAddonInfo('path'), 'fanart.jpg')
+    DEFAULT_FANART = cConfig().getAddonInfo('fanart')
     MEDIA_TYPES = ['movie', 'tvshow', 'season', 'episode']
 
     def __init__(self, sTitle: object = '', sSite: object = None, sFunction: object = None) -> None:
@@ -75,22 +74,22 @@ class cGuiElement:
     # Sprachen im sName ins GUI Element übernehmen
     def getTitle(self):
         if ' (19' in self.__sTitle or ' (20' in self.__sTitle:
-            isMatch, aYear = cParser.parse(self.__sTitle, '(.*?)\((\d{4})\)')
+            isMatch, aYear = cParser.parse(self.__sTitle, r'(.*?)\((\d{4})\)')
             if isMatch:
                 self.__sTitle = aYear[0][0]
                 self.setYear(aYear[0][1])
         if '*19' in self.__sTitle or '*20' in self.__sTitle:
-            isMatch, aYear = cParser.parse(self.__sTitle, '(.*?)\*(\d{4})\*')
+            isMatch, aYear = cParser.parse(self.__sTitle, r'(.*?)\*(\d{4})\*')
             if isMatch:
                 self.__sTitle = aYear[0][0]
                 self.setYear(aYear[0][1])
         if '*english*' in self.__sTitle.lower():
-            isMatch, aLang = cParser.parse(self.__sTitle, '(.*?)\*(.*?)\*')
+            isMatch, aLang = cParser.parse(self.__sTitle, r'(.*?)\*(.*?)\*')
             if isMatch:
                 self.__sTitle = aLang[0][0]
                 self.setLanguage('EN')
         if '*deutsch*' in self.__sTitle.lower():
-            isMatch, aLang = cParser.parse(self.__sTitle, '(.*?)\*(.*?)\*')
+            isMatch, aLang = cParser.parse(self.__sTitle, r'(.*?)\*(.*?)\*')
             if isMatch:
                 self.__sTitle = aLang[0][0]
                 self.setLanguage('DE')
@@ -134,7 +133,7 @@ class cGuiElement:
     def setYear(self, year):
         try:
             year = int(year)
-        except:
+        except Exception:
             log(cConfig().getLocalizedString(30166) + ' -> [guiElement]: Year given for %s seems not to be a valid number' % self.getTitle(), LOGERROR)
             return False
         if len(str(year)) != 4:
@@ -179,7 +178,7 @@ class cGuiElement:
             elif 'TS' in quality:
                 self._sQuality = 'TS'
             #self._sQuality = quality
-        except:
+        except Exception:
             pass
 
     def getQuality(self):
@@ -211,9 +210,9 @@ class cGuiElement:
     def setThumbnail(self, sThumbnail):
         self.__sThumbnail = sThumbnail
         try:
-            if cConfig().getSetting('replacefanart') == 'true' and sThumbnail.startswith('http'):
+            if cConfig().getSettingBool('replacefanart', False) and sThumbnail.startswith('http'):
                 self.__sFanart = sThumbnail
-        except:
+        except Exception:
             pass
     def getThumbnail(self):
         return self.__sThumbnail
@@ -234,7 +233,8 @@ class cGuiElement:
         self.__aItemValues[sItemKey] = sItemValue
 
     def setItemValues(self, aValueList):
-        self.__aItemValues = aValueList
+        self.__aItemValues = dict(aValueList)
+        self.__aItemValues.pop('credits', None)
 
     def getItemValues(self):
         self.__aItemValues['title'] = self.getTitle()
@@ -244,7 +244,7 @@ class cGuiElement:
             self.__aItemValues[sPropertyKey] = self.__aProperties[sPropertyKey]
         return self.__aItemValues
 
-    # siehe gui.setInfoTagVideo() 
+    # siehe gui.setInfoTagVideo()
     def addItemProperties(self, sPropertyKey, sPropertyValue):
         self.__aProperties[sPropertyKey] = sPropertyValue
 
@@ -253,7 +253,7 @@ class cGuiElement:
             if not self.__aItemValues[sItemValueKey] == '':
                 try:
                     self.__aProperties[sItemValueKey] = str(self.__aItemValues[sItemValueKey])
-                except:
+                except Exception:
                     pass
         return self.__aProperties
 
@@ -279,7 +279,7 @@ class cGuiElement:
             TVShowTitle (str)   :
             mode (str)          : 'add'/'replace' defines if fetched metainformtions should be added to existing informations, or if they should replace them.
         '''
-        if cConfig().getSetting('TMDBMETA') == 'false':
+        if not cConfig().getSettingBool('TMDBMETA', False):
             return False
         if not self._mediaType:
             self.setMediaType(mediaType)
@@ -332,7 +332,7 @@ class cGuiElement:
         else:
             meta.update(self.__aItemValues)
             meta.update(self.__aProperties)
-            if 'cover_url' in meta != '' and self.__sThumbnail == '':
+            if meta.get('cover_url') and self.__sThumbnail == '':
                 self.setThumbnail(meta['cover_url'])
 
             if 'backdrop_url' in meta and self.__sFanart == self.DEFAULT_FANART:

@@ -7,20 +7,20 @@ import re
 import os
 import hashlib
 import json
-import traceback
 import ssl
-import certifi
 import socket
 import zlib
 import http.client
 
 from resources.lib.config import cConfig
+from resources.lib.handler import protection
+from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.tools import logger, cCache
 from xbmcvfs import translatePath
 
 from urllib.parse import quote, urlencode, urlparse, quote_plus
 from urllib.error import HTTPError, URLError
-from urllib.request import HTTPHandler, HTTPSHandler, Request, HTTPCookieProcessor, build_opener, urlopen, HTTPRedirectHandler
+from urllib.request import HTTPHandler, HTTPSHandler, ProxyHandler, Request, HTTPCookieProcessor, build_opener, urlopen, HTTPRedirectHandler
 from http.cookiejar import LWPCookieJar, Cookie
 from http.client import HTTPException
 from random import choice
@@ -44,13 +44,12 @@ class IPHTTPSConnection(http.client.HTTPSConnection):
         else:
             super().connect()
 
-class CustomSecureHTTPSHandler(HTTPSHandler):
-    def __init__(self, ip=None):
-        # Create an SSL context with certifi's CA bundle.
-        context = ssl.create_default_context(cafile=certifi.where())
-        # If an IP is provided, disable hostname checking (since we'll verify using SNI later).
-        context.check_hostname = False if ip else True
-        context.verify_mode = ssl.CERT_REQUIRED
+class CustomHTTPSHandler(HTTPSHandler):
+    def __init__(self, ip=None, ssl_verify=True):
+        context = ssl.create_default_context()
+        if not ssl_verify:
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE
         self.ip = ip
         self.context = context
         super().__init__(context=context)
@@ -67,7 +66,7 @@ class CustomSecureHTTPSHandler(HTTPSHandler):
 
 class RedirectFilter(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, hdrs, newurl):
-        if cConfig().getSetting('bypassDNSlock', 'false') != 'true':
+        if not cConfig().getSettingBool('bypassDNSlock', False):
             if 'notice.cuii' in newurl:
                 xbmcgui.Dialog().ok(cConfig().getLocalizedString(30265), cConfig().getLocalizedString(30260) + '\n' + cConfig().getLocalizedString(30261))
                 return None
@@ -90,7 +89,7 @@ class cRequestHandler:
         _User_Agents = [FF_USER_AGENT, OPERA_USER_AGENT, EDGE_USER_AGENT, CHROME_USER_AGENT, SAFARI_USER_AGENT]
         return choice(_User_Agents)
 
-    def __init__(self, sUrl, caching=True, ignoreErrors=False, method='GET', data=None, compression=True, jspost=False, ssl_verify=False, bypass_dns=False):
+    def __init__(self, sUrl, caching=True, ignoreErrors=False, method='GET', data=None, compression=True, jspost=False, ssl_verify=True, bypass_dns=False, allow_insecure_tls=True):
         self._sUrl = self.__cleanupUrl(sUrl)
         self._sRealUrl = ''
         self._USER_AGENT = self.RandomUA()
@@ -101,7 +100,15 @@ class cRequestHandler:
         self._cookiePath = ''
         self._Status = ''
         self._sResponseHeader = ''
-        self._ssl_verify = ssl_verify
+        # Verhindert eine Endlosschleife, falls die geloeste Sitzung
+        # ebenfalls abgelehnt wird.
+        self._protectionRetried = False
+        self._ssl_verify = bool(ssl_verify)
+        if self._ssl_verify and allow_insecure_tls and self.__isInsecureTLSAllowed():
+            self._ssl_verify = False
+        if not self._ssl_verify:
+            domain = urlparse(self._sUrl).hostname or self._sUrl
+            logger.warning(' -> [requestHandler]: TLS certificate verification disabled for %s' % domain)
         self._bypass_dns = bypass_dns
         self.ignoreDiscard(False)
         self.ignoreExpired(False)
@@ -111,19 +118,19 @@ class cRequestHandler:
         self.ignoreErrors = ignoreErrors
         self.compression = compression
         self.jspost = jspost
-        self.cacheTime = int(cConfig().getSetting('cacheTime', 360)) *60 # 360 Minuten * 60 = 6 Stunden Cachetime
-        self.requestTimeout = int(cConfig().getSetting('requestTimeout', 10))
-        self.bypassDNSlock = (cConfig().getSetting('bypassDNSlock', 'false') == 'true')
+        self.cacheTime = cConfig().getSettingInt('cacheTime', 360) * 60 # 360 Minuten * 60 = 6 Stunden Cachetime
+        self.requestTimeout = cConfig().getSettingInt('requestTimeout', 10)
+        self.bypassDNSlock = cConfig().getSettingBool('bypassDNSlock', False)
+        self._dohServer = self.__getDoHServer()
+        self._proxyUrl = self.__getCustomProxyUrl()
         self.removeBreakLines(True)
         self.removeNewLines(True)
         self.__setDefaultHeader()
         self.__setCachePath()
         self.__setCookiePath()
-        self.isMemoryCacheActive = (cConfig().getSetting('volatileHtmlCache', 'false') == 'true')
+        self.isMemoryCacheActive = cConfig().getSettingBool('volatileHtmlCache', False)
         if self.isMemoryCacheActive:
             self._memCache = cCache()
-        
-        socket.setdefaulttimeout(self.requestTimeout)
 
     def getStatus(self):
         return self._Status
@@ -161,18 +168,114 @@ class cRequestHandler:
             self.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
         self.addHeaderEntry('Connection', 'keep-alive')
         self.addHeaderEntry('Keep-Alive', 'timeout=5')
+        self.__applyManualSession()
+
+    def __applyManualSession(self):
+        """Uebernimmt eine im Browser bestaetigte Sitzung, falls hinterlegt.
+
+        Cloudflare und DDoS-Guard binden ihr Cookie an den User-Agent, mit
+        dem es ausgestellt wurde. Deshalb wird der hinterlegte User-Agent
+        vorrangig vor dem zufaelligen verwendet - sonst ist das Cookie
+        wertlos.
+        """
+        siteId = self.__siteId()
+        if not siteId:
+            return
+        cookieHeader, userAgent = protection.getSession(siteId)
+        if userAgent:
+            self._USER_AGENT = userAgent
+            self.addHeaderEntry('User-Agent', userAgent)
+        if cookieHeader:
+            self.addHeaderEntry('Cookie', cookieHeader)
 
     @staticmethod
     def __getDefaultHandler(ssl_verify, ip=None):
         if ip:
-            return [CustomSecureHTTPSHandler(ip=ip)]    
+            return [CustomHTTPSHandler(ip=ip, ssl_verify=ssl_verify)]
         elif ssl_verify:
-            return [CustomSecureHTTPSHandler()]
+            return [CustomHTTPSHandler()]
         else:
             ssl_context = ssl.create_default_context()
             ssl_context.check_hostname = False
             ssl_context.verify_mode = ssl.CERT_NONE
             return [HTTPSHandler(context=ssl_context)]
+
+    @staticmethod
+    def __getCustomProxyUrl():
+        """Vom Nutzer hinterlegter HTTP(S)-Proxy, z. B. um eine DNS-Sperre
+        oder eine IP-Sperre ueber ein oeffentliches VPN/Proxy zu umgehen.
+
+        Nur HTTP/HTTPS-Proxys werden unterstuetzt - SOCKS5 braucht eine
+        Zusatzbibliothek (PySocks), die dieses Addon nicht mitbringt.
+        """
+        if not cConfig().getSettingBool('customProxyEnabled', False):
+            return ''
+        sAddress = cConfig().getSetting('customProxyAddress', '').strip()
+        if not sAddress:
+            return ''
+        sUser = cConfig().getSetting('customProxyUser', '').strip()
+        sPass = cConfig().getSetting('customProxyPass', '').strip()
+        if sUser:
+            return 'http://%s:%s@%s' % (quote(sUser, safe=''), quote(sPass, safe=''), sAddress)
+        return 'http://%s' % sAddress
+
+    @staticmethod
+    def __getDoHServer():
+        if not cConfig().getSettingBool('customDnsEnabled', False):
+            return 'https://cloudflare-dns.com/dns-query'
+        custom = cConfig().getSetting('customDnsAddress', '').strip()
+        if not custom:
+            return 'https://cloudflare-dns.com/dns-query'
+        if custom.startswith('http://') or custom.startswith('https://'):
+            return custom
+        return 'https://%s/dns-query' % custom
+
+    def __handleProtection(self, kind, sParameters=None):
+        """Reaktion auf eine erkannte Sperre.
+
+        Ist ein FlareSolverr-Dienst eingerichtet, wird die Pruefung dort
+        geloest und der Abruf genau einmal wiederholt - der Nutzer merkt
+        davon nichts. Sonst bleibt nur der Hinweis, wie sich die Sitzung von
+        Hand hinterlegen laesst.
+        """
+        siteId = self.__siteId()
+        if self._protectionRetried or not siteId:
+            protection.notifyOnce(siteId, kind, self._sUrl,
+                                  interactive=not self.ignoreErrors)
+            return ''
+        self._protectionRetried = True
+
+        cookieHeader, userAgent = protection.recover(siteId, self._sUrl)
+        if not cookieHeader:
+            protection.notifyOnce(siteId, kind, self._sUrl,
+                                  interactive=not self.ignoreErrors)
+            return ''
+
+        logger.info(' -> [requestHandler]: Sperre geloest, wiederhole %s' % self._sUrl)
+        if userAgent:
+            self._USER_AGENT = userAgent
+            self.addHeaderEntry('User-Agent', userAgent)
+        self.addHeaderEntry('Cookie', cookieHeader)
+        return self.request()
+
+    @staticmethod
+    def __siteId():
+        """Kennung der aufrufenden Quelle, gegen dieselbe Regel geprueft
+        wie beim TLS-Opt-out."""
+        siteId = ParameterHandler().getValue('site')
+        if isinstance(siteId, str) and re.fullmatch(r'[a-z0-9_-]+', siteId):
+            return siteId
+        return ''
+
+    @staticmethod
+    def __isInsecureTLSAllowed():
+        site_identifier = ParameterHandler().getValue('site')
+        if not isinstance(site_identifier, str):
+            return False
+        if not re.fullmatch(r'[a-z0-9_-]+', site_identifier):
+            return False
+        setting = 'plugin_%s_allowInsecureTLS' % site_identifier
+        return cConfig().getSettingBool(setting, False)
 
     @staticmethod
     def __cleanupUrl(url):
@@ -185,7 +288,7 @@ class cRequestHandler:
         #    p = p._replace(path=p.path.replace(p.path, path))
         #return p.geturl()
         return url
-    
+
     def request(self):
         if self.caching and self.cacheTime > 0  and self.method == 'GET' and self.data is None:
             if self.isMemoryCacheActive:
@@ -201,7 +304,7 @@ class cRequestHandler:
         # nur ausführen wenn der übergabeparameter und die konfiguration passen
         if self._bypass_dns and self.bypassDNSlock:
             ### DNS lock bypass
-            ip_override = self.__doh_request(self._sUrl)
+            ip_override = self.__doh_request(self._sUrl, self._dohServer)
             ### DNS lock bypass
         else:
             ip_override = None
@@ -211,15 +314,18 @@ class cRequestHandler:
             cookieJar.load(ignore_discard=self.__bIgnoreDiscard, ignore_expires=self.__bIgnoreExpired)
         except Exception as e:
             logger.debug(e)
-        
+
         domain = urlparse(self._sUrl).netloc
-        if domain in cRequestHandler.persistent_openers:
-            opener = cRequestHandler.persistent_openers[domain]
+        opener_key = (domain, self._ssl_verify, ip_override, self._proxyUrl)
+        if opener_key in cRequestHandler.persistent_openers:
+            opener = cRequestHandler.persistent_openers[opener_key]
         else:
-            handlers = self.__getDefaultHandler(self._ssl_verify, ip_override)        
+            handlers = self.__getDefaultHandler(self._ssl_verify, ip_override)
+            if self._proxyUrl:
+                handlers.append(ProxyHandler({'http': self._proxyUrl, 'https': self._proxyUrl}))
             handlers += [HTTPHandler(), HTTPCookieProcessor(cookiejar=cookieJar), RedirectFilter()]
             opener = build_opener(*handlers)
-            cRequestHandler.persistent_openers[domain] = opener
+            cRequestHandler.persistent_openers[opener_key] = opener
 
         # Prepare parameters for GET/POST
         if self.method == 'POST':
@@ -237,71 +343,79 @@ class cRequestHandler:
             sParameters = json.dumps(self._aParameters).encode() if self.jspost else urlencode(self._aParameters, True).encode()
             if len(sParameters) == 0:
                 sParameters = None
-        
+
         oRequest = Request(self._sUrl, sParameters if sParameters and len(sParameters) > 0 else None)
 
         for key, value in self._headerEntries.items():
             oRequest.add_header(key, value)
-        
+
         if self.method == 'POST' and 'Content-Type' not in self._headerEntries:
             oRequest.add_header('Content-Type', 'application/x-www-form-urlencoded')
         elif self.jspost:
             oRequest.add_header('Content-Type', 'application/json')
-        
+
         cookieJar.add_cookie_header(oRequest)
-        
+
         try:
-            oResponse = opener.open(oRequest)
+            oResponse = opener.open(oRequest, timeout=self.requestTimeout)
         except HTTPError as e:
             if e.code >= 400:
                 self._Status = str(e.code)
                 data = e.fp.read()
+                # Schutzsysteme zuerst pruefen: sie antworten mit 403 und
+                # einer Hinweisseite, die ohne diese Behandlung als leerer
+                # Inhalt in der Liste landet.
+                kind = protection.detect(data, e.headers, e.code)
+                if kind:
+                    return self.__handleProtection(kind, sParameters)
                 if 'DDOS-GUARD' in str(data):
                     opener = build_opener(HTTPCookieProcessor(cookieJar))
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]
-                    response = opener.open('https://check.ddos-guard.net/check.js')
+                    response = opener.open('https://check.ddos-guard.net/check.js', timeout=self.requestTimeout)
                     content = response.read().decode('utf-8', 'replace')
                     url2 = re.findall("Image.*?'([^']+)'; new", content)
                     url3 = urlparse(self._sUrl)
                     url3 = '%s://%s/%s' % (url3.scheme, url3.netloc, url2[0])
                     opener = build_opener(HTTPCookieProcessor(cookieJar))
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]
-                    opener.open(url3).read()
+                    opener.open(url3, timeout=self.requestTimeout).read()
                     opener = build_opener(HTTPCookieProcessor(cookieJar))
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]
-                    oResponse = opener.open(self._sUrl, sParameters if len(sParameters) > 0 else None)
+                    oResponse = opener.open(self._sUrl, sParameters if sParameters and len(sParameters) > 0 else None, timeout=self.requestTimeout)
                     if not oResponse:
                         logger.error(' -> [requestHandler]: Failed DDOS-GUARD active: ' + self._sUrl)
                         return 'DDOS GUARD SCHUTZ'
                 elif 'cloudflare' in str(e.headers):
-                    if not self.ignoreErrors:
-                        value = ('!!! CLOUDFLARE-SCHUTZ AKTIV !!! Weitere Informationen: ' + str(e.__class__.__name__) + ' : ' + str(e), str(traceback.format_exc().splitlines()[-3].split('addons')[-1]))
-                        xbmcgui.Dialog().ok(cConfig().getLocalizedString(30166), str(value))  # Error
+                    # Frueher stand hier ein Fehlerdialog mit Traceback, aus
+                    # dem niemand ableiten konnte, was zu tun ist. Jetzt
+                    # erklaert der Hinweis den Weg ueber das Browser-Cookie.
+                    protection.notifyOnce(self.__siteId(), protection.CLOUDFLARE,
+                                          self._sUrl, interactive=not self.ignoreErrors)
                     logger.error(' -> [requestHandler]: Failed Cloudflare active: ' + self._sUrl)
-                    return 'CLOUDFLARE-SCHUTZ AKTIV' # Meldung geht als "e.doc" in die exception nach default.py
+                    return ''
                 else:
                     if not self.ignoreErrors:
-                        xbmcgui.Dialog().ok('xStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
+                        xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
                     logger.error(' -> [requestHandler]: HTTPError ' + str(e) + ' Url: ' + self._sUrl)
                     return 'SEITE NICHT ERREICHBAR'
             else:
                 if not self.ignoreErrors:
-                    xbmcgui.Dialog().ok('xStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
+                    xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
                 logger.error(' -> [requestHandler]: HTTPError ' + str(e) + ' Url: ' + self._sUrl)
                 return 'SEITE NICHT ERREICHBAR'
         except URLError as e:
             if not self.ignoreErrors:
-                xbmcgui.Dialog().ok('xStream', str(e.reason))
+                xbmcgui.Dialog().ok('GerXStream', str(e.reason))
             logger.error(' -> [requestHandler]: URLError ' + str(e.reason) + ' Url: ' + self._sUrl)
             return 'URL FEHLER'
         except HTTPException as e:
             if not self.ignoreErrors:
-                xbmcgui.Dialog().ok('xStream', str(e))
+                xbmcgui.Dialog().ok('GerXStream', str(e))
             logger.error(' -> [requestHandler]: HTTPException ' + str(e) + ' Url: ' + self._sUrl)
             return 'TIMEOUT'
 
         self._sResponseHeader = oResponse.info()
-        
+
         content_encoding = self._sResponseHeader.get('Content-Encoding', '').lower()
         if content_encoding:
             raw_content = oResponse.read()
@@ -316,7 +430,7 @@ class cRequestHandler:
             sContent = oResponse.read().decode('utf-8', 'replace')
 
         if 'lazingfast' in sContent:
-            bf = cBF().resolve(self._sUrl, sContent, cookieJar, self._USER_AGENT, sParameters)
+            bf = cBF().resolve(self._sUrl, sContent, cookieJar, self._USER_AGENT, sParameters, self.requestTimeout)
             if bf:
                 sContent = bf
             else:
@@ -382,7 +496,7 @@ class cRequestHandler:
     def ignoreExpired(self, bIgnoreExpired):
         self.__bIgnoreExpired = bIgnoreExpired
 
-    def __doh_request(self, url, doh_server="https://cloudflare-dns.com/dns-query"):
+    def __doh_request(self, url, doh_server):
         # Parse the URL
         parsed_url = urlparse(url)
         hostname = parsed_url.hostname
@@ -392,7 +506,7 @@ class cRequestHandler:
             ip_address = self.__readVolatileCache(key, self.cacheTime)
             if ip_address:
                 return ip_address
-        
+
         params = urlencode({"name": hostname, "type": "A"})
         doh_url = f"{doh_server}?{params}"
         req = Request(doh_url)
@@ -424,6 +538,7 @@ class cRequestHandler:
         cacheFile = os.path.join(self._cachePath, h)
         fileAge = self.getFileAge(cacheFile)
         if 0 < fileAge < self.cacheTime:
+            content = None
             try:
                 with open(cacheFile, 'rb') as f:
                         content = f.read().decode('utf8')
@@ -463,29 +578,29 @@ class cRequestHandler:
         if self.isMemoryCacheActive:
             self._memCache.clear()
         cRequestHandler.persistent_openers.clear()
-        
+
         # clear persistent cache
         files = os.listdir(self._cachePath)
         for file in files:
             os.remove(os.path.join(self._cachePath, file))
-            xbmcgui.Dialog().notification('xStream', cConfig().getLocalizedString(30405), xbmcgui.NOTIFICATION_INFO, 100, False)
+            xbmcgui.Dialog().notification('GerXStream', cConfig().getLocalizedString(30405), xbmcgui.NOTIFICATION_INFO, 100, False)
 
 
 class cBF:
-    def resolve(self, url, html, cookie_jar, user_agent, sParameters):
+    def resolve(self, url, html, cookie_jar, user_agent, sParameters, timeout=10):
         page = urlparse(url).scheme + '://' + urlparse(url).netloc
         j = re.compile('<script[^>]src="([^"]+)').findall(html)
         if j:
             opener = build_opener(HTTPCookieProcessor(cookie_jar))
             opener.addheaders = [('User-agent', user_agent), ('Referer', url)]
-            opener.open(page + j[0])
-        a = re.compile('xhr\.open\("GET","([^,]+)",').findall(html)
+            opener.open(page + j[0], timeout=timeout)
+        a = re.compile(r'xhr\.open\("GET","([^,]+)",').findall(html)
         if a:
             import random
             aespage = page + a[0].replace('" + ww +"', str(random.randint(700, 1500)))
             opener = build_opener(HTTPCookieProcessor(cookie_jar))
             opener.addheaders = [('User-agent', user_agent), ('Referer', url)]
-            html = opener.open(aespage).read().decode('utf-8', 'replace')
+            html = opener.open(aespage, timeout=timeout).read().decode('utf-8', 'replace')
             cval = self.aes_decode(html)
             cdata = re.compile('cookie="([^="]+).*?domain[^>]=([^;]+)').findall(html)
             if cval and cdata:
@@ -493,13 +608,13 @@ class cBF:
                 cookie_jar.set_cookie(c)
                 opener = build_opener(HTTPCookieProcessor(cookie_jar))
                 opener.addheaders = [('User-agent', user_agent), ('Referer', url)]
-                return opener.open(url, sParameters if len(sParameters) > 0 else None).read().decode('utf-8', 'replace')
+                return opener.open(url, sParameters if sParameters and len(sParameters) > 0 else None, timeout=timeout).read().decode('utf-8', 'replace')
 
     @staticmethod
     def aes_decode(html):
         try:
             import pyaes
-            keys = re.compile('toNumbers\("([^"]+)"').findall(html)
+            keys = re.compile(r'toNumbers\("([^"]+)"').findall(html)
             if keys:
                 from binascii import hexlify, unhexlify
                 msg = unhexlify(keys[2])

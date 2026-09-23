@@ -18,14 +18,15 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'internetarchive'
 SITE_NAME = 'Internet Archive'
 SITE_ICON = 'internetarchive.png'
+CONTENT_CATEGORIES = ('filme', 'dokus')
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'archive.org') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'archive.org') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -37,11 +38,63 @@ URL_COLL1 = ('%22&fl%5B%5D=collection&fl%5B%5D=description&fl%5B%5D=genre&fl%5B%
 URL_COLLECTIONS_LIST = {'Film Noir': 'Film_Noir', 'Feature Films': 'feature_films', 'Movie Trailers': 'movie_trailers', 'Short Format Films': 'short_films',
                         'SciFi / Horror': 'SciFi_Horror', 'Cinemocracy': 'cinemocracy'}
 
+# Vorkonfigurierte Suchphrasen. Das Archiv fuehrt keine eigene deutsche
+# Kollektion, deshalb ueber Suchsprache und Schlagworte statt ueber
+# collection:. Jede Zeile ist live gegen die Advanced-Search-API geprueft,
+# die Zahl dahinter ist die Treffermenge zum Zeitpunkt der Aufnahme -
+# Kategorien ohne Treffer waeren nur leere Menuepunkte.
+URL_GERMAN_LIST = (
+    ('Filme auf Deutsch', 'mediatype:movies AND language:(German OR ger)'),  # 83121
+    ('Serien auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:series OR subject:"tv series")'),  # 1707
+    ('Krimi auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:crime OR subject:krimi)'),  # 1202
+    ('Komoedie auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:comedy OR subject:komoedie)'),  # 696
+    ('Horror auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:horror'),  # 211
+    ('Science-Fiction auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:"science fiction" OR subject:scifi)'),  # 78
+    ('Western auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:western'),  # 43
+    ('Zeichentrick auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:cartoon OR subject:animation)'),  # 318
+    ('Kinderfilme auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:children OR subject:"kids")'),  # 52
+    ('Anime auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:anime'),  # 92
+    ('Dokumentationen auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:documentary'),  # 242
+    ('Konzerte und Musik auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND (subject:music OR subject:concert)'),  # 727
+    ('Nachrichten und Zeitgeschehen',
+     'mediatype:movies AND language:(German OR ger) AND (subject:news OR subject:nachrichten)'),  # 4835
+    ('Stummfilme auf Deutsch',
+     'mediatype:movies AND language:(German OR ger) AND subject:"silent film"'),  # 16
+    ('Anime (alle Sprachen)', 'mediatype:movies AND subject:anime'),  # 60952
+    ('Film Noir (alle Sprachen)', 'mediatype:movies AND subject:film noir'),  # 2168
+    ('Stummfilm-Klassiker (alle Sprachen)',
+     'mediatype:movies AND subject:"silent film"'),  # 2400
+    ('Charlie Chaplin', 'mediatype:movies AND creator:"Charlie Chaplin"'),  # 123
+    ('Buster Keaton', 'mediatype:movies AND creator:"Buster Keaton"'),  # 147
+    ('Alfred Hitchcock', 'mediatype:movies AND creator:"Alfred Hitchcock"'),  # 131
+)
+
 
 def load(): # Menu structure of the site plugin
     logger.info('Load %s' % SITE_NAME)
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30507), SITE_IDENTIFIER, 'showGenre'))  # Kategorien
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30543), SITE_IDENTIFIER, 'menuCollections'))  # Kollektionen
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'))   # Search
+    cGui().setEndOfDirectory()
+
+
+def showGenre():
+    """Vorkonfigurierte Kategorien: Sprache, Genre, Regisseur, Epoche."""
+    params = ParameterHandler()
+    for sTitle, sQuery in URL_GERMAN_LIST:
+        params.setParam('sUrl', URL_SEARCH % cParser.quotePlus(sQuery))
+        cGui().addFolder(cGuiElement(sTitle, SITE_IDENTIFIER, 'showEntries'), params)
     cGui().setEndOfDirectory()
 
 
@@ -57,7 +110,7 @@ def showCollections(entryUrl=False, sGui=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler((entryUrl), ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # # Wenn Suche erfolglos - Abbruch
@@ -67,7 +120,7 @@ def showCollections(entryUrl=False, sGui=False):
         if not sGui: oGui.showInfo()
         return
 
-    # Filter nach eingestellter Sprache in xstream laden
+    # Filter nach eingestellter Sprache in gerxstream laden
     sLanguage = cConfig().getSetting('prefLanguage')
 
     for i in aResults:
@@ -132,7 +185,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl + '%20AND%20mediatype%3Amovies&fl%5B%5D=description&fl%5B%5D=genre&fl%5B%5D=identifier&fl%5B%5D=language&fl%5B%5D=title&fl%5B%5D=year&rows=500&output=json', ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
     if not jSearch: return  # # Wenn Suche erfolglos - Abbruch
@@ -142,7 +195,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         if not sGui: oGui.showInfo()
         return
 
-    # Filter nach eingestellter Sprache in xstream laden
+    # Filter nach eingestellter Sprache in gerxstream laden
     sLanguage = cConfig().getSetting('prefLanguage')
 
     for i in aResults:

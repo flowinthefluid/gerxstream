@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
+from ast import literal_eval
+
 import xbmc
 import time
 import xbmcgui
+import os
 
 from resources.lib.config import cConfig
 from resources.lib.tmdb import cTMDB
@@ -11,16 +14,29 @@ from datetime import date, datetime
 from urllib.parse import urlencode
 
 
+def _getCredits(credits):
+    if isinstance(credits, dict):
+        return credits
+    if isinstance(credits, str):
+        try:
+            credits = literal_eval(credits)
+        except (SyntaxError, ValueError):
+            return {}
+        if isinstance(credits, dict):
+            return credits
+    return {}
+
+
 def WindowsBoxes(sTitle, sFileName, metaType, year=''):
+    meta = {}
     try:
         meta = cTMDB().get_meta(metaType, sFileName, tmdb_id=xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year=year, advanced='true')
         try:
             meta['plot'] = str(meta['plot'].encode('latin-1'), 'utf-8')
         except Exception:
             pass
-    except Exception:
-        print("TMDB - error")
-        pass
+    except Exception as e:
+        xbmc.log('TMDB - error: %s' % e, xbmc.LOGERROR)
 
     if 'tmdb_id' not in meta:
         xbmc.executebuiltin("Notification(TMDB, Kein Eintrag gefunden, 1000, '')")
@@ -48,29 +64,22 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
         def onInit(self):
             self.setProperty('color', cConfig().getSetting('Color'))
-            self.poster = 'https://image.tmdb.org/t/p/%s' % cConfig().getSetting('poster_tmdb')
-            self.none_poster = 'https://eu.ui-avatars.com/api/?background=000&size=512&name=%s&color=FFF&font-size=0.33'
+            self.none_poster = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art', 'no_cover.png')
             if 'trailer' in meta:
                 self.setProperty('isTrailer', 'true')
             self.setFocusId(9000)
             if 'credits' in meta and meta['credits']:
                 cast = []
                 crew = []
-                try:
-                    data = eval(str(meta['credits'].encode('latin-1'), 'utf-8'))
-                except Exception:
-                    data = eval(str(meta['credits']))
+                data = _getCredits(meta['credits'])
 
                 listitems = []
                 if 'cast' in data and data['cast']:
                     for i in data['cast']:
-                        slabel = i['name']
-                        slabel2 = i['character']
-                        if i['profile_path']:
-                            sicon = self.poster + str(i['profile_path'])
-                        else:
-                            sicon = self.none_poster % slabel
-                        sid = i['id']
+                        slabel = i.get('name', '')
+                        slabel2 = i.get('character', '')
+                        sicon = cTMDB().imageUrl(i.get('profile_path')) or self.none_poster
+                        sid = i.get('id', '')
                         listitem_ = xbmcgui.ListItem(label=slabel, label2=slabel2)
                         listitem_.setProperty('id', str(sid))
                         listitem_.setArt({'icon': sicon})
@@ -81,13 +90,10 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 listitems2 = []
                 if 'crew' in data and data['crew']:
                     for i in data['crew']:
-                        slabel = i['name']
-                        slabel2 = i['job']
-                        if i['profile_path']:
-                            sicon = self.poster + str(i['profile_path'])
-                        else:
-                            sicon = self.none_poster % slabel
-                        sid = i['id']
+                        slabel = i.get('name', '')
+                        slabel2 = i.get('job', '')
+                        sicon = cTMDB().imageUrl(i.get('profile_path')) or self.none_poster
+                        sid = i.get('id', '')
                         listitem_ = xbmcgui.ListItem(label=slabel, label2=slabel2)
                         listitem_.setProperty('id', str(sid))
                         listitem_.setArt({'icon': sicon})
@@ -103,15 +109,9 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
             for prop in meta:
                 try:
-                    if isinstance(meta[prop], unicode):
-                        self.setProperty(prop, meta[prop].encode('utf-8'))
-                    else:
-                        self.setProperty(prop, str(meta[prop]))
+                    self.setProperty(prop, '' if meta[prop] is None else str(meta[prop]))
                 except Exception:
-                    if isinstance(meta[prop], str):
-                        self.setProperty(prop, meta[prop].encode('utf-8'))
-                    else:
-                        self.setProperty(prop, str(meta[prop]))
+                    self.setProperty(prop, '')
 
         def credit(self, meta='', control=''):
             listitems = []
@@ -122,10 +122,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     sTitle = i['title']
                 elif 'name' in i and i['name']:
                     sTitle = i['name']
-                if i['poster_path']:
-                    sThumbnail = self.poster + str(i['poster_path'])
-                else:
-                    sThumbnail = self.none_poster % sTitle
+                sThumbnail = cTMDB().imageUrl(i.get('poster_path')) or self.none_poster
                 listitem_ = xbmcgui.ListItem(label=sTitle)
                 listitem_.setArt({'icon': sThumbnail})
                 listitems.append(listitem_)
@@ -153,6 +150,27 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 return
             elif controlId == 50 or controlId == 5200:
                 item = self.getControl(controlId).getSelectedItem()
+                if not item:
+                    return
+                # In der Besetzung kann ein Nutzer direkt aus der erweiterten
+                # Filminfo einen Namen dauerhaft in seine Liste uebernehmen.
+                if controlId == 50:
+                    choice = xbmcgui.Dialog().select(
+                        cConfig().getLocalizedString(30873),
+                        [cConfig().getLocalizedString(30874),
+                         cConfig().getLocalizedString(30875)])
+                    if choice < 0:
+                        return
+                    if choice == 1:
+                        from resources.lib.favorites import addFavoriteActor
+                        name = item.getLabel()
+                        if addFavoriteActor(name):
+                            message = cConfig().getLocalizedString(30877) % name
+                        else:
+                            message = cConfig().getLocalizedString(30876) % name
+                        xbmcgui.Dialog().notification('GerXStream', message,
+                                                       xbmcgui.NOTIFICATION_INFO, 3000)
+                        return
                 sid = item.getProperty('id')
                 sUrl = 'person/' + str(sid)
                 try:
@@ -178,7 +196,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     self.setFocusId(9000)
                 except Exception:
                     return
-                self.setProperty('xstream_menu', 'Person')
+                self.setProperty('gerxstream_menu', 'Person')
             elif controlId == 9:
                 sid = self.getProperty('tmdb_id')
                 if metaType == 'movie':
@@ -202,7 +220,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             elif controlId == 5215 or controlId == 5205 or controlId == 5210:
                 item = self.getControl(controlId).getSelectedItem()
                 self.close()
-                xbmc.executebuiltin("Container.Update(%s?function=searchTMDB&%s)" % ('plugin://plugin.video.xstream/', urlencode({'searchTitle': item.getLabel()})))
+                xbmc.executebuiltin("Container.Update(%s?function=searchTMDB&%s)" % ('plugin://%s/' % cConfig().getAddonInfo('id'), urlencode({'searchTitle': item.getLabel()})))
                 return
 
         def onFocus(self, controlId):
@@ -218,7 +236,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 self.close()
 
 # kasi
-    path = 'special://home/addons/%s' % cConfig().getAddonInfo('id')   
+    path = cConfig().getAddonInfo('path')
     wd = XMLDialog('info.xml', path, 'default', '720p')
     wd.doModal()
     del wd

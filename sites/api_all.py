@@ -26,7 +26,7 @@ SITE_NAME = 'API Suchmaschine'
 SITE_ICON = 'api.png'
 SITE_IDENTIFIER = 'api_all'
 
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinokiste.eu')
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinokiste.club')
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 ORIGIN = 'https://' + DOMAIN + '/'
@@ -43,7 +43,7 @@ URL_CAST = URL_API + '/data/browse/?lang=%s&type=%s&order_by=%s&cast=%s&page=%s'
 URL_YEAR = URL_API + '/data/browse/?lang=%s&type=%s&order_by=%s&year=%s&page=%s'
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
@@ -314,13 +314,13 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     if not entryUrl: entryUrl = params.getValue('sUrl')
     try:
         oRequest = cRequestHandler(entryUrl)
-        if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+        if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
             oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
         aJson = loads(sJson)
-    except:
+    except Exception:
         if not sGui: oGui.showInfo()
         return
 
@@ -367,7 +367,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
                 oGuiElement.setLanguage('EN')
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
         if 'runtime' in movie:
-            isMatch, sRuntime = cParser.parseSingleResult(movie['runtime'], '\d+')
+            isMatch, sRuntime = cParser.parseSingleResult(movie['runtime'], r'\d+')
             if isMatch:
                 oGuiElement.addItemValue('duration', sRuntime)
         params.setParam('entryUrl', URL_WATCH % str(movie['_id']))
@@ -393,13 +393,13 @@ def showEpisodes():
     sThumbnail = params.getValue("sThumbnail")
     try:
         oRequest = cRequestHandler(sUrl)
-        if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+        if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
             oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
         aJson = loads(sJson)
-    except:
+    except Exception:
         cGui().showInfo()
         return
 
@@ -433,12 +433,12 @@ def showHosters():
     sEpisode = params.getValue('episode')
     try:
         oRequest = cRequestHandler(sUrl)
-        if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+        if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
             oRequest.cacheTime = 60 * 60 * 8  # HTML Cache Zeit 8 Stunden
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
         sJson = oRequest.request()
-    except:
+    except Exception:
         return hosters
     if sJson:
         aJson = loads(sJson)
@@ -450,7 +450,7 @@ def showHosters():
                     isMatch, aName = cParser.parse(stream['stream'], '//([^/]+)/')
                     if isMatch:
 #                        sName = cParser.urlparse(sUrl) ### angezeigter hostername api
-                        
+
                         sName = aName[0][:aName[0].rindex('.')]
                         if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
                         sHoster = sHoster + ' ' + sName
@@ -497,17 +497,17 @@ def showSearch():
 def _search(oGui, sSearchText):
     SSsearch(oGui, sSearchText)
 
-    
+
 def SSsearch(sGui=False, sSearchText=False):
     global apiJson
     oGui = sGui if sGui else cGui()
     params = ParameterHandler()
     sLanguage = cConfig().getSetting('prefLanguage')
-    
+
     # Falls die Daten noch nicht geladen wurden oder neu geladen werden sollen
     if apiJson is None or 'movies' not in apiJson:
         loadMoviesData()
-        
+
     if 'movies' not in apiJson or not isinstance(apiJson.get('movies'), list) or len(apiJson['movies']) == 0:
         oGui.showInfo()
         return
@@ -564,7 +564,7 @@ def SSsearch(sGui=False, sSearchText=False):
                 oGuiElement.setLanguage('EN')
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
         if 'runtime' in movie:
-            isMatch, sRuntime = cParser.parseSingleResult(movie['runtime'], '\d+')
+            isMatch, sRuntime = cParser.parseSingleResult(movie['runtime'], r'\d+')
             if isMatch:
                 oGuiElement.addItemValue('duration', sRuntime)
         params.setParam('entryUrl', URL_WATCH % str(movie['_id']))
@@ -583,7 +583,7 @@ def loadMoviesData():
         sLang = '2'
     if sLanguage == '2':  # prefLang Englisch
         sLang = '3'
-    
+
     try:
         oRequest = cRequestHandler(URL_SEARCH % (sLang, 'new', '1'), caching=True)
         oRequest.addHeaderEntry('Referer', REFERER)
@@ -592,10 +592,10 @@ def loadMoviesData():
         sJson = oRequest.request()
         apiJson = loads(sJson)
         logger.info('API-Daten erfolgreich geladen')
-    except:
+    except Exception:
         logger.error('Fehler beim Laden der API-Daten')
         apiJson = {'movies': []}
-        
+
 
 # Daten beim Import des Moduls laden
 loadMoviesData()

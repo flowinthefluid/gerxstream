@@ -15,18 +15,19 @@ from json import loads
 SITE_IDENTIFIER = 'kinox'
 SITE_NAME = 'KinoX'
 SITE_ICON = 'kinox.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'animes', 'dokus')
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinoz.to') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinoz.to') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
-# Domain Auswahl über die xStream Einstellungen möglich
+# Domain Auswahl über die GerXStream Einstellungen möglich
 URL_MAIN = 'https://' + DOMAIN
 # URL_MAIN = 'https://ww19.kinox.to'
 URL_NEWS = URL_MAIN + '/index.php'
@@ -163,7 +164,7 @@ def __getPreferredLanguage():
 def __displayItems(sGui, sHtmlContent):
     oGui = sGui if sGui else cGui()
     parms = ParameterHandler()
-    pattern = '<td class="Icon"><img width="16" height="11" src="/gr/sys/lng/(\d+).png" alt="language"></td>' + \
+    pattern = r'<td class="Icon"><img width="16" height="11" src="/gr/sys/lng/(\d+).png" alt="language"></td>' + \
               '.*?title="([^\"]+)".*?<td class="Title">.*?<a href="([^\"]+)" onclick="return false;">([^<]+)</a> <span class="Year">([0-9]+)</span>'
     aResult = cParser.parse(sHtmlContent, pattern)
     if not aResult[0]:
@@ -207,7 +208,7 @@ def showFavItems():
 def showNews():
     parms = ParameterHandler()
     sUrl = parms.getValue('sUrl')
-    pattern = '<div class="Opt leftOpt Headlne"><h1>([a-zA-Z0-9\s.]+)</h1></div>\s*(?:<div.*?)?<div class="Opt rightOpt Hint">Insgesamt: (.*?)</div>'
+    pattern = r'<div class="Opt leftOpt Headlne"><h1>([a-zA-Z0-9\s.]+)</h1></div>\s*(?:<div.*?)?<div class="Opt rightOpt Hint">Insgesamt: (.*?)</div>'
     sHtmlContent = __getHtmlContent(sUrl)
     aResult = cParser.parse(sHtmlContent, pattern)
     if aResult[0]:
@@ -238,7 +239,7 @@ def parseNews():
         oGui.setEndOfDirectory()
         return
 
-    pattern = '<td class="Icon"><img src="/gr/sys/lng/(\d+).png" alt="language" width="16" height="11".*?<td class="Title.*?rel="([^"]+)"><(?:a|span) href="([^\"]+)".*?class="OverlayLabel">([^<]+)(?:<span class="EpisodeDescr">)?([^<]+)'
+    pattern = '<td class="Icon"><img src="/gr/sys/lng/(\\d+).png" alt="language" width="16" height="11".*?<td class="Title.*?rel="([^"]+)"><(?:a|span) href="([^\"]+)".*?class="OverlayLabel">([^<]+)(?:<span class="EpisodeDescr">)?([^<]+)'
     aResult = cParser.parse(aResult[1][0], pattern)
     if not aResult[0]:
         logger.info("Can't get any news")
@@ -404,7 +405,7 @@ def __createMovieTitle(sHtmlContent):
 
 
 def parseSerieSite(sHtmlContent):
-    pattern = '<option[^>]+value="(\d+)"[^>]+>Staffel.+?</option>'
+    pattern = r'<option[^>]+value="(\d+)"[^>]+>Staffel.+?</option>'
     return cParser.parse(sHtmlContent, pattern)
 
 
@@ -608,7 +609,7 @@ def getHosterUrl(sUrl=False):
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('Referer', URL_MAIN)
     sHtmlContent = oRequest.request()
-    isMatch, sStreamUrl = cParser.parseSingleResult(sHtmlContent, 'a\shref=\\\\".*?(https?:.*?)\\\\"')
+    isMatch, sStreamUrl = cParser.parseSingleResult(sHtmlContent, 'a\\shref=\\\\".*?(https?:.*?)\\\\"')
     if not isMatch:
         isMatch, sStreamUrl = cParser.parseSingleResult(sHtmlContent, '<iframe src=[^"]*"([^"]+)')
     if isMatch:
@@ -626,11 +627,8 @@ def getHosterUrl(sUrl=False):
 
 
 def _redirectHoster(url):
-    try:
-        from urllib2 import build_opener, HTTPError
-    except ImportError:
-        from urllib.error import HTTPError
-        from urllib.request import build_opener
+    from urllib.error import HTTPError
+    from urllib.request import build_opener
     opener = build_opener()
     opener.addheaders = [('Referer', url)]
     try:

@@ -5,8 +5,8 @@ import sys
 
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
-from xbmc import LOGINFO as LOGNOTICE, log
-from string import maketrans
+from xbmc import LOGINFO as LOGNOTICE
+from resources.lib.tools import addon_log as log
 from urllib.request import Request, urlopen, build_opener
 from urllib.error import HTTPError
 from urllib.parse import urlencode, quote_plus
@@ -30,30 +30,33 @@ class cPyLoadHandler:
             py_user = self.config.getSetting('pyload_user')
             py_passwd = self.config.getSetting('pyload_passwd')
             mydata = [('username', py_user), ('password', py_passwd)]
-            mydata = urlencode(mydata)
+            mydata = urlencode(mydata).encode('utf-8')
             # check if host has a leading http://
             if py_host.find('http://') != 0:
                 py_host = 'http://' + py_host
             log(cConfig().getLocalizedString(30166) + ' -> [pyLoadHandler]: Attemting to connect to PyLoad at: ' + py_host + ':' + py_port, LOGNOTICE)
             req = Request(py_host + ':' + py_port + '/api/login', mydata)
             req.add_header("Content-type", "application/x-www-form-urlencoded")
-            page = urlopen(req).read()
-            page = page[1:]
-            session = page[:-1]
+            page = urlopen(req, timeout=20).read().decode('utf-8', 'replace').strip()
+            session = page.strip('"')
             opener = build_opener()
             opener.addheaders.append(('Cookie', 'beaker.session.id=' + session))
-            sPackage = str(sPackage).decode("utf-8").encode('ascii', 'replace').translate(maketrans('\\/:*?"<>|', '_________'))
+            sPackage = str(sPackage).translate(str.maketrans('\\/:*?"<>|', '_________'))
             py_url = py_host + ':' + py_port + '/api/addPackage?name="' + quote_plus(sPackage) + '"&links=["' + quote_plus(sUrl) + '"]'
             log(cConfig().getLocalizedString(30166) + ' -> [pyLoadHandler]: PyLoad API call: ' + py_url, LOGNOTICE)
-            sock = opener.open(py_url).read()
+            sock = opener.open(py_url, timeout=20)
+            sock.read()
             sock.close()
             return True
         except HTTPError as e:
             log(cConfig().getLocalizedString(30166) + ' -> [pyLoadHandler]: unable to send link: Error= ' + str(sys.exc_info()[0]), LOGNOTICE)
-            log(e.code, LOGNOTICE)
-            log(e.read(), LOGNOTICE)
+            log(str(e.code), LOGNOTICE)
+            log(e.read().decode('utf-8', 'replace'), LOGNOTICE)
             try:
                 sock.close()
             except Exception:
                 log(cConfig().getLocalizedString(30166) + ' -> [pyLoadHandler]: unable to close socket...', LOGNOTICE)
+            return False
+        except Exception as e:
+            log(cConfig().getLocalizedString(30166) + ' -> [pyLoadHandler]: unable to send link: %s' % e, LOGNOTICE)
             return False

@@ -17,14 +17,15 @@ from resources.lib.gui.gui import cGui
 SITE_IDENTIFIER = 'megakino'
 SITE_NAME = 'Megakino'
 SITE_ICON = 'megakino.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'dokus')
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'megakino.si') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', '8megakino.com') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -45,13 +46,13 @@ def load(): # Menu structure of the site plugin
     params.setParam('sUrl', URL_MAIN)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30500), SITE_IDENTIFIER, 'showEntries'), params)  # New
     params.setParam('sUrl', URL_KINO)
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30501), SITE_IDENTIFIER, 'showEntries'), params)  # Current films in the cinema  
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30501), SITE_IDENTIFIER, 'showEntries'), params)  # Current films in the cinema
     params.setParam('sUrl', URL_MOVIES)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30502), SITE_IDENTIFIER, 'showEntries'), params)  # Movies
     params.setParam('sUrl', URL_ANIMATION)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30504), SITE_IDENTIFIER, 'showEntries'), params)  # Animated Films
     params.setParam('sUrl', URL_SERIES)
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30511), SITE_IDENTIFIER, 'showEntries'), params)  # Series 
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30511), SITE_IDENTIFIER, 'showEntries'), params)  # Series
     params.setParam('sUrl', URL_DOKU)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30505), SITE_IDENTIFIER, 'showEntries'), params)  # Documentations
     params.setParam('sUrl', URL_MAIN)
@@ -66,10 +67,10 @@ def showGenre():
     params = ParameterHandler()
     entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48 # 48 Stunden
-    sHtmlContent = oRequest.request()    
-    pattern = '<div\s+class="side-block__title">Genres</div>(.*?)</ul>\s*</div>'
+    sHtmlContent = oRequest.request()
+    pattern = r'<div\s+class="side-block__title">Genres</div>(.*?)</ul>\s*</div>'
     isMatch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
         pattern = 'href="([^"]+)">([^<]+)</a>'
@@ -88,13 +89,13 @@ def showCollection():
     params = ParameterHandler()
     entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48 # 48 Stunden
     sHtmlContent = oRequest.request()
-    pattern = '<div\s+class="side-block__title">Sammlung</div>(.*?)<div class="side-block\sjs'
+    pattern = r'<div\s+class="side-block__title">Sammlung</div>(.*?)<div class="side-block\sjs'
     isMatch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
-        pattern = 'href="([^"]+)"\s.*?title">([^<]+)'
+        pattern = r'href="([^"]+)"\s.*?title">([^<]+)'
         isMatch, aResult = cParser.parse(sHtmlContainer, pattern)
     if not isMatch:
         cGui().showInfo()
@@ -112,10 +113,12 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     isTvshow = False
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False), bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     sHtmlContent = oRequest.request()
-    pattern = '<a[^>]*class="poster grid-item.*?href="([^"]+).*?<img data-src="([^"]+).*?alt="([^"]+)".*?(.*?)</a>'
+    # data-src (Lazy-Load) und src (direktes Laden) kommen je nach Theme-
+    # Version vor - beide Domains dieses Netzwerks beobachtet.
+    pattern = '<a[^>]*class="poster grid-item.*?href="([^"]+).*?<img (?:data-src|src)="([^"]+).*?alt="([^"]+)".*?(.*?)</a>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if not isMatch:
         if not sGui: oGui.showInfo()
@@ -125,14 +128,14 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     for sUrl, sThumbnail, sName, sDummy in aResult:
         if sSearchText and not cParser.search(sSearchText, sName):
             continue
-        isQuality, sQuality = cParser.parseSingleResult(sDummy, 'poster__label">\+([\d]+)')  # Episoden Info mit +
+        isQuality, sQuality = cParser.parseSingleResult(sDummy, r'poster__label">\+([\d]+)')  # Episoden Info mit +
         if not isQuality:
-            isQuality, sQuality = cParser.parseSingleResult(sDummy, 'poster__label">\+\s([\d]+)') # Episoden Info mit + und Leerzeichen
+            isQuality, sQuality = cParser.parseSingleResult(sDummy, r'poster__label">\+\s([\d]+)') # Episoden Info mit + und Leerzeichen
         if not isQuality:
             isQuality, sQuality = cParser.parseSingleResult(sDummy, 'poster__label">([^<]+)') # Qualität bei Filmen
-        isYear, sYear = cParser.parseSingleResult(sDummy, '([\d]+)</li>\s+<li>')  # Release Jahr
+        isYear, sYear = cParser.parseSingleResult(sDummy, r'([\d]+)</li>\s+<li>')  # Release Jahr
         isDesc, sDesc = cParser.parseSingleResult(sDummy, 'class="poster__text[^"]+">([^<]+)')  # Beschreibung
-        isTvshow, aResult = cParser.parse(sName, '\s+-\s+Staffel\s+\d+')
+        isTvshow, aResult = cParser.parse(sName, r'\s+-\s+Staffel\s+\d+')
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showEpisodes' if isTvshow else 'showHosters')
         if isQuality:
             if isTvshow is True:
@@ -156,7 +159,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         params.setParam('sDesc', sDesc)
         oGui.addFolder(oGuiElement, params, isTvshow, total)
     if not sGui and not sSearchText and not sSearchPageText:
-        isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'class="pagination.*?href="([^"]+)">\D')
+        isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, r'class="pagination.*?href="([^"]+)">\D')
         # Start Page Function
         isMatchSiteSearch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, 'class="pagination(.*?)</section>')
         if isMatchSiteSearch:
@@ -181,20 +184,20 @@ def showEpisodes():
     sThumbnail = params.getValue("sThumbnail")
     sName = params.getValue('sName')
     sDesc = params.getValue('sDesc')
-    isMatch, sShowName = cParser.parseSingleResult(sName, '(.*?)\s+-\s+Staffel\s+\d+')
+    isMatch, sShowName = cParser.parseSingleResult(sName, r'(.*?)\s+-\s+Staffel\s+\d+')
     if not isMatch:
         cGui().showInfo()
         return
-    isMatch, sSeason = cParser.parseSingleResult(sName, '\s+-\s+Staffel\s+(\d+)')
+    isMatch, sSeason = cParser.parseSingleResult(sName, r'\s+-\s+Staffel\s+(\d+)')
     if not isMatch:
         cGui().showInfo()
         return
 
     oRequest = cRequestHandler(sUrl, bypass_dns=True)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
-    sHtmlContent = oRequest.request()     
-    pattern = '<option\s+value="ep([^"]+)">([^<]+)</option>'
+    sHtmlContent = oRequest.request()
+    pattern = r'<option\s+value="ep([^"]+)">([^<]+)</option>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     total = len(aResult)
     for episode, episodeName in aResult:
@@ -215,7 +218,7 @@ def showHosters():
     hosters = []
     sUrl = ParameterHandler().getValue('entryUrl')
     sHtmlContent = cRequestHandler(sUrl, bypass_dns=True, caching=False).request()
-    pattern = '<iframe.*?src=([^\s]+)'
+    pattern = r'<iframe.*?src=([^\s]+)'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if isMatch:
         for sUrl in aResult:
@@ -237,10 +240,10 @@ def showEpisodeHosters():
     sUrl = ParameterHandler().getValue('entryUrl')
     episodeId = 'ep' + ParameterHandler().getValue('episodeId')
     sHtmlContent = cRequestHandler(sUrl, bypass_dns=True, caching=False).request()
-    pattern = '<select\s+name="pmovie__select-items"\s+class="[^"]+"\s+style="[^"]+"\s+id="%s">\s*(.*?)\s*</select>' % episodeId
+    pattern = r'<select\s+name="pmovie__select-items"\s+class="[^"]+"\s+style="[^"]+"\s+id="%s">\s*(.*?)\s*</select>' % episodeId
     isMatch, sContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
-        pattern = '<option\s+value="([^"]+)">'
+        pattern = r'<option\s+value="([^"]+)">'
         isMatch, aResult = cParser.parse(sContainer, pattern)
         if isMatch:
             for sUrl in aResult:
@@ -256,7 +259,7 @@ def showEpisodeHosters():
 
 
 def getHosterUrl(sUrl=False):
-    return [{'streamUrl': sUrl, 'resolved': False}] 
+    return [{'streamUrl': sUrl, 'resolved': False}]
 
 
 def showSearch():

@@ -1,20 +1,22 @@
-# Python-Bytecode
+# Python bytecode
 __pycache__/
 *.py[cod]
 *.pyo
 
-# Editor / IDE
+# Editor and operating-system files
 .idea/
 .vscode/
 *.swp
 *~
-
-# Betriebssystem
 .DS_Store
 Thumbs.db
 
-# Build-Artefakte
-*.zip
+# GitLab Pages is generated in CI and must never be committed.
+/public/
 
-# Veröffentlichte Kodi-Repository-Pakete werden versioniert.
-!repo/**/*.zip
+# Local transfer packages are not part of the source repository.
+/manual-install/
+
+# ResolveURL is a required, versioned third-party release input.
+!/release-inputs/
+!/release-inputs/script.module.resolveurl-5.1.209.zip

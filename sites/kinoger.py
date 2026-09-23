@@ -26,14 +26,15 @@ from itertools import zip_longest as ziplist
 SITE_IDENTIFIER = 'kinoger'
 SITE_NAME = 'KinoGer'
 SITE_ICON = 'kinoger.png'
+CONTENT_CATEGORIES = ('filme', 'serien', 'animes')
 
 # Global search function is thus deactivated!
-if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'false':
+if not cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, True):
     SITE_GLOBAL_SEARCH = False
     logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 
 # Domain Abfrage
-DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain') # Domain Auswahl über die xStream Einstellungen möglich
+DOMAIN = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '.domain', 'kinoger.to') # Domain Auswahl über die GerXStream Einstellungen möglich
 STATUS = cConfig().getSetting('plugin_' + SITE_IDENTIFIER + '_status') # Status Code Abfrage der Domain
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
 
@@ -58,7 +59,7 @@ def load(): # Menu structure of the site plugin
 def showGenre():
     params = ParameterHandler()
     oRequest = cRequestHandler(URL_MAIN)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48 # 48 Stunden
     sHtmlContent = oRequest.request()
     pattern = '<li[^>]class="links"><a href="([^"]+).*?/>([^<]+)</a>'
@@ -78,7 +79,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
     params = ParameterHandler()
     if not entryUrl: entryUrl = params.getValue('sUrl')
     oRequest = cRequestHandler(entryUrl, ignoreErrors=(sGui is not False))
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
     if sSearchText:
         oRequest.addParameters('story', sSearchText)
@@ -105,7 +106,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         if sSearchText and not cParser.search(sSearchText, sName):
             continue
         isTvshow = True if 'staffel' in sName.lower() or 'serie' in entryUrl or ';">S0' in sDummy else False
-        isYear, sYear = cParser.parse(sName, '(.*?)\s+\((\d+)\)') # Jahr und Name trennen
+        isYear, sYear = cParser.parse(sName, r'(.*?)\s+\((\d+)\)') # Jahr und Name trennen
         if isYear:
             for name, year in sYear:
                 sName = name
@@ -114,7 +115,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         if sThumbnail.startswith('/'):
             sThumbnail = URL_MAIN + sThumbnail
         isDesc, sDesc = cParser.parseSingleResult(sDummy, '(?:</b></div>|</div></b>|</b>)([^<]+)') # Beschreibung
-        isDuration, sDuration = cParser.parseSingleResult(sDummy, '(?:Laufzeit|Spielzeit).*?([\d]+)') # Laufzeit
+        isDuration, sDuration = cParser.parseSingleResult(sDummy, r'(?:Laufzeit|Spielzeit).*?([\d]+)') # Laufzeit
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
         oGuiElement.setThumbnail(sThumbnail)
@@ -134,7 +135,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         # Start Page Function
         isMatchSiteSearch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, 'class="navigation(.*?)</a></div>')
         if isMatchSiteSearch:
-            isMatch, aResult = cParser.parse(sHtmlContainer, '<span>([\d]+)</span>.*?nav_ext">.*?">([\d]+).*?href="([^"]+)')
+            isMatch, aResult = cParser.parse(sHtmlContainer, r'<span>([\d]+)</span>.*?nav_ext">.*?">([\d]+).*?href="([^"]+)')
             for sPageActive, sPageLast, sNextPage in aResult:
                 #sPageName = '[I]Seitensuche starten  >>> [/I] Seite ' + str(sPageActive) + ' von ' + str(sPageLast) + ' Seiten  [I]<<<[/I]'
                 sPageName = cConfig().getLocalizedString(30284) + str(sPageActive) + cConfig().getLocalizedString(30285) + str(sPageLast) + cConfig().getLocalizedString(30286)
@@ -156,7 +157,7 @@ def showSeasons():
     sThumbnail = params.getValue('sThumbnail')
     sTVShowTitle = params.getValue('TVShowTitle')
     oRequest = cRequestHandler(entryUrl)
-    if cConfig().getSetting('global_search_' + SITE_IDENTIFIER) == 'true':
+    if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # HTML Cache Zeit 6 Stunden
     sHtmlContent = oRequest.request()
     L11 = []
@@ -273,7 +274,7 @@ def showHosters():
     else:
         sUrl = params.getValue('entryUrl')
         sHtmlContent = cRequestHandler(sUrl, ignoreErrors=True, caching=False).request()
-        pattern = "show[^>]\d,[^>][^>]'([^']+)"
+        pattern = r"show[^>]\d,[^>][^>]'([^']+)"
         isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     if isMatch:
         for sUrl in aResult:
@@ -311,7 +312,7 @@ def showHosters():
                     oRequest.addHeaderEntry('Referer', 'https://kinoger.com/')
                     sHtmlContent = oRequest.request()
                     # Wenn Content p.a.c.k.e.d ist dann entpacken
-                    isMatch, packed = cParser.parseSingleResult(sHtmlContent, '(eval\s*\(function.*?)</script>')
+                    isMatch, packed = cParser.parseSingleResult(sHtmlContent, r'(eval\s*\(function.*?)</script>')
                     if isMatch:
                         from resources.lib import jsunpacker
                         sHtmlContent = jsunpacker.unpack(packed)
@@ -326,7 +327,7 @@ def showHosters():
                         if 'CF-DDOS-GUARD aktiv' in sHtmlContent: # Wenn Request eine 403 zurückgibt dann überspringen
                             continue
                         else:
-                            pattern = 'RESOLUTION=.*?x(\d+).*?\n(index[^\n]+)'
+                            pattern = 'RESOLUTION=.*?x(\\d+).*?\n(index[^\n]+)'
                             isMatch, aResult = cParser.parse(sHtmlContent, pattern)
                     if isMatch:
                         for sQuality, sUrl in aResult:

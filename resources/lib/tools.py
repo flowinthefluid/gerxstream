@@ -4,19 +4,105 @@
 import xbmc
 import xbmcgui
 import hashlib
+import json
 import re
 import os
 import time
+import shutil
 
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib import pyaes
 from resources.lib.config import cConfig
 from xbmcvfs import translatePath
 from urllib.parse import quote, unquote, quote_plus, unquote_plus, urlparse
+import html
 from html.entities import name2codepoint
 from difflib import SequenceMatcher
 from functools import lru_cache
 from os import path, chdir
+
+LEGACY_ADDON_ID = 'plugin.video.xstream'
+CURRENT_ADDON_ID = 'plugin.video.gerxstream'
+ADDON_DATA_MIGRATION_MARKER = '.gerxstream_data_migrated'
+LEGACY_INSTALL_HINT_MARKER = '.gerxstream_legacy_install_hint_shown'
+
+
+def _addonDataPath(addon_id):
+    return translatePath(os.path.join('special://home/userdata/addon_data', addon_id))
+
+
+def _writeMarker(marker_path, content):
+    try:
+        marker_dir = os.path.dirname(marker_path)
+        if marker_dir and not os.path.isdir(marker_dir):
+            os.makedirs(marker_dir)
+        with open(marker_path, mode='w', encoding='utf-8') as marker_file:
+            marker_file.write(content)
+    except Exception as e:
+        xbmc.log('[tools] Failed to write marker %s: %s' % (marker_path, e), xbmc.LOGERROR)
+
+
+def migrateLegacyAddonData():
+    addon_id = cConfig().getAddonInfo('id')
+    if addon_id != CURRENT_ADDON_ID:
+        return False
+
+    old_data_path = _addonDataPath(LEGACY_ADDON_ID)
+    new_data_path = _addonDataPath(CURRENT_ADDON_ID)
+    marker_path = os.path.join(new_data_path, ADDON_DATA_MIGRATION_MARKER)
+
+    if os.path.isfile(marker_path):
+        return False
+
+    copied_files = 0
+    os.makedirs(new_data_path, exist_ok=True)
+
+    if os.path.isdir(old_data_path):
+        for src_root, _, file_names in os.walk(old_data_path):
+            rel_path = os.path.relpath(src_root, old_data_path)
+            dst_root = new_data_path if rel_path == '.' else os.path.join(new_data_path, rel_path)
+            os.makedirs(dst_root, exist_ok=True)
+            for file_name in file_names:
+                src_file = os.path.join(src_root, file_name)
+                dst_file = os.path.join(dst_root, file_name)
+                if os.path.exists(dst_file):
+                    continue
+                try:
+                    shutil.copy2(src_file, dst_file)
+                    copied_files += 1
+                except Exception as e:
+                    xbmc.log('[tools] Could not migrate %s: %s' % (src_file, e), xbmc.LOGERROR)
+
+    marker_content = 'migrated_from=%s\ntime=%s\nfiles=%s\n' % (
+        LEGACY_ADDON_ID,
+        int(time.time()),
+        copied_files)
+    _writeMarker(marker_path, marker_content)
+    if copied_files:
+        xbmc.log('[tools] Migrated %s addon_data files from %s to %s' % (copied_files, LEGACY_ADDON_ID, CURRENT_ADDON_ID), xbmc.LOGINFO)
+    return copied_files > 0
+
+
+def showLegacyInstallHintOnce():
+    addon_id = cConfig().getAddonInfo('id')
+    if addon_id != CURRENT_ADDON_ID:
+        return
+
+    addon_data_path = _addonDataPath(CURRENT_ADDON_ID)
+    marker_path = os.path.join(addon_data_path, LEGACY_INSTALL_HINT_MARKER)
+    if os.path.isfile(marker_path):
+        return
+
+    legacy_addon_path = translatePath(os.path.join('special://home/addons', LEGACY_ADDON_ID))
+    if not os.path.isdir(legacy_addon_path):
+        return
+
+    xbmcgui.Dialog().ok(
+        cConfig().getAddonInfo('name'),
+        'Alte Installation erkannt: plugin.video.xstream.\n'
+        'Dieses Addon verwendet jetzt plugin.video.gerxstream.\n'
+        'Bitte entferne die alte Installation, um Doppelinstallationen zu vermeiden.')
+    _writeMarker(marker_path, 'shown=%s\n' % int(time.time()))
 
 # Aufgeführte Plattformen zum Anzeigen der Systemplattform
 def platform():
@@ -29,7 +115,7 @@ def platform():
     elif xbmc.getCondVisibility('system.platform.windows'):
         return 'Windows'
     elif xbmc.getCondVisibility('system.platform.uwp'):
-        return 'Windows UWP'      
+        return 'Windows UWP'
     elif xbmc.getCondVisibility('system.platform.osx'):
         return 'OSX'
     elif xbmc.getCondVisibility('system.platform.atv2'):
@@ -50,7 +136,8 @@ def platform():
 
 # zeigt nach Update den Changelog als Popup an
 def changelog():
-    CHANGELOG_PATH = translatePath(os.path.join('special://home/addons/' + cConfig().getAddonInfo('id') + '/', 'changelog.txt'))
+    addon_path = translatePath(cConfig().getAddonInfo('path'))
+    CHANGELOG_PATH = os.path.join(addon_path, 'changelog.txt')
     version = cConfig().getAddonInfo('version')
     if cConfig().getSetting('changelog_version') == version or not os.path.isfile(CHANGELOG_PATH):
         return
@@ -66,7 +153,8 @@ def changelog():
 
 # zeigt die Entwickler Optionen Warnung als Popup an
 def devWarning():
-    POPUP_PATH = translatePath(os.path.join('special://home/addons/' + cConfig().getAddonInfo('id') + '/resources/popup', 'devWarning.txt'))
+    addon_path = translatePath(cConfig().getAddonInfo('path'))
+    POPUP_PATH = os.path.join(addon_path, 'resources', 'popup', 'devWarning.txt')
     heading = cConfig().getLocalizedString(30322)
     with open(POPUP_PATH, mode='r', encoding='utf-8') as f:
         cl_lines = f.readlines()
@@ -78,34 +166,20 @@ def devWarning():
 
 # Erstellt eine Textbox
 def textBox(heading, announce):
-    class TextBox():
-
-        def __init__(self, *args, **kwargs):
-            self.WINDOW = 10147
-            self.CONTROL_LABEL = 1
-            self.CONTROL_TEXTBOX = 5
-            xbmc.executebuiltin("ActivateWindow(%d)" % (self.WINDOW, ))
-            self.win = xbmcgui.Window(self.WINDOW)
-            xbmc.sleep(500)
-            self.setControls()
-
-        def setControls(self):
-            self.win.getControl(self.CONTROL_LABEL).setLabel(heading)
-            try:
-                f = open(announce)
-                text = f.read()
-            except:
-                text = announce
-            self.win.getControl(self.CONTROL_TEXTBOX).setText(str(text))
-            return
-
-    TextBox()
-    while xbmc.getCondVisibility('Window.IsVisible(10147)'):
-        xbmc.sleep(500)
+    text = announce
+    if isinstance(announce, str) and os.path.isfile(announce):
+        try:
+            with open(announce, mode='r', encoding='utf-8') as text_file:
+                text = text_file.read()
+        except Exception:
+            text = announce
+    xbmcgui.Dialog().textviewer(heading, str(text))
 
 
 # Info Meldung im Kodi
-def infoDialog(message, heading=cConfig().getAddonInfo('name'), icon='', time=5000, sound=False):
+def infoDialog(message, heading=None, icon='', time=5000, sound=False):
+    if heading is None:
+        heading = cConfig().getAddonInfo('name')
     if icon == '': icon = cConfig().getAddonInfo('icon')
     elif icon == 'INFO': icon = xbmcgui.NOTIFICATION_INFO
     elif icon == 'WARNING': icon = xbmcgui.NOTIFICATION_WARNING
@@ -114,33 +188,56 @@ def infoDialog(message, heading=cConfig().getAddonInfo('name'), icon='', time=50
 
 
 class cParser:
+    # Der Name versprach einen Cache, den es nicht gab: jeder Aufruf ging durch
+    # re.compile(). Bei 27 Site-Plugins mit zusammen ueber 300 Aufrufstellen
+    # traegt das messbar auf. Kompilierte Muster sind unveraenderlich und beim
+    # Matchen thread-sicher, lassen sich also gefahrlos halten.
     @staticmethod
+    @lru_cache(maxsize=512)
     def _get_compiled_pattern(pattern, flags=0):
         return re.compile(pattern, flags)
-    
+
+    # Gewollte Faltungen auf ASCII. Alles andere wird nicht mehr von Hand
+    # abgebildet, sondern von html.unescape() aufgeloest (siehe unten).
+    #   stand hier frueher auf 'h' und machte aus "20:30 Uhr" ein
+    # "20:30hUhr" - es ist ein schmales geschuetztes Leerzeichen.
+    _ASCII_FOLDINGS = (
+        ('–', '-'),      # Halbgeviertstrich
+        ('…', '...'),    # Auslassungspunkte
+        ('∗', '*'),      # Asterisk-Operator
+        ('／', '/'),      # Schraegstrich in voller Breite
+        (' ', ' '),      # schmales geschuetztes Leerzeichen
+    )
+
+    _UNICODE_ESCAPE = re.compile(r'\\u([0-9a-fA-F]{4})')
+
     @staticmethod
     def _replaceSpecialCharacters(s):
         try:
-            # Umlaute Unicode konvertieren
-            for t in (('\\/', '/'), ('&amp;', '&'), ('\\u00c4', 'Ä'), ('\\u00e4', 'ä'),
-                ('\\u00d6', 'Ö'), ('\\u00f6', 'ö'), ('\\u00dc', 'Ü'), ('\\u00fc', 'ü'),
-                ('\\u00df', 'ß'), ('\\u2013', '-'), ('\\u00b2', '²'), ('\\u00b3', '³'),
-                ('\\u00e9', 'é'), ('\\u2018', '‘'), ('\\u201e', '„'), ('\\u201c', '“'),
-                ('\\u00c9', 'É'), ('\\u2026', '...'), ('\\u202f', 'h'), ('\\u2019', '’'),
-                ('\\u0308', '̈'), ('\\u00e8', 'è'), ('#038;', ''), ('\\u00f8', 'ø'),
-                ('／', '/'), ('\\u00e1', 'á'), ('&#8211;', '-'), ('&#8220;', '“'), ('&#8222;', '„'),
-                ('&#8217;', '’'), ('&#8230;', '…'), ('\\u00bc', '¼'), ('\\u00bd', '½'), ('\\u00be', '¾'),
-                ('\\u2153', '⅓'), ('\\u002A', '*')):
-                s = s.replace(*t)
+            # 1. JSON-Escapes, die als Rohtext in der Antwort stehen. Kommt
+            #    vor, wenn eine Quelle JSON in HTML einbettet.
+            s = s.replace('\\/', '/')
+            if '\\u' in s:
+                s = cParser._UNICODE_ESCAPE.sub(
+                    lambda m: chr(int(m.group(1), 16)), s)
 
-            # Umlaute HTML konvertieren
-            for h in (('\\/', '/'), ('&#x26;', '&'), ('&#039;', "'"), ("&#39;", "'"),
-                ('&#xC4;', 'Ä'), ('&#xE4;', 'ä'), ('&#xD6;', 'Ö'), ('&#xF6;', 'ö'),
-                ('&#xDC;', 'Ü'), ('&#xFC;', 'ü'), ('&#xDF;', 'ß') , ('&#xB2;', '²'),
-                ('&#xDC;', '³'), ('&#xBC;', '¼'), ('&#xBD;', '½'), ('&#xBE;', '¾'),
-                ('&#8531;', '⅓'), ('&#8727;', '*')):
-                s = s.replace(*h)
-        except:
+            # 2. HTML-Entities. Die frueher handgepflegte Tabelle deckte 54
+            #    Faelle ab; html.unescape() kennt alle benannten und alle
+            #    numerischen. Sie enthielt ausserdem zwei Fehler: &#xDC; war
+            #    doppelt belegt und in der zweiten Zeile auf '³' statt 'Ü'
+            #    gemappt - gemeint war &#xB3;, weshalb '³' nie aufgeloest
+            #    wurde.
+            s = html.unescape(s)
+            # Doppelt kodierte Quellen (&amp;#038; -> &#038; -> &) brauchen
+            # einen zweiten Durchgang. Ohne verbliebene Entity ist
+            # html.unescape() ein No-op, der Test spart nur Arbeit.
+            if '&#' in s or '&amp;' in s:
+                s = html.unescape(s)
+
+            # 3. Gewollte Faltungen auf ASCII.
+            for src, dst in cParser._ASCII_FOLDINGS:
+                s = s.replace(src, dst)
+        except Exception:
             pass
         return s
 
@@ -152,7 +249,7 @@ class cParser:
                 flags |= re.I
 
             matches = cParser._get_compiled_pattern(pattern, flags).search(sHtmlContent)
-            
+
             if matches:
                 # Check if there's at least one capturing group
                 if matches.lastindex is not None and matches.lastindex >= 1:
@@ -161,7 +258,7 @@ class cParser:
                     # fallback to the entire match if no group was captured
                     return True, cParser._replaceSpecialCharacters(matches.group(0))
         return False, None
-    
+
     @staticmethod
     def parse(sHtmlContent, pattern, iMinFoundValue=1, ignoreCase=False):
         if sHtmlContent:
@@ -170,7 +267,7 @@ class cParser:
                 flags |= re.I
 
             aMatches = cParser._get_compiled_pattern(pattern, flags).findall(sHtmlContent)
-            
+
             if len(aMatches) >= iMinFoundValue:
                 # handle both single strings and tuples of matches
                 if isinstance(aMatches[0], tuple):
@@ -179,7 +276,7 @@ class cParser:
                 else:
                     # Process single strings
                     aMatches = [cParser._replaceSpecialCharacters(x) if isinstance(x, str) and x is not None else '' for x in aMatches]
-                
+
                 return True, aMatches
         return False, None
 
@@ -200,7 +297,7 @@ class cParser:
 
     @staticmethod
     def getNumberFromString(sValue):
-        aMatches = re.compile('\d+').findall(sValue)
+        aMatches = re.compile(r'\d+').findall(sValue)
         if len(aMatches) > 0:
             return int(aMatches[0])
         return 0
@@ -235,7 +332,7 @@ class cParser:
         return base64.b64decode(text).decode('utf-8')
 
 
-# xStream interner Log
+# GerXStream interner Log
 class logger:
     @staticmethod
     def info(sInfo):
@@ -261,15 +358,43 @@ class logger:
     def __writeLog(sLog, cLogLevel=xbmc.LOGDEBUG):
         params = ParameterHandler()
         try:
-            if params.exist('site'):
+            message = str(sLog).strip()
+            legacy_marker_pos = message.find('-> [')
+            if legacy_marker_pos > 0:
+                message = message[legacy_marker_pos + 3:].strip()
+            if message.startswith('->'):
+                message = message[2:].strip()
+
+            module_match = re.match(r'^\[([^\]]+)\]:\s*(.*)$', message)
+            if module_match:
+                module_name = module_match.group(1)
+                module_msg = module_match.group(2)
+                sLog = "[%s] -> [%s]: %s" % (cConfig().getAddonInfo('name'), module_name, module_msg)
+            elif params.exist('site'):
                 site = params.getValue('site')
-                sLog = "[%s] -> [%s]: %s" % (cConfig().getAddonInfo('name'), site, sLog)
+                sLog = "[%s] -> [%s]: %s" % (cConfig().getAddonInfo('name'), site, message)
             else:
-                sLog = "[%s] %s" % (cConfig().getAddonInfo('name'), sLog)
+                sLog = "[%s] %s" % (cConfig().getAddonInfo('name'), message)
             xbmc.log(sLog, cLogLevel)
         except Exception as e:
             xbmc.log('Logging Failure: %s' % e, cLogLevel)
             pass
+
+
+def addon_log(message, level=xbmc.LOGDEBUG):
+    if level == xbmc.LOGFATAL:
+        logger.fatal(message)
+        return
+    if level == xbmc.LOGERROR:
+        logger.error(message)
+        return
+    if level == xbmc.LOGWARNING:
+        logger.warning(message)
+        return
+    if level == xbmc.LOGDEBUG:
+        logger.debug(message)
+        return
+    logger.info(message)
 
 
 class cUtil:
@@ -340,7 +465,7 @@ class cUtil:
         key = fd[0:key_size]
         iv = fd[key_size:key_size + iv_size]
         return key, iv
-        
+
     @staticmethod
     def isSimilar(sSearch, sText, threshold=0.9):
         return (SequenceMatcher(None, sSearch, sText).ratio() >= threshold)
@@ -349,7 +474,7 @@ class cUtil:
     @lru_cache(maxsize=200000)
     def get_seq_match_ratio(token1, token2):
         return SequenceMatcher(None, token1, token2).ratio()
-    
+
     @staticmethod
     def isSimilarByToken(sSearch, sText, threshold=0.9):
         tokens_sSearch = sSearch.split()
@@ -402,29 +527,114 @@ def getRepofromAddonsDB(addonID):
 
 
 class cCache(object):
+    MAX_ENTRIES = 200
     _win = None
 
     def __init__(self):
         # see https://kodi.wiki/view/Window_IDs
         self._win = xbmcgui.Window(10000)
+        addon_id = cConfig().getAddonInfo('id') or CURRENT_ADDON_ID
+        self._property_prefix = addon_id + '.volatileCache.'
+        self._registry_property = self._property_prefix + 'registry'
 
     def __del__(self):
         del self._win
 
-    def get(self, key, cache_time):
-        cachedata = self._win.getProperty(key)
+    def _entryProperty(self, key):
+        return self._property_prefix + 'entry.' + str(key)
 
-        if cachedata:
-            cachedata = eval(cachedata)
-            if time.time() - cachedata[0] < cache_time or cache_time < 0:
-                return cachedata[1]
-            else:
-                self._win.clearProperty(key)
+    def _getRegistry(self):
+        registry_data = self._win.getProperty(self._registry_property)
+        if not registry_data:
+            return {}
+        try:
+            registry = json.loads(registry_data)
+        except (TypeError, ValueError):
+            self._win.clearProperty(self._registry_property)
+            return {}
+        if not isinstance(registry, dict):
+            self._win.clearProperty(self._registry_property)
+            return {}
+
+        valid_registry = {}
+        for key, timestamp in registry.items():
+            if not isinstance(key, str):
+                continue
+            try:
+                valid_registry[key] = float(timestamp)
+            except (TypeError, ValueError):
+                continue
+        return valid_registry
+
+    def _setRegistry(self, registry):
+        if registry:
+            self._win.setProperty(self._registry_property, json.dumps(registry, separators=(',', ':')))
+        else:
+            self._win.clearProperty(self._registry_property)
+
+    def _removeEntry(self, key, registry):
+        self._win.clearProperty(self._entryProperty(key))
+        registry.pop(key, None)
+
+    def _readEntry(self, key):
+        cache_data = self._win.getProperty(self._entryProperty(key))
+        if not cache_data:
+            return None
+        try:
+            timestamp, data = json.loads(cache_data)
+            return float(timestamp), data
+        except (TypeError, ValueError):
+            return None
+
+    def _limitEntries(self, registry):
+        while len(registry) > self.MAX_ENTRIES:
+            oldest_key = min(registry, key=registry.get)
+            self._removeEntry(oldest_key, registry)
+
+    def get(self, key, cache_time):
+        key = str(key)
+        registry = self._getRegistry()
+        if key not in registry:
+            self._win.clearProperty(self._entryProperty(key))
+            return None
+        cache_data = self._readEntry(key)
+
+        if cache_data:
+            if time.time() - cache_data[0] < cache_time or cache_time < 0:
+                return cache_data[1]
+        self._removeEntry(key, registry)
+        self._setRegistry(registry)
 
         return None
-    
+
     def set(self, key, data):
-        self._win.setProperty(key, repr((time.time(), data)))
+        key = str(key)
+        timestamp = time.time()
+        try:
+            cache_data = json.dumps((timestamp, data), separators=(',', ':'))
+        except (TypeError, ValueError):
+            return
+
+        registry = self._getRegistry()
+        self._win.setProperty(self._entryProperty(key), cache_data)
+        registry[key] = timestamp
+        self._limitEntries(registry)
+        self._setRegistry(registry)
+
+    def clearExpired(self, cache_time):
+        if cache_time < 0:
+            return
+
+        registry = self._getRegistry()
+        current_time = time.time()
+        for key in list(registry):
+            cache_data = self._readEntry(key)
+            if not cache_data or current_time - cache_data[0] >= cache_time:
+                self._removeEntry(key, registry)
+        self._setRegistry(registry)
 
     def clear(self):
-        self._win.clearProperties()
+        registry = self._getRegistry()
+        for key in registry:
+            self._win.clearProperty(self._entryProperty(key))
+        self._win.clearProperty(self._registry_property)

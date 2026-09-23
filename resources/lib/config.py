@@ -24,17 +24,24 @@ class cConfig:
             instance.__aLanguage = instance.__addon.getLocalizedString
             cls._instances[addon_id] = instance
         return cls._instances[addon_id]
-    
+
     def showSettingsWindow(self):
         self.__addon.openSettings()
 
     def getSetting(self, sName, default=''):
         result = self.__addon.getSetting(sName)
+        if sName.endswith('.domain'):
+            site_prefix = sName[:-7]
+            custom_result = (self.__addon.getSetting(site_prefix + '.domainCustom') or '').strip()
+            if custom_result:
+                return custom_result
+            if result == '__custom__':
+                return default
         if result:
             return result
         else:
             return default
-        
+
     def getSettingString(self, sName, default=''):
         result = self.__addon.getSetting(sName)
         if result:
@@ -42,8 +49,34 @@ class cConfig:
         else:
             return default
 
+    def getSettingBool(self, sName, default=False):
+        result = self.__addon.getSetting(sName)
+        if result is None or result == '':
+            return bool(default)
+        if isinstance(result, bool):
+            return result
+        return str(result).strip().lower() in ('true', '1', 'yes', 'on')
+
+    def getSettingInt(self, sName, default=0):
+        result = self.__addon.getSetting(sName)
+        if result is None or result == '':
+            return int(default)
+        try:
+            return int(result)
+        except (TypeError, ValueError):
+            return int(default)
+
+    def getSettingNumber(self, sName, default=0.0):
+        result = self.__addon.getSetting(sName)
+        if result is None or result == '':
+            return float(default)
+        try:
+            return float(result)
+        except (TypeError, ValueError):
+            return float(default)
+
     def setSetting(self, id, value):
-        if id and value:
+        if id is not None:
             with cConfig._settings_lock:
                 self.__addon.setSetting(id, value)
 
@@ -56,7 +89,7 @@ class cConfig:
 
     def getLocalizedString(self, sCode):
         return self.__aLanguage(sCode)
-        
+
     def isBlockedHoster(self, domain, checkResolver=True ):
         domain = urlparse(domain).path if urlparse(domain).hostname == None else urlparse(domain).hostname
         hostblockDict = ['flashx','streamlare','evoload', 'hd-stream', 'vivo']  # permanenter Block
@@ -68,9 +101,9 @@ class cConfig:
         if checkResolver:   # Überprüfung in resolveUrl
             # Lazy Import: cConfig wird von praktisch jedem Modul importiert. Lag
             # resolveurl auf Modulebene, starb das gesamte Addon mit ImportError,
-            # bevor die Fehlerbehandlung in xstream.py ueberhaupt greifen konnte.
+            # bevor die Fehlerbehandlung in gerxstream.py ueberhaupt greifen konnte.
             import resolveurl as resolver
             if resolver.relevant_resolvers(domain=domain) == []:
-                log('[xStream] -> [isblockedHoster]: In resolveUrl no domain for url: %s' % domain, LOGWARNING)
+                log('[GerXStream] -> [isblockedHoster]: In resolveUrl no domain for url: %s' % domain, LOGWARNING)
                 return True, domain    # Domain nicht in resolveUrl gefunden
         return False, domain

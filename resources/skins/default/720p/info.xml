@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window id="130">
 	<defaultcontrol always="true">9000</defaultcontrol>
-	<onload>SetProperty(xstream_menu,Info)</onload>
-	<onunload>SetProperty(xstream_menu,Info)</onunload>
+	<onload>SetProperty(gerxstream_menu,Info)</onload>
+	<onunload>SetProperty(gerxstream_menu,Info)</onunload>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<control type="group">
@@ -102,7 +102,7 @@
 							<texture background="true" diffuse="poster-big.png" fallback="no-poster2.png">$INFO[Container(50).ListItem.Icon]</texture>
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<visible>Control.HasFocus(50) + !Container(50).OnNext + !Container(50).OnPrevious</visible>
-							<animation center="auto" easing="inout" effect="fade" end="100" start="0" time="400" tween="sine">Visible</animation>	
+							<animation center="auto" easing="inout" effect="fade" end="100" start="0" time="400" tween="sine">Visible</animation>
 						</control>
 						<control type="image">
 							<bordersize>15</bordersize>
@@ -144,7 +144,7 @@
 				<animation center="auto" easing="inout" effect="fade" end="0" start="100" time="400" tween="sine">Hidden</animation>
 				<top>52</top>
 				<left>522</left>
-				<visible>String.IsEqual(Window.Property(xstream_menu),Syno) + !Player.HasMedia</visible>
+				<visible>String.IsEqual(Window.Property(gerxstream_menu),Syno) + !Player.HasMedia</visible>
 				<control type="label" id="1">
 					<height>20</height>
 					<font>font12</font>
@@ -179,7 +179,7 @@
 				<animation center="auto" easing="inout" effect="fade" end="0" start="100" time="400" tween="sine">Hidden</animation>
 				<top>52</top>
 				<left>522</left>
-				<visible>String.IsEqual(Window.Property(xstream_menu),Info) + !Player.HasMedia</visible>
+				<visible>String.IsEqual(Window.Property(gerxstream_menu),Info) + !Player.HasMedia</visible>
 				<control type="label" id="1">
 					<height>20</height>
 					<font>font12</font>
@@ -315,6 +315,11 @@
 							<label2>$INFO[Window.Property(releaseDate)]</label2>
 							<onclick>noop</onclick>
 						</item>
+						<item>
+							<label>[B]IMDb[/B]</label>
+							<label2>$INFO[Window.Property(imdb_id)]</label2>
+							<onclick>noop</onclick>
+						</item>
 					</content>
 				</control>
 			</control>
@@ -323,7 +328,7 @@
 				<animation center="auto" easing="inout" effect="fade" end="0" start="100" time="400" tween="sine">Hidden</animation>
 				<top>52</top>
 				<left>522</left>
-				<visible>String.IsEqual(Window.Property(xstream_menu),Person) + !Player.HasMedia</visible>
+				<visible>String.IsEqual(Window.Property(gerxstream_menu),Person) + !Player.HasMedia</visible>
 				<control type="label" id="1">
 					<height>20</height>
 					<font>font12</font>
@@ -459,8 +464,8 @@
 			<control type="group">
 				<animation center="auto" easing="inout" effect="fade" end="100" start="0" time="400" tween="sine">Visible</animation>
 				<animation center="auto" easing="inout" effect="fade" end="0" start="100" time="400" tween="sine">Hidden</animation>
-				<visible>String.IsEqual(Window.Property(xstream_menu),Cast) + !Player.HasMedia</visible>
-				<onclick>SetProperty(xstream_menu,Person)</onclick>
+				<visible>String.IsEqual(Window.Property(gerxstream_menu),Cast) + !Player.HasMedia</visible>
+				<onclick>SetProperty(gerxstream_menu,Person)</onclick>
 				<control type="label" id="1">
 					<left>520</left>
 					<top>130</top>
@@ -493,7 +498,7 @@
 					<onup>9000</onup>
 					<ondown>5200</ondown>
 					<align>left</align>
-					<onclick>SetProperty(xstream_menu,Person)</onclick>
+					<onclick>SetProperty(gerxstream_menu,Person)</onclick>
 					<orientation>horizontal</orientation>
 					<itemlayout height="230" width="153">
 						<control type="group">
@@ -672,7 +677,7 @@
 			<control type="group" id="52200">
 				<animation center="auto" easing="inout" effect="fade" end="100" start="0" time="400" tween="sine">Visible</animation>
 				<animation center="auto" easing="inout" effect="fade" end="0" start="100" time="400" tween="sine">Hidden</animation>
-				<visible>String.IsEqual(Window.Property(xstream_menu),Simil) + !Player.HasMedia</visible>
+				<visible>String.IsEqual(Window.Property(gerxstream_menu),Simil) + !Player.HasMedia</visible>
 				<control type="label">
 					<left>520</left>
 					<top>130</top>
@@ -890,10 +895,10 @@
 				<orientation>horizontal</orientation>
 				<onleft>30</onleft>
 				<onright>30</onright>
-				<onup condition="String.IsEqual(Window.Property(xstream_menu),Cast)">5200</onup>
-				<onup condition="String.IsEqual(Window.Property(xstream_menu),Simil)">5210</onup>
-				<onup condition="String.IsEqual(Window.Property(xstream_menu),Person)">5215</onup>
-				<onup condition="String.IsEqual(Window.Property(xstream_menu),Info)">30</onup>
+				<onup condition="String.IsEqual(Window.Property(gerxstream_menu),Cast)">5200</onup>
+				<onup condition="String.IsEqual(Window.Property(gerxstream_menu),Simil)">5210</onup>
+				<onup condition="String.IsEqual(Window.Property(gerxstream_menu),Person)">5215</onup>
+				<onup condition="String.IsEqual(Window.Property(gerxstream_menu),Info)">30</onup>
 				<visible allowhiddenfocus="true">!Control.IsVisible(35)</visible>
 				<control type="button" id="5">
 					<textoffsetx>20</textoffsetx>
@@ -907,9 +912,9 @@
 					<focusedcolor>FFFFFFFF</focusedcolor>
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse="$INFO[Window.Property(color)]">focus.png</texturefocus>
-					<onclick>SetProperty(xstream_menu,Info)</onclick>
+					<onclick>SetProperty(gerxstream_menu,Info)</onclick>
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
-					<visible>!String.IsEqual(Window.Property(xstream_menu),Info)</visible>
+					<visible>!String.IsEqual(Window.Property(gerxstream_menu),Info)</visible>
 					<visible>!Player.HasMedia</visible>
 				</control>
 				<control type="button" id="6">
@@ -924,9 +929,9 @@
 					<focusedcolor>FFFFFFFF</focusedcolor>
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse="$INFO[Window.Property(color)]">focus.png</texturefocus>
-					<onclick>SetProperty(xstream_menu,Syno)</onclick>
+					<onclick>SetProperty(gerxstream_menu,Syno)</onclick>
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
-					<visible>String.IsEqual(Window.Property(xstream_menu),Info)</visible>
+					<visible>String.IsEqual(Window.Property(gerxstream_menu),Info)</visible>
 					<visible>!Player.HasMedia</visible>
 				</control>
 				<control type="button" id="7">
@@ -942,7 +947,7 @@
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse="$INFO[Window.Property(color)]">focus.png</texturefocus>
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
-					<onclick>SetProperty(xstream_menu,Cast)</onclick>
+					<onclick>SetProperty(gerxstream_menu,Cast)</onclick>
 					<visible>!Player.HasMedia</visible>
 				</control>
 				<control type="button" id="9">
@@ -958,7 +963,7 @@
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse="$INFO[Window.Property(color)]">focus.png</texturefocus>
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
-					<onclick>SetProperty(xstream_menu,Simil)</onclick>
+					<onclick>SetProperty(gerxstream_menu,Simil)</onclick>
 					<visible>!Player.HasMedia</visible>
 				</control>
 				<control type="button" id="11">

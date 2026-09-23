@@ -7,16 +7,45 @@ import sys
 import xbmc
 
 from resources.lib.config import cConfig
-from xbmc import LOGINFO as LOGNOTICE, LOGERROR, log
+from xbmc import LOGINFO as LOGNOTICE, LOGERROR
 from resources.lib import utils
 from resources.lib.handler.requestHandler import cRequestHandler
 from urllib.parse import urlparse
 from xbmcgui import Dialog
 from xbmcvfs import translatePath
-from resources.lib.tools import platform, infoDialog, getDNS, getRepofromAddonsDB
+from resources.lib.tools import platform, infoDialog, getDNS, getRepofromAddonsDB, addon_log as log
 
 
 ADDON_PATH = translatePath(os.path.join('special://home/addons/', '%s'))
+
+# Ein Site-Plugin kann mehreren Inhaltsgruppen angehoeren. Jedes Site-Plugin
+# traegt seine Zuordnung selbst als Modul-Attribut CONTENT_CATEGORIES
+# (Tupel aus den Kategorie-Kennungen unten). Das steuert ausschliesslich die
+# Navigation; die Scraper selbst bleiben unveraendert. Ein Plugin ohne
+# dieses Attribut - oder mit einer unbekannten Kennung - landet als
+# Sicherheitsnetz in "Weitere Quellen".
+CATEGORY_ORDER = (
+    ('alle', 30857),
+    ('filme', 30850),
+    ('serien', 30851),
+    ('animes', 30853),
+    ('dokus', 30852),
+    ('kinder', 30854),
+)
+
+# Oeffentliche Mediatheken/Archive bleiben als Kennung verfuegbar.
+# Ob sie im Index/Suche erscheinen, steuert allein der Nutzer ueber die
+# normalen Plugin- und Global-Search-Schalter in den Einstellungen.
+PUBLIC_MEDIA_SITES = frozenset((
+    'ardmediathek',
+    'arte',
+    'mediathekviewweb',
+    'kids_tube',
+    'mediaccc',
+    'internetarchive',
+    'netzkino',
+))
+
 
 class cPluginHandler:
     def __init__(self):
@@ -38,7 +67,7 @@ class cPluginHandler:
         update = False
         fileNames = self.__getFileNamesFromFolder(self.defaultFolder)
         for fileName in fileNames:
-            plugin = {'name': '', 'identifier': '', 'icon': '', 'domain': '', 'globalsearch': '', 'modified': 0}
+            plugin = {'name': '', 'identifier': '', 'icon': '', 'domain': '', 'globalsearch': '', 'categories': (), 'modified': 0}
             if fileName in pluginDB:
                 plugin.update(pluginDB[fileName])
             try:
@@ -66,10 +95,77 @@ class cPluginHandler:
         for id in deletions:
             del pluginDB[id]
         if update or deletions:
-        #    self.__updateSettings(pluginDB) ToDo: Routine ist noch nicht fertig, daher deaktiviert
             self.__updatePluginDB(pluginDB) # Aktualisiert PluginDB in Addon_data
             log(cConfig().getLocalizedString(30166) + ' -> [pluginHandler]: PluginDB informations updated.', LOGNOTICE)
         return self.getAvailablePluginsFromDB()
+
+    def getPluginNames(self):
+        return [fileName for fileName in self.__getFileNamesFromFolder(self.defaultFolder)
+                if not fileName.startswith('_')]
+
+
+    @staticmethod
+    def isPublicMediaSite(siteId):
+        return siteId in PUBLIC_MEDIA_SITES
+
+
+    def getContentCategories(self, available=None):
+        """Aktive Quellen nach Inhalt, mit gewollten Mehrfachzuordnungen.
+
+        Eine Quelle wird pro passender Kategorie ausgegeben. Das ist bewusst
+        kein ``elif``: Film-, Serien- und Dokuquellen muessen gleichzeitig
+        auffindbar sein. Ein unbekanntes, aber aktives Modul bleibt als
+        Sicherheitsnetz in ``other`` sichtbar, bis es explizit eingeordnet
+        wurde.
+        """
+        if available is None:
+            available = self.getAvailablePlugins()
+        categorizedIds = set()
+        result = []
+
+        for categoryId, stringId in CATEGORY_ORDER:
+            if categoryId == 'alle':
+                # Fuer "Alle" bewusst unsortiert: Reihenfolge wie in den
+                # aktivierten Plugins, damit der Ordner wie gewuenscht eine
+                # ungefilterte Sammelansicht bleibt.
+                plugins = [plugin for plugin in available]
+                categorizedIds.update(plugin['id'] for plugin in plugins)
+                if plugins:
+                    result.append({
+                        'id': categoryId,
+                        'name': cConfig().getLocalizedString(stringId),
+                        'plugins': plugins,
+                    })
+                continue
+            plugins = sorted(
+                [plugin for plugin in available
+                 if categoryId in plugin.get('categories', ())],
+                key=lambda plugin: plugin['name'].lower())
+            categorizedIds.update(plugin['id'] for plugin in plugins)
+            if plugins:
+                result.append({
+                    'id': categoryId,
+                    'name': cConfig().getLocalizedString(stringId),
+                    'plugins': plugins,
+                })
+
+        otherPlugins = [plugin for plugin in available
+                        if plugin['id'] not in categorizedIds]
+        if otherPlugins:
+            result.append({
+                'id': 'other',
+                'name': cConfig().getLocalizedString(30856),
+                'plugins': sorted(otherPlugins, key=lambda plugin: plugin['id']),
+            })
+        return result
+
+
+    def getPluginsForContentCategory(self, categoryId):
+        """Gibt nur eine der fest definierten Kategorien zurueck."""
+        for category in self.getContentCategories():
+            if category['id'] == categoryId:
+                return category['plugins']
+        return []
 
 
     def getAvailablePluginsFromDB(self):
@@ -81,12 +177,18 @@ class cPluginHandler:
             plugin = pluginDB[pluginID] # Aus PluginDB lese PluginID
             pluginSettingsName = 'plugin_%s' % pluginID # Name des Siteplugins
             plugin['id'] = pluginID
+            # Die optionalen "sichtbar"-Schalter steuern sowohl Hauptmenue
+            # als auch globale Suche. Aeltere Quellen ohne eigenen Schalter
+            # bleiben aus Kompatibilitaetsgruenden sichtbar.
+            if not cConfig().getSettingBool(pluginSettingsName + '_visible', True):
+                continue
             if 'icon' in plugin:
-                plugin['icon'] = os.path.join(iconFolder, plugin['icon'])
+                iconPath = os.path.join(iconFolder, plugin['icon'])
+                plugin['icon'] = iconPath if os.path.isfile(iconPath) else ''
             else:
                 plugin['icon'] = ''
             # existieren zu diesem plugin die an/aus settings
-            if cConfig().getSetting(pluginSettingsName) == 'true': # Lese aus settings.xml welche Plugins eingeschaltet sind
+            if cConfig().getSettingBool(pluginSettingsName, False): # Lese aus settings.xml welche Plugins eingeschaltet sind
                 plugins.append(plugin)
         return plugins
 
@@ -110,369 +212,6 @@ class cPluginHandler:
             data = dict()
         file.close()
         return data
-
-    def __updateSettings(self, pluginDB):
-        """
-        Aktualisiert die settings.xml basierend auf den verfügbaren Plugins.
-        Entfernt Plugins, die nicht mehr existieren, und behält die saubere Formatierung bei.
-
-        Args:
-            pluginDB: Dictionary mit Plugin-Informationen
-        """
-        import os
-        import shutil
-        import xml.etree.ElementTree as ET
-
-        if not os.path.exists(self.settingsFile):
-            return
-
-        try:
-            # Backup der aktuellen settings.xml erstellen
-            backup_file = f"{self.settingsFile}.backup"
-            shutil.copy2(self.settingsFile, backup_file)
-
-            # XML-Datei mit ElementTree parsen
-            tree = ET.parse(self.settingsFile)
-            root = tree.getroot()
-
-            # Hauptsektion für xstream Plugin finden
-            xstream_section = None
-            for section in root.findall('section'):
-                if section.get('id') == 'plugin.video.xstream':
-                    xstream_section = section
-                    break
-
-            if not xstream_section:
-                return
-
-            # Liste der verfügbaren Plugins aus pluginDB
-            available_plugins = [p for p in pluginDB.keys() if p != 'globalSearch']
-
-            # VoD-Plugins identifizieren
-            vod_plugins = [p for p in available_plugins if p.startswith('vod_')]
-
-            # Spezielle Plugins
-            special_plugins = ['dokus', 'filmpalast', 'internetarchive', 'kids_tube']
-            special_plugins = [p for p in special_plugins if p in available_plugins]
-
-            # Normale Plugins (keine speziellen oder VOD)
-            normal_plugins = [p for p in available_plugins
-                              if p not in special_plugins
-                              and p not in vod_plugins]
-
-            # Sortieren für konsistente Reihenfolge
-            normal_plugins.sort()
-
-            # Hälfte für die Verteilung auf die Kategorien
-            half_point = len(normal_plugins) // 2
-
-            # Plugin-Listen für jede Kategorie
-            indexsite1_plugins = special_plugins + normal_plugins[:half_point]
-            indexsite2_plugins = normal_plugins[half_point:]
-
-            # Kategorien finden
-            for category in xstream_section.findall('category'):
-                category_id = category.get('id')
-
-                if category_id == 'indexsite1':
-                    # Verarbeite indexsite1 Kategorie
-                    self._update_category_plugins(category, indexsite1_plugins, pluginDB)
-
-                elif category_id == 'indexsite2':
-                    # Verarbeite indexsite2 Kategorie
-                    self._update_category_plugins(category, indexsite2_plugins, pluginDB)
-
-                elif category_id == 'indexsiteVoD':
-                    # Verarbeite indexsiteVoD Kategorie
-                    self._update_category_plugins(category, vod_plugins, pluginDB)
-
-            # 1. Korrektur: Entfernen des fehlerhaften '>' in der filmpalast.domain Einstellung
-            # XML als String holen
-            import io
-            xml_string = io.StringIO()
-            tree.write(xml_string, encoding='unicode')
-            content = xml_string.getvalue()
-            content = content.replace('</dependencies>&gt;', '</dependencies>')
-
-            # Schreiben der korrigierten XML-Datei
-            with open(self.settingsFile, 'w', encoding='utf-8') as f:
-                f.write('<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' + content)
-
-            xbmc.log(f'settings.xml erfolgreich aktualisiert. Plugins entfernt: {self._removed_plugins}', LOGNOTICE)
-
-        except Exception as e:
-            # Bei Fehler das Backup wiederherstellen
-            if os.path.exists(backup_file):
-                shutil.copy2(backup_file, self.settingsFile)
-            xbmc.log(f'Fehler beim Aktualisieren der settings.xml: {str(e)}', LOGNOTICE)
-
-    def _update_category_plugins(self, category, plugin_list, pluginDB):
-        """
-        Aktualisiert die Plugin-Gruppen in einer Kategorie.
-        Entfernt Plugins, die nicht in der plugin_list sind.
-
-        Args:
-            category: XML-Element der Kategorie
-            plugin_list: Liste der verfügbaren Plugins für diese Kategorie
-            pluginDB: Dictionary mit Plugin-Informationen
-        """
-        # Verfolgung entfernter Plugins
-        self._removed_plugins = []
-
-        # Vorhandene Plugin-Gruppen prüfen
-        groups_to_remove = []
-        for group in category.findall('group'):
-            group_id = group.get('id')
-
-            # Spezialfall für VoD-Plugins in der VoD-Kategorie
-            if category.get('id') == 'indexsiteVoD' and group_id.startswith('plugin_'):
-                # Extrahiere Plugin-ID ohne 'plugin_' Präfix
-                plugin_id = group_id[7:] if group_id.startswith('plugin_') else group_id
-                if plugin_id not in plugin_list:
-                    groups_to_remove.append(group)
-                    self._removed_plugins.append(plugin_id)
-            # Normale Plugins
-            elif group_id not in plugin_list:
-                groups_to_remove.append(group)
-                self._removed_plugins.append(group_id)
-
-        # Entfernen der nicht mehr vorhandenen Plugins
-        for group in groups_to_remove:
-            category.remove(group)
-
-        # Hinzufügen fehlender Plugins
-        existing_group_ids = [g.get('id') for g in category.findall('group')]
-
-        for plugin_id in plugin_list:
-            # Spezialfall für VoD-Plugins in der VoD-Kategorie
-            if category.get('id') == 'indexsiteVoD':
-                group_id = f'plugin_{plugin_id}'
-            else:
-                group_id = plugin_id
-
-            if group_id not in existing_group_ids:
-                # Plugin hinzufügen, falls es noch nicht existiert
-                if plugin_id in pluginDB:
-                    if plugin_id in ['dokus', 'kids_tube', 'filmpalast', 'internetarchive']:
-                        self._add_special_plugin(category, plugin_id, pluginDB[plugin_id])
-                    elif category.get('id') == 'indexsiteVoD':
-                        self._add_vod_plugin(category, plugin_id)
-                    else:
-                        self._add_normal_plugin(category, plugin_id, pluginDB[plugin_id])
-
-    def _add_normal_plugin(self, category, plugin_id, plugin_data):
-        """
-        Fügt ein normales Plugin zur Kategorie hinzu.
-
-        Args:
-            category: XML-Element der Kategorie
-            plugin_id: ID des Plugins
-            plugin_data: Daten des Plugins
-        """
-        import xml.etree.ElementTree as ET
-
-        # Plugin-Name (Anzeigename)
-        plugin_name = plugin_data.get('name', plugin_id)
-
-        # Gruppe erstellen
-        group = ET.SubElement(category, 'group', id=plugin_id, label=plugin_name)
-
-        # Plugin aktivieren/deaktivieren
-        setting = ET.SubElement(group, 'setting', id=f'plugin_{plugin_id}', type='boolean', label='30050', help='30411')
-        level = ET.SubElement(setting, 'level')
-        level.text = '0'
-        default = ET.SubElement(setting, 'default')
-        default.text = 'True'
-        control = ET.SubElement(setting, 'control', type='toggle')
-
-        # Globale Suche
-        setting = ET.SubElement(group, 'setting', id=f'global_search_{plugin_id}', type='boolean', label='30052')
-        level = ET.SubElement(setting, 'level')
-        level.text = '0'
-        default = ET.SubElement(setting, 'default')
-        default.text = 'True'
-
-        dependencies = ET.SubElement(setting, 'dependencies')
-        dependency = ET.SubElement(dependencies, 'dependency', type='enable', operator='!is',
-                                   setting=f'plugin_{plugin_id}')
-        dependency.text = 'False'
-
-        control = ET.SubElement(setting, 'control', type='toggle')
-
-    def _add_special_plugin(self, category, plugin_id, plugin_data):
-        """
-        Fügt ein spezielles Plugin (dokus, kids_tube, filmpalast, internetarchive) zur Kategorie hinzu.
-
-        Args:
-            category: XML-Element der Kategorie
-            plugin_id: ID des Plugins
-            plugin_data: Daten des Plugins
-        """
-        import xml.etree.ElementTree as ET
-
-        # Label-Code für das Plugin
-        label_codes = {
-            'dokus': '30505',
-            'filmpalast': '30702',
-            'internetarchive': '30712',
-            'kids_tube': '30719'
-        }
-
-        label = label_codes.get(plugin_id, plugin_data.get('name', plugin_id))
-
-        # Gruppe erstellen
-        group = ET.SubElement(category, 'group', id=plugin_id, label=label)
-
-        # Haupteinstellung
-        setting = ET.SubElement(group, 'setting', id=f'plugin_{plugin_id}', type='boolean', label='30050', help='30411')
-        level = ET.SubElement(setting, 'level')
-        level.text = '0'
-        default = ET.SubElement(setting, 'default')
-        default.text = 'False' if plugin_id in ['dokus', 'internetarchive', 'kids_tube'] else 'True'
-        control = ET.SubElement(setting, 'control', type='toggle')
-
-        # Spezifische Einstellungen für bestimmte Plugins
-        if plugin_id in ['dokus', 'kids_tube']:
-            # YouTube-Einstellungen
-            setting = ET.SubElement(group, 'setting', id=f'{plugin_id}.youtube', type='action', label='30431', help='')
-            level = ET.SubElement(setting, 'level')
-            level.text = '0'
-            data = ET.SubElement(setting, 'data')
-            data.text = 'Addon.OpenSettings(plugin.video.youtube)'
-            control = ET.SubElement(setting, 'control', type='button', format='action')
-            close = ET.SubElement(control, 'close')
-            close.text = 'true'
-
-            dependencies = ET.SubElement(setting, 'dependencies')
-            dependency = ET.SubElement(dependencies, 'dependency', type='visible', setting=f'plugin_{plugin_id}')
-            dependency.text = 'true'
-
-        # Globale Suche
-        visible = 'False' if plugin_id in ['dokus', 'kids_tube'] else None
-
-        setting = ET.SubElement(group, 'setting', id=f'global_search_{plugin_id}', type='boolean', label='30052')
-        level = ET.SubElement(setting, 'level')
-        level.text = '0'
-        default = ET.SubElement(setting, 'default')
-        default.text = 'False' if plugin_id in ['dokus', 'internetarchive', 'kids_tube'] else 'True'
-
-        if visible:
-            vis = ET.SubElement(setting, 'visible')
-            vis.text = visible
-
-        dependencies = ET.SubElement(setting, 'dependencies')
-        dependency = ET.SubElement(dependencies, 'dependency', type='enable', operator='!is',
-                                   setting=f'plugin_{plugin_id}')
-        dependency.text = 'False'
-
-        control = ET.SubElement(setting, 'control', type='toggle')
-
-        # Spezifische Einstellungen für Filmpalast
-        if plugin_id == 'filmpalast':
-            # Domain-Überprüfung
-            setting = ET.SubElement(group, 'setting', id=f'plugin_{plugin_id}_checkDomain', type='boolean',
-                                    label='30277')
-            level = ET.SubElement(setting, 'level')
-            level.text = '3'
-            default = ET.SubElement(setting, 'default')
-            default.text = 'True'
-
-            dependencies = ET.SubElement(setting, 'dependencies')
-            dependency = ET.SubElement(dependencies, 'dependency', type='enable', operator='!is',
-                                       setting=f'plugin_{plugin_id}')
-            dependency.text = 'false'
-            dependency = ET.SubElement(dependencies, 'dependency', type='visible', operator='!is',
-                                       setting=f'plugin_{plugin_id}')
-            dependency.text = 'false'
-
-            control = ET.SubElement(setting, 'control', type='toggle')
-
-            # Domain-Einstellung
-            setting = ET.SubElement(group, 'setting', id=f'plugin_{plugin_id}.domain', type='string', label='30278',
-                                    help='')
-            level = ET.SubElement(setting, 'level')
-            level.text = '3'
-            default = ET.SubElement(setting, 'default')
-
-            constraints = ET.SubElement(setting, 'constraints')
-            allowempty = ET.SubElement(constraints, 'allowempty')
-            allowempty.text = 'true'
-
-            dependencies = ET.SubElement(setting, 'dependencies')
-            dependency = ET.SubElement(dependencies, 'dependency', type='enable', operator='!is',
-                                       setting=f'plugin_{plugin_id}')
-            dependency.text = 'false'
-            dependency = ET.SubElement(dependencies, 'dependency', type='visible', operator='!is',
-                                       setting=f'plugin_{plugin_id}')
-            dependency.text = 'false'
-
-            control = ET.SubElement(setting, 'control', type='edit', format='string')
-            heading = ET.SubElement(control, 'heading')
-            heading.text = '30278'
-
-        # Status-Setting für bestimmte Plugins
-        if plugin_id in ['filmpalast', 'internetarchive']:
-            setting = ET.SubElement(group, 'setting', id=f'plugin_{plugin_id}_status', type='string', label='Dummy',
-                                    help='')
-            visible = ET.SubElement(setting, 'visible')
-            visible.text = 'false'
-            default = ET.SubElement(setting, 'default')
-            default.text = 'true'
-            control = ET.SubElement(setting, 'control', type='toggle')
-
-    def _add_vod_plugin(self, category, plugin_id):
-        """
-        Fügt ein VoD-Plugin zur VoD-Kategorie hinzu.
-
-        Args:
-            category: XML-Element der Kategorie
-            plugin_id: ID des Plugins
-        """
-        import xml.etree.ElementTree as ET
-
-        # Label-Codes für VoD-Plugins
-        vod_label_map = {
-            'vod_huhu': '30790',
-            'vod_kool': '30791',
-            'vod_oha': '30792',
-            'vod_vavoo': '30793'
-        }
-
-        label = vod_label_map.get(plugin_id, plugin_id)
-
-        # Gruppe erstellen
-        group = ET.SubElement(category, 'group', id=f'plugin_{plugin_id}', label=label)
-
-        # Haupteinstellung
-        setting = ET.SubElement(group, 'setting', id=f'plugin_{plugin_id}', type='boolean', label='30050', help='')
-        level = ET.SubElement(setting, 'level')
-        level.text = '0'
-        default = ET.SubElement(setting, 'default')
-        default.text = 'True'
-        control = ET.SubElement(setting, 'control', type='toggle')
-
-        # Globale Suche
-        setting = ET.SubElement(group, 'setting', id=f'global_search_{plugin_id}', type='boolean', label='30052')
-        level = ET.SubElement(setting, 'level')
-        level.text = '0'
-        default = ET.SubElement(setting, 'default')
-        default.text = 'True'
-
-        dependencies = ET.SubElement(setting, 'dependencies')
-        dependency = ET.SubElement(dependencies, 'dependency', type='enable', operator='!is',
-                                   setting=f'plugin_{plugin_id}')
-        dependency.text = 'false'
-
-        control = ET.SubElement(setting, 'control', type='toggle')
-
-        # Status-Setting
-        setting = ET.SubElement(group, 'setting', id=f'plugin_{plugin_id}_status', type='string', label='Dummy',
-                                help='')
-        visible = ET.SubElement(setting, 'visible')
-        visible.text = 'false'
-        default = ET.SubElement(setting, 'default')
-        default.text = 'true'
-        control = ET.SubElement(setting, 'control', type='toggle')
 
 
     def __getFileNamesFromFolder(self, sFolder): # Hole Namen vom Dateiname.py
@@ -511,10 +250,15 @@ class cPluginHandler:
         except Exception:
             pluginData['globalsearch'] = True
             pass
+        try:
+            pluginData['categories'] = tuple(plugin.CONTENT_CATEGORIES)
+        except Exception:
+            pluginData['categories'] = ()
         return pluginData
 
 
-    def __getPluginDataIndex(self, fileName, defaultFolder): # Hole Plugin Daten aus dem Siteplugin
+    def __getPluginDataIndex(self, fileName, defaultFolder):
+        """Return the extra fields used by the support-information view."""
         pluginData = {}
         if not defaultFolder in sys.path: sys.path.append(defaultFolder)
         try:
@@ -568,10 +312,11 @@ class cPluginHandler:
     def pluginInfo(self):
         # Erstelle Liste mit den Indexseiten Informationen
         list_of_plugins = []
-        fileNames = self.__getFileNamesFromFolder(self.defaultFolder) # Hole Plugins aus xStream
+        fileNames = self.__getFileNamesFromFolder(self.defaultFolder) # Hole Plugins aus GerXStream
         for fileName in fileNames:
             pluginData = self.__getPluginDataIndex(fileName, self.defaultFolder) # Hole Plugin Daten
-            list_of_plugins.append(pluginData)
+            if pluginData:
+                list_of_plugins.append(pluginData)
         result_list = [''.join([f"{key}:  {value}\n" for key, value in dictionary.items()]) for dictionary in list_of_plugins]
         # String Übersetzungen
         result_string = '\n'.join(result_list)
@@ -586,38 +331,57 @@ class cPluginHandler:
         result_string = result_string.replace('false', cConfig().getLocalizedString(30419))
         list_of_PluginData = (result_string) # Ergebnis der Liste
         # Settings Abragen
-        if cConfig().getSetting('githubUpdateResolver') == 'true':  # Resolver Update An/Aus
+        if cConfig().getSettingBool('repositoryUpdateResolver', False):  # Resolver Update An/Aus
             UPDATERU = cConfig().getLocalizedString(30415)  # Aktiv
         else:
             UPDATERU = cConfig().getLocalizedString(30416)  # Inaktiv
-        if cConfig().getSetting('bypassDNSlock') == 'true':  # DNS Bypass
+        if cConfig().getSettingBool('bypassDNSlock', False):  # DNS Bypass
             BYPASS = cConfig().getLocalizedString(30418)  # Aktiv
         else:
             BYPASS = cConfig().getLocalizedString(30419)  # Inaktiv
-        if os.path.exists(ADDON_PATH % 'repository.resolveurl'):
-            RESOLVEURL = cConfig('repository.resolveurl').getAddonInfo('name') + ':  ' + cConfig('repository.resolveurl').getAddonInfo('id') + ' - ' + cConfig('repository.resolveurl').getAddonInfo('version') + '\n'
-        else:
-            RESOLVEURL = ''
+        def addonInfo(addonId):
+            try:
+                addon = cConfig(addonId)
+                return addon.getAddonInfo('name') + ':  ' + addon.getAddonInfo('id') + ' - ' + addon.getAddonInfo('version') + '\n'
+            except Exception:
+                return addonId + ': nicht installiert\n'
+
+        def infoLabel(label):
+            try:
+                return xbmc.getInfoLabel(label) or '-'
+            except Exception:
+                return '-'
+
+        RESOLVEURL = addonInfo('repository.resolveurl') if os.path.exists(ADDON_PATH % 'repository.resolveurl') else ''
+        resolverInfo = addonInfo('script.module.resolveurl')
+        repositoryInfo = addonInfo('repository.gerxstream')
+        try:
+            sourceRepo = getRepofromAddonsDB(cConfig().getAddonInfo('id'))
+        except Exception:
+            sourceRepo = '-'
 
         # Support Informationen anzeigen
         Dialog().textviewer(cConfig().getLocalizedString(30265),
             cConfig().getLocalizedString(30413) + '\n'  # Geräte Informationen
-            + 'Kodi Version:  ' + xbmc.getInfoLabel('System.BuildVersion')[:4] + ' (Code Version: ' + xbmc.getInfoLabel('System.BuildVersionCode') + ')' + '\n'  # Kodi Version
+            + 'Kodi Version:  ' + infoLabel('System.BuildVersion') + ' (Code Version: ' + infoLabel('System.BuildVersionCode') + ')' + '\n'  # Kodi Version
             + cConfig().getLocalizedString(30266) + '   {0}'.format(platform().title()) + '\n'  # System Plattform
+            + 'CPU:  ' + infoLabel('System.CpuModel') + '\n'
+            + 'Arbeitsspeicher:  ' + infoLabel('System.Memory(total)') + '\n'
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30414) + '\n'  # Plugin Informationen
-            + cConfig().getAddonInfo('name') + ' Version:  ' + cConfig().getAddonInfo('id') + ' - ' + cConfig().getAddonInfo('version') + '\n'  # xStream ID und Version
-            + cConfig('script.module.resolveurl').getAddonInfo('name') + ' Version:  ' + cConfig('script.module.resolveurl').getAddonInfo('id') + ' - ' + cConfig('script.module.resolveurl').getAddonInfo('version') + '\n'  # Resolver ID und Version
-            + cConfig('script.module.resolveurl').getAddonInfo('name') + ' Status:  ' + UPDATERU + cConfig().getSettingString('resolver.branch') + '\n'  # Resolver Update Status und Branch
-            + cConfig().getLocalizedString(30435) + ' ' + getRepofromAddonsDB(cConfig().getAddonInfo('id')) + '\n' # Repo-Info
+            + 'Installierte GerXStream-Version:  ' + cConfig().getAddonInfo('version') + '\n'
+            + cConfig().getAddonInfo('name') + ':  ' + cConfig().getAddonInfo('id') + '\n'
+            + resolverInfo
+            + 'ResolveURL Status:  ' + UPDATERU + cConfig().getSettingString('resolver.branch') + '\n'  # Resolver Update Status und Branch
+            + cConfig().getLocalizedString(30435) + ' ' + sourceRepo + '\n' # Repo-Info
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30420) + '\n'  # DNS Informationen
-            + cConfig().getLocalizedString(30417) + ' ' + BYPASS + '\n'  # xStream DNS Bypass aktiv/inaktiv
+            + cConfig().getLocalizedString(30417) + ' ' + BYPASS + '\n'  # GerXStream DNS Bypass aktiv/inaktiv
             + cConfig().getLocalizedString(30434) + '1' + ' ' + getDNS('Network.DNS1Address') + '\n' # DNS Nameserver 1
             + cConfig().getLocalizedString(30434) + '2' + ' ' + getDNS('Network.DNS2Address') + '\n' # DNS Nameserver 2
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30421) + '\n'  # Repo Informationen
-            + cConfig('repository.xstream').getAddonInfo('name') + ':  ' + cConfig('repository.xstream').getAddonInfo('id') + ' - ' + cConfig('repository.xstream').getAddonInfo('version') + '\n'  # xStream Repository ID und Version
+            + repositoryInfo
             + RESOLVEURL
             + '\n'  # Absatz
             + cConfig().getLocalizedString(30422) + '\n'  # Indexseiten Informationen
@@ -626,10 +390,11 @@ class cPluginHandler:
 
     # Überprüfung des Domain Namens. Leite um und hole neue URL und schreibe in die settings.xml. Bei nicht erreichen der Seite deaktiviere Globale Suche bis zum nächsten Start und überprüfe erneut.
     def checkDomain(self):
-        import threading
+        from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
         log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Query status code of the provider', LOGNOTICE)
         fileNames = self.__getFileNamesFromFolder(self.defaultFolder)
-        threads = []
+        tasks = []
+        monitor = xbmc.Monitor()
         for fileName in fileNames:
             try:
                 pluginDataDomain = self.__getPluginDataDomain(fileName, self.defaultFolder)
@@ -644,22 +409,33 @@ class cPluginHandler:
                     cConfig().setSetting('plugin_' + provider + '.domain', '')  # Falls doch dann lösche Settings Eintrag
                     cConfig().setSetting('plugin_' + provider + '_status', '')  # lösche Status Code in den Settings
                     continue
-                
-                if cConfig().getSetting('plugin_' + provider) == 'false':  # Wenn SitePlugin deaktiviert
+
+                if not cConfig().getSettingBool('plugin_' + provider, False):  # Wenn SitePlugin deaktiviert
                     cConfig().setSetting('global_search_' + provider, 'false')  # setzte Globale Suche auf aus
-                    cConfig().setSetting('plugin_' + provider + '_checkdomain', 'false')  # setzte Domain Check auf aus
+                    cConfig().setSetting('plugin_' + provider + '_checkDomain', 'false')  # setzte Domain Check auf aus
                     cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
                     cConfig().setSetting('plugin_' + provider + '_status', '')  # lösche Settings Eintrag
-                    
-                if cConfig().getSetting('plugin_' + provider + '_checkdomain') == 'true':  # aut. Domainüberprüfung an ist überprüfe Status der Sitplugins
-                    t = threading.Thread(target=self._checkdomain, args=(provider, base_link), name=fileName)
-                    threads += [t]
-                    t.start()
+
+                legacyCheck = cConfig().getSetting('plugin_' + provider + '_checkdomain')
+                checkDomainEnabled = cConfig().getSetting('plugin_' + provider + '_checkDomain', legacyCheck)
+                if legacyCheck and not cConfig().getSetting('plugin_' + provider + '_checkDomain'):
+                    cConfig().setSetting('plugin_' + provider + '_checkDomain', legacyCheck)
+
+                if cConfig().getSettingBool('plugin_' + provider + '_checkDomain', bool(legacyCheck and str(legacyCheck).strip().lower() == 'true')):  # aut. Domainüberprüfung an ist überprüfe Status der Sitplugins
+                    tasks.append((provider, base_link))
             except Exception:
                 pass
-        
-        for count, t in enumerate(threads):
-            t.join()
+
+        if tasks:
+            maxWorkers = min(6, max(1, len(tasks)))
+            with ThreadPoolExecutor(max_workers=maxWorkers, thread_name_prefix='checkDomain') as executor:
+                pending = {executor.submit(self._checkdomain, provider, base_link) for provider, base_link in tasks}
+                while pending and not monitor.abortRequested():
+                    done, pending = wait(pending, timeout=0.5, return_when=FIRST_COMPLETED)
+                for future in pending:
+                    future.cancel()
+            if monitor.abortRequested():
+                log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Domain check aborted by monitor shutdown signal', LOGNOTICE)
 
         log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: Domains for all available Plugins updated', LOGNOTICE)
         infoDialog("Domain-Überprüfung aller Plugins abgeschlossen", sound=False, icon='INFO', time=6000)
@@ -697,7 +473,7 @@ class cPluginHandler:
                 cConfig().setSetting('global_search_' + provider, 'false')  # deaktiviere Globale Suche
                 cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
                 log(cConfig().getLocalizedString(30166) + ' -> [checkDomain]: globalSearch for ' + provider + ' is deactivated.', LOGNOTICE)
-        except:
+        except Exception:
             # Wenn Timeout und die Seite Offline ist
             cConfig().setSetting('global_search_' + provider, 'false')  # deaktiviere Globale Suche
             cConfig().setSetting('plugin_' + provider + '.domain', '')  # lösche Settings Eintrag
