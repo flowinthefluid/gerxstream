@@ -1,3 +1,12 @@
+[B]Version: 1.0.21[/B]
+
+23.09.2026
+
+- Wiedergabe-Historie mit Schalter, Begrenzung und Zuruecksetzen ergaenzt
+- Dokuquellen getrennt; YouTube-Doku-Kanaele nur unter Dokus
+- Lieblingshoster unter Alle Quellen oben oder unten positionierbar
+- Anime-Stream, KinoKing sowie Fehlerbehandlung fuer JSON- und Timeout-Quellen verbessert
+
 [B]Version: 1.0.20[/B]
 
 21.09.2026
