@@ -2188,7 +2188,7 @@ msgid "Automatically play next episode"
 msgstr ""
 
 msgctxt "#30934"
-msgid "Starts the next episode in the currently opened episode list after the previous one ends normally."
+msgid "Creates a Kodi playlist for the remaining episodes. It advances after a normal end and supports Kodi's Next item action."
 msgstr ""
 
 msgctxt "#30935"

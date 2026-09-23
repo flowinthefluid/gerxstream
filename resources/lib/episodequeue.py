@@ -86,6 +86,17 @@ def store(queueId, targets):
     return _save(_prune(data))
 
 
+def getTargets(queueId):
+    """Return a copy of one current episode directory's plugin routes."""
+    if not _validQueueId(queueId):
+        return []
+    data = _prune(_load())
+    queue = data.get(queueId, {})
+    targets = queue.get('targets', [])
+    _save(data)  # Opportunistically discard expired entries.
+    return list(targets) if isinstance(targets, list) else []
+
+
 def nextTarget(queueId, index):
     """Return the next route from a fresh queue, never a stream URL."""
     if not _validQueueId(queueId):
@@ -94,10 +105,7 @@ def nextTarget(queueId, index):
         index = int(index)
     except (TypeError, ValueError):
         return ''
-    data = _prune(_load())
-    queue = data.get(queueId, {})
-    targets = queue.get('targets', [])
-    _save(data)  # prune expired queues while the file is already open
+    targets = getTargets(queueId)
     if 0 <= index < len(targets) - 1:
         return targets[index + 1]
     return ''
