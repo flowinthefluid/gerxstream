@@ -2182,3 +2182,27 @@ msgstr ""
 msgctxt "#30932"
 msgid ".. Back"
 msgstr ""
+
+msgctxt "#30933"
+msgid "Automatically play next episode"
+msgstr ""
+
+msgctxt "#30934"
+msgid "Starts the next episode in the currently opened episode list after the previous one ends normally."
+msgstr ""
+
+msgctxt "#30935"
+msgid "Wait before next episode (seconds)"
+msgstr ""
+
+msgctxt "#30936"
+msgid "0 starts immediately. During the countdown, select Cancel to stay in the episode list."
+msgstr ""
+
+msgctxt "#30937"
+msgid "Next episode"
+msgstr ""
+
+msgctxt "#30938"
+msgid "Next episode starts in %d seconds."
+msgstr ""

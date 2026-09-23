@@ -63,6 +63,38 @@ class cHosterGui:
             return data
         return False
 
+    @staticmethod
+    def _playNextEpisode(params):
+        """Start the next entry only after a naturally finished episode.
+
+        The queue contains the Kodi plugin calls produced for the displayed
+        episode directory, not resolved media URLs. A cancelled countdown is
+        intentionally a normal stop: the viewer stays in the episode list.
+        """
+        if not cConfig().getSettingBool('autoNextEpisodeEnabled', False):
+            return
+        from resources.lib import episodequeue
+
+        target = episodequeue.nextTarget(params.getValue('episodeQueue'),
+                                         params.getValue('episodeIndex'))
+        if not target:
+            return
+        delay = max(0, min(cConfig().getSettingInt('autoNextEpisodeDelay', 5), 60))
+        dialog = None
+        if delay:
+            dialog = xbmcgui.DialogProgress()
+            dialog.create('GerXStream', cConfig().getLocalizedString(30937))
+            monitor = xbmc.Monitor()
+            for remaining in range(delay, 0, -1):
+                dialog.update(int((delay - remaining) * 100 / delay),
+                              cConfig().getLocalizedString(30938) % remaining)
+                if dialog.iscanceled() or monitor.abortRequested():
+                    dialog.close()
+                    return
+                monitor.waitForAbort(1)
+            dialog.close()
+        xbmc.executebuiltin('RunPlugin(%s)' % target)
+
     def play(self, siteResult=False):
         logger.info('-> [hoster]: attempt to play file')
         data = self._getInfoAndResolve(siteResult)
@@ -129,7 +161,8 @@ class cHosterGui:
             xbmcplugin.setResolvedUrl(cGui().pluginHandle, True, list_item)
         else:
             xbmc.Player().play(data['link'], list_item)
-        started = cPlayer().startPlayer()
+        player = cPlayer()
+        started = player.startPlayer()
         if started:
             # Erst nach erfolgreichem Start erfassen; Links und Hoster werden
             # bewusst nicht gespeichert, nur die lokal sichtbaren Metadaten.
@@ -142,6 +175,14 @@ class cHosterGui:
                                params.getValue('episode'), data.get('showTitle', ''))
             except Exception:
                 logger.error('-> [hoster]: could not store playback history')
+            # Kodi signalisiert "ended" nur beim regulären Ende. Ein
+            # Stoppen mit der Fernbedienung oder ein Wiedergabefehler startet
+            # deshalb niemals ungefragt die nächste Episode.
+            if player.playbackEnded:
+                try:
+                    self._playNextEpisode(ParameterHandler())
+                except Exception:
+                    logger.error('-> [hoster]: could not start next episode')
         return started
 
     def addToPlaylist(self, siteResult=False):

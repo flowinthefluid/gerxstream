@@ -1,3 +1,11 @@
+[B]Version: 1.0.23[/B]
+
+24.09.2026
+
+- Optionale automatische Wiedergabe der naechsten Episode nach regulaerem Ende
+- Einstellbarer Countdown von 0 bis 60 Sekunden; Abbrechen bleibt jederzeit moeglich
+- Episodenreihenfolge wird nur temporaer lokal gespeichert, nicht als Stream- oder Hoster-Link
+
 [B]Version: 1.0.22[/B]
 
 24.09.2026

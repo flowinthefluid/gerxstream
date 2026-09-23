@@ -15,6 +15,7 @@ class GerxstreamPlayer(xbmc.Player):
         super().__init__(*args, **kwargs)
         self.streamFinished = False
         self.streamSuccess = True
+        self.playbackEnded = False
         self.playedTime = 0
         self.totalTime = 999999
         log(cConfig().getLocalizedString(30166) + ' -> [player]: player instance created', LOGNOTICE)
@@ -32,6 +33,7 @@ class GerxstreamPlayer(xbmc.Player):
 
     def onPlayBackEnded(self):
         log(cConfig().getLocalizedString(30166) + ' -> [player]: Playback completed', LOGNOTICE)
+        self.playbackEnded = True
         self.onPlayBackStopped()
 
     def onPlayBackError(self):
@@ -41,6 +43,11 @@ class GerxstreamPlayer(xbmc.Player):
 
 
 class cPlayer:
+    def __init__(self):
+        # Wird nach startPlayer gesetzt und unterscheidet das natuerliche
+        # Ende einer Folge von einem manuellen Stoppen.
+        self.playbackEnded = False
+
     def clearPlayList(self):
         oPlaylist = self.__getPlayList()
         oPlaylist.clear()
@@ -72,4 +79,5 @@ class cPlayer:
                 log(cConfig().getLocalizedString(30166) + ' -> [player]: Playback start timeout after 60s', LOGERROR)
                 break
             monitor.waitForAbort(1)
+        self.playbackEnded = xbmcPlayer.playbackEnded
         return xbmcPlayer.streamSuccess

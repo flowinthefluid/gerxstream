@@ -2181,3 +2181,27 @@ msgstr "Ordner existiert bereits oder sein Name ist ungueltig."
 msgctxt "#30932"
 msgid ".. Back"
 msgstr ".. Zurueck"
+
+msgctxt "#30933"
+msgid "Automatically play next episode"
+msgstr "Naechste Episode automatisch abspielen"
+
+msgctxt "#30934"
+msgid "Starts the next episode in the currently opened episode list after the previous one ends normally."
+msgstr "Startet nach dem regulaeren Ende die naechste Episode der aktuell geoeffneten Episodenliste."
+
+msgctxt "#30935"
+msgid "Wait before next episode (seconds)"
+msgstr "Wartezeit vor naechster Episode (Sekunden)"
+
+msgctxt "#30936"
+msgid "0 starts immediately. During the countdown, select Cancel to stay in the episode list."
+msgstr "0 startet sofort. Waerend des Countdowns kann mit Abbrechen in der Episodenliste geblieben werden."
+
+msgctxt "#30937"
+msgid "Next episode"
+msgstr "Naechste Episode"
+
+msgctxt "#30938"
+msgid "Next episode starts in %d seconds."
+msgstr "Naechste Episode startet in %d Sekunden."

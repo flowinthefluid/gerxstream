@@ -139,6 +139,24 @@
 						<heading>30916</heading>
 					</control>
 				</setting>
+				<setting id="autoNextEpisodeEnabled" type="boolean" label="30933" help="30934">
+					<level>0</level>
+					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="autoNextEpisodeDelay" type="integer" label="30935" help="30936">
+					<level>0</level>
+					<default>5</default>
+					<constraints>
+						<minimum>0</minimum>
+						<step>1</step>
+						<maximum>60</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" setting="autoNextEpisodeEnabled">true</dependency>
+					</dependencies>
+					<control type="slider" format="integer"><popup>false</popup></control>
+				</setting>
 				<setting id="favoriteActors" type="string" label="30871" help="30872">
 					<level>0</level>
 					<default/>
