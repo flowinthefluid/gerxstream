@@ -14,7 +14,7 @@ from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 
 SITE_IDENTIFIER = 'hdfilme'
-SITE_NAME = 'HD Filme'
+SITE_NAME = 'HD-Filme'
 SITE_ICON = 'hdfilme.png'
 CONTENT_CATEGORIES = ('filme', 'serien', 'animes', 'dokus')
 

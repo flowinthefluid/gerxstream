@@ -128,7 +128,17 @@ class cPluginHandler:
                 # Fuer "Alle" bewusst unsortiert: Reihenfolge wie in den
                 # aktivierten Plugins, damit der Ordner wie gewuenscht eine
                 # ungefilterte Sammelansicht bleibt.
-                plugins = [plugin for plugin in available]
+                plugins = [plugin for plugin in available
+                           if plugin.get('include_in_all', True)]
+                # Der Lieblingshoster ist eine gezielte Suche. Seine Position
+                # im Sammelordner ist deshalb bewusst ein Nutzersetting und
+                # nicht von der zufaelligen Dateisystem-Reihenfolge abhaengig.
+                apiPlugins = [plugin for plugin in plugins if plugin['id'] == 'api_all']
+                otherPlugins = [plugin for plugin in plugins if plugin['id'] != 'api_all']
+                if cConfig().getSetting('apiAllPosition', 'top') == 'bottom':
+                    plugins = otherPlugins + apiPlugins
+                else:
+                    plugins = apiPlugins + otherPlugins
                 categorizedIds.update(plugin['id'] for plugin in plugins)
                 if plugins:
                     result.append({
@@ -175,7 +185,9 @@ class cPluginHandler:
         # PluginID = Siteplugin Name
         for pluginID in pluginDB:
             plugin = pluginDB[pluginID] # Aus PluginDB lese PluginID
-            pluginSettingsName = 'plugin_%s' % pluginID # Name des Siteplugins
+            pluginSettingsName = plugin.get('enable_setting', 'plugin_%s' % pluginID)
+            if plugin.get('hidden', False):
+                continue
             plugin['id'] = pluginID
             # Die optionalen "sichtbar"-Schalter steuern sowohl Hauptmenue
             # als auch globale Suche. Aeltere Quellen ohne eigenen Schalter
@@ -254,6 +266,18 @@ class cPluginHandler:
             pluginData['categories'] = tuple(plugin.CONTENT_CATEGORIES)
         except Exception:
             pluginData['categories'] = ()
+        try:
+            pluginData['enable_setting'] = plugin.ENABLE_SETTING
+        except Exception:
+            pass
+        try:
+            pluginData['include_in_all'] = bool(plugin.INCLUDE_IN_ALL)
+        except Exception:
+            pass
+        try:
+            pluginData['hidden'] = bool(plugin.HIDDEN_SOURCE)
+        except Exception:
+            pass
         return pluginData
 
 

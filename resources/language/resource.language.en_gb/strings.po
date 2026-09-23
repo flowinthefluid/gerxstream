@@ -6,6 +6,8 @@
 
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en_GB\n"
 
 msgctxt "#30000"
 msgid "Debug-Mode"
@@ -1626,7 +1628,7 @@ msgid "Kids Tube"
 msgstr ""
 
 msgctxt "#30720"
-msgid "FHD Filme"
+msgid "HDFilme.to"
 msgstr ""
 
 msgctxt "#30721"
@@ -1655,7 +1657,7 @@ msgstr ""
 
 msgctxt "#30727"
 msgid "API Suchmaschine"
-msgstr ""
+msgstr "Favorite hoster"
 
 msgctxt "#30728"
 msgid "Moflix-Stream"
@@ -2063,4 +2065,56 @@ msgstr ""
 
 msgctxt "#30902"
 msgid "Update GerXStream"
+msgstr ""
+
+msgctxt "#30903"
+msgid "History"
+msgstr ""
+
+msgctxt "#30904"
+msgid "Enable playback history"
+msgstr ""
+
+msgctxt "#30905"
+msgid "Stores recently watched titles locally on this device."
+msgstr ""
+
+msgctxt "#30906"
+msgid "No watched titles yet."
+msgstr ""
+
+msgctxt "#30907"
+msgid "Playback history cleared."
+msgstr ""
+
+msgctxt "#30908"
+msgid "History entries"
+msgstr ""
+
+msgctxt "#30909"
+msgid "Maximum number of locally stored watched titles."
+msgstr ""
+
+msgctxt "#30910"
+msgid "Clear playback history"
+msgstr ""
+
+msgctxt "#30911"
+msgid "Deletes all locally stored watched titles."
+msgstr ""
+
+msgctxt "#30912"
+msgid "Position in All sources"
+msgstr ""
+
+msgctxt "#30913"
+msgid "Choose where Lieblingshoster appears in the All sources list."
+msgstr ""
+
+msgctxt "#30914"
+msgid "Top"
+msgstr ""
+
+msgctxt "#30915"
+msgid "Bottom"
 msgstr ""

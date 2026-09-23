@@ -20,10 +20,31 @@ SITE_IDENTIFIER = 'dokus4me'
 SITE_NAME = 'Dokus4.me'
 SITE_ICON = 'dokus4me.png'
 CONTENT_CATEGORIES = ('dokus',)
+HIDDEN_SOURCE = True
 SITE_GLOBAL_SEARCH = False
 cConfig().setSetting('global_search_' + SITE_IDENTIFIER, 'false')
 logger.info('-> [SitePlugin]: globalSearch for %s is deactivated.' % SITE_NAME)
 ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER) # Ob Plugin aktiviert ist oder nicht
+
+
+def _displaySite():
+    """Keep navigation in the visible, separated documentation source."""
+    return ParameterHandler().getValue('siteAlias') or SITE_IDENTIFIER
+
+
+def showSourceMenu(sourceId, displaySite):
+    """Shared menu used by the individual documentation-source modules."""
+    sourceMenu = DOCU_SOURCE_MENUS.get(sourceId)
+    if not sourceMenu:
+        cGui().showInfo()
+        return
+    for title, functionName, entryUrl in sourceMenu:
+        params = ParameterHandler()
+        params.setParam('siteAlias', displaySite)
+        if entryUrl:
+            params.setParam('sUrl', entryUrl)
+        cGui().addFolder(cGuiElement(title, displaySite, functionName), params)
+    cGui().setEndOfDirectory()
 
 #################### Hauptmenü ####################
 
@@ -51,9 +72,10 @@ def showDocuMenu():
 
     for title, functionName, entryUrl in sourceMenu:
         params = ParameterHandler()
+        params.setParam('siteAlias', _displaySite())
         if entryUrl:
             params.setParam('sUrl', entryUrl)
-        cGui().addFolder(cGuiElement(title, SITE_IDENTIFIER, functionName), params)
+        cGui().addFolder(cGuiElement(title, _displaySite(), functionName), params)
     cGui().setEndOfDirectory()
 
 
@@ -75,7 +97,7 @@ def showGenre_1():
         return
     for sUrl, sName in aResult:
         params.setParam('sUrl', sUrl)
-        cGui().addFolder(cGuiElement(sName, SITE_IDENTIFIER, 'showEntries_1'), params)
+        cGui().addFolder(cGuiElement(sName, _displaySite(), 'showEntries_1'), params)
     cGui().setEndOfDirectory()
 
 def showEntries_1(entryUrl=False, sGui=False, sSearchText=False):
@@ -92,7 +114,7 @@ def showEntries_1(entryUrl=False, sGui=False, sSearchText=False):
     for sName, sUrl, sThumbnail, sDesc in aResult:
         if sSearchText and not cParser.search(sSearchText, sName):
             continue
-        oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters_1')
+        oGuiElement = cGuiElement(sName, _displaySite(), 'showHosters_1')
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setDescription(sDesc)
         params.setParam('entryUrl', sUrl)
@@ -101,7 +123,7 @@ def showEntries_1(entryUrl=False, sGui=False, sSearchText=False):
         isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'rel="next" href="([^"]+)')
         if isMatchNextPage:
             params.setParam('sUrl', sNextUrl)
-            oGui.addNextPage(SITE_IDENTIFIER, 'showEntries_1', params)
+            oGui.addNextPage(_displaySite(), 'showEntries_1', params)
         oGui.setView('movies')
         oGui.setEndOfDirectory()
 
@@ -153,7 +175,7 @@ def showGenre_2():
         if sUrl.startswith('/'):
             sUrl = URL_MAIN_2 + sUrl
         params.setParam('sUrl', sUrl)
-        cGui().addFolder(cGuiElement(sName, SITE_IDENTIFIER, 'showEntries_2'), params)
+        cGui().addFolder(cGuiElement(sName, _displaySite(), 'showEntries_2'), params)
     cGui().setEndOfDirectory()
 
 def showEntries_2(entryUrl=False, sGui=False, sSearchText=False):
@@ -174,7 +196,7 @@ def showEntries_2(entryUrl=False, sGui=False, sSearchText=False):
     for sUrl, sThumbnail, sName, sDesc in aResult:
         if sSearchText and not cParser.search(sSearchText, sName):
             continue
-        oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showEpisodes_2')
+        oGuiElement = cGuiElement(sName, _displaySite(), 'showEpisodes_2')
         oGuiElement.setMediaType('tvshow')
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setDescription(sDesc)
@@ -190,7 +212,7 @@ def showEntries_2(entryUrl=False, sGui=False, sSearchText=False):
             sPageNr += 1
         params.setParam('page', int(sPageNr))
         params.setParam('sUrl', entryUrl)
-        oGui.addNextPage(SITE_IDENTIFIER, 'showEntries_2', params)
+        oGui.addNextPage(_displaySite(), 'showEntries_2', params)
         oGui.setView('tvshows')
         oGui.setEndOfDirectory()
 
@@ -210,7 +232,7 @@ def showEpisodes_2(sGui = False):
         return
     total = len(aResult)
     for sId, sName, sThumbnail in aResult:
-        oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters_2')
+        oGuiElement = cGuiElement(sName, _displaySite(), 'showHosters_2')
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setMediaType('episode')
         params.setParam('sId', sId)
@@ -220,7 +242,7 @@ def showEpisodes_2(sGui = False):
         isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'rel="next" href="([^"]+)')
         if isMatchNextPage:
             params.setParam('sUrl', sNextUrl)
-            oGui.addNextPage(SITE_IDENTIFIER, 'showEpisodes_2', params)
+            oGui.addNextPage(_displaySite(), 'showEpisodes_2', params)
         cGui().setView('episodes')
         oGui.setEndOfDirectory()
 
@@ -269,7 +291,7 @@ def showGenre_3():
         if sUrl.startswith('/'):
             sUrl = URL_MAIN_3 + sUrl
         params.setParam('sUrl', sUrl)
-        cGui().addFolder(cGuiElement(sName, SITE_IDENTIFIER, 'showEntries_3'), params)
+        cGui().addFolder(cGuiElement(sName, _displaySite(), 'showEntries_3'), params)
     cGui().setEndOfDirectory()
 
 def showEntries_3(entryUrl=False, sGui=False, sSearchText=False):
@@ -289,7 +311,7 @@ def showEntries_3(entryUrl=False, sGui=False, sSearchText=False):
     for sUrl, sName, sThumbnail in aResult:
         if sSearchText and not cParser.search(sSearchText, sName):
             continue
-        oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters_3')
+        oGuiElement = cGuiElement(sName, _displaySite(), 'showHosters_3')
         oGuiElement.setThumbnail(sThumbnail)
         params.setParam('entryUrl', sUrl)
         oGui.addFolder(oGuiElement, params, False, total)
@@ -302,7 +324,7 @@ def showEntries_3(entryUrl=False, sGui=False, sSearchText=False):
             sPageNr += 1
         params.setParam('page', int(sPageNr))
         params.setParam('sUrl', entryUrl)
-        oGui.addNextPage(SITE_IDENTIFIER, 'showEntries_3', params)
+        oGui.addNextPage(_displaySite(), 'showEntries_3', params)
         oGui.setView('movies')
         oGui.setEndOfDirectory()
 
@@ -374,7 +396,7 @@ def showGenre_4():
     total = len(allowedCategories)
     for name, url in allowedCategories:
         params.setParam('sUrl', url)
-        cGui().addFolder(cGuiElement(name, SITE_IDENTIFIER, 'showEntries_4'), params, True, total)
+        cGui().addFolder(cGuiElement(name, _displaySite(), 'showEntries_4'), params, True, total)
     cGui().setEndOfDirectory()
 
 
@@ -396,7 +418,7 @@ def showEntries_4(entryUrl=False, sGui=False, sSearchText=False):
     for url, name in entries:
         if sSearchText and not cParser.search(sSearchText, name):
             continue
-        element = cGuiElement(name, SITE_IDENTIFIER, 'showHosters_4')
+        element = cGuiElement(name, _displaySite(), 'showHosters_4')
         element.setMediaType('movie')
         params.setParam('entryUrl', url)
         oGui.addFolder(element, params, False, total)
@@ -406,7 +428,7 @@ def showEntries_4(entryUrl=False, sGui=False, sSearchText=False):
         page = 2 if page == 0 else page + 1
         params.setParam('page', page)
         params.setParam('sUrl', entryUrl.rstrip('/') + '/page/%d/' % page)
-        oGui.addNextPage(SITE_IDENTIFIER, 'showEntries_4', params)
+        oGui.addNextPage(_displaySite(), 'showEntries_4', params)
     if not sGui:
         oGui.setView('movies')
         oGui.setEndOfDirectory()
@@ -465,7 +487,7 @@ def showDoku_6():
         if sUrl.startswith('/'):
             sUrl = URL_MAIN_6 + sUrl
         params.setParam('sUrl', sUrl)
-        cGui().addFolder(cGuiElement(sName, SITE_IDENTIFIER, 'showEntries_6'), params)
+        cGui().addFolder(cGuiElement(sName, _displaySite(), 'showEntries_6'), params)
     cGui().setEndOfDirectory()
 
 def showThemen_6():
@@ -484,7 +506,7 @@ def showThemen_6():
         if sUrl.startswith('/'):
             sUrl = URL_MAIN_6 + sUrl
         params.setParam('sUrl', sUrl)
-        cGui().addFolder(cGuiElement(sName, SITE_IDENTIFIER, 'showEntries_6'), params)
+        cGui().addFolder(cGuiElement(sName, _displaySite(), 'showEntries_6'), params)
     cGui().setEndOfDirectory()
 
 def showEntries_6(entryUrl=False, sGui=False, sSearchText=False):
@@ -503,7 +525,7 @@ def showEntries_6(entryUrl=False, sGui=False, sSearchText=False):
     for sUrl, sName,  sThumbnail in aResult:
         if sSearchText and not cParser.search(sSearchText, sName):
             continue
-        oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters_6')
+        oGuiElement = cGuiElement(sName, _displaySite(), 'showHosters_6')
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setMediaType('movie')
         params.setParam('entryUrl', sUrl)
@@ -518,7 +540,7 @@ def showEntries_6(entryUrl=False, sGui=False, sSearchText=False):
             sPageNr += 1
         params.setParam('page', int(sPageNr))
         params.setParam('sUrl', entryUrl)
-        oGui.addNextPage(SITE_IDENTIFIER, 'showEntries_6', params)
+        oGui.addNextPage(_displaySite(), 'showEntries_6', params)
         oGui.setView('movies')
         oGui.setEndOfDirectory()
 
@@ -595,7 +617,7 @@ def showYTChannels():
                 sUrl="plugin://plugin.video.youtube" + id + "/"
             params.setParam('trumb', icon)
             params.setParam('sUrl', sUrl)
-            cGui().addFolder(cGuiElement(name,SITE_IDENTIFIER,''),params,bIsFolder=True)
+            cGui().addFolder(cGuiElement(name, _displaySite(), ''), params, bIsFolder=True)
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
     except:return
 
@@ -617,7 +639,7 @@ def showYTGenre():
     for name, id, icon in channellist:
         params.setParam('action', id)
         params.setParam('icon', icon)
-        cGui().addFolder(cGuiElement(name, SITE_IDENTIFIER, 'showYTLists'), params)
+        cGui().addFolder(cGuiElement(name, _displaySite(), 'showYTLists'), params)
     cGui().setEndOfDirectory()
 
 def showYTLists():
@@ -811,7 +833,7 @@ def showYTLists():
             sUrl="plugin://plugin.video.youtube/" + id + "/"
         params.setParam('trumb', icon)
         params.setParam('sUrl', sUrl)
-        cGui().addFolder(cGuiElement(name,SITE_IDENTIFIER,''),params,bIsFolder=True)
+        cGui().addFolder(cGuiElement(name, _displaySite(), ''), params, bIsFolder=True)
     xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
 

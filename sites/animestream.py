@@ -30,6 +30,7 @@
 
 import json
 import re
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -56,13 +57,18 @@ ACTIVE = cConfig().getSetting('plugin_' + SITE_IDENTIFIER)
 URL_MAIN = 'https://' + DOMAIN
 URL_SERIES = URL_MAIN + '/alle-serien'
 URL_MOVIES = URL_MAIN + '/alle-filme'
-URL_SEARCH = URL_MAIN + '/suche?s=%s'
+URL_SEARCH = URL_MAIN + '/search.php?q=%s'
 URL_TOKEN = URL_MAIN + '/generate_token.php?serie_id=%s&season=%s'
 URL_EPISODES = URL_MAIN + '/includes/ajax/load_episodes.php?serie_id=%s&season=%s&token=%s'
 
-ITEM_PATTERN = (r'<a href="(/anime-serien/[^"]+)" class="panel-link">\s*'
+ITEM_PATTERN = (r'<a href="(/anime-(?:serien|filme)/[^"]+)" class="panel-link">\s*'
                 r'([^<]+?)\s*<span class="year">\(([^)]*)\)</span>.*?'
                 r'<img src="([^"]+)"')
+SEARCH_PATTERN = (r'<div class="search-result-item">.*?'
+                  r'<a href="(/anime-(?:serien|filme)/[^"]+)">\s*'
+                  r'<img src="([^"]+)".*?<h3>\s*'
+                  r'<a href="[^"]+">\s*([^<]+?)\s*</a>')
+PAGE_PATTERN = r'<span class="page-info">\s*(\d+)\s*/\s*(\d+)\s*</span>'
 SERIES_ID_PATTERN = r'const\s+seriesId\s*=\s*(\d+)\s*;'
 SEASON_BLOCK_PATTERN = r'id="season-(\d+)"'
 
@@ -76,6 +82,15 @@ def load():  # Menu structure of the site plugin
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30502), SITE_IDENTIFIER, 'showEntries'), params)  # Filme
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'))  # Suche
     cGui().setEndOfDirectory()
+
+
+def _pageUrl(url, page):
+    """Ersetzt nur den page-Parameter und behaelt alle anderen bei."""
+    parts = urlsplit(url)
+    query = dict(parse_qsl(parts.query, keep_blank_values=True))
+    query['page'] = str(page)
+    return urlunsplit((parts.scheme, parts.netloc, parts.path,
+                       urlencode(query), parts.fragment))
 
 
 def showEntries(entryUrl=False, sGui=False, sSearchText=False):
@@ -96,17 +111,34 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
             oGui.showInfo()
         return
 
-    isMatch, aResult = cParser.parse(sHtmlContent, ITEM_PATTERN)
+    # Die Suche liefert ein anderes, eigenes Karten-Layout als die
+    # Katalogseiten. Der alte /suche-Pfad und das Katalogmuster konnten daher
+    # nie Treffer liefern.
+    isMatch, aResult = cParser.parse(
+        sHtmlContent, SEARCH_PATTERN if sSearchText else ITEM_PATTERN)
     if not isMatch:
         if not sGui:
             oGui.showInfo()
         return
 
-    total = len(aResult)
-    for sSlug, sTitle, sYear, sImage in aResult:
+    entries = []
+    seen = set()
+    for result in aResult:
+        if sSearchText:
+            sSlug, sImage, sTitle = result
+            sYear = ''
+        else:
+            sSlug, sTitle, sYear, sImage = result
+        if sSlug in seen:
+            continue
+        seen.add(sSlug)
+        entries.append((sSlug, sTitle, sYear, sImage))
+
+    total = len(entries)
+    for sSlug, sTitle, sYear, sImage in entries:
         sTitle = sTitle.strip()
         oGuiElement = cGuiElement(sTitle, SITE_IDENTIFIER, 'showHosters')
-        oGuiElement.setMediaType('tvshow')
+        oGuiElement.setMediaType('tvshow' if '/anime-serien/' in sSlug else 'movie')
         if sImage:
             oGuiElement.setThumbnail(sImage)
         if sYear.strip().isdigit():
@@ -116,7 +148,14 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         oGui.addFolder(oGuiElement, params, False, total)
 
     if not sGui:
-        oGui.setView('tvshows')
+        if not sSearchText:
+            isPage, aPages = cParser.parse(sHtmlContent, PAGE_PATTERN)
+            if isPage:
+                current, last = aPages[0]
+                if current.isdigit() and last.isdigit() and int(current) < int(last):
+                    params.setParam('sUrl', _pageUrl(entryUrl, int(current) + 1))
+                    oGui.addNextPage(SITE_IDENTIFIER, 'showEntries', params)
+        oGui.setView('tvshows' if '/alle-serien' in entryUrl else 'movies')
         oGui.setEndOfDirectory()
 
 
@@ -143,7 +182,10 @@ def _getEpisodesForSeason(sSeriesId, sSeason):
     except ValueError:
         logger.info('-> [%s]: generate_token.php lieferte kein JSON' % SITE_NAME)
         return ''
-    sToken = jToken.get('token') if isinstance(jToken, dict) else None
+    if not isinstance(jToken, dict):
+        logger.info('-> [%s]: generate_token.php lieferte ein ungueltiges JSON-Objekt' % SITE_NAME)
+        return ''
+    sToken = jToken.get('token')
     if not jToken.get('success') or not sToken:
         logger.info('-> [%s]: kein Token erhalten: %s' % (SITE_NAME, str(jToken)[:160]))
         return ''

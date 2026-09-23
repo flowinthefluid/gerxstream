@@ -71,6 +71,7 @@ SCRAPER_ENTRY_FUNCTIONS = frozenset((
     'showHosters_4',
     'showHosters_6',
     'showMovieMenu',
+    'showMovieCategories',
     'showNewEpisodes',
     'showNewSeries',
     'showNews',
@@ -86,6 +87,8 @@ SCRAPER_ENTRY_FUNCTIONS = frozenset((
     'showSearch_6',
     'showSeasons',
     'showSeries',
+    'showSeriesCategories',
+    'showSeriesEpisodes',
     'showSeriesMenu',
     'showShows',
     'showStart',
@@ -112,7 +115,7 @@ HOSTER_GUI_FUNCTIONS = frozenset((
 
 
 MAIN_MENU_ORDER_SETTING = 'mainMenuOrder'
-MAIN_MENU_ORDER_DEFAULT = ('globalSearch', 'sourceCategories', 'categories', 'random', 'settings')
+MAIN_MENU_ORDER_DEFAULT = ('globalSearch', 'sourceCategories', 'categories', 'random', 'history', 'settings')
 
 
 def _mainMenuOrder():
@@ -141,6 +144,7 @@ def showMainMenuOrder():
         'sourceCategories': cConfig().getLocalizedString(30878),
         'categories': cConfig().getLocalizedString(30507),
         'random': cConfig().getLocalizedString(30868),
+        'history': cConfig().getLocalizedString(30903),
         'settings': cConfig().getLocalizedString(30041),
     }
     order = _mainMenuOrder()
@@ -257,6 +261,9 @@ def parseUrl():
         elif sFunction == 'randomMovies':
             showRandomMovies()
             return
+        elif sFunction == 'clearWatchHistory':
+            clearWatchHistory()
+            return
         elif sFunction == 'mainMenuOrder':
             showMainMenuOrder()
             return
@@ -329,6 +336,13 @@ def parseUrl():
             searchGlobal(params.getValue('searchterm'), scope)
         else:
             showGlobalSearchMenu()
+    elif sSiteName == 'history':
+        if sFunction == 'showWatchHistory':
+            showWatchHistory()
+        elif sFunction == 'resumeWatchHistory':
+            resumeWatchHistory(params)
+        else:
+            _endFailedDirectory()
     elif sSiteName == 'GerXStream':
         oGui = cGui()
         oGui.openSettings()
@@ -455,6 +469,8 @@ def showMainMenu(sFunction):
         menuGroups['categories'].append((oGuiElement, None))
 
     menuGroups['random'].append((randomGuiElement(), None))
+    if cConfig().getSettingBool('watchHistoryEnabled', True):
+        menuGroups['history'].append((watchHistoryGuiElement(), None))
 
     # VoD Ordner im Hauptmenü anzeigen
     if cConfig().getSettingBool('SettingsFolder', False):
@@ -652,6 +668,71 @@ def randomGuiElement():
     oGuiElement.setFunction('randomMovies')
     oGuiElement.setThumbnail(os.path.join(ART, 'search.png'))
     return oGuiElement
+
+
+def watchHistoryGuiElement():
+    ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
+    element = cGuiElement(cConfig().getLocalizedString(30903), 'history', 'showWatchHistory')
+    element.setThumbnail(os.path.join(ART, 'search.png'))
+    return element
+
+
+def _historyTimestamp(timestamp):
+    try:
+        return time.strftime('%d.%m.%Y %H:%M', time.localtime(int(timestamp)))
+    except (TypeError, ValueError, OverflowError):
+        return ''
+
+
+def showWatchHistory():
+    """Render the local playback history; replay uses the normal global search."""
+    from resources.lib import history
+
+    recent = history.entries()
+    oGui = cGui()
+    if not recent:
+        oGui.showInfo('GerXStream', cConfig().getLocalizedString(30906))
+        oGui.setEndOfDirectory()
+        return
+    total = len(recent)
+    for item in recent:
+        title = item.get('title', '')
+        season = item.get('season', '')
+        episode = item.get('episode', '')
+        if item.get('show_title') and (season or episode):
+            details = 'S%sE%s' % (season or '0', episode or '0')
+            title = '%s – %s: %s' % (item['show_title'], details, title)
+        element = cGuiElement(title, 'history', 'resumeWatchHistory')
+        mediaType = item.get('media_type', '')
+        if mediaType in cGuiElement.MEDIA_TYPES:
+            element.setMediaType(mediaType)
+        if item.get('thumbnail'):
+            element.setThumbnail(item['thumbnail'])
+        description = _historyTimestamp(item.get('watched_at'))
+        if item.get('source'):
+            description = '%s%s' % (description, (' • ' if description else '') + item['source'])
+        if description:
+            element.setDescription(description)
+        itemParams = ParameterHandler()
+        itemParams.setParam('searchTitle', item.get('search_title', title))
+        oGui.addFolder(element, itemParams, True, total)
+    oGui.setView('movies')
+    oGui.setEndOfDirectory()
+
+
+def resumeWatchHistory(params):
+    title = params.getValue('searchTitle')
+    if title:
+        searchGlobal(title, 'alle')
+    else:
+        _endFailedDirectory()
+
+
+def clearWatchHistory():
+    from resources.lib import history
+
+    history.clear()
+    cGui().showInfo('GerXStream', cConfig().getLocalizedString(30907))
 
 
 def showRandomMovies():

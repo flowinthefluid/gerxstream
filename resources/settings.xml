@@ -27,7 +27,7 @@
 				</setting>
 				<setting id="mainMenuOrder" type="string" label="30879" help="">
 					<level>0</level>
-					<default>globalSearch,sourceCategories,categories,random,settings</default>
+					<default>globalSearch,sourceCategories,categories,random,history,settings</default>
 					<visible>false</visible>
 					<control type="edit" format="string"/>
 				</setting>
@@ -105,6 +105,29 @@
 					<control type="slider" format="integer">
 						<popup>false</popup>
 					</control>
+				</setting>
+				<setting id="watchHistoryEnabled" type="boolean" label="30904" help="30905">
+					<level>0</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="watchHistoryLimit" type="integer" label="30908" help="30909">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>10</minimum>
+						<step>10</step>
+						<maximum>500</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" setting="watchHistoryEnabled">true</dependency>
+					</dependencies>
+					<control type="slider" format="integer"><popup>false</popup></control>
+				</setting>
+				<setting id="watchHistoryClear" type="action" label="30910" help="30911">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=clearWatchHistory)</data>
+					<control type="button" format="action"><close>true</close></control>
 				</setting>
 				<setting id="favoriteActors" type="string" label="30871" help="30872">
 					<level>0</level>
@@ -637,6 +660,17 @@
 						<dependency type="enable" operator="!is" setting="plugin_api_all">False</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="apiAllPosition" type="string" label="30912" help="30913">
+					<level>0</level>
+					<default>top</default>
+					<constraints>
+						<options>
+							<option label="30914">top</option>
+							<option label="30915">bottom</option>
+						</options>
+					</constraints>
+					<control type="spinner" format="string"/>
 				</setting>
 				<setting id="plugin_api_all_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>

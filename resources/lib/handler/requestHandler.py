@@ -408,6 +408,15 @@ class cRequestHandler:
                 xbmcgui.Dialog().ok('GerXStream', str(e.reason))
             logger.error(' -> [requestHandler]: URLError ' + str(e.reason) + ' Url: ' + self._sUrl)
             return 'URL FEHLER'
+        except (TimeoutError, socket.timeout) as e:
+            # socket.timeout ist auf aktuellen Python-Versionen ein Alias von
+            # TimeoutError. Beide Namen stehen hier bewusst, damit Kodi auf
+            # aelteren und neueren Plattformen nie mit einem Traceback aus
+            # einem Verzeichnisaufruf faellt.
+            if not self.ignoreErrors:
+                xbmcgui.Dialog().ok('GerXStream', str(e) or 'Zeitueberschreitung')
+            logger.error(' -> [requestHandler]: TimeoutError %s Url: %s' % (e, self._sUrl))
+            return 'TIMEOUT'
         except HTTPException as e:
             if not self.ignoreErrors:
                 xbmcgui.Dialog().ok('GerXStream', str(e))

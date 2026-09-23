@@ -6,6 +6,8 @@
 
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: de_DE\n"
 
 msgctxt "#30000"
 msgid "Debug-Mode"
@@ -1625,7 +1627,7 @@ msgid "Kids Tube"
 msgstr ""
 
 msgctxt "#30720"
-msgid "FHD Filme"
+msgid "HDFilme.to"
 msgstr ""
 
 msgctxt "#30721"
@@ -1654,7 +1656,7 @@ msgstr ""
 
 msgctxt "#30727"
 msgid "API Suchmaschine"
-msgstr ""
+msgstr "Lieblingshoster"
 
 msgctxt "#30728"
 msgid "Moflix-Stream"
@@ -2063,3 +2065,55 @@ msgstr "Maximale Zeit, die ein einzelner Anbieter in der globalen Suche verwende
 msgctxt "#30902"
 msgid "Update GerXStream"
 msgstr "GerXStream aktualisieren"
+
+msgctxt "#30903"
+msgid "History"
+msgstr "Historie"
+
+msgctxt "#30904"
+msgid "Enable playback history"
+msgstr "Wiedergabe-Historie aktivieren"
+
+msgctxt "#30905"
+msgid "Stores recently watched titles locally on this device."
+msgstr "Speichert zuletzt gesehene Titel nur lokal auf diesem Geraet."
+
+msgctxt "#30906"
+msgid "No watched titles yet."
+msgstr "Noch keine gesehenen Titel vorhanden."
+
+msgctxt "#30907"
+msgid "Playback history cleared."
+msgstr "Wiedergabe-Historie wurde geleert."
+
+msgctxt "#30908"
+msgid "History entries"
+msgstr "Anzahl Historien-Eintraege"
+
+msgctxt "#30909"
+msgid "Maximum number of locally stored watched titles."
+msgstr "Maximale Anzahl lokal gespeicherter gesehener Titel."
+
+msgctxt "#30910"
+msgid "Clear playback history"
+msgstr "Wiedergabe-Historie leeren"
+
+msgctxt "#30911"
+msgid "Deletes all locally stored watched titles."
+msgstr "Loescht alle lokal gespeicherten gesehenen Titel."
+
+msgctxt "#30912"
+msgid "Position in All sources"
+msgstr "Position unter Alle Quellen"
+
+msgctxt "#30913"
+msgid "Choose where Lieblingshoster appears in the All sources list."
+msgstr "Legt fest, ob Lieblingshoster unter Alle Quellen ganz oben oder unten steht."
+
+msgctxt "#30914"
+msgid "Top"
+msgstr "Ganz oben"
+
+msgctxt "#30915"
+msgid "Bottom"
+msgstr "Ganz unten"

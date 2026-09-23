@@ -22,7 +22,7 @@ apiJson = None
 
 # Domain Abfrage ###
 
-SITE_NAME = 'API Suchmaschine'
+SITE_NAME = 'Lieblingshoster'
 SITE_ICON = 'api.png'
 SITE_IDENTIFIER = 'api_all'
 

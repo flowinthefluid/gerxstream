@@ -129,7 +129,20 @@ class cHosterGui:
             xbmcplugin.setResolvedUrl(cGui().pluginHandle, True, list_item)
         else:
             xbmc.Player().play(data['link'], list_item)
-        return cPlayer().startPlayer()
+        started = cPlayer().startPlayer()
+        if started:
+            # Erst nach erfolgreichem Start erfassen; Links und Hoster werden
+            # bewusst nicht gespeichert, nur die lokal sichtbaren Metadaten.
+            try:
+                from resources.lib import history
+                params = ParameterHandler()
+                history.record(data['title'], data.get('thumb', ''),
+                               params.getValue('mediaType') or 'movie',
+                               params.getValue('site'), params.getValue('season'),
+                               params.getValue('episode'), data.get('showTitle', ''))
+            except Exception:
+                logger.error('-> [hoster]: could not store playback history')
+        return started
 
     def addToPlaylist(self, siteResult=False):
         oGui = cGui()

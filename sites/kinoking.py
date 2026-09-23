@@ -8,6 +8,8 @@
 # Die Uebersichtsseiten liefern ihre Eintraege als data-Attribute, die
 # Hoster stecken hinter je einer Unterseite mit einem iframe.
 
+import json
+
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.tools import logger, cParser
@@ -34,6 +36,14 @@ URL_MAIN = 'https://' + DOMAIN
 URL_INDEX = URL_MAIN + '/index.php'
 URL_SEARCH = URL_INDEX + '?search=%s'
 
+CATEGORY_SECTIONS = (
+    ('Aktuelle Filme', 'current-movies', 'movie'),
+    ('Top 10 Filme', 'top10-movies', 'movie'),
+    ('Neue Filme', 'recently-added', 'movie'),
+    ('Aktuelle Serien', 'current-series', 'series'),
+    ('Neue Serien', 'recently-added', 'series'),
+)
+
 # Ein Eintrag traegt vier data-Attribute. Zwischen ihnen koennen weitere
 # stehen (data-tmdb, data-quality), deshalb [^>]*? statt \s* - ein striktes
 # Muster fand nur 28 der 44 Eintraege.
@@ -44,13 +54,29 @@ ITEM_PATTERN = (r'data-id="(\d+)"[^>]*?data-type="([^"]+)"[^>]*?'
 def load():  # Menu structure of the site plugin
     logger.info('Load %s' % SITE_NAME)
     params = ParameterHandler()
-    params.setParam('sUrl', URL_INDEX)
-    params.setParam('sType', 'movie')
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30502), SITE_IDENTIFIER, 'showEntries'), params)  # Filme
-    params.setParam('sType', 'series')
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30511), SITE_IDENTIFIER, 'showEntries'), params)  # Serien
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30502), SITE_IDENTIFIER, 'showMovieCategories'), params)
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30511), SITE_IDENTIFIER, 'showSeriesCategories'), params)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30520), SITE_IDENTIFIER, 'showSearch'))  # Suche
     cGui().setEndOfDirectory()
+
+
+def _showCategories(kind):
+    params = ParameterHandler()
+    for sName, sGenre, sType in CATEGORY_SECTIONS:
+        if sType != kind:
+            continue
+        params.setParam('sUrl', URL_INDEX + '?genre=' + sGenre)
+        params.setParam('sType', sType)
+        cGui().addFolder(cGuiElement(sName, SITE_IDENTIFIER, 'showEntries'), params)
+    cGui().setEndOfDirectory()
+
+
+def showMovieCategories():
+    _showCategories('movie')
+
+
+def showSeriesCategories():
+    _showCategories('series')
 
 
 def showEntries(entryUrl=False, sGui=False, sSearchText=False):
@@ -90,7 +116,9 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     total = len(entries)
     for sId, sKind, sName, sImage in entries:
         isTvshow = sKind == 'series'
-        oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters')
+        oGuiElement = cGuiElement(
+            sName, SITE_IDENTIFIER,
+            'showSeriesEpisodes' if isTvshow else 'showHosters')
         oGuiElement.setMediaType('tvshow' if isTvshow else 'movie')
         if sImage:
             oGuiElement.setThumbnail(sImage)
@@ -111,7 +139,12 @@ def showHosters():
     getHosterUrl() holt stattdessen nur die tatsaechlich gewaehlte Seite.
     """
     hosters = []
-    sUrl = ParameterHandler().getValue('entryUrl')
+    params = ParameterHandler()
+    sDirectUrl = params.getValue('streamUrl')
+    if sDirectUrl:
+        return [{'link': sDirectUrl, 'name': 'Server', 'displayedName': 'Server'},
+                'getHosterUrl']
+    sUrl = params.getValue('entryUrl')
     if not sUrl:
         return hosters
     sHtmlContent = cRequestHandler(sUrl, caching=False).request()
@@ -134,7 +167,62 @@ def showHosters():
     return hosters
 
 
+def showSeriesEpisodes():
+    """Liest die episodenspezifischen Links aus dem JSON der Detailseite."""
+    params = ParameterHandler()
+    sUrl = params.getValue('entryUrl')
+    sSeriesName = params.getValue('sName') or ''
+    if not sUrl:
+        return
+    sHtmlContent = cRequestHandler(sUrl, caching=False).request()
+    isMatch, sData = cParser.parseSingleResult(
+        sHtmlContent, r'const\s+allEpisodesData\s*=\s*(\[.*?\]);')
+    if not isMatch:
+        cGui().showInfo()
+        return
+    try:
+        episodes = json.loads(sData)
+    except ValueError:
+        logger.info('-> [%s]: Episoden-JSON ist ungueltig: %s' % (SITE_NAME, sUrl))
+        cGui().showInfo()
+        return
+
+    entries = []
+    for episode in episodes if isinstance(episodes, list) else []:
+        if not isinstance(episode, dict):
+            continue
+        streamUrl = (episode.get('video_links') or '').split(',')[0].strip()
+        if not streamUrl:
+            continue
+        season = episode.get('season_number') or 0
+        number = episode.get('episode_number') or 0
+        title = episode.get('name') or 'Folge %s' % number
+        entries.append((season, number, title, streamUrl))
+
+    if not entries:
+        cGui().showInfo()
+        return
+    entries.sort(key=lambda item: (int(item[0]), int(item[1])))
+    total = len(entries)
+    for season, number, title, streamUrl in entries:
+        sLabel = 'S%sE%s: %s' % (season, number, title)
+        oGuiElement = cGuiElement(sLabel, SITE_IDENTIFIER, 'showHosters')
+        oGuiElement.setMediaType('episode')
+        oGuiElement.setTVShowTitle(sSeriesName)
+        oGuiElement.setSeason(season)
+        oGuiElement.setEpisode(number)
+        params.setParam('streamUrl', streamUrl)
+        params.setParam('sName', sLabel)
+        cGui().addFolder(oGuiElement, params, False, total)
+    cGui().setView('episodes')
+    cGui().setEndOfDirectory()
+
+
 def getHosterUrl(sUrl=False):
+    # Serien-Episoden enthalten bereits die externe Hoster-URL. Diese darf
+    # nicht noch einmal wie eine KinoKing-Unterseite behandelt werden.
+    if sUrl and DOMAIN.lower() not in cParser.urlparse(sUrl).lower():
+        return [{'streamUrl': sUrl, 'resolved': False}]
     sHtmlContent = cRequestHandler(sUrl, caching=False).request()
     isMatch, sEmbed = cParser.parseSingleResult(sHtmlContent, r'<iframe[^>]+src="([^"]+)"')
     if not isMatch:
