@@ -27,7 +27,7 @@
 				</setting>
 				<setting id="mainMenuOrder" type="string" label="30879" help="">
 					<level>0</level>
-					<default>globalSearch,sourceCategories,categories,random,history,settings</default>
+					<default>epicFavorites,globalSearch,sourceCategories,categories,random,history,settings</default>
 					<visible>false</visible>
 					<control type="edit" format="string"/>
 				</setting>
@@ -128,6 +128,16 @@
 					<level>0</level>
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=clearWatchHistory)</data>
 					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="epicFavoritesName" type="string" label="30916" help="30917">
+					<level>0</level>
+					<default>Epic-Favorites</default>
+					<constraints>
+						<allowempty>false</allowempty>
+					</constraints>
+					<control type="edit" format="string">
+						<heading>30916</heading>
+					</control>
 				</setting>
 				<setting id="favoriteActors" type="string" label="30871" help="30872">
 					<level>0</level>

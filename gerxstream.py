@@ -15,6 +15,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from xbmc import LOGINFO as LOGNOTICE, LOGERROR
 from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
 from resources.lib.tools import logger, cParser, cCache, addon_log as log
@@ -115,7 +116,7 @@ HOSTER_GUI_FUNCTIONS = frozenset((
 
 
 MAIN_MENU_ORDER_SETTING = 'mainMenuOrder'
-MAIN_MENU_ORDER_DEFAULT = ('globalSearch', 'sourceCategories', 'categories', 'random', 'history', 'settings')
+MAIN_MENU_ORDER_DEFAULT = ('epicFavorites', 'globalSearch', 'sourceCategories', 'categories', 'random', 'history', 'settings')
 
 
 def _mainMenuOrder():
@@ -134,12 +135,18 @@ def _mainMenuOrder():
     for key in MAIN_MENU_ORDER_DEFAULT:
         if key not in chosen:
             chosen.append(key)
+    # Epic-Favorites ist der persoenliche Startpunkt und steht absichtlich
+    # stets vor der globalen Suche - auch bei bereits gespeicherten alten
+    # Menue-Reihenfolgen ohne diese neue Kennung.
+    chosen.remove('epicFavorites')
+    chosen.insert(0, 'epicFavorites')
     return chosen
 
 
 def showMainMenuOrder():
     """Kleiner Kodi-Dialog zum schrittweisen Verschieben der Hauptmenuepunkte."""
     labels = {
+        'epicFavorites': cConfig().getSetting('epicFavoritesName', 'Epic-Favorites'),
         'globalSearch': cConfig().getLocalizedString(30040),
         'sourceCategories': cConfig().getLocalizedString(30878),
         'categories': cConfig().getLocalizedString(30507),
@@ -264,6 +271,9 @@ def parseUrl():
         elif sFunction == 'clearWatchHistory':
             clearWatchHistory()
             return
+        elif sFunction == 'addEpicFavorite':
+            addEpicFavorite(params)
+            return
         elif sFunction == 'mainMenuOrder':
             showMainMenuOrder()
             return
@@ -341,6 +351,23 @@ def parseUrl():
             showWatchHistory()
         elif sFunction == 'resumeWatchHistory':
             resumeWatchHistory(params)
+        else:
+            _endFailedDirectory()
+    elif sSiteName == 'epicFavorites':
+        if sFunction == 'showEpicFavorites':
+            showEpicFavorites(params)
+        elif sFunction == 'openEpicFavorite':
+            openEpicFavorite(params)
+        elif sFunction == 'createEpicFavoriteFolder':
+            createEpicFavoriteFolder(params)
+        elif sFunction == 'renameEpicFavoriteFolder':
+            renameEpicFavoriteFolder(params)
+        elif sFunction == 'deleteEpicFavoriteFolder':
+            deleteEpicFavoriteFolder(params)
+        elif sFunction == 'moveEpicFavoriteEntry':
+            moveEpicFavoriteEntry(params)
+        elif sFunction == 'removeEpicFavoriteEntry':
+            removeEpicFavoriteEntry(params)
         else:
             _endFailedDirectory()
     elif sSiteName == 'GerXStream':
@@ -469,6 +496,7 @@ def showMainMenu(sFunction):
         menuGroups['categories'].append((oGuiElement, None))
 
     menuGroups['random'].append((randomGuiElement(), None))
+    menuGroups['epicFavorites'].append((epicFavoritesGuiElement(), None))
     if cConfig().getSettingBool('watchHistoryEnabled', True):
         menuGroups['history'].append((watchHistoryGuiElement(), None))
 
@@ -655,6 +683,214 @@ def globalSearchGuiElement():
     oGuiElement.setFunction('searchGlobal')
     oGuiElement.setThumbnail(os.path.join(ART, 'all.png'))
     return oGuiElement
+
+
+def epicFavoritesGuiElement():
+    """Main-menu entry for the user's local, nested favourites."""
+    from resources.lib import epicfavorites
+
+    ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
+    element = cGuiElement(epicfavorites.displayName(), 'epicFavorites', 'showEpicFavorites')
+    element.setThumbnail(os.path.join(ART, 'all.png'))
+    element.addItemProperties('epicFavoritesManaged', 'true')
+    return element
+
+
+def _epicContext(element, title, function, params):
+    """Attach an Epic-Favorites context action to a list element."""
+    context = cContextElement()
+    context.setTitle(title)
+    context.setFile('epicFavorites')
+    context.setFunction(function)
+    context.setOutputParameterHandler(params)
+    element.addContextItem(context)
+
+
+def _epicRefresh():
+    xbmc.executebuiltin('Container.Refresh')
+
+
+def _epicFolderName(default=''):
+    return cGui().showKeyBoard(default, cConfig().getLocalizedString(30920))
+
+
+def showEpicFavorites(params):
+    """Render folders and saved plugin invocations in the chosen folder."""
+    from resources.lib import epicfavorites
+
+    requestedPath = params.getValue('path')
+    path, _folder, folders, entries = epicfavorites.contents(requestedPath)
+    oGui = cGui()
+
+    # A visible action is needed for the initially empty root. The same
+    # operation is also available through the long-press context menu of
+    # every existing folder.
+    createParams = ParameterHandler()
+    createParams.setParam('path', path)
+    createElement = cGuiElement(cConfig().getLocalizedString(30919),
+                                'epicFavorites', 'createEpicFavoriteFolder')
+    createElement.setThumbnail(os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art', 'categories.png'))
+    createElement.addItemProperties('epicFavoritesManaged', 'true')
+    oGui.addFolder(createElement, createParams)
+
+    for folder in folders:
+        folderPath = '/'.join(filter(None, (path, folder['id'])))
+        folderParams = ParameterHandler()
+        folderParams.setParam('path', folderPath)
+        element = cGuiElement(folder['name'], 'epicFavorites', 'showEpicFavorites')
+        element.setThumbnail(os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art', 'categories.png'))
+        element.addItemProperties('epicFavoritesManaged', 'true')
+
+        newFolderParams = ParameterHandler()
+        newFolderParams.setParam('path', folderPath)
+        _epicContext(element, cConfig().getLocalizedString(30919),
+                     'createEpicFavoriteFolder', newFolderParams)
+        renameParams = ParameterHandler()
+        renameParams.setParam('path', folderPath)
+        _epicContext(element, cConfig().getLocalizedString(30923),
+                     'renameEpicFavoriteFolder', renameParams)
+        deleteParams = ParameterHandler()
+        deleteParams.setParam('path', folderPath)
+        _epicContext(element, cConfig().getLocalizedString(30924),
+                     'deleteEpicFavoriteFolder', deleteParams)
+        oGui.addFolder(element, folderParams)
+
+    for entry in entries:
+        entryParams = ParameterHandler()
+        entryParams.setParam('path', path)
+        entryParams.setParam('entryId', entry['id'])
+        element = cGuiElement(entry['title'], 'epicFavorites', 'openEpicFavorite')
+        if entry.get('thumbnail'):
+            element.setThumbnail(entry['thumbnail'])
+        if entry.get('fanart'):
+            element.setFanart(entry['fanart'])
+        if entry.get('description'):
+            element.setDescription(entry['description'])
+        if entry.get('media_type'):
+            element.setMediaType(entry['media_type'])
+        # Gespeicherte Abspiel-Eintraege bleiben absichtlich Ordner: so
+        # kann openEpicFavorite() den originalen Plugin-Aufruf unveraendert
+        # ausfuehren, ohne dass Kodi vorher playMode fuer diesen Wrapper setzt.
+        element.addItemProperties('epicFavoritesManaged', 'true')
+        moveParams = ParameterHandler()
+        moveParams.setParam('path', path)
+        moveParams.setParam('entryId', entry['id'])
+        _epicContext(element, cConfig().getLocalizedString(30925),
+                     'moveEpicFavoriteEntry', moveParams)
+        removeParams = ParameterHandler()
+        removeParams.setParam('path', path)
+        removeParams.setParam('entryId', entry['id'])
+        _epicContext(element, cConfig().getLocalizedString(30926),
+                     'removeEpicFavoriteEntry', removeParams)
+        oGui.addFolder(element, entryParams, True, len(entries))
+
+    oGui.setView('files')
+    oGui.setEndOfDirectory()
+
+
+def addEpicFavorite(params):
+    """Add an item from any GerXStream context menu into a selected folder."""
+    from resources.lib import epicfavorites
+
+    target = params.getValue('target')
+    if not target or not target.startswith('plugin://'):
+        cGui().showInfo('GerXStream', cConfig().getLocalizedString(30930))
+        return
+    path = epicfavorites.chooseFolder()
+    if path is None:
+        return
+    entry = {
+        'title': params.getValue('title'),
+        'target': target,
+        'is_folder': params.getValue('isFolder') == 'true',
+        'thumbnail': params.getValue('thumbnail'),
+        'fanart': params.getValue('fanart'),
+        'description': params.getValue('description'),
+        'media_type': params.getValue('mediaType'),
+    }
+    stored, result = epicfavorites.addEntry(path, entry)
+    if stored:
+        cGui().showInfo(epicfavorites.displayName(),
+                        cConfig().getLocalizedString(30928) % epicfavorites.folderTitle(path))
+    elif result == 'duplicate':
+        cGui().showInfo(epicfavorites.displayName(), cConfig().getLocalizedString(30929))
+    else:
+        cGui().showInfo(epicfavorites.displayName(), cConfig().getLocalizedString(30930))
+
+
+def openEpicFavorite(params):
+    """Delegate the stored item to the exact Kodi plugin URL it came from."""
+    from resources.lib import epicfavorites
+
+    entry = epicfavorites.entryAt(params.getValue('path'), params.getValue('entryId'))
+    if not entry:
+        _endFailedDirectory()
+        return
+    target = entry['target']
+    if entry.get('is_folder'):
+        xbmc.executebuiltin('Container.Update(%s)' % target)
+    else:
+        xbmc.executebuiltin('RunPlugin(%s)' % target)
+
+
+def createEpicFavoriteFolder(params):
+    from resources.lib import epicfavorites
+
+    name = _epicFolderName()
+    if name:
+        if epicfavorites.createFolder(params.getValue('path'), name):
+            _epicRefresh()
+        else:
+            cGui().showInfo(epicfavorites.displayName(), cConfig().getLocalizedString(30931))
+
+
+def renameEpicFavoriteFolder(params):
+    from resources.lib import epicfavorites
+
+    path = params.getValue('path')
+    name = _epicFolderName(epicfavorites.folderTitle(path))
+    if name:
+        if epicfavorites.renameFolder(path, name):
+            _epicRefresh()
+        else:
+            cGui().showInfo(epicfavorites.displayName(), cConfig().getLocalizedString(30931))
+
+
+def deleteEpicFavoriteFolder(params):
+    from resources.lib import epicfavorites
+
+    path = params.getValue('path')
+    title = epicfavorites.folderTitle(path)
+    if xbmcgui.Dialog().yesno(epicfavorites.displayName(),
+                              cConfig().getLocalizedString(30927) % title):
+        if epicfavorites.deleteFolder(path):
+            _epicRefresh()
+
+
+def moveEpicFavoriteEntry(params):
+    from resources.lib import epicfavorites
+
+    sourcePath = params.getValue('path')
+    destinationPath = epicfavorites.chooseFolder()
+    if destinationPath is None:
+        return
+    moved, result = epicfavorites.moveEntry(sourcePath, params.getValue('entryId'), destinationPath)
+    if moved:
+        _epicRefresh()
+    elif result == 'duplicate':
+        cGui().showInfo(epicfavorites.displayName(), cConfig().getLocalizedString(30929))
+
+
+def removeEpicFavoriteEntry(params):
+    from resources.lib import epicfavorites
+
+    entry = epicfavorites.entryAt(params.getValue('path'), params.getValue('entryId'))
+    if not entry:
+        return
+    if xbmcgui.Dialog().yesno(epicfavorites.displayName(),
+                              cConfig().getLocalizedString(30927) % entry['title']):
+        if epicfavorites.removeEntry(params.getValue('path'), entry['id']):
+            _epicRefresh()
 
 
 def randomGuiElement():

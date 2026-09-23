@@ -249,6 +249,25 @@ class cGui:
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s)" % (sTest,),)]
         itemValues = oGuiElement.getItemValues()
         contextitem = cContextElement()
+        # Eigene, verschachtelte GerXStream-Favoriten. Der originale
+        # Plugin-Aufruf wird gespeichert, nicht die (kurzlebige) Stream-URL;
+        # deshalb funktionieren Favoriten auch nach einem Hosterwechsel.
+        # Eintraege innerhalb von Epic-Favorites selbst markieren sich, damit
+        # dort nicht noch einmal "Hinzufuegen" erscheint.
+        if not itemValues.get('epicFavoritesManaged'):
+            from resources.lib import epicfavorites
+            favoriteParams = {
+                'target': sUrl,
+                'title': oGuiElement.getTitle(),
+                'isFolder': str(bool(bIsFolder)).lower(),
+                'thumbnail': oGuiElement.getThumbnail(),
+                'fanart': oGuiElement.getFanart(),
+                'description': oGuiElement.getDescription(),
+                'mediaType': oGuiElement._mediaType,
+            }
+            favoriteTitle = cConfig().getLocalizedString(30918) % epicfavorites.displayName()
+            contextmenus += [(favoriteTitle, "RunPlugin(%s?function=addEpicFavorite&%s)" %
+                             (self.pluginPath, urlencode(favoriteParams)))]
         if oGuiElement._mediaType == 'movie' or oGuiElement._mediaType == 'tvshow':
             if cConfig().getSettingBool('gerxstream.trailer', False):
                 if not xbmc.getCondVisibility('System.HasAddon(%s)' % 'script.module.xstream.trailer'):  # Schauen ob Addon installiert

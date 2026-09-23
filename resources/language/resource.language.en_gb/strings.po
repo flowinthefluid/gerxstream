@@ -2118,3 +2118,67 @@ msgstr ""
 msgctxt "#30915"
 msgid "Bottom"
 msgstr ""
+
+msgctxt "#30916"
+msgid "Epic-Favorites name"
+msgstr ""
+
+msgctxt "#30917"
+msgid "The name is displayed in the main menu and in the favourites browser."
+msgstr ""
+
+msgctxt "#30918"
+msgid "Add to %s"
+msgstr ""
+
+msgctxt "#30919"
+msgid "Create folder"
+msgstr ""
+
+msgctxt "#30920"
+msgid "Folder name"
+msgstr ""
+
+msgctxt "#30921"
+msgid "Save in: %s"
+msgstr ""
+
+msgctxt "#30923"
+msgid "Rename folder"
+msgstr ""
+
+msgctxt "#30924"
+msgid "Delete folder"
+msgstr ""
+
+msgctxt "#30925"
+msgid "Move"
+msgstr ""
+
+msgctxt "#30926"
+msgid "Remove"
+msgstr ""
+
+msgctxt "#30927"
+msgid "Really remove \"%s\"?"
+msgstr ""
+
+msgctxt "#30928"
+msgid "Favourite saved in %s."
+msgstr ""
+
+msgctxt "#30929"
+msgid "This favourite is already in that folder."
+msgstr ""
+
+msgctxt "#30930"
+msgid "This item cannot be saved as a favourite."
+msgstr ""
+
+msgctxt "#30931"
+msgid "Folder already exists or its name is invalid."
+msgstr ""
+
+msgctxt "#30932"
+msgid ".. Back"
+msgstr ""

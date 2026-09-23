@@ -1,3 +1,12 @@
+[B]Version: 1.0.22[/B]
+
+24.09.2026
+
+- Epic-Favorites vor der globalen Suche eingefuegt
+- Eigene, verschachtelte Favoritenordner direkt per Kontextmenue anlegbar
+- Eintraege koennen beim Hinzufuegen in einen Zielordner gelegt sowie spaeter verschoben oder entfernt werden
+- Anzeigename von Epic-Favorites ist in den Einstellungen konfigurierbar
+
 [B]Version: 1.0.21[/B]
 
 23.09.2026
