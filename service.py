@@ -121,6 +121,15 @@ def main():
         tools.changelog()
     delHtmlCache()
 
+    # Livestream-Listen (M3U + EPG) fuer den IPTV Simple Client erzeugen.
+    # Baut hoechstens alle N Stunden neu und wirft nie - ein Fehler hier darf
+    # den Kodi-Start nicht stoeren.
+    try:
+        from resources.lib.livestreams import export as livestreams_export
+        livestreams_export.refresh()
+    except Exception as exc:
+        log('%s - Livestream-Export uebersprungen: %s' % (__name__, exc), LOGWARNING)
+
 
 if __name__ == '__main__':
     main()

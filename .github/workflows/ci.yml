@@ -1,0 +1,46 @@
+# CI fuer GerXStream.
+#
+# Hinweis: Das Projekt wird primaer auf GitLab gepflegt; die Live-Auslieferung
+# des Kodi-Repositorys erfolgt ueber .gitlab-ci.yml + tools/build-gitlab-pages.sh
+# (GitLab Pages). Diese GitHub Action ist ein zusaetzlicher Weg (Tests + Build)
+# fuer den Fall, dass das Repo auch nach GitHub gespiegelt wird. Sie schreibt
+# nach dist/ und laesst public/ unberuehrt.
+
+name: ci
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test deps
+        run: python -m pip install --quiet pytest
+      - name: Run unit tests (Kodi-Stubs via tests/conftest.py)
+        run: python -m pytest tests/ -q
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build repository artifacts (dist/)
+        run: python tools/build_repo.py --out dist --force
+      - name: Validate addon.xml + settings.xml are well-formed
+        run: |
+          python -c "import xml.dom.minidom as m; m.parse('addon.xml'); m.parse('resources/settings.xml'); print('XML ok')"
+      - name: Upload repository artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gerxstream-repo
+          path: dist/

@@ -20,3 +20,9 @@ Thumbs.db
 # ResolveURL is a required, versioned third-party release input.
 !/release-inputs/
 !/release-inputs/script.module.resolveurl-5.1.209.zip
+
+# Test- und lokale Build-Artefakte (nicht committen)
+.pytest_cache/
+/dist/
+.venv/
+tests/_profile/

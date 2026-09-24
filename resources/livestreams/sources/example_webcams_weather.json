@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "_comment": "Beispiel-Webcams/-Wetter. Jede Variante MUSS ihre Rechtelage belegen: 'official' ODER 'rights_evidence_url'. Ohne Beleg gilt rights_status='unknown' und der Eintrag erscheint NICHT im Standardkatalog (fail-closed). Der letzte Eintrag zeigt bewusst, was ausgeschlossen wird. Stream-URLs hier sind Beispiele - vor Nutzung pruefen.",
+  "channels": [
+    {
+      "id": "gxs:webcam:us:cira-public",
+      "name": "CIRA Public Webcam (US federal)",
+      "section": "webcam",
+      "country": "us",
+      "language": [
+        "en"
+      ],
+      "genre": [
+        "nature"
+      ],
+      "nsfw": false,
+      "publisher": "cira-colostate",
+      "epg_id": "",
+      "sources": [
+        {
+          "source_id": "cira-jpeg",
+          "display_name": "CIRA CSU (public domain)",
+          "provider_id": "curated",
+          "publisher": "cira-colostate",
+          "url": "https://example.gov/cira/current.jpg",
+          "protocol": "jpeg",
+          "quality": "sd",
+          "official": true,
+          "rights_evidence_url": "https://views.cira.colostate.edu/fed/Pub/Webcams.aspx",
+          "last_verified_at": "2026-09-24",
+          "reliability": "medium",
+          "region": "us",
+          "priority": 0,
+          "active": false
+        }
+      ],
+      "disabled_reason": "Platzhalter-Domain example.gov (DNS-Fehler); echte CIRA-JPEG-URL vor Aktivierung eintragen und pruefen."
+    },
+    {
+      "id": "gxs:weather:de:fotowebcam-example",
+      "name": "Wetter-Webcam (Beispiel, CC-lizenziert)",
+      "section": "weather",
+      "country": "de",
+      "language": [
+        "de"
+      ],
+      "genre": [
+        "nature"
+      ],
+      "nsfw": false,
+      "publisher": "foto-webcam.eu",
+      "epg_id": "",
+      "sources": [
+        {
+          "source_id": "fotowebcam-jpeg",
+          "display_name": "foto-webcam.eu (Attribution)",
+          "provider_id": "curated",
+          "publisher": "foto-webcam.eu",
+          "url": "https://example.org/fotowebcam/current.jpg",
+          "protocol": "jpeg",
+          "quality": "hd",
+          "official": false,
+          "rights_evidence_url": "https://www.foto-webcam.eu/webcam/",
+          "last_verified_at": "2026-09-24",
+          "reliability": "medium",
+          "region": "de",
+          "priority": 0,
+          "active": false
+        }
+      ],
+      "disabled_reason": "Platzhalter-Domain example.org (HTTP 404); echte foto-webcam.eu-URL vor Aktivierung eintragen."
+    },
+    {
+      "id": "gxs:webcam:xx:unverified-example",
+      "name": "Unverifizierte Kamera (wird ausgeschlossen)",
+      "section": "webcam",
+      "country": "xx",
+      "language": [],
+      "genre": [
+        "traffic"
+      ],
+      "nsfw": false,
+      "publisher": "unknown",
+      "epg_id": "",
+      "sources": [
+        {
+          "source_id": "unverified",
+          "url": "http://203.0.113.10:8080/video.mjpg",
+          "protocol": "mjpeg",
+          "quality": "unknown",
+          "official": false,
+          "reliability": "unknown",
+          "active": false
+        }
+      ],
+      "disabled_reason": "Demonstriert bewusst das Ausschluss-Verhalten (Doku-IP 203.0.113.10, kein Rechtebeleg)."
+    }
+  ]
+}

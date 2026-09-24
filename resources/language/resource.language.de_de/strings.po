@@ -2281,3 +2281,437 @@ msgstr "Gesamtsicherung"
 msgctxt "#30957"
 msgid "Backup file already exists. Overwrite?"
 msgstr "Die Sicherungsdatei existiert bereits. Ueberschreiben?"
+
+# --- Livestreams (30960-30988, 31100-31215) ---
+msgctxt "#30960"
+msgid "Customize menu"
+msgstr "Menue anpassen"
+
+msgctxt "#30961"
+msgid "Television"
+msgstr "Fernsehen"
+
+msgctxt "#30962"
+msgid "Sports & E-Sports"
+msgstr "Sport & E-Sport"
+
+msgctxt "#30963"
+msgid "Social Media"
+msgstr "Social Media"
+
+msgctxt "#30964"
+msgid "Weather"
+msgstr "Wetter"
+
+msgctxt "#30965"
+msgid "Webcams"
+msgstr "Webcams"
+
+msgctxt "#30966"
+msgid "Visible sections"
+msgstr "Sichtbare Bereiche"
+
+msgctxt "#30967"
+msgid "Adult content (NSFW)"
+msgstr "Erwachsene Inhalte (NSFW)"
+
+msgctxt "#30968"
+msgid "Only affects content explicitly marked NSFW. For external scrapers a keyword heuristic is used - not a guarantee."
+msgstr "Wirkt nur auf ausdruecklich als NSFW markierte Inhalte. Fuer externe Scraper greift eine Schlagwort-Heuristik - keine Garantie."
+
+msgctxt "#30969"
+msgid "Countries"
+msgstr "Laender"
+
+msgctxt "#30970"
+msgid "Country filter mode"
+msgstr "Laenderfilter-Modus"
+
+msgctxt "#30971"
+msgid "Show all"
+msgstr "Alle anzeigen"
+
+msgctxt "#30972"
+msgid "Whitelist (only selected)"
+msgstr "Whitelist (nur ausgewaehlte)"
+
+msgctxt "#30973"
+msgid "Blacklist (hide selected)"
+msgstr "Blacklist (ausgewaehlte verbergen)"
+
+msgctxt "#30974"
+msgid "Select countries"
+msgstr "Laender auswaehlen"
+
+msgctxt "#30975"
+msgid "Choose which countries appear in the livestream menus."
+msgstr "Legt fest, welche Laender in den Livestream-Menues erscheinen."
+
+msgctxt "#30976"
+msgid "Genres"
+msgstr "Genres"
+
+msgctxt "#30977"
+msgid "Select visible genres"
+msgstr "Sichtbare Genres auswaehlen"
+
+msgctxt "#30978"
+msgid "Hidden genres never enable NSFW - that stays a separate switch."
+msgstr "Versteckte Genres aktivieren nie NSFW - das bleibt ein eigener Schalter."
+
+msgctxt "#30979"
+msgid "EPG (program guide)"
+msgstr "EPG (Programmzeitschrift)"
+
+msgctxt "#30980"
+msgid "XMLTV sources (comma-separated URLs)"
+msgstr "XMLTV-Quellen (URLs, kommagetrennt)"
+
+msgctxt "#30981"
+msgid "Supports gzip and xz. Only visible channels are kept."
+msgstr "Unterstuetzt gzip und xz. Nur sichtbare Sender werden uebernommen."
+
+msgctxt "#30982"
+msgid "EPG preview window (hours)"
+msgstr "EPG-Vorschau (Stunden)"
+
+msgctxt "#30983"
+msgid "Data & export"
+msgstr "Daten & Export"
+
+msgctxt "#30984"
+msgid "Refresh interval (hours)"
+msgstr "Aktualisierungsintervall (Stunden)"
+
+msgctxt "#30985"
+msgid "Export direct URLs instead of add-on playback"
+msgstr "Direkt-URLs statt Addon-Wiedergabe exportieren"
+
+msgctxt "#30986"
+msgid "Direct URLs skip source selection and failover. Use only if plugin URLs do not play in IPTV Simple."
+msgstr "Direkt-URLs umgehen Quellenwahl und Failover. Nur nutzen, wenn plugin-URLs in IPTV Simple nicht spielen."
+
+msgctxt "#30987"
+msgid "Refresh livestream lists now"
+msgstr "Livestream-Listen jetzt aktualisieren"
+
+msgctxt "#30988"
+msgid "Show IPTV Simple setup"
+msgstr "IPTV-Simple-Einrichtung anzeigen"
+
+msgctxt "#31100"
+msgid "News"
+msgstr "Nachrichten"
+
+msgctxt "#31101"
+msgid "Sports"
+msgstr "Sport"
+
+msgctxt "#31102"
+msgid "Kids"
+msgstr "Kinder"
+
+msgctxt "#31103"
+msgid "Documentary"
+msgstr "Dokumentation"
+
+msgctxt "#31104"
+msgid "Music"
+msgstr "Musik"
+
+msgctxt "#31105"
+msgid "Movies"
+msgstr "Filme"
+
+msgctxt "#31106"
+msgid "Series"
+msgstr "Serien"
+
+msgctxt "#31107"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#31108"
+msgid "Comedy"
+msgstr "Comedy"
+
+msgctxt "#31109"
+msgid "Anime"
+msgstr "Anime"
+
+msgctxt "#31110"
+msgid "Shopping"
+msgstr "Shopping"
+
+msgctxt "#31111"
+msgid "Regional"
+msgstr "Regional"
+
+msgctxt "#31112"
+msgid "Public broadcaster"
+msgstr "Oeffentlich-rechtlich"
+
+msgctxt "#31113"
+msgid "Nature"
+msgstr "Natur"
+
+msgctxt "#31114"
+msgid "Erotic"
+msgstr "Erotik"
+
+msgctxt "#31200"
+msgid "Nothing available here yet. You can add sources in the settings."
+msgstr "Hier ist noch nichts verfuegbar. Quellen lassen sich in den Einstellungen ergaenzen."
+
+msgctxt "#31201"
+msgid "Official"
+msgstr "Offiziell"
+
+msgctxt "#31202"
+msgid "Unofficial"
+msgstr "Inoffiziell"
+
+msgctxt "#31210"
+msgid "Channels by country"
+msgstr "Sender nach Laendern"
+
+msgctxt "#31211"
+msgid "Channels by genre"
+msgstr "Sender nach Genre"
+
+msgctxt "#31212"
+msgid "Choose another source"
+msgstr "Andere Quelle waehlen"
+
+msgctxt "#31213"
+msgid "Source unavailable - trying next"
+msgstr "Quelle nicht erreichbar - versuche naechste"
+
+msgctxt "#31214"
+msgid "No source could be played"
+msgstr "Keine Quelle spielbar"
+
+msgctxt "#31215"
+msgid "Livestream lists updated"
+msgstr "Livestream-Listen aktualisiert"
+
+
+msgctxt "#30989"
+msgid "Livestreams"
+msgstr "Livestreams"
+
+# --- Webcams & Wetter (30990-30998, 31220-31222) ---
+msgctxt "#30990"
+msgid "Weather"
+msgstr "Wetter"
+
+msgctxt "#30991"
+msgid "OpenWeatherMap API key"
+msgstr "OpenWeatherMap-API-Schluessel"
+
+msgctxt "#30992"
+msgid "Your own key from openweathermap.org. Without it the weather line stays hidden."
+msgstr "Eigener Schluessel von openweathermap.org. Ohne ihn bleibt die Wetterzeile ausgeblendet."
+
+msgctxt "#30993"
+msgid "Weather city"
+msgstr "Wetter-Stadt"
+
+msgctxt "#30994"
+msgid "Units"
+msgstr "Einheiten"
+
+msgctxt "#30995"
+msgid "Metric (C)"
+msgstr "Metrisch (C)"
+
+msgctxt "#30996"
+msgid "Imperial (F)"
+msgstr "Imperial (F)"
+
+msgctxt "#30997"
+msgid "Webcam still-image refresh (seconds)"
+msgstr "Webcam-Standbild-Aktualisierung (Sekunden)"
+
+msgctxt "#30998"
+msgid "How often JPEG still-image cameras reload."
+msgstr "Wie oft JPEG-Standbild-Kameras neu geladen werden."
+
+msgctxt "#31220"
+msgid "Still-image mode"
+msgstr "Standbild-Modus"
+
+msgctxt "#31221"
+msgid "Rabbithole (random webcam)"
+msgstr "Rabbithole (zufaellige Webcam)"
+
+msgctxt "#31222"
+msgid "Random (250)"
+msgstr "Zufaellig (250)"
+
+
+# --- Phase B (30999, 31230-31231) ---
+msgctxt "#31230"
+msgid "> Play recommended source"
+msgstr "> Empfohlene Quelle abspielen"
+
+msgctxt "#31231"
+msgid "Geo"
+msgstr "Geo"
+
+msgctxt "#30999"
+msgid "Check sources"
+msgstr "Quellen pruefen"
+
+
+# --- Phase C (31115-31126, 31240-31243) ---
+msgctxt "#31115"
+msgid "Landmarks"
+msgstr "Sehenswuerdigkeiten"
+
+msgctxt "#31116"
+msgid "Buildings"
+msgstr "Gebaeude"
+
+msgctxt "#31117"
+msgid "Mountains"
+msgstr "Berge"
+
+msgctxt "#31118"
+msgid "Animals"
+msgstr "Tiere"
+
+msgctxt "#31119"
+msgid "Birds"
+msgstr "Voegel"
+
+msgctxt "#31120"
+msgid "Beaches"
+msgstr "Straende"
+
+msgctxt "#31121"
+msgid "Piers & Harbours"
+msgstr "Piers & Haefen"
+
+msgctxt "#31122"
+msgid "Parks"
+msgstr "Parks"
+
+msgctxt "#31123"
+msgid "Traffic"
+msgstr "Verkehr"
+
+msgctxt "#31124"
+msgid "City"
+msgstr "Stadt"
+
+msgctxt "#31125"
+msgid "Ski & Snow"
+msgstr "Ski & Schnee"
+
+msgctxt "#31126"
+msgid "Weather"
+msgstr "Wetter"
+
+msgctxt "#31240"
+msgid "All shown. Reshuffle?"
+msgstr "Alle gezeigt. Neu mischen?"
+
+msgctxt "#31241"
+msgid "Rabbithole"
+msgstr "Rabbithole"
+
+msgctxt "#31242"
+msgid "Rabbithole categories"
+msgstr "Rabbithole-Kategorien"
+
+msgctxt "#31243"
+msgid "Which webcam categories the rabbithole draws from (empty = all). NSFW is never selectable here."
+msgstr "Aus welchen Webcam-Kategorien das Rabbithole zieht (leer = alle). NSFW ist hier nie waehlbar."
+
+
+# --- Social Media (31300-31330) ---
+msgctxt "#31300"
+msgid "Gaming"
+msgstr "Gaming"
+
+msgctxt "#31301"
+msgid "Music"
+msgstr "Musik"
+
+msgctxt "#31302"
+msgid "News"
+msgstr "Nachrichten"
+
+msgctxt "#31303"
+msgid "Sports"
+msgstr "Sport"
+
+msgctxt "#31310"
+msgid "YouTube add-on not installed (plugin.video.youtube)"
+msgstr "YouTube-Addon nicht installiert (plugin.video.youtube)"
+
+msgctxt "#31311"
+msgid "Twitch add-on not installed (plugin.video.twitch)"
+msgstr "Twitch-Addon nicht installiert (plugin.video.twitch)"
+
+msgctxt "#31312"
+msgid "Open YouTube add-on"
+msgstr "YouTube-Addon oeffnen"
+
+msgctxt "#31313"
+msgid "Enter your own YouTube API key in settings for category filtering"
+msgstr "Eigenen YouTube-API-Key in den Einstellungen fuer Kategorie-Filter"
+
+msgctxt "#31314"
+msgid "Open Twitch add-on"
+msgstr "Twitch-Addon oeffnen"
+
+msgctxt "#31315"
+msgid "Enter Twitch client ID in settings for the live list"
+msgstr "Twitch-Client-ID in den Einstellungen fuer Live-Liste"
+
+msgctxt "#31320"
+msgid "Social Media"
+msgstr "Social Media"
+
+msgctxt "#31321"
+msgid "Show YouTube"
+msgstr "YouTube anzeigen"
+
+msgctxt "#31322"
+msgid "Show Twitch"
+msgstr "Twitch anzeigen"
+
+msgctxt "#31323"
+msgid "YouTube Data API key (optional)"
+msgstr "YouTube-Data-API-Schluessel (optional)"
+
+msgctxt "#31324"
+msgid "Optional. Playback runs through the official platform add-on regardless."
+msgstr "Optional. Die Wiedergabe laeuft ohnehin ueber das offizielle Plattform-Addon."
+
+msgctxt "#31325"
+msgid "YouTube region code (e.g. DE)"
+msgstr "YouTube-Laendercode (z.B. DE)"
+
+msgctxt "#31326"
+msgid "Open YouTube add-on settings (account/login)"
+msgstr "YouTube-Addon-Einstellungen oeffnen (Konto/Login)"
+
+msgctxt "#31327"
+msgid "Twitch client ID (optional)"
+msgstr "Twitch-Client-ID (optional)"
+
+msgctxt "#31328"
+msgid "Twitch client secret (optional)"
+msgstr "Twitch-Client-Secret (optional)"
+
+msgctxt "#31329"
+msgid "Twitch language (e.g. de)"
+msgstr "Twitch-Sprache (z.B. de)"
+
+msgctxt "#31330"
+msgid "Open Twitch add-on settings (account)"
+msgstr "Twitch-Addon-Einstellungen oeffnen (Konto)"
+

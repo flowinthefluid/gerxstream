@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tv generator-info-name="GerXStream">
+<channel id="chan.de"><display-name>Chan</display-name></channel>
+<programme start="20260924100000 +0000" stop="20260924110000 +0000" channel="chan.de"><title>Sendung A</title></programme>
+<programme start="20260924110000 +0000" stop="20260924120000 +0000" channel="chan.de"><title>Sendung B</title></programme>
+</tv>

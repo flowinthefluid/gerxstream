@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "channels": [
+    {"name": "Approved TV", "section": "tv", "country": "de", "nsfw": false,
+     "publisher": "pub-a", "id": "gxs:tv:de:approved",
+     "sources": [{"source_id": "a1", "url": "https://x/a.m3u8", "official": true}]},
+    {"name": "Evidence Cam", "section": "webcam", "country": "us", "nsfw": false,
+     "publisher": "pub-b", "id": "gxs:webcam:us:evidence",
+     "sources": [{"source_id": "b1", "url": "https://x/b.jpg", "protocol": "jpeg",
+                  "official": false, "rights_evidence_url": "https://ex/lic"}]},
+    {"name": "No Rights", "section": "webcam", "country": "xx", "nsfw": false,
+     "publisher": "pub-c", "id": "gxs:webcam:xx:norights",
+     "sources": [{"source_id": "c1", "url": "http://y/video.mjpg", "official": false}]},
+    {"name": "Broken", "section": "bogus",
+     "sources": [{"url": "https://x/z.m3u8"}]},
+    {"name": "Dup Id", "section": "tv", "country": "de", "nsfw": false,
+     "publisher": "pub-d", "id": "gxs:tv:de:approved",
+     "sources": [{"source_id": "d1", "url": "https://x/d.m3u8", "official": true, "active": false}]}
+  ]
+}

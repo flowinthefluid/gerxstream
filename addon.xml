@@ -6,6 +6,11 @@
 		<import addon="script.module.resolveurl" version="5.1.209"/>
 		<import addon="repository.resolveurl" optional="true"/>
 		<import addon="script.module.inputstreamhelper" version="0.3.3" optional="true"/>
+		<!-- Livestreams: HLS/DASH via inputstream.adaptive, RTSP-Webcams via
+		     inputstream.rtsp. Beide optional - fehlt eines, entfaellt nur die
+		     jeweilige Wiedergabeart, das Addon bleibt lauffaehig. -->
+		<import addon="inputstream.adaptive" optional="true"/>
+		<import addon="inputstream.rtsp" optional="true"/>
 	</requires>
 	<extension point="xbmc.python.pluginsource" library="default.py">
 		<provides>video</provides>

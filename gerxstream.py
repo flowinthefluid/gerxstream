@@ -116,7 +116,7 @@ HOSTER_GUI_FUNCTIONS = frozenset((
 
 
 MAIN_MENU_ORDER_SETTING = 'mainMenuOrder'
-MAIN_MENU_ORDER_DEFAULT = ('epicFavorites', 'globalSearch', 'sourceCategories', 'categories', 'random', 'history', 'settings')
+MAIN_MENU_ORDER_DEFAULT = ('epicFavorites', 'globalSearch', 'sourceCategories', 'livestreams', 'categories', 'random', 'history', 'settings')
 
 
 def _mainMenuOrder():
@@ -149,6 +149,7 @@ def showMainMenuOrder():
         'epicFavorites': cConfig().getSetting('epicFavoritesName', 'Epic-Favorites'),
         'globalSearch': cConfig().getLocalizedString(30040),
         'sourceCategories': cConfig().getLocalizedString(30878),
+        'livestreams': cConfig().getLocalizedString(30989),
         'categories': cConfig().getLocalizedString(30507),
         'random': cConfig().getLocalizedString(30868),
         'history': cConfig().getLocalizedString(30903),
@@ -277,6 +278,35 @@ def parseUrl():
         elif sFunction == 'mainMenuOrder':
             showMainMenuOrder()
             return
+        elif sFunction == 'livestreamsRefresh':
+            from resources.lib.livestreams import route as ls_route
+            ls_route.run_refresh()
+            return
+        elif sFunction == 'livestreamsExportHint':
+            from resources.lib.livestreams import route as ls_route
+            ls_route.run_export_hint()
+            return
+        elif sFunction == 'livestreamsVerify':
+            from resources.lib.livestreams import verification
+            verification.report_dialog()
+            return
+        elif sFunction == 'livestreamsRabbithole':
+            # Einstieg fuer den optionalen Keymap (Down = naechste Webcam).
+            from resources.lib.livestreams import route as ls_route
+            ls_route.rabbithole_next(params)
+            return
+        elif sFunction == 'lsCountriesEditor':
+            from resources.lib.livestreams import settings_ui
+            settings_ui.edit_countries()
+            return
+        elif sFunction == 'lsGenresEditor':
+            from resources.lib.livestreams import settings_ui
+            settings_ui.edit_genres()
+            return
+        elif sFunction == 'lsRabbitholeCategories':
+            from resources.lib.livestreams import settings_ui
+            settings_ui.edit_rh_categories()
+            return
         elif sFunction == 'showBackupMenu':
             showBackupMenu()
             return
@@ -326,6 +356,12 @@ def parseUrl():
         return
     sSiteName = params.getValue('site')
     if params.exist('playMode'):
+        # Livestream-Wiedergabe hat einen eigenen Auswahl-/Failover-Weg und
+        # laeuft nicht ueber die Scraper-Hoster-Logik.
+        if sSiteName == 'livestreams':
+            from resources.lib.livestreams import route as ls_route
+            ls_route.play(params)
+            return
         if not _isAllowedScraperRoute(sSiteName, sFunction):
             return
         from resources.lib.gui.hoster import cHosterGui
@@ -420,6 +456,13 @@ def parseUrl():
         for folder in settingsGuiElements():
             oGui.addFolder(folder)
         oGui.setEndOfDirectory()
+    # Livestream-Bereich (Fernsehen, Sport, Social, Wetter, Webcams)
+    elif sSiteName == 'livestreams':
+        from resources.lib.livestreams import route as ls_route
+        if sFunction == 'play':
+            ls_route.play(params)
+        else:
+            ls_route.route(params)
     else:
         # Else load any other site as plugin and run the function
         if not _isAllowedScraperRoute(sSiteName, sFunction):
@@ -500,6 +543,19 @@ def showMainMenu(sFunction):
         oGuiElement.setFunction('categories')
         oGuiElement.setThumbnail(os.path.join(ART, 'kategorien.png'))
         menuGroups['categories'].append((oGuiElement, None))
+
+    # Livestreams als eigener, verschiebbarer Hauptmenuepunkt. Erscheint nur,
+    # wenn mindestens ein Top-Level-Bereich sichtbar ist.
+    from resources.lib import contentgate
+    if contentgate.get_visible_sections():
+        oGuiElement = cGuiElement()
+        oGuiElement.setTitle(cConfig().getLocalizedString(30989))  # Livestreams
+        oGuiElement.setSiteName('livestreams')
+        oGuiElement.setFunction('route')
+        livestreamsArt = os.path.join(ART, 'livestreams.png')
+        oGuiElement.setThumbnail(livestreamsArt if os.path.exists(livestreamsArt)
+                                 else os.path.join(ART, 'sources.png'))
+        menuGroups['livestreams'].append((oGuiElement, None))
 
     menuGroups['random'].append((randomGuiElement(), None))
     menuGroups['epicFavorites'].append((epicFavoritesGuiElement(), None))

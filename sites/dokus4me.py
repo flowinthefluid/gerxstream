@@ -374,8 +374,12 @@ def _getJson_4(sUrl, sGui=False):
 
 
 def _isAllowedCategory_4(name, url):
-    value = ('%s %s' % (name, url)).lower()
-    return 'erotik' not in value and 'sex' not in value
+    # Erotik-Kategorien nur ausblenden, solange der zentrale NSFW-Schalter
+    # aus ist. Ist er an, gibt das Gate die Inhalte frei (Aufgabe 4).
+    from resources.lib import contentgate
+    if contentgate.is_nsfw_enabled():
+        return True
+    return not contentgate.is_text_nsfw(name, url)
 
 
 def showGenre_4():

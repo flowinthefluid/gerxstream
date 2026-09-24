@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "_comment": "Beispielkatalog mit ausschliesslich oeffentlich bereitgestellten Live-Streams oeffentlich-rechtlicher Sender. Struktur zum Nachbauen eigener Kataloge. Eigene Quellen gehoeren nach <profile>/plugin.video.gerxstream/livestreams/sources/. Jeder Kanal MUSS 'nsfw' explizit als true/false setzen - sonst blendet das Gate ihn aus (fail-closed).",
+  "channels": [
+    {
+      "id": "gxs:tv:de:daserste",
+      "name": "Das Erste",
+      "section": "tv",
+      "country": "de",
+      "language": [
+        "de"
+      ],
+      "genre": [
+        "public",
+        "news"
+      ],
+      "nsfw": false,
+      "publisher": "ard",
+      "logo": "",
+      "epg_id": "daserste.de",
+      "sources": [
+        {
+          "source_id": "ard-hls-hd",
+          "url": "https://mcdn.daserste.de/daserste/de/master.m3u8",
+          "protocol": "hls",
+          "quality": "hd",
+          "official": true,
+          "reliability": "high",
+          "region": "de",
+          "last_verified_at": "2026-09-24",
+          "active": false
+        }
+      ],
+      "canonical_url": "https://www.daserste.de/live/",
+      "disabled_reason": "Stream-URL nicht auflösbar (DNS-Fehler mcdn.daserste.de); korrekte Live-URL on-device/Recherche ermitteln."
+    },
+    {
+      "id": "gxs:tv:de:zdf",
+      "name": "ZDF",
+      "section": "tv",
+      "country": "de",
+      "language": [
+        "de"
+      ],
+      "genre": [
+        "public",
+        "news"
+      ],
+      "nsfw": false,
+      "publisher": "zdf",
+      "logo": "",
+      "epg_id": "zdf.de",
+      "sources": [
+        {
+          "source_id": "zdf-hls-hd",
+          "url": "https://zdf-hls-15.akamaized.net/hls/live/2016498/de/high/master.m3u8",
+          "protocol": "hls",
+          "quality": "hd",
+          "official": true,
+          "reliability": "high",
+          "region": "de",
+          "last_verified_at": "2026-09-24",
+          "active": true
+        }
+      ],
+      "canonical_url": "https://www.zdf.de/live-tv",
+      "netcheck": "landing+stream erreichbar (HTTP 200, 2026-09-24); Kodi-Wiedergabe noch nicht auf Geraet geprueft."
+    },
+    {
+      "id": "gxs:social:int:youtube-example",
+      "name": "YouTube-Kanal (Beispiel)",
+      "section": "social",
+      "country": "int",
+      "language": [
+        "de"
+      ],
+      "genre": [
+        "music"
+      ],
+      "nsfw": false,
+      "publisher": "youtube-example",
+      "logo": "",
+      "epg_id": "",
+      "sources": [
+        {
+          "source_id": "yt-plugin",
+          "url": "plugin://plugin.video.youtube/play/?channel_id=UC_EXAMPLE&live=1",
+          "protocol": "plugin",
+          "quality": "hd",
+          "official": true,
+          "reliability": "medium",
+          "region": "int",
+          "last_verified_at": "2026-09-24",
+          "active": false
+        }
+      ],
+      "disabled_reason": "Platzhalter-Kanal (UC_EXAMPLE); echte YouTube-Live laeuft ueber plugin.video.youtube, kein Katalogeintrag noetig."
+    }
+  ]
+}
