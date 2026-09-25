@@ -51,14 +51,34 @@ def _catalog():
 def _camerasForCategory(categoryId=None):
     cameras = _catalog()['cameras']
     if categoryId:
+        categoryIds = _categoryAndDescendants(categoryId)
         cameras = [camera for camera in cameras
-                   if camera.get('category') == categoryId]
+                   if camera.get('category') in categoryIds]
     # Jede Zeile muss eine explizite Betreiberquelle und einen finalen,
     # direkt abspielbaren Stream besitzen. So gelangen keine Suchtreffer,
     # privaten Kameras oder HTML-Player in die Wiedergabe.
     return [camera for camera in cameras
             if camera.get('id') and camera.get('title')
             and camera.get('stream') and camera.get('source_url')]
+
+
+def _categoryAndDescendants(categoryId):
+    """Return one category and all of its nested subcategories."""
+    categories = _catalog()['categories']
+    result = {categoryId}
+    changed = True
+    while changed:
+        changed = False
+        for category in categories:
+            if category.get('parent') in result and category.get('id') not in result:
+                result.add(category['id'])
+                changed = True
+    return result
+
+
+def _childCategories(categoryId):
+    return [category for category in _catalog()['categories']
+            if category.get('parent') == categoryId]
 
 
 def _cameraById(cameraId):
@@ -80,7 +100,9 @@ def load():
         counts[categoryId] = counts.get(categoryId, 0) + 1
 
     categories = [category for category in catalog['categories']
-                  if category.get('id') in counts]
+                  if not category.get('parent')
+                  and any(camera.get('category') in _categoryAndDescendants(category['id'])
+                          for camera in cameras)]
     total = len(categories)
     for category in categories:
         params = ParameterHandler()
@@ -94,15 +116,33 @@ def load():
 
 
 def listCategory():
-    """Listet die abspielbaren Kameras einer Kategorie."""
+    """Listet zuerst Unterkategorien, danach deren abspielbare Kameras."""
     categoryId = ParameterHandler().getValue('category')
     cameras = _camerasForCategory(categoryId)
     oGui = cGui()
-    total = len(cameras)
-    for camera in cameras:
+    children = _childCategories(categoryId)
+    childIds = set(category.get('id') for category in children)
+    # Eintrag an einem Elternknoten wird erst in dessen Unterordner sichtbar.
+    directCameras = [camera for camera in cameras
+                     if camera.get('category') == categoryId
+                     or not childIds]
+    total = len(children) + len(directCameras)
+    for category in children:
+        if not _camerasForCategory(category.get('id')):
+            continue
+        params = ParameterHandler()
+        params.setParam('category', category['id'])
+        title = '%s (%d)' % (category.get('title', category['id']),
+                             len(_camerasForCategory(category['id'])))
+        element = cGuiElement(title, SITE_IDENTIFIER, 'listCategory')
+        element.setDescription(category.get('description', ''))
+        oGui.addFolder(element, params, True, total)
+    for camera in directCameras:
         params = ParameterHandler()
         params.setParam('cameraId', camera['id'])
-        oGuiElement = cGuiElement(camera['title'], SITE_IDENTIFIER, 'showHosters')
+        isStill = camera.get('protocol') == 'jpeg'
+        oGuiElement = cGuiElement(camera['title'], SITE_IDENTIFIER,
+                                  'showStillImage' if isStill else 'showHosters')
         details = [camera.get('description', '')]
         location = ', '.join(filter(None, (camera.get('city'), camera.get('country'))))
         if location:
@@ -114,14 +154,14 @@ def listCategory():
         # Ein nicht als Ordner markierter Eintrag startet ueber den normalen
         # Hoster-Weg. Das setzt inputstream.adaptive fuer HLS und behandelt
         # die Webcam wie jeden anderen direkten Medienstrom.
-        oGui.addFolder(oGuiElement, params, False, total)
+        oGui.addFolder(oGuiElement, params, isStill, total)
     oGui.setEndOfDirectory()
 
 
 def showHosters():
     """Uebergibt einen im Katalog hinterlegten HLS-Feed an den Player."""
     camera = _cameraById(ParameterHandler().getValue('cameraId'))
-    if not camera:
+    if not camera or camera.get('protocol') == 'jpeg':
         return []
     return [
         {'link': camera['stream'], 'name': 'HLS', 'displayedName': 'HLS-Livestream'},
@@ -134,3 +174,11 @@ def getHosterUrl(sUrl=False):
     if not sUrl:
         return []
     return [{'streamUrl': sUrl, 'resolved': True}]
+
+
+def showStillImage():
+    """Open a public JPEG webcam in Kodi's native picture viewer."""
+    camera = _cameraById(ParameterHandler().getValue('cameraId'))
+    if camera and camera.get('protocol') == 'jpeg':
+        xbmc.executebuiltin('ShowPicture(%s)' % camera['stream'])
+    cGui().setEndOfDirectory()

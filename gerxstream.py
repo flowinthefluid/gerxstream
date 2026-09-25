@@ -252,12 +252,15 @@ def parseUrl():
         elif sFunction == 'devUpdates':
             from resources.lib import updateManager
             updateManager.devUpdates()
+            cGui().setEndOfDirectory()
             return
         elif sFunction == 'gerxstreamUpdate':
             updateGerXStream()
+            cGui().setEndOfDirectory()
             return
         elif sFunction == 'pluginInfo':
             cPluginHandler().pluginInfo()
+            cGui().setEndOfDirectory()
             return
         elif sFunction == 'vod':
             vodGuiElements(sFunction)

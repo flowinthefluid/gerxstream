@@ -8,16 +8,17 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 from resources.lib.handler.ParameterHandler import ParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
-from resources.lib.player import cPlayer
+from resources.lib.player import cPlayer, EPISODE_PLAYLIST_PROPERTY
 from resources.lib.tools import logger
 
 
 class cHosterGui:
     SITE_NAME = 'cHosterGui'
-    EPISODE_PLAYLIST_PROPERTY = 'GerXStream.EpisodePlaylist'
+    EPISODE_PLAYLIST_PROPERTY = EPISODE_PLAYLIST_PROPERTY
 
     def __init__(self):
         self.maxHoster = cConfig().getSettingInt('maxHoster', 100)
@@ -40,7 +41,7 @@ class cHosterGui:
                 mediaUrl = siteResult.get('streamUrl', False)
                 mediaId = siteResult.get('streamID', False)
                 if mediaUrl:
-                    logger.info('-> [hoster]: resolve: ' + mediaUrl)
+                    logger.info('-> [hoster]: resolve: ' + cRequestHandler._safeUrlForLog(mediaUrl))
                     link = mediaUrl if siteResult['resolved'] else resolver.resolve(mediaUrl)
                 elif mediaId:
                     logger.info('-> [hoster]: resolve: hoster: %s - mediaID: %s' % (siteResult['host'], mediaId))
@@ -49,13 +50,20 @@ class cHosterGui:
                     oGui.showError('GerXStream', cConfig().getLocalizedString(30134), 5)
                     return False
             elif mediaUrl:
-                logger.info('-> [hoster]: resolve: ' + mediaUrl)
+                logger.info('-> [hoster]: resolve: ' + cRequestHandler._safeUrlForLog(mediaUrl))
                 link = resolver.resolve(mediaUrl)
             else:
                 oGui.showError('GerXStream', cConfig().getLocalizedString(30134), 5)
                 return False
         except resolver.resolver.ResolverError as e:
             logger.error('-> [hoster]: ResolverError: %s' % e)
+            oGui.showError('GerXStream', cConfig().getLocalizedString(30135), 7)
+            return False
+        except Exception as e:
+            # A deleted hoster item can surface as urllib HTTPError inside
+            # ResolveURL.  It is not an add-on crash and must not leave Kodi
+            # with a full traceback (nor log a possibly signed source URL).
+            logger.error('-> [hoster]: resolver failed (%s)' % type(e).__name__)
             oGui.showError('GerXStream', cConfig().getLocalizedString(30135), 7)
             return False
         # resolver response
@@ -69,9 +77,17 @@ class cHosterGui:
         """Return the queue id and first index of a native episode playlist."""
         value = xbmcgui.Window(10000).getProperty(cls.EPISODE_PLAYLIST_PROPERTY)
         try:
-            queueId, firstIndex = value.split(':', 1)
+            # The nonce intentionally invalidates the two-field marker used by
+            # older releases.  Such a marker may have survived a stopped
+            # playback and must never turn a manual selection into a queued
+            # item after an add-on update.
+            queueId, firstIndex, nonce = value.split(':', 2)
+            if not nonce:
+                raise ValueError
             return queueId, int(firstIndex)
         except (AttributeError, TypeError, ValueError):
+            if value:
+                xbmcgui.Window(10000).clearProperty(cls.EPISODE_PLAYLIST_PROPERTY)
             return '', -1
 
     @classmethod
@@ -82,9 +98,20 @@ class cHosterGui:
             index = int(params.getValue('episodeIndex'))
         except (TypeError, ValueError):
             return False
-        return bool(queueId and queueId == params.getValue('episodeQueue')
-                    and index > firstIndex
-                    and xbmc.PlayList(xbmc.PLAYLIST_VIDEO).getposition() > 0)
+        if not queueId or queueId != params.getValue('episodeQueue') or index <= firstIndex:
+            return False
+        try:
+            playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+            position = playlist.getposition()
+        except Exception:
+            return False
+        # ``episodeIndex`` belongs to the complete directory; the native
+        # playlist starts with the manually selected item at position zero.
+        # Matching the exact relative position rejects a stale playlist marker
+        # after Stop + a new manual episode selection.
+        return bool(position == index - firstIndex
+                    and position > 0
+                    and playlist.size() > position)
 
     @classmethod
     def _queueFollowingEpisodes(cls, params):
@@ -118,8 +145,12 @@ class cHosterGui:
             # same episode is played again from this playlist.
             queuedItem.setProperty('ForceResolvePlugin', 'true')
             playlist.add(target, queuedItem)
+        # The nonce distinguishes this live queue from legacy markers which
+        # had no reliable lifecycle on Kodi stop events.
+        import uuid
         xbmcgui.Window(10000).setProperty(cls.EPISODE_PLAYLIST_PROPERTY,
-                                          '%s:%d' % (queueId, firstIndex))
+                                          '%s:%d:%s' % (queueId, firstIndex,
+                                                        uuid.uuid4().hex))
         return True
 
     @classmethod
@@ -148,7 +179,7 @@ class cHosterGui:
         vers = int(xbmc.getInfoLabel("System.BuildVersion").split(".")[0])
         stream_url = (siteResult or {}).get('streamUrl', '')
 
-        logger.info('-> [hoster]: play file link: ' + str(data['link']))
+        logger.info('-> [hoster]: play file link: ' + cRequestHandler._safeUrlForLog(data['link']))
         list_item = xbmcgui.ListItem(path=data['link'])
         #m3u8 und mpd via inputstream, exklusive Filemoon, da IA mit dem Hoster nicht unter Android läuft
         if 'filemoon' not in stream_url:
@@ -236,7 +267,7 @@ class cHosterGui:
         logger.info('-> [hoster]: attempt addToPlaylist')
         data = self._getInfoAndResolve(siteResult)
         if not data: return False
-        logger.info('-> [hoster]: addToPlaylist file link: ' + str(data['link']))
+        logger.info('-> [hoster]: addToPlaylist file link: ' + cRequestHandler._safeUrlForLog(data['link']))
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
         oGuiElement.setMediaUrl(data['link'])

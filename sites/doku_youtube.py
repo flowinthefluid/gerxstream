@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 """Curated documentary channels; visible in Dokus, deliberately not in Alle."""
 import xbmc
-import dokus4me as _core
+try:
+    # Kodi's plugin loader exposes individual site modules as top-level names.
+    import dokus4me as _core
+except ImportError:
+    # Keep the module equally importable through the normal package path used
+    # by tests and static tooling.
+    from sites import dokus4me as _core
 
 SITE_IDENTIFIER = 'doku_youtube'
 SITE_NAME = 'YouTube Doku-Kanaele'
@@ -18,6 +24,3 @@ def load():
 
 showYTChannels = _core.showYTChannels
 showYTGenre = _core.showYTGenre
-showYTLists = _core.showYTLists
-showYTMore = _core.showYTMore
-showYTSearch = _core.showYTSearch

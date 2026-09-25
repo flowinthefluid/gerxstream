@@ -76,7 +76,7 @@ def test_episode_resolves_once_and_appends_following_items(monkeypatch):
     assert [url for url, _ in queued] == targets
     assert len(resolved) == 1
     assert direct_starts == []
-    assert window.getProperty(gui.EPISODE_PLAYLIST_PROPERTY) == 'a' * 32 + ':0'
+    assert window.getProperty(gui.EPISODE_PLAYLIST_PROPERTY).startswith('a' * 32 + ':0:')
 
     # Kodi invokes the add-on again for the next plugin:// playlist item.
     params.index = '1'
@@ -86,3 +86,41 @@ def test_episode_resolves_once_and_appends_following_items(monkeypatch):
     assert len(resolved) == 2
     assert direct_starts == []
     window.clearProperty(gui.EPISODE_PLAYLIST_PROPERTY)
+
+
+def test_stale_marker_does_not_turn_manual_episode_into_playlist_item(monkeypatch):
+    queue_id = 'b' * 32
+    window = hoster.xbmcgui.Window(10000)
+    window.setProperty(hoster.cHosterGui.EPISODE_PLAYLIST_PROPERTY,
+                       '%s:0:live-marker' % queue_id)
+
+    class Playlist:
+        def size(self):
+            return 8
+
+        def getposition(self):
+            # This is the position left by a stopped old playback, not the
+            # relative position of manually selected episode six.
+            return 4
+
+    class Params:
+        def getValue(self, name):
+            return {'episodeQueue': queue_id, 'episodeIndex': '6'}.get(name, '')
+
+    monkeypatch.setattr(hoster.xbmc, 'PlayList', lambda _kind: Playlist())
+    assert hoster.cHosterGui._isNativeEpisodePlaylistItem(Params()) is False
+    window.clearProperty(hoster.cHosterGui.EPISODE_PLAYLIST_PROPERTY)
+
+
+def test_legacy_marker_is_discarded_before_a_manual_selection(monkeypatch):
+    queue_id = 'c' * 32
+    window = hoster.xbmcgui.Window(10000)
+    window.setProperty(hoster.cHosterGui.EPISODE_PLAYLIST_PROPERTY,
+                       '%s:0' % queue_id)
+
+    class Params:
+        def getValue(self, name):
+            return {'episodeQueue': queue_id, 'episodeIndex': '1'}.get(name, '')
+
+    assert hoster.cHosterGui._isNativeEpisodePlaylistItem(Params()) is False
+    assert window.getProperty(hoster.cHosterGui.EPISODE_PLAYLIST_PROPERTY) == ''

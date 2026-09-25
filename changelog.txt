@@ -1,3 +1,14 @@
+[B]Version: 1.0.27[/B]
+
+25.09.2026
+
+- Manuell gestartete Episoden werden nicht mehr durch einen alten Wiedergabelisten-Marker uebersprungen.
+- Doku-YouTube importiert nur noch vorhandene Doku-Ansichten.
+- Zugangsdaten und Token werden vor dem Protokollieren von Anfrage-URLs geschwaerzt.
+- Das Vollbild wird erst nach dem Kodi-AV-Start aktiviert.
+- Oeffentliche Webcam- und Wetterkamera-Kataloge wurden erweitert und nach Kategorien strukturiert.
+- Nicht aufloesbare Hoster-Antworten werden als normaler Quellfehler behandelt statt einen Traceback auszugeben.
+
 [B]Version: 1.0.26[/B]
 
 25.09.2026

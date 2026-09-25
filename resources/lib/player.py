@@ -8,6 +8,10 @@ from resources.lib.config import cConfig
 from xbmc import LOGINFO as LOGNOTICE, LOGERROR
 from resources.lib.tools import addon_log as log
 
+
+EPISODE_PLAYLIST_PROPERTY = 'GerXStream.EpisodePlaylist'
+
+
 class GerxstreamPlayer(xbmc.Player):
     def __init__(self, *args, **kwargs):
         # super() statt unbound Base-Call: xbmc.Player.__init__(self, ...) wirft
@@ -17,6 +21,7 @@ class GerxstreamPlayer(xbmc.Player):
         self.streamSuccess = True
         self.playedTime = 0
         self.totalTime = 999999
+        self.avStarted = False
         log(cConfig().getLocalizedString(30166) + ' -> [player]: player instance created', LOGNOTICE)
 
     def onPlayBackStarted(self):
@@ -29,18 +34,55 @@ class GerxstreamPlayer(xbmc.Player):
             self.streamSuccess = False
             log(cConfig().getLocalizedString(30166) + ' -> [player]: Kodi failed to open stream', LOGERROR)
         self.streamFinished = True
+        self._clearEpisodePlaylist()
 
     def onPlayBackEnded(self):
         log(cConfig().getLocalizedString(30166) + ' -> [player]: Playback completed', LOGNOTICE)
-        self.onPlayBackStopped()
+        # Kodi can emit this callback while it advances a native playlist.
+        # Keep the marker until the last queued item has ended, otherwise the
+        # next plugin:// item would be mistaken for a manual selection.
+        self.streamFinished = True
+        try:
+            playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+            if playlist.getposition() >= playlist.size() - 1:
+                self._clearEpisodePlaylist()
+        except Exception:
+            self._clearEpisodePlaylist()
 
     def onPlayBackError(self):
         log(cConfig().getLocalizedString(30166) + ' -> [player]: Playback error', LOGERROR)
         self.streamSuccess = False
         self.streamFinished = True
+        self._clearEpisodePlaylist()
+
+    def onAVStarted(self):
+        """Kodi has an audio/video decoder; only now may fullscreen be asked."""
+        self.avStarted = True
+        if not xbmc.getCondVisibility('Window.IsActive(FullScreenVideo)'):
+            # Do not close dialogs or rebuild the renderer here.  Kodi has
+            # already attached a decoder at this point, so a single window
+            # activation avoids the MediaCodec InstanceGuard race.
+            xbmc.executebuiltin('ActivateWindow(FullScreenVideo)', True)
+
+    def _clearEpisodePlaylist(self):
+        try:
+            # A previous retained Player can receive its delayed stop callback
+            # after a new manual playback has already registered its own
+            # queue.  Only the currently active instance may clear the marker.
+            if cPlayer._activePlayer is not self:
+                return
+            import xbmcgui
+            xbmcgui.Window(10000).clearProperty(EPISODE_PLAYLIST_PROPERTY)
+            cPlayer._activePlayer = None
+        except Exception:
+            pass
 
 
 class cPlayer:
+    # Player callbacks are delivered to the Python instance.  Retain it after
+    # the directory call returns so a user Stop can clear the episode marker.
+    _activePlayer = None
+
     def clearPlayList(self):
         oPlaylist = self.__getPlayList()
         oPlaylist.clear()
@@ -59,19 +101,15 @@ class cPlayer:
     def startPlayer(self):
         log(cConfig().getLocalizedString(30166) + ' -> [player]: start player', LOGNOTICE)
         xbmcPlayer = GerxstreamPlayer()
+        self.__class__._activePlayer = xbmcPlayer
         monitor = xbmc.Monitor()
         startTime = time.time()
         while not monitor.abortRequested():
-            if xbmcPlayer.isPlayingVideo():
-                # Die Plugin-Aktion muss nach dem Start zurueckkehren. Sonst
-                # bleibt die Episodenliste waehrend der Wiedergabe aktiv.
-                if not xbmc.getCondVisibility('Window.IsActive(FullScreenVideo)'):
-                    # Kodi verweigert ActivateWindow, solange ein modaler
-                    # Dialog (z.B. vom Aufloesen des Streams) aktiv ist.
-                    # Beide Befehle synchron ausfuehren, bevor die Aktion
-                    # zur Episodenliste zurueckkehrt.
-                    xbmc.executebuiltin('Dialog.Close(all,true)', True)
-                    xbmc.executebuiltin('ActivateWindow(FullScreenVideo)', True)
+            if xbmcPlayer.avStarted:
+                # Die Plugin-Aktion muss nach dem Decoderstart zurueckkehren.
+                # ``onAVStarted`` hat den Vollbildwechsel bei Bedarf bereits
+                # ausgefuehrt, ohne Kodi zu einem vorzeitigen Renderer-Neuaufbau
+                # zu zwingen.
                 return True
             if xbmcPlayer.streamFinished:
                 return False

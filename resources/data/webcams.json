@@ -8,14 +8,32 @@
       "description": "Oeffentliche Plaetze, Ortsansichten und Sehenswuerdigkeiten."
     },
     {
+      "id": "cities-de",
+      "parent": "cities",
+      "title": "Deutschland",
+      "description": "Oeffentliche Ortsansichten in Deutschland."
+    },
+    {
       "id": "coasts",
       "title": "Kueste, Straende und Haefen",
       "description": "Strand-, Promenaden-, See- und Hafenansichten."
     },
     {
+      "id": "coasts-de",
+      "parent": "coasts",
+      "title": "Deutschland",
+      "description": "Oeffentliche Strand-, See- und Hafenansichten in Deutschland."
+    },
+    {
       "id": "mountains",
       "title": "Berge und Ski",
       "description": "Bergpanoramen, Skigebiete und alpine Standorte."
+    },
+    {
+      "id": "mountains-de",
+      "parent": "mountains",
+      "title": "Deutschland",
+      "description": "Oeffentliche Berg- und Panorama-Webcams in Deutschland."
     },
     {
       "id": "nature",
@@ -37,7 +55,7 @@
     {
       "id": "hildesheim-an-der-lilie",
       "title": "Hildesheim - Platz An der Lilie",
-      "category": "cities",
+      "category": "cities-de",
       "country": "Deutschland",
       "city": "Hildesheim",
       "operator": "Stadt Hildesheim / Terra Livestream",
@@ -49,7 +67,7 @@
     {
       "id": "kellenhusen-strand",
       "title": "Kellenhusen - Strand und Promenade",
-      "category": "coasts",
+      "category": "coasts-de",
       "country": "Deutschland",
       "city": "Kellenhusen",
       "operator": "Kellenhusen / Nordwind",
@@ -61,7 +79,7 @@
     {
       "id": "seebruck-hafen",
       "title": "Seebruck - Hafen am Chiemsee",
-      "category": "coasts",
+      "category": "coasts-de",
       "country": "Deutschland",
       "city": "Seebruck",
       "operator": "Seebruck / Terra Livestream",
@@ -69,6 +87,45 @@
       "stream": "https://www.terra-livestream.eu/seebruck-hafen/seebruck-hafen.m3u8",
       "verified_at": "2026-09-25",
       "description": "Liveblick auf den oeffentlich zugaenglichen Hafen am Chiemsee in Seebruck."
+    },
+    {
+      "id": "zugspitze-gipfelterrasse",
+      "title": "Zugspitze - Gipfelterrasse",
+      "category": "mountains-de",
+      "country": "Deutschland",
+      "city": "Garmisch-Partenkirchen",
+      "operator": "Bayerische Zugspitzbahn / Panomax",
+      "source_url": "https://zugspitze.de/en/Service-information/Webcams",
+      "stream": "https://live-image.panomax.com/cams/128/mobile_800x600.jpg",
+      "protocol": "jpeg",
+      "verified_at": "2026-09-25",
+      "description": "Aktuelles Betreiberbild von der Gipfelterrasse der Zugspitze."
+    },
+    {
+      "id": "garmisch-alpspix",
+      "title": "Garmisch-Classic - AlpspiX",
+      "category": "mountains-de",
+      "country": "Deutschland",
+      "city": "Garmisch-Partenkirchen",
+      "operator": "Bayerische Zugspitzbahn / Panomax",
+      "source_url": "https://zugspitze.de/en/Service-information/Webcams",
+      "stream": "https://live-image.panomax.com/cams/150/mobile_800x600.jpg",
+      "protocol": "jpeg",
+      "verified_at": "2026-09-25",
+      "description": "Aktuelles Betreiberbild vom AlpspiX im Garmisch-Classic-Gebiet."
+    },
+    {
+      "id": "wank-bergstation",
+      "title": "Wank - Bergstation",
+      "category": "mountains-de",
+      "country": "Deutschland",
+      "city": "Garmisch-Partenkirchen",
+      "operator": "Bayerische Zugspitzbahn / Panomax",
+      "source_url": "https://zugspitze.de/en/Service-information/Webcams",
+      "stream": "https://live-image.panomax.com/cams/149/mobile_800x600.jpg",
+      "protocol": "jpeg",
+      "verified_at": "2026-09-25",
+      "description": "Aktuelles Betreiberbild von der Bergstation Wank."
     }
   ]
 }

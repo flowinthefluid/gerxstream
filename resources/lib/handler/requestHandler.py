@@ -18,7 +18,7 @@ from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.tools import logger, cCache
 from xbmcvfs import translatePath
 
-from urllib.parse import quote, urlencode, urlparse, quote_plus
+from urllib.parse import quote, urlencode, urlparse, urlsplit, urlunsplit, parse_qsl, quote_plus
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPHandler, HTTPSHandler, ProxyHandler, Request, HTTPCookieProcessor, build_opener, urlopen, HTTPRedirectHandler
 from http.cookiejar import LWPCookieJar, Cookie
@@ -75,6 +75,40 @@ class RedirectFilter(HTTPRedirectHandler):
 class cRequestHandler:
     # useful for e.g. tmdb request where multiple requests are made within a loop
     persistent_openers = {}
+    _SENSITIVE_LOG_KEYS = frozenset((
+        'accesstoken', 'apikey', 'authorization', 'clientsecret', 'cookie',
+        'email', 'key', 'pass',
+        'password', 'passwd', 'pwd', 'secret', 'session', 'token', 'user',
+        'username',
+    ))
+
+    @classmethod
+    def _safeUrlForLog(cls, url):
+        """Render a URL for logs without exposing credentials or API secrets."""
+        try:
+            parsed = urlsplit(str(url))
+            netloc = parsed.netloc
+            if '@' in netloc:
+                netloc = '<redacted>@' + netloc.rsplit('@', 1)[1]
+            pairs = parse_qsl(parsed.query, keep_blank_values=True)
+            if pairs:
+                safe_pairs = []
+                for key, value in pairs:
+                    normalized = ''.join(char for char in key.lower()
+                                         if char.isalnum())
+                    safe_pairs.append((key, '<redacted>'
+                                       if normalized in cls._SENSITIVE_LOG_KEYS
+                                       else value))
+                query = urlencode(safe_pairs, doseq=True)
+            else:
+                query = parsed.query
+            return urlunsplit((parsed.scheme, netloc, parsed.path, query,
+                               parsed.fragment))
+        except Exception:
+            return '<unprintable URL>'
+
+    def _safeRequestUriForLog(self):
+        return self._safeUrlForLog(self.getRequestUri())
 
     @staticmethod
     def RandomUA():
@@ -299,7 +333,7 @@ class cRequestHandler:
                 self._Status = '200'
                 return sContent
         else:
-            logger.info('-> [requestHandler]: read html for %s' % self.getRequestUri())
+            logger.info('-> [requestHandler]: read html for %s' % self._safeRequestUriForLog())
 
         # nur ausführen wenn der übergabeparameter und die konfiguration passen
         if self._bypass_dns and self.bypassDNSlock:
@@ -383,7 +417,7 @@ class cRequestHandler:
                     opener.addheaders = [('User-agent', self._USER_AGENT), ('Referer', self._sUrl)]
                     oResponse = opener.open(self._sUrl, sParameters if sParameters and len(sParameters) > 0 else None, timeout=self.requestTimeout)
                     if not oResponse:
-                        logger.error(' -> [requestHandler]: Failed DDOS-GUARD active: ' + self._sUrl)
+                        logger.error(' -> [requestHandler]: Failed DDOS-GUARD active: ' + self._safeUrlForLog(self._sUrl))
                         return 'DDOS GUARD SCHUTZ'
                 elif 'cloudflare' in str(e.headers):
                     # Frueher stand hier ein Fehlerdialog mit Traceback, aus
@@ -391,22 +425,22 @@ class cRequestHandler:
                     # erklaert der Hinweis den Weg ueber das Browser-Cookie.
                     protection.notifyOnce(self.__siteId(), protection.CLOUDFLARE,
                                           self._sUrl, interactive=not self.ignoreErrors)
-                    logger.error(' -> [requestHandler]: Failed Cloudflare active: ' + self._sUrl)
+                    logger.error(' -> [requestHandler]: Failed Cloudflare active: ' + self._safeUrlForLog(self._sUrl))
                     return ''
                 else:
                     if not self.ignoreErrors:
                         xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
-                    logger.error(' -> [requestHandler]: HTTPError ' + str(e) + ' Url: ' + self._sUrl)
+                    logger.error(' -> [requestHandler]: HTTPError ' + str(e) + ' Url: ' + self._safeUrlForLog(self._sUrl))
                     return 'SEITE NICHT ERREICHBAR'
             else:
                 if not self.ignoreErrors:
                     xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(30259) + ' {0} {1}'.format(self._sUrl, str(e)))
-                logger.error(' -> [requestHandler]: HTTPError ' + str(e) + ' Url: ' + self._sUrl)
+                logger.error(' -> [requestHandler]: HTTPError ' + str(e) + ' Url: ' + self._safeUrlForLog(self._sUrl))
                 return 'SEITE NICHT ERREICHBAR'
         except URLError as e:
             if not self.ignoreErrors:
                 xbmcgui.Dialog().ok('GerXStream', str(e.reason))
-            logger.error(' -> [requestHandler]: URLError ' + str(e.reason) + ' Url: ' + self._sUrl)
+            logger.error(' -> [requestHandler]: URLError ' + str(e.reason) + ' Url: ' + self._safeUrlForLog(self._sUrl))
             return 'URL FEHLER'
         except (TimeoutError, socket.timeout) as e:
             # socket.timeout ist auf aktuellen Python-Versionen ein Alias von
@@ -415,12 +449,12 @@ class cRequestHandler:
             # einem Verzeichnisaufruf faellt.
             if not self.ignoreErrors:
                 xbmcgui.Dialog().ok('GerXStream', str(e) or 'Zeitueberschreitung')
-            logger.error(' -> [requestHandler]: TimeoutError %s Url: %s' % (e, self._sUrl))
+            logger.error(' -> [requestHandler]: TimeoutError %s Url: %s' % (e, self._safeUrlForLog(self._sUrl)))
             return 'TIMEOUT'
         except HTTPException as e:
             if not self.ignoreErrors:
                 xbmcgui.Dialog().ok('GerXStream', str(e))
-            logger.error(' -> [requestHandler]: HTTPException ' + str(e) + ' Url: ' + self._sUrl)
+            logger.error(' -> [requestHandler]: HTTPException ' + str(e) + ' Url: ' + self._safeUrlForLog(self._sUrl))
             return 'TIMEOUT'
 
         self._sResponseHeader = oResponse.info()
@@ -443,7 +477,7 @@ class cRequestHandler:
             if bf:
                 sContent = bf
             else:
-                logger.error(' -> [requestHandler]: Failed Blazingfast active: ' + self._sUrl)
+                logger.error(' -> [requestHandler]: Failed Blazingfast active: ' + self._safeUrlForLog(self._sUrl))
 
         try:
             cookieJar.save(ignore_discard=self.__bIgnoreDiscard, ignore_expires=self.__bIgnoreExpired)
