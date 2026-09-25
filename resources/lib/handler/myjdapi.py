@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-import hashlib 
+import hashlib
 import hmac
 import json
 import time

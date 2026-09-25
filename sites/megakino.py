@@ -46,13 +46,13 @@ def load(): # Menu structure of the site plugin
     params.setParam('sUrl', URL_MAIN)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30500), SITE_IDENTIFIER, 'showEntries'), params)  # New
     params.setParam('sUrl', URL_KINO)
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30501), SITE_IDENTIFIER, 'showEntries'), params)  # Current films in the cinema  
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30501), SITE_IDENTIFIER, 'showEntries'), params)  # Current films in the cinema
     params.setParam('sUrl', URL_MOVIES)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30502), SITE_IDENTIFIER, 'showEntries'), params)  # Movies
     params.setParam('sUrl', URL_ANIMATION)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30504), SITE_IDENTIFIER, 'showEntries'), params)  # Animated Films
     params.setParam('sUrl', URL_SERIES)
-    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30511), SITE_IDENTIFIER, 'showEntries'), params)  # Series 
+    cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30511), SITE_IDENTIFIER, 'showEntries'), params)  # Series
     params.setParam('sUrl', URL_DOKU)
     cGui().addFolder(cGuiElement(cConfig().getLocalizedString(30505), SITE_IDENTIFIER, 'showEntries'), params)  # Documentations
     params.setParam('sUrl', URL_MAIN)
@@ -69,7 +69,7 @@ def showGenre():
     oRequest = cRequestHandler(entryUrl, bypass_dns=True)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48 # 48 Stunden
-    sHtmlContent = oRequest.request()    
+    sHtmlContent = oRequest.request()
     pattern = r'<div\s+class="side-block__title">Genres</div>(.*?)</ul>\s*</div>'
     isMatch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
@@ -196,7 +196,7 @@ def showEpisodes():
     oRequest = cRequestHandler(sUrl, bypass_dns=True)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # HTML Cache Zeit 4 Stunden
-    sHtmlContent = oRequest.request()     
+    sHtmlContent = oRequest.request()
     pattern = r'<option\s+value="ep([^"]+)">([^<]+)</option>'
     isMatch, aResult = cParser.parse(sHtmlContent, pattern)
     total = len(aResult)
@@ -259,7 +259,7 @@ def showEpisodeHosters():
 
 
 def getHosterUrl(sUrl=False):
-    return [{'streamUrl': sUrl, 'resolved': False}] 
+    return [{'streamUrl': sUrl, 'resolved': False}]
 
 
 def showSearch():
@@ -284,4 +284,3 @@ def showSearchPage(): # Suche für die Page Funktion
     sNextSearchPage = sNextPage.split('page/')[0].strip() + 'page/' + sSearchPageText + '/'
     showEntries(sNextSearchPage)
     cGui().setEndOfDirectory()
-

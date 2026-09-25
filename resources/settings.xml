@@ -27,7 +27,7 @@
 				</setting>
 				<setting id="mainMenuOrder" type="string" label="30879" help="">
 					<level>0</level>
-					<default>globalSearch,sourceCategories,categories,random,settings</default>
+					<default>epicFavorites,globalSearch,sourceCategories,categories,random,history,settings</default>
 					<visible>false</visible>
 					<control type="edit" format="string"/>
 				</setting>
@@ -84,11 +84,6 @@
 					</constraints>
 					<control type="spinner" format="string"/>
 				</setting>
-				<setting id="showAdult" type="boolean" label="30003" help="">
-					<level>0</level>
-					<default>False</default>
-					<control type="toggle"/>
-				</setting>
 				<setting id="gerxstream.trailer" type="boolean" label="30026" help="">
 					<level>0</level>
 					<default>True</default>
@@ -105,6 +100,44 @@
 					<control type="slider" format="integer">
 						<popup>false</popup>
 					</control>
+				</setting>
+				<setting id="watchHistoryEnabled" type="boolean" label="30904" help="30905">
+					<level>0</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="watchHistoryLimit" type="integer" label="30908" help="30909">
+					<level>0</level>
+					<default>100</default>
+					<constraints>
+						<minimum>10</minimum>
+						<step>10</step>
+						<maximum>500</maximum>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" setting="watchHistoryEnabled">true</dependency>
+					</dependencies>
+					<control type="slider" format="integer"><popup>false</popup></control>
+				</setting>
+				<setting id="watchHistoryClear" type="action" label="30910" help="30911">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=clearWatchHistory)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="epicFavoritesName" type="string" label="30916" help="30917">
+					<level>0</level>
+					<default>Epic-Favorites</default>
+					<constraints>
+						<allowempty>false</allowempty>
+					</constraints>
+					<control type="edit" format="string">
+						<heading>30916</heading>
+					</control>
+				</setting>
+				<setting id="autoNextEpisodeEnabled" type="boolean" label="30933" help="30934">
+					<level>0</level>
+					<default>False</default>
+					<control type="toggle"/>
 				</setting>
 				<setting id="favoriteActors" type="string" label="30871" help="30872">
 					<level>0</level>
@@ -342,9 +375,235 @@
 				</setting>
 			</group>
 		</category>
+		<category id="livestreams" label="30960" help="">
+			<group id="lsSections" label="30966">
+				<setting id="lsSectionTv" type="boolean" label="30961" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="lsSectionSports" type="boolean" label="30962" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="lsSectionSocial" type="boolean" label="30963" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="lsSectionWeather" type="boolean" label="30964" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="lsSectionWebcam" type="boolean" label="30965" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+			</group>
+			<group id="lsRabbithole" label="31241">
+				<setting id="rhCategoriesEditor" type="action" label="31242" help="31243">
+					<level>1</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=lsRabbitholeCategories)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="rhCategories" type="string" label="31242" help="">
+					<level>1</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<visible>false</visible>
+					<control type="edit" format="string"/>
+				</setting>
+			</group>
+			<group id="lsSocial" label="31320">
+				<setting id="socialYoutube" type="boolean" label="31321" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="socialTwitch" type="boolean" label="31322" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="youtubeApiKey" type="string" label="31323" help="31324">
+					<level>2</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>31323</heading></control>
+				</setting>
+				<setting id="youtubeRegion" type="string" label="31325" help="">
+					<level>2</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"/>
+				</setting>
+				<setting id="youtubeAddonSettings" type="action" label="31326" help="">
+					<level>1</level>
+					<data>Addon.OpenSettings(plugin.video.youtube)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="twitchClientId" type="string" label="31327" help="31324">
+					<level>2</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>31327</heading></control>
+				</setting>
+				<setting id="twitchClientSecret" type="string" label="31328" help="">
+					<level>2</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>31328</heading></control>
+				</setting>
+				<setting id="twitchLanguage" type="string" label="31329" help="">
+					<level>2</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"/>
+				</setting>
+				<setting id="twitchAddonSettings" type="action" label="31330" help="">
+					<level>1</level>
+					<data>Addon.OpenSettings(plugin.video.twitch)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+			</group>
+			<group id="lsCountries" label="30969">
+				<setting id="lsCountryMode" type="string" label="30970" help="">
+					<level>1</level>
+					<default>all</default>
+					<constraints>
+						<options>
+							<option label="30971">all</option>
+							<option label="30972">whitelist</option>
+							<option label="30973">blacklist</option>
+						</options>
+					</constraints>
+					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="lsCountriesEditor" type="action" label="30974" help="30975">
+					<level>1</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=lsCountriesEditor)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="lsCountries" type="string" label="30974" help="">
+					<level>1</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<visible>false</visible>
+					<control type="edit" format="string"/>
+				</setting>
+			</group>
+			<group id="lsGenres" label="30976">
+				<setting id="lsGenresEditor" type="action" label="30977" help="30978">
+					<level>1</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=lsGenresEditor)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="lsGenresHidden" type="string" label="30977" help="">
+					<level>1</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<visible>false</visible>
+					<control type="edit" format="string"/>
+				</setting>
+			</group>
+			<group id="lsWeather" label="30990">
+				<setting id="lsWeatherApiKey" type="string" label="30991" help="30992">
+					<level>1</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>30991</heading></control>
+				</setting>
+				<setting id="lsWeatherCity" type="string" label="30993" help="">
+					<level>1</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"/>
+				</setting>
+				<setting id="lsWeatherUnits" type="string" label="30994" help="">
+					<level>1</level>
+					<default>metric</default>
+					<constraints>
+						<options>
+							<option label="30995">metric</option>
+							<option label="30996">imperial</option>
+						</options>
+					</constraints>
+					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="lsWebcamRefresh" type="integer" label="30997" help="30998">
+					<level>2</level>
+					<default>10</default>
+					<constraints>
+						<minimum>3</minimum>
+						<step>1</step>
+						<maximum>60</maximum>
+					</constraints>
+					<control type="slider" format="integer"><popup>false</popup></control>
+				</setting>
+			</group>
+			<group id="lsEpg" label="30979">
+				<setting id="lsEpgUrls" type="string" label="30980" help="30981">
+					<level>2</level>
+					<default></default>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"/>
+				</setting>
+				<setting id="lsEpgWindow" type="integer" label="30982" help="">
+					<level>2</level>
+					<default>6</default>
+					<constraints>
+						<minimum>2</minimum>
+						<step>2</step>
+						<maximum>24</maximum>
+					</constraints>
+					<control type="slider" format="integer"><popup>false</popup></control>
+				</setting>
+			</group>
+			<group id="lsData" label="30983">
+				<setting id="lsRefreshHours" type="integer" label="30984" help="">
+					<level>3</level>
+					<default>12</default>
+					<constraints>
+						<minimum>1</minimum>
+						<step>1</step>
+						<maximum>48</maximum>
+					</constraints>
+					<control type="slider" format="integer"><popup>false</popup></control>
+				</setting>
+				<setting id="lsExportDirect" type="boolean" label="30985" help="30986">
+					<level>3</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="lsRefreshNow" type="action" label="30987" help="">
+					<level>3</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=livestreamsRefresh)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="lsExportHint" type="action" label="30988" help="">
+					<level>3</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=livestreamsExportHint)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="lsVerify" type="action" label="30999" help="">
+					<level>3</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=livestreamsVerify)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="lsLastRefresh" type="string" label="30984" help="">
+					<level>3</level>
+					<default>0</default>
+					<visible>false</visible>
+					<control type="edit" format="string"/>
+				</setting>
+			</group>
+		</category>
 		<category id="updates" label="14303" help="">
 			<group id="resolver.updates" label="30030">
-				<setting id="githubUpdateResolver" type="boolean" label="30015" help="30411">
+				<setting id="repositoryUpdateResolver" type="boolean" label="30015" help="30411">
 					<level>0</level>
 					<default>True</default>
 					<control type="toggle"/>
@@ -359,7 +618,7 @@
 						</options>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateResolver">true</dependency>
+						<dependency type="visible" setting="repositoryUpdateResolver">true</dependency>
 					</dependencies>
 					<control type="spinner" format="string"/>
 				</setting>
@@ -387,6 +646,15 @@
 					<control type="button" format="action">
 						<close>true</close>
 					</control>
+				</setting>
+			</group>
+		</category>
+		<category id="nsfw" label="30967" help="30968">
+			<group id="nsfwGate" label="30967">
+				<setting id="showAdult" type="boolean" label="30003" help="30968">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
 				</setting>
 			</group>
 		</category>
@@ -637,6 +905,17 @@
 						<dependency type="enable" operator="!is" setting="plugin_api_all">False</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="apiAllPosition" type="string" label="30912" help="30913">
+					<level>0</level>
+					<default>top</default>
+					<constraints>
+						<options>
+							<option label="30914">top</option>
+							<option label="30915">bottom</option>
+						</options>
+					</constraints>
+					<control type="spinner" format="string"/>
 				</setting>
 				<setting id="plugin_api_all_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -1207,7 +1486,7 @@
 					<level>0</level>
                     <default>True</default>
 					<control type="toggle"/>
-				</setting>				
+				</setting>
 				<setting id="plugin_hdfilme_allowInsecureTLS" type="boolean" label="30813" help="30814">
 					<level>3</level>
 					<default>False</default>
@@ -1589,7 +1868,7 @@
 					<level>0</level>
                     <default>True</default>
 					<control type="toggle"/>
-				</setting>				
+				</setting>
 				<setting id="plugin_kinoger_allowInsecureTLS" type="boolean" label="30813" help="30814">
 					<level>3</level>
 					<default>False</default>
@@ -2024,7 +2303,7 @@
 					<level>0</level>
                     <default>True</default>
 					<control type="toggle"/>
-				</setting>				
+				</setting>
 				<setting id="plugin_kkiste_allowInsecureTLS" type="boolean" label="30813" help="30814">
 					<level>3</level>
 					<default>False</default>
@@ -2163,7 +2442,7 @@
 					<level>0</level>
                     <default>True</default>
 					<control type="toggle"/>
-				</setting>				
+				</setting>
 				<setting id="plugin_megakino_allowInsecureTLS" type="boolean" label="30813" help="30814">
 					<level>3</level>
 					<default>False</default>
@@ -2751,7 +3030,7 @@
 					<level>0</level>
                     <default>True</default>
 					<control type="toggle"/>
-				</setting>				
+				</setting>
 				<setting id="plugin_serienstream_allowInsecureTLS" type="boolean" label="30813" help="30814">
 					<level>3</level>
 					<default>False</default>
@@ -5074,38 +5353,6 @@
 				</setting>
 			</group>
 		</category>
-		<category id="liveSources" label="30892" help="">
-			<group id="plugin_weathercams" label="30893">
-				<setting id="plugin_weathercams" type="boolean" label="30050" help="">
-					<level>0</level>
-					<default>True</default>
-					<control type="toggle"/>
-				</setting>
-				<setting id="plugin_weathercams_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
-					<default>True</default>
-					<dependencies>
-						<dependency type="enable" operator="!is" setting="plugin_weathercams">false</dependency>
-					</dependencies>
-					<control type="toggle"/>
-				</setting>
-			</group>
-			<group id="plugin_livetv" label="30894">
-				<setting id="plugin_livetv" type="boolean" label="30050" help="">
-					<level>0</level>
-					<default>True</default>
-					<control type="toggle"/>
-				</setting>
-				<setting id="plugin_livetv_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
-					<default>True</default>
-					<dependencies>
-						<dependency type="enable" operator="!is" setting="plugin_livetv">false</dependency>
-					</dependencies>
-					<control type="toggle"/>
-				</setting>
-			</group>
-		</category>
 		<category id="indexsiteVoD" label="30407" help="">
 			<group id="plugin_huhu" label="30790">
 				<setting id="plugin_huhu" type="boolean" label="30050" help="">
@@ -5669,7 +5916,7 @@
 					<default>10025</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="jd_enabled">False</dependency>
-					</dependencies>	
+					</dependencies>
 					<control type="edit" format="integer">
 						<heading>30073</heading>
 					</control>
@@ -5776,7 +6023,7 @@
 					<default>8000</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="pyload_enabled">False</dependency>
-					</dependencies>	
+					</dependencies>
 					<control type="edit" format="integer">
 						<heading>30073</heading>
 					</control>
@@ -5812,7 +6059,7 @@
 		</category>
 		<category id="gerxstream.dev" label="30310" help="">
 			<group id="gerxstream.dev.updates" label="30311">
-				<setting id="githubUpdateDevGerxstream" type="boolean" label="30312" help="30411">
+				<setting id="repositoryUpdateDevGerxstream" type="boolean" label="30312" help="30411">
 					<level>3</level>
 					<default>False</default>
 					<control type="toggle"/>
@@ -5833,7 +6080,7 @@
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateDevGerxstream">true</dependency>
+						<dependency type="visible" setting="repositoryUpdateDevGerxstream">true</dependency>
 					</dependencies>
 					<control type="edit" format="string"/>
 						<heading>30310</heading>
@@ -5845,7 +6092,7 @@
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateDevGerxstream">true</dependency>
+						<dependency type="visible" setting="repositoryUpdateDevGerxstream">true</dependency>
 					</dependencies>
 					<control type="edit" format="string"/>
 						<heading>30310</heading>
@@ -5857,7 +6104,7 @@
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateDevGerxstream">true</dependency>
+						<dependency type="visible" setting="repositoryUpdateDevGerxstream">true</dependency>
 					</dependencies>
 					<control type="edit" format="string"/>
 						<heading>30310</heading>
@@ -5869,7 +6116,7 @@
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" setting="githubUpdateDevGerxstream">true</dependency>
+						<dependency type="visible" setting="repositoryUpdateDevGerxstream">true</dependency>
 					</dependencies>
 					<control type="edit" format="string"/>
 						<heading>30310</heading>

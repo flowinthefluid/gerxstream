@@ -260,7 +260,11 @@ def showHosters():
     except Exception:
         return hosters
     if sJson:
-        aJson = loads(sJson)
+        try:
+            aJson = loads(sJson)
+        except (TypeError, ValueError):
+            logger.info('-> [%s]: Watch-Antwort ist kein JSON' % SITE_NAME)
+            return hosters
         if 'streams' in aJson:
             i = 0
             for stream in aJson['streams']:

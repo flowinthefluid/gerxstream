@@ -36,7 +36,7 @@ URL_SERIES = URL_MAIN + 'serienstream-deutsch/'
 URL_SEARCH = URL_MAIN + 'index.php?do=search&subaction=search&story=%s&titleonly=3'
 
 
-def load(): 
+def load():
     logger.info('Load %s' % SITE_NAME)
     params = ParameterHandler()
     params.setParam('sUrl', URL_NEW)
@@ -61,7 +61,7 @@ def showGenre(entryUrl=False):
     oRequest = cRequestHandler(entryUrl)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48
-    sHtmlContent = oRequest.request()    
+    sHtmlContent = oRequest.request()
     pattern = 'Genre.*?</ul>'
     isMatch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
@@ -84,7 +84,7 @@ def showYears(entryUrl=False):
     oRequest = cRequestHandler(entryUrl)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48
-    sHtmlContent = oRequest.request() 
+    sHtmlContent = oRequest.request()
     pattern = 'Release.*?</ul>'
     isMatch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
@@ -123,7 +123,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         sLanguage = cConfig().getSetting('prefLanguage')
         if (sLanguage == '1' and 'English*' in sName):
             continue
-        if (sLanguage == '2' and not 'English*' in sName): 
+        if (sLanguage == '2' and not 'English*' in sName):
             continue
         elif sLanguage == '3':
             cGui().showLanguage()
@@ -175,7 +175,7 @@ def showEpisodes():
     sThumbnail = params.getValue('sThumbnail')
     oRequest = cRequestHandler(entryUrl)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
-        oRequest.cacheTime = 60 * 60 * 6  
+        oRequest.cacheTime = 60 * 60 * 6
     sHtmlContent = oRequest.request()
     isMatch, aResult = cParser.parse(sHtmlContent, '"><a href="#">([^<]+)')
     if not isMatch:
@@ -210,7 +210,7 @@ def showHosters():
         sQuality = '720'
         for sUrl in aResult:
             sName = cParser.urlparse(sUrl).split('.')[0].strip()
-            if cConfig().isBlockedHoster(sName)[0]: continue 
+            if cConfig().isBlockedHoster(sName)[0]: continue
             if 'youtube' in sUrl:
                 continue
             elif 'vod' in sUrl:
@@ -240,7 +240,7 @@ def _search(oGui, sSearchText):
 
 
 
-def showSearchPage(): 
+def showSearchPage():
     params = ParameterHandler()
     sNextPage = params.getValue('sNextPage')
     sPageLast = params.getValue('sPageLast')

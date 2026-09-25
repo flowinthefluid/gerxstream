@@ -403,4 +403,3 @@ def showYTSearch():
         cGui().setEndOfDirectory()
         return
     _listPlaylists(search_playlists('%s %s deutsch' % (sSearchText, action)))
-

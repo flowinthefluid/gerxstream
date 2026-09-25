@@ -436,4 +436,3 @@ def content_decryptor(html_content,passphrase):
         return json.loads(plain_text.decode())
     else:
         return None
-

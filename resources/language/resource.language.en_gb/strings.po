@@ -2,10 +2,12 @@
 # Addon id: plugin.video.gerxstream
 # Addon Provider: GerXStream
 # Use the following entry for the translation
-# from resources.lib.config import cConfig + cConfig().getLocalizedString(30041)	
+# from resources.lib.config import cConfig + cConfig().getLocalizedString(30041)
 
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en_GB\n"
 
 msgctxt "#30000"
 msgid "Debug-Mode"
@@ -1626,7 +1628,7 @@ msgid "Kids Tube"
 msgstr ""
 
 msgctxt "#30720"
-msgid "FHD Filme"
+msgid "HDFilme.to"
 msgstr ""
 
 msgctxt "#30721"
@@ -1655,7 +1657,7 @@ msgstr ""
 
 msgctxt "#30727"
 msgid "API Suchmaschine"
-msgstr ""
+msgstr "Favorite hoster"
 
 msgctxt "#30728"
 msgid "Moflix-Stream"
@@ -2053,18 +2055,6 @@ msgctxt "#30891"
 msgid "Higher values can take considerably longer because TMDB has no director-only list."
 msgstr ""
 
-msgctxt "#30892"
-msgid "Live streams"
-msgstr ""
-
-msgctxt "#30893"
-msgid "Public webcams"
-msgstr ""
-
-msgctxt "#30894"
-msgid "Public-service live TV"
-msgstr ""
-
 msgctxt "#30900"
 msgid "Global search timeout (seconds)"
 msgstr ""
@@ -2076,3 +2066,653 @@ msgstr ""
 msgctxt "#30902"
 msgid "Update GerXStream"
 msgstr ""
+
+msgctxt "#30903"
+msgid "History"
+msgstr ""
+
+msgctxt "#30904"
+msgid "Enable playback history"
+msgstr ""
+
+msgctxt "#30905"
+msgid "Stores recently watched titles locally on this device."
+msgstr ""
+
+msgctxt "#30906"
+msgid "No watched titles yet."
+msgstr ""
+
+msgctxt "#30907"
+msgid "Playback history cleared."
+msgstr ""
+
+msgctxt "#30908"
+msgid "History entries"
+msgstr ""
+
+msgctxt "#30909"
+msgid "Maximum number of locally stored watched titles."
+msgstr ""
+
+msgctxt "#30910"
+msgid "Clear playback history"
+msgstr ""
+
+msgctxt "#30911"
+msgid "Deletes all locally stored watched titles."
+msgstr ""
+
+msgctxt "#30912"
+msgid "Position in All sources"
+msgstr ""
+
+msgctxt "#30913"
+msgid "Choose where Lieblingshoster appears in the All sources list."
+msgstr ""
+
+msgctxt "#30914"
+msgid "Top"
+msgstr ""
+
+msgctxt "#30915"
+msgid "Bottom"
+msgstr ""
+
+msgctxt "#30916"
+msgid "Epic-Favorites name"
+msgstr ""
+
+msgctxt "#30917"
+msgid "The name is displayed in the main menu and in the favourites browser."
+msgstr ""
+
+msgctxt "#30918"
+msgid "Add to %s"
+msgstr ""
+
+msgctxt "#30919"
+msgid "Create folder"
+msgstr ""
+
+msgctxt "#30920"
+msgid "Folder name"
+msgstr ""
+
+msgctxt "#30921"
+msgid "Save in: %s"
+msgstr ""
+
+msgctxt "#30923"
+msgid "Rename folder"
+msgstr ""
+
+msgctxt "#30924"
+msgid "Delete folder"
+msgstr ""
+
+msgctxt "#30925"
+msgid "Move"
+msgstr ""
+
+msgctxt "#30926"
+msgid "Remove"
+msgstr ""
+
+msgctxt "#30927"
+msgid "Really remove \"%s\"?"
+msgstr ""
+
+msgctxt "#30928"
+msgid "Favourite saved in %s."
+msgstr ""
+
+msgctxt "#30929"
+msgid "This favourite is already in that folder."
+msgstr ""
+
+msgctxt "#30930"
+msgid "This item cannot be saved as a favourite."
+msgstr ""
+
+msgctxt "#30931"
+msgid "Folder already exists or its name is invalid."
+msgstr ""
+
+msgctxt "#30932"
+msgid ".. Back"
+msgstr ""
+
+msgctxt "#30933"
+msgid "Automatically play next episode"
+msgstr ""
+
+msgctxt "#30934"
+msgid "Creates a Kodi playlist for the remaining episodes. It advances after a normal end and supports Kodi's Next item action."
+msgstr ""
+
+msgctxt "#30935"
+msgid "Backup and restore"
+msgstr ""
+
+msgctxt "#30936"
+msgid "Export and import GerXStream settings, accounts and Epic-Favorites."
+msgstr ""
+
+msgctxt "#30937"
+msgid "Export complete backup"
+msgstr ""
+
+msgctxt "#30938"
+msgid "Import complete backup"
+msgstr ""
+
+msgctxt "#30939"
+msgid "Export settings"
+msgstr ""
+
+msgctxt "#30940"
+msgid "Import settings"
+msgstr ""
+
+msgctxt "#30941"
+msgid "Export accounts"
+msgstr ""
+
+msgctxt "#30942"
+msgid "Import accounts"
+msgstr ""
+
+msgctxt "#30943"
+msgid "Export Epic-Favorites"
+msgstr ""
+
+msgctxt "#30944"
+msgid "Import Epic-Favorites"
+msgstr ""
+
+msgctxt "#30945"
+msgid "Select backup folder"
+msgstr ""
+
+msgctxt "#30946"
+msgid "Select backup file"
+msgstr ""
+
+msgctxt "#30947"
+msgid "Backup exported"
+msgstr ""
+
+msgctxt "#30948"
+msgid "Backup imported"
+msgstr ""
+
+msgctxt "#30949"
+msgid "Invalid or unreadable backup file."
+msgstr ""
+
+msgctxt "#30950"
+msgid "This backup contains accounts and passwords. Store it safely."
+msgstr ""
+
+msgctxt "#30951"
+msgid "Import replaces current %s. Continue?"
+msgstr ""
+
+msgctxt "#30952"
+msgid "Backup contains no %s data."
+msgstr ""
+
+msgctxt "#30953"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#30954"
+msgid "Accounts"
+msgstr ""
+
+msgctxt "#30955"
+msgid "Epic-Favorites"
+msgstr ""
+
+msgctxt "#30956"
+msgid "Complete backup"
+msgstr ""
+
+msgctxt "#30957"
+msgid "Backup file already exists. Overwrite?"
+msgstr ""
+
+# --- Livestreams (30960-30988, 31100-31215) ---
+msgctxt "#30960"
+msgid "Customize menu"
+msgstr "Customize menu"
+
+msgctxt "#30961"
+msgid "Television"
+msgstr "Television"
+
+msgctxt "#30962"
+msgid "Sports & E-Sports"
+msgstr "Sports & E-Sports"
+
+msgctxt "#30963"
+msgid "Social Media"
+msgstr "Social Media"
+
+msgctxt "#30964"
+msgid "Weather"
+msgstr "Weather"
+
+msgctxt "#30965"
+msgid "Webcams"
+msgstr "Webcams"
+
+msgctxt "#30966"
+msgid "Visible sections"
+msgstr "Visible sections"
+
+msgctxt "#30967"
+msgid "Adult content (NSFW)"
+msgstr "Adult content (NSFW)"
+
+msgctxt "#30968"
+msgid "Only affects content explicitly marked NSFW. For external scrapers a keyword heuristic is used - not a guarantee."
+msgstr "Only affects content explicitly marked NSFW. For external scrapers a keyword heuristic is used - not a guarantee."
+
+msgctxt "#30969"
+msgid "Countries"
+msgstr "Countries"
+
+msgctxt "#30970"
+msgid "Country filter mode"
+msgstr "Country filter mode"
+
+msgctxt "#30971"
+msgid "Show all"
+msgstr "Show all"
+
+msgctxt "#30972"
+msgid "Whitelist (only selected)"
+msgstr "Whitelist (only selected)"
+
+msgctxt "#30973"
+msgid "Blacklist (hide selected)"
+msgstr "Blacklist (hide selected)"
+
+msgctxt "#30974"
+msgid "Select countries"
+msgstr "Select countries"
+
+msgctxt "#30975"
+msgid "Choose which countries appear in the livestream menus."
+msgstr "Choose which countries appear in the livestream menus."
+
+msgctxt "#30976"
+msgid "Genres"
+msgstr "Genres"
+
+msgctxt "#30977"
+msgid "Select visible genres"
+msgstr "Select visible genres"
+
+msgctxt "#30978"
+msgid "Hidden genres never enable NSFW - that stays a separate switch."
+msgstr "Hidden genres never enable NSFW - that stays a separate switch."
+
+msgctxt "#30979"
+msgid "EPG (program guide)"
+msgstr "EPG (program guide)"
+
+msgctxt "#30980"
+msgid "XMLTV sources (comma-separated URLs)"
+msgstr "XMLTV sources (comma-separated URLs)"
+
+msgctxt "#30981"
+msgid "Supports gzip and xz. Only visible channels are kept."
+msgstr "Supports gzip and xz. Only visible channels are kept."
+
+msgctxt "#30982"
+msgid "EPG preview window (hours)"
+msgstr "EPG preview window (hours)"
+
+msgctxt "#30983"
+msgid "Data & export"
+msgstr "Data & export"
+
+msgctxt "#30984"
+msgid "Refresh interval (hours)"
+msgstr "Refresh interval (hours)"
+
+msgctxt "#30985"
+msgid "Export direct URLs instead of add-on playback"
+msgstr "Export direct URLs instead of add-on playback"
+
+msgctxt "#30986"
+msgid "Direct URLs skip source selection and failover. Use only if plugin URLs do not play in IPTV Simple."
+msgstr "Direct URLs skip source selection and failover. Use only if plugin URLs do not play in IPTV Simple."
+
+msgctxt "#30987"
+msgid "Refresh livestream lists now"
+msgstr "Refresh livestream lists now"
+
+msgctxt "#30988"
+msgid "Show IPTV Simple setup"
+msgstr "Show IPTV Simple setup"
+
+msgctxt "#31100"
+msgid "News"
+msgstr "News"
+
+msgctxt "#31101"
+msgid "Sports"
+msgstr "Sports"
+
+msgctxt "#31102"
+msgid "Kids"
+msgstr "Kids"
+
+msgctxt "#31103"
+msgid "Documentary"
+msgstr "Documentary"
+
+msgctxt "#31104"
+msgid "Music"
+msgstr "Music"
+
+msgctxt "#31105"
+msgid "Movies"
+msgstr "Movies"
+
+msgctxt "#31106"
+msgid "Series"
+msgstr "Series"
+
+msgctxt "#31107"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#31108"
+msgid "Comedy"
+msgstr "Comedy"
+
+msgctxt "#31109"
+msgid "Anime"
+msgstr "Anime"
+
+msgctxt "#31110"
+msgid "Shopping"
+msgstr "Shopping"
+
+msgctxt "#31111"
+msgid "Regional"
+msgstr "Regional"
+
+msgctxt "#31112"
+msgid "Public broadcaster"
+msgstr "Public broadcaster"
+
+msgctxt "#31113"
+msgid "Nature"
+msgstr "Nature"
+
+msgctxt "#31114"
+msgid "Erotic"
+msgstr "Erotic"
+
+msgctxt "#31200"
+msgid "Nothing available here yet. You can add sources in the settings."
+msgstr "Nothing available here yet. You can add sources in the settings."
+
+msgctxt "#31201"
+msgid "Official"
+msgstr "Official"
+
+msgctxt "#31202"
+msgid "Unofficial"
+msgstr "Unofficial"
+
+msgctxt "#31210"
+msgid "Channels by country"
+msgstr "Channels by country"
+
+msgctxt "#31211"
+msgid "Channels by genre"
+msgstr "Channels by genre"
+
+msgctxt "#31212"
+msgid "Choose another source"
+msgstr "Choose another source"
+
+msgctxt "#31213"
+msgid "Source unavailable - trying next"
+msgstr "Source unavailable - trying next"
+
+msgctxt "#31214"
+msgid "No source could be played"
+msgstr "No source could be played"
+
+msgctxt "#31215"
+msgid "Livestream lists updated"
+msgstr "Livestream lists updated"
+
+
+msgctxt "#30989"
+msgid "Livestreams"
+msgstr "Livestreams"
+
+# --- Webcams & Wetter (30990-30998, 31220-31222) ---
+msgctxt "#30990"
+msgid "Weather"
+msgstr "Weather"
+
+msgctxt "#30991"
+msgid "OpenWeatherMap API key"
+msgstr "OpenWeatherMap API key"
+
+msgctxt "#30992"
+msgid "Your own key from openweathermap.org. Without it the weather line stays hidden."
+msgstr "Your own key from openweathermap.org. Without it the weather line stays hidden."
+
+msgctxt "#30993"
+msgid "Weather city"
+msgstr "Weather city"
+
+msgctxt "#30994"
+msgid "Units"
+msgstr "Units"
+
+msgctxt "#30995"
+msgid "Metric (C)"
+msgstr "Metric (C)"
+
+msgctxt "#30996"
+msgid "Imperial (F)"
+msgstr "Imperial (F)"
+
+msgctxt "#30997"
+msgid "Webcam still-image refresh (seconds)"
+msgstr "Webcam still-image refresh (seconds)"
+
+msgctxt "#30998"
+msgid "How often JPEG still-image cameras reload."
+msgstr "How often JPEG still-image cameras reload."
+
+msgctxt "#31220"
+msgid "Still-image mode"
+msgstr "Still-image mode"
+
+msgctxt "#31221"
+msgid "Rabbithole (random webcam)"
+msgstr "Rabbithole (random webcam)"
+
+msgctxt "#31222"
+msgid "Random (250)"
+msgstr "Random (250)"
+
+
+# --- Phase B (30999, 31230-31231) ---
+msgctxt "#31230"
+msgid "> Play recommended source"
+msgstr "> Play recommended source"
+
+msgctxt "#31231"
+msgid "Geo"
+msgstr "Geo"
+
+msgctxt "#30999"
+msgid "Check sources"
+msgstr "Check sources"
+
+
+# --- Phase C (31115-31126, 31240-31243) ---
+msgctxt "#31115"
+msgid "Landmarks"
+msgstr "Landmarks"
+
+msgctxt "#31116"
+msgid "Buildings"
+msgstr "Buildings"
+
+msgctxt "#31117"
+msgid "Mountains"
+msgstr "Mountains"
+
+msgctxt "#31118"
+msgid "Animals"
+msgstr "Animals"
+
+msgctxt "#31119"
+msgid "Birds"
+msgstr "Birds"
+
+msgctxt "#31120"
+msgid "Beaches"
+msgstr "Beaches"
+
+msgctxt "#31121"
+msgid "Piers & Harbours"
+msgstr "Piers & Harbours"
+
+msgctxt "#31122"
+msgid "Parks"
+msgstr "Parks"
+
+msgctxt "#31123"
+msgid "Traffic"
+msgstr "Traffic"
+
+msgctxt "#31124"
+msgid "City"
+msgstr "City"
+
+msgctxt "#31125"
+msgid "Ski & Snow"
+msgstr "Ski & Snow"
+
+msgctxt "#31126"
+msgid "Weather"
+msgstr "Weather"
+
+msgctxt "#31240"
+msgid "All shown. Reshuffle?"
+msgstr "All shown. Reshuffle?"
+
+msgctxt "#31241"
+msgid "Rabbithole"
+msgstr "Rabbithole"
+
+msgctxt "#31242"
+msgid "Rabbithole categories"
+msgstr "Rabbithole categories"
+
+msgctxt "#31243"
+msgid "Which webcam categories the rabbithole draws from (empty = all). NSFW is never selectable here."
+msgstr "Which webcam categories the rabbithole draws from (empty = all). NSFW is never selectable here."
+
+
+# --- Social Media (31300-31330) ---
+msgctxt "#31300"
+msgid "Gaming"
+msgstr "Gaming"
+
+msgctxt "#31301"
+msgid "Music"
+msgstr "Music"
+
+msgctxt "#31302"
+msgid "News"
+msgstr "News"
+
+msgctxt "#31303"
+msgid "Sports"
+msgstr "Sports"
+
+msgctxt "#31310"
+msgid "YouTube add-on not installed (plugin.video.youtube)"
+msgstr "YouTube add-on not installed (plugin.video.youtube)"
+
+msgctxt "#31311"
+msgid "Twitch add-on not installed (plugin.video.twitch)"
+msgstr "Twitch add-on not installed (plugin.video.twitch)"
+
+msgctxt "#31312"
+msgid "Open YouTube add-on"
+msgstr "Open YouTube add-on"
+
+msgctxt "#31313"
+msgid "Enter your own YouTube API key in settings for category filtering"
+msgstr "Enter your own YouTube API key in settings for category filtering"
+
+msgctxt "#31314"
+msgid "Open Twitch add-on"
+msgstr "Open Twitch add-on"
+
+msgctxt "#31315"
+msgid "Enter Twitch client ID in settings for the live list"
+msgstr "Enter Twitch client ID in settings for the live list"
+
+msgctxt "#31320"
+msgid "Social Media"
+msgstr "Social Media"
+
+msgctxt "#31321"
+msgid "Show YouTube"
+msgstr "Show YouTube"
+
+msgctxt "#31322"
+msgid "Show Twitch"
+msgstr "Show Twitch"
+
+msgctxt "#31323"
+msgid "YouTube Data API key (optional)"
+msgstr "YouTube Data API key (optional)"
+
+msgctxt "#31324"
+msgid "Optional. Playback runs through the official platform add-on regardless."
+msgstr "Optional. Playback runs through the official platform add-on regardless."
+
+msgctxt "#31325"
+msgid "YouTube region code (e.g. DE)"
+msgstr "YouTube region code (e.g. DE)"
+
+msgctxt "#31326"
+msgid "Open YouTube add-on settings (account/login)"
+msgstr "Open YouTube add-on settings (account/login)"
+
+msgctxt "#31327"
+msgid "Twitch client ID (optional)"
+msgstr "Twitch client ID (optional)"
+
+msgctxt "#31328"
+msgid "Twitch client secret (optional)"
+msgstr "Twitch client secret (optional)"
+
+msgctxt "#31329"
+msgid "Twitch language (e.g. de)"
+msgstr "Twitch language (e.g. de)"
+
+msgctxt "#31330"
+msgid "Open Twitch add-on settings (account)"
+msgstr "Open Twitch add-on settings (account)"
+

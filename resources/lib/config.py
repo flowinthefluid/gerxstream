@@ -24,7 +24,7 @@ class cConfig:
             instance.__aLanguage = instance.__addon.getLocalizedString
             cls._instances[addon_id] = instance
         return cls._instances[addon_id]
-    
+
     def showSettingsWindow(self):
         self.__addon.openSettings()
 
@@ -41,7 +41,7 @@ class cConfig:
             return result
         else:
             return default
-        
+
     def getSettingString(self, sName, default=''):
         result = self.__addon.getSetting(sName)
         if result:
@@ -89,7 +89,7 @@ class cConfig:
 
     def getLocalizedString(self, sCode):
         return self.__aLanguage(sCode)
-        
+
     def isBlockedHoster(self, domain, checkResolver=True ):
         domain = urlparse(domain).path if urlparse(domain).hostname == None else urlparse(domain).hostname
         hostblockDict = ['flashx','streamlare','evoload', 'hd-stream', 'vivo']  # permanenter Block

@@ -250,4 +250,3 @@ def showSearchPage(): # Suche für die Page Funktion
     sNextSearchPage = sNextPage.split('page/')[0].strip() + 'page/' + sSearchPageText + '/'
     showEntries(sNextSearchPage)
     cGui().setEndOfDirectory()
-

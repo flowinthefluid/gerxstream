@@ -18,8 +18,8 @@ def main():
     path.append(join(_addonPath_, 'resources', 'lib', 'handler'))
     path.append(join(_addonPath_, 'resources', 'art', 'sites'))
     path.append(join(_addonPath_, 'resources', 'art'))
-    path.append(join(_addonPath_, 'sites'))    
-    
+    path.append(join(_addonPath_, 'sites'))
+
     LOGMESSAGE = cConfig().getLocalizedString(30166)
     log('-----------------------------------------------------------------------', LOGNOTICE)
     log(LOGMESSAGE + ' -> [default]: Start GerXStream Log, Version %s ' % cConfig().getAddonInfo('version'), LOGNOTICE)

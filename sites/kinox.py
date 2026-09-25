@@ -654,4 +654,3 @@ def showSearch():
 def _search(oGui, sSearchText):
     sHtmlContent = __getHtmlContent(URL_SEARCH % cParser.quotePlus(sSearchText), ignoreErrors=(oGui is not False))
     __displayItems(oGui, sHtmlContent)
-

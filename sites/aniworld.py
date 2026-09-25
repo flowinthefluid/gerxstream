@@ -9,7 +9,7 @@
 # showAllSeries: 24 Stunden
 # showEpisodes:   4 Stunden
 # SSsearch:      24 Stunden
-    
+
 # 2022-12-06 Heptamer - Suchfunktion überarbeitet
 
 from ast import literal_eval
@@ -520,4 +520,3 @@ def getMetaInfo(link, title):   # Setzen von Metadata in Suche:
 
     for sImg, sDescr in aResult[1]:
         return sImg, sDescr
-

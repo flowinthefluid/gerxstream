@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.gerxstream"
+       name="GerXStream Repository"
+       version="1.0.2"
+       provider-name="gerxstream">
+  <extension point="xbmc.addon.repository" name="GerXStream Repository">
+    <dir>
+      <info compressed="false">@PAGES_URL@/addons.xml</info>
+      <checksum>@PAGES_URL@/addons.xml.md5</checksum>
+      <datadir zip="true">@PAGES_URL@/zips/</datadir>
+      <hashes>false</hashes>
+    </dir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">GerXStream Repository</summary>
+    <summary lang="en_GB">GerXStream Repository</summary>
+    <description lang="de_DE">Bezugsquelle für GerXStream für Kodi.</description>
+    <description lang="en_GB">Distribution source for GerXStream for Kodi.</description>
+    <platform>all</platform>
+    <license>GPL-3.0-only</license>
+    <website>https://gitlab.com/gerxstream/gerxstream</website>
+    <source>https://gitlab.com/gerxstream/gerxstream</source>
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon>

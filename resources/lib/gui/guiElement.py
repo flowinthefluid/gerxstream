@@ -244,7 +244,7 @@ class cGuiElement:
             self.__aItemValues[sPropertyKey] = self.__aProperties[sPropertyKey]
         return self.__aItemValues
 
-    # siehe gui.setInfoTagVideo() 
+    # siehe gui.setInfoTagVideo()
     def addItemProperties(self, sPropertyKey, sPropertyValue):
         self.__aProperties[sPropertyKey] = sPropertyValue
 

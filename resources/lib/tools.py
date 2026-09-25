@@ -115,7 +115,7 @@ def platform():
     elif xbmc.getCondVisibility('system.platform.windows'):
         return 'Windows'
     elif xbmc.getCondVisibility('system.platform.uwp'):
-        return 'Windows UWP'      
+        return 'Windows UWP'
     elif xbmc.getCondVisibility('system.platform.osx'):
         return 'OSX'
     elif xbmc.getCondVisibility('system.platform.atv2'):
@@ -196,7 +196,7 @@ class cParser:
     @lru_cache(maxsize=512)
     def _get_compiled_pattern(pattern, flags=0):
         return re.compile(pattern, flags)
-    
+
     # Gewollte Faltungen auf ASCII. Alles andere wird nicht mehr von Hand
     # abgebildet, sondern von html.unescape() aufgeloest (siehe unten).
     #   stand hier frueher auf 'h' und machte aus "20:30 Uhr" ein
@@ -249,7 +249,7 @@ class cParser:
                 flags |= re.I
 
             matches = cParser._get_compiled_pattern(pattern, flags).search(sHtmlContent)
-            
+
             if matches:
                 # Check if there's at least one capturing group
                 if matches.lastindex is not None and matches.lastindex >= 1:
@@ -258,7 +258,7 @@ class cParser:
                     # fallback to the entire match if no group was captured
                     return True, cParser._replaceSpecialCharacters(matches.group(0))
         return False, None
-    
+
     @staticmethod
     def parse(sHtmlContent, pattern, iMinFoundValue=1, ignoreCase=False):
         if sHtmlContent:
@@ -267,7 +267,7 @@ class cParser:
                 flags |= re.I
 
             aMatches = cParser._get_compiled_pattern(pattern, flags).findall(sHtmlContent)
-            
+
             if len(aMatches) >= iMinFoundValue:
                 # handle both single strings and tuples of matches
                 if isinstance(aMatches[0], tuple):
@@ -276,7 +276,7 @@ class cParser:
                 else:
                     # Process single strings
                     aMatches = [cParser._replaceSpecialCharacters(x) if isinstance(x, str) and x is not None else '' for x in aMatches]
-                
+
                 return True, aMatches
         return False, None
 
@@ -465,7 +465,7 @@ class cUtil:
         key = fd[0:key_size]
         iv = fd[key_size:key_size + iv_size]
         return key, iv
-        
+
     @staticmethod
     def isSimilar(sSearch, sText, threshold=0.9):
         return (SequenceMatcher(None, sSearch, sText).ratio() >= threshold)
@@ -474,7 +474,7 @@ class cUtil:
     @lru_cache(maxsize=200000)
     def get_seq_match_ratio(token1, token2):
         return SequenceMatcher(None, token1, token2).ratio()
-    
+
     @staticmethod
     def isSimilarByToken(sSearch, sText, threshold=0.9):
         tokens_sSearch = sSearch.split()

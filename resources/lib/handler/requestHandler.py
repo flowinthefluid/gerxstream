@@ -288,7 +288,7 @@ class cRequestHandler:
         #    p = p._replace(path=p.path.replace(p.path, path))
         #return p.geturl()
         return url
-    
+
     def request(self):
         if self.caching and self.cacheTime > 0  and self.method == 'GET' and self.data is None:
             if self.isMemoryCacheActive:
@@ -314,7 +314,7 @@ class cRequestHandler:
             cookieJar.load(ignore_discard=self.__bIgnoreDiscard, ignore_expires=self.__bIgnoreExpired)
         except Exception as e:
             logger.debug(e)
-        
+
         domain = urlparse(self._sUrl).netloc
         opener_key = (domain, self._ssl_verify, ip_override, self._proxyUrl)
         if opener_key in cRequestHandler.persistent_openers:
@@ -343,19 +343,19 @@ class cRequestHandler:
             sParameters = json.dumps(self._aParameters).encode() if self.jspost else urlencode(self._aParameters, True).encode()
             if len(sParameters) == 0:
                 sParameters = None
-        
+
         oRequest = Request(self._sUrl, sParameters if sParameters and len(sParameters) > 0 else None)
 
         for key, value in self._headerEntries.items():
             oRequest.add_header(key, value)
-        
+
         if self.method == 'POST' and 'Content-Type' not in self._headerEntries:
             oRequest.add_header('Content-Type', 'application/x-www-form-urlencoded')
         elif self.jspost:
             oRequest.add_header('Content-Type', 'application/json')
-        
+
         cookieJar.add_cookie_header(oRequest)
-        
+
         try:
             oResponse = opener.open(oRequest, timeout=self.requestTimeout)
         except HTTPError as e:
@@ -408,6 +408,15 @@ class cRequestHandler:
                 xbmcgui.Dialog().ok('GerXStream', str(e.reason))
             logger.error(' -> [requestHandler]: URLError ' + str(e.reason) + ' Url: ' + self._sUrl)
             return 'URL FEHLER'
+        except (TimeoutError, socket.timeout) as e:
+            # socket.timeout ist auf aktuellen Python-Versionen ein Alias von
+            # TimeoutError. Beide Namen stehen hier bewusst, damit Kodi auf
+            # aelteren und neueren Plattformen nie mit einem Traceback aus
+            # einem Verzeichnisaufruf faellt.
+            if not self.ignoreErrors:
+                xbmcgui.Dialog().ok('GerXStream', str(e) or 'Zeitueberschreitung')
+            logger.error(' -> [requestHandler]: TimeoutError %s Url: %s' % (e, self._sUrl))
+            return 'TIMEOUT'
         except HTTPException as e:
             if not self.ignoreErrors:
                 xbmcgui.Dialog().ok('GerXStream', str(e))
@@ -415,7 +424,7 @@ class cRequestHandler:
             return 'TIMEOUT'
 
         self._sResponseHeader = oResponse.info()
-        
+
         content_encoding = self._sResponseHeader.get('Content-Encoding', '').lower()
         if content_encoding:
             raw_content = oResponse.read()
@@ -506,7 +515,7 @@ class cRequestHandler:
             ip_address = self.__readVolatileCache(key, self.cacheTime)
             if ip_address:
                 return ip_address
-        
+
         params = urlencode({"name": hostname, "type": "A"})
         doh_url = f"{doh_server}?{params}"
         req = Request(doh_url)
@@ -578,7 +587,7 @@ class cRequestHandler:
         if self.isMemoryCacheActive:
             self._memCache.clear()
         cRequestHandler.persistent_openers.clear()
-        
+
         # clear persistent cache
         files = os.listdir(self._cachePath)
         for file in files:

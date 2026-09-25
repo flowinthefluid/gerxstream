@@ -1,30 +1,16 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Python 3
-"""Baut den Inhalt des Hosting-Repos fuer die eigene GerXStream-Quelle.
+"""Portabler Repository-Build fuer GerXStream (Python, ohne xmllint/zip-Binary).
 
-Ziel ist die Struktur aus docs/REPO-SPEC.md: der Ordner `repo/`, den man in
-den Branch `main` von https://github.com/flowinthefluid/gerxstream legt,
-damit Kodi ihn als Addon-Repository lesen kann (Referenz: Aufbau von
-K.U.S AllInOne Repository / anderer freier Kodi-Repos - ein Zeiger-Addon
-`repository.<name>` plus `addons.xml`/`addons.xml.md5` plus `zips/`).
+Erzeugt dieselben Artefakte wie tools/build-gitlab-pages.sh, aber
+plattformunabhaengig und CI-tauglich (GitHub Actions). Standard-Ausgabe ist
+``dist/`` - die GitLab-Pages-Auslieferung in ``public/`` bleibt unberuehrt, es
+gibt also keine zwei Schreiber auf demselben Verzeichnis.
 
-Enthaelt zwei Zeiger-Addons und das zum Start benoetigte Resolver-Modul:
-    - repository.gerxstream    -> unsere eigene Quelle (dieses Repo)
-    - repository.resolveurl    -> Zeiger auf Gujal00/smrzips (offizielles
-        ResolveURL-Repo). Wird nur mitgehostet, damit Nutzer ResolveURL ohne
-        Odyssee ueber unsere eigene Quelle installieren koennen (Befund D1 /
-        REPO-SPEC.md Abschnitt 5). Wir bauen ResolveURL nicht selbst; der Zeiger
-        laedt weiterhin direkt von Gujal00.
-    - script.module.resolveurl -> die verifizierte Upstream-Version wird in
-        den eigenen Katalog gespiegelt, damit Kodi sie als Abhaengigkeit von
-        GerXStream in derselben Aktualisierung aufloesen kann.
-
-Aufruf aus dem Projektverzeichnis:
-
-    python tools/build_repo.py
-
-Optionen:
-    --out-dir DIR   Zielverzeichnis (Vorgabe: dist/gerxstream-repo)
+Beispiele:
+    python3 tools/build_repo.py                 # Build nach dist/
+    python3 tools/build_repo.py --bump patch    # Version erhoehen + Build
+    python3 tools/build_repo.py --pages-url https://user.gitlab.io/proj
 """
 
 import argparse
@@ -32,191 +18,167 @@ import hashlib
 import os
 import shutil
 import sys
-import xml.etree.ElementTree as ET
+import tempfile
 import zipfile
-from urllib.request import urlopen
+import xml.etree.ElementTree as ET
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import build_release  # noqa: E402  (Nachbarskript, siehe tools/build_release.py)
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-REPO_ADDONS = ('repository.gerxstream', 'repository.resolveurl')
-RESOLVEURL_ID = 'script.module.resolveurl'
-RESOLVEURL_VERSION = '5.1.209'
-RESOLVEURL_ZIP_URL = ('https://raw.githubusercontent.com/Gujal00/smrzips/master/'
-                      'zips/script.module.resolveurl/'
-                      'script.module.resolveurl-%s.zip' % RESOLVEURL_VERSION)
-RESOLVEURL_LICENSE_URL = 'https://raw.githubusercontent.com/Gujal00/ResolveURL/master/LICENSE'
+# Exakt die Laufzeitdateien, die auch der Shell-Build ausliefert (keine
+# Entwicklungs-/Testdateien: tests/, docs/, tools/ bleiben aussen vor).
+PLUGIN_PAYLOAD = ('addon.xml', 'default.py', 'gerxstream.py', 'service.py',
+                  'changelog.txt', 'license.txt', 'resources', 'sites')
+ASSETS = ('icon.png', 'fanart.jpg', 'banner.png', 'clearlogo.png')
+RESOLVER_ID = 'script.module.resolveurl'
+REPO_ID = 'repository.gerxstream'
 
 
-def readAddonXml(path):
-    node = ET.parse(path).getroot()
-    return node.get('id'), node.get('version')
+def _addon_field(addon_xml, attr):
+    root = ET.parse(addon_xml).getroot()
+    return root.get(attr)
 
 
-def stripXmlDeclaration(xmlText):
-    stripped = xmlText.lstrip()
-    if stripped.startswith('<?xml'):
-        return stripped.split('?>', 1)[1].strip()
-    return stripped.strip()
+def _strip_xml_decl(text):
+    lines = text.splitlines(keepends=True)
+    if lines and lines[0].lstrip().startswith('<?xml '):
+        return ''.join(lines[1:])
+    return text
 
 
-def buildPointerZip(sourceDir, addonId, version, outDir):
-    """Zippt ein kleines Zeiger-Addon (nur addon.xml + Bilder)."""
-    os.makedirs(outDir, exist_ok=True)
-    target = os.path.join(outDir, '%s-%s.zip' % (addonId, version))
-    with zipfile.ZipFile(target, 'w', zipfile.ZIP_DEFLATED) as archive:
-        for fileName in sorted(os.listdir(sourceDir)):
-            absPath = os.path.join(sourceDir, fileName)
-            if os.path.isfile(absPath):
-                archive.write(absPath, '%s/%s' % (addonId, fileName))
-    return target
+def bump_version(version, part):
+    major, minor, patch = (int(x) for x in version.split('.')[:3])
+    if part == 'major':
+        major, minor, patch = major + 1, 0, 0
+    elif part == 'minor':
+        minor, patch = minor + 1, 0
+    else:
+        patch += 1
+    return '%d.%d.%d' % (major, minor, patch)
 
 
-def copyAddonAssets(sourceDir, targetDir):
-    os.makedirs(targetDir, exist_ok=True)
-    for fileName in sorted(os.listdir(sourceDir)):
-        srcPath = os.path.join(sourceDir, fileName)
-        if os.path.isfile(srcPath):
-            shutil.copy2(srcPath, os.path.join(targetDir, fileName))
+def apply_bump(old, new):
+    """Version in addon.xml, im Shell-Guard und im Changelog nachziehen."""
+    addon_xml = os.path.join(PROJECT_DIR, 'addon.xml')
+    text = open(addon_xml, encoding='utf-8').read()
+    text = text.replace('version="%s"' % old, 'version="%s"' % new, 1)
+    open(addon_xml, 'w', encoding='utf-8').write(text)
+
+    # Shell-Build pinnt die Version als Sicherheitsnetz - mitziehen.
+    shell = os.path.join(PROJECT_DIR, 'tools', 'build-gitlab-pages.sh')
+    if os.path.exists(shell):
+        s = open(shell, encoding='utf-8').read().replace(old, new)
+        open(shell, 'w', encoding='utf-8').write(s)
+
+    changelog = os.path.join(PROJECT_DIR, 'changelog.txt')
+    if os.path.exists(changelog):
+        prev = open(changelog, encoding='utf-8').read()
+        open(changelog, 'w', encoding='utf-8').write('[B]%s[/B]\n- Build\n\n%s' % (new, prev))
+    print('Version %s -> %s' % (old, new))
 
 
-def mirrorResolveUrl(outZipsDir):
-    """Spiegelt die fest verdrahtete GPL-2.0-ResolveURL-Version in den Katalog.
-
-    Das Repository verweist damit nicht auf einen fluechtigen GitHub-Zipball:
-    Kodi bekommt ein normales, versionsgeprueftes Add-on-Paket. Die Pruefung
-    verhindert, dass eine geaenderte Upstream-Antwort unter demselben Pfad in
-    unser Repository gelangt.
-    """
-    targetDir = os.path.join(outZipsDir, RESOLVEURL_ID)
-    os.makedirs(targetDir, exist_ok=True)
-    targetZip = os.path.join(targetDir, '%s-%s.zip' %
-                             (RESOLVEURL_ID, RESOLVEURL_VERSION))
-
-    with urlopen(RESOLVEURL_ZIP_URL, timeout=30) as response:
-        archiveBytes = response.read()
-    with open(targetZip, 'wb') as fh:
-        fh.write(archiveBytes)
-
-    with zipfile.ZipFile(targetZip, 'r') as archive:
-        addonPath = '%s/addon.xml' % RESOLVEURL_ID
-        if addonPath not in archive.namelist():
-            raise RuntimeError('ResolveURL-Paket enthaelt kein %s' % addonPath)
-        root = ET.fromstring(archive.read(addonPath))
-        if root.get('id') != RESOLVEURL_ID or root.get('version') != RESOLVEURL_VERSION:
-            raise RuntimeError('ResolveURL-Paket stimmt nicht mit %s %s ueberein' %
-                               (RESOLVEURL_ID, RESOLVEURL_VERSION))
-
-        for filename in ('addon.xml', 'changelog.txt', 'icon.png', 'fanart.jpg'):
-            member = '%s/%s' % (RESOLVEURL_ID, filename)
-            if member in archive.namelist():
-                with open(os.path.join(targetDir, filename), 'wb') as fh:
-                    fh.write(archive.read(member))
-
-    # GPL-2.0-Hinweis fuer die mitgelieferte Drittanbieter-Komponente.
-    with urlopen(RESOLVEURL_LICENSE_URL, timeout=30) as response:
-        licenseText = response.read()
-    with open(os.path.join(targetDir, 'LICENSE.GPL-2.0.txt'), 'wb') as fh:
-        fh.write(licenseText)
-    return os.path.join(targetDir, 'addon.xml')
+def _zip_dir(src_root, arcname_root, zip_path):
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for base, _dirs, files in os.walk(src_root):
+            if '__pycache__' in base:
+                continue
+            for name in files:
+                if name.endswith(('.pyc', '.pyo')):
+                    continue
+                full = os.path.join(base, name)
+                rel = os.path.relpath(full, src_root)
+                zf.write(full, os.path.join(arcname_root, rel))
 
 
-def buildAddonsXml(addonXmlPaths, outDir):
-    blocks = [stripXmlDeclaration(open(p, 'r', encoding='utf-8').read()) for p in addonXmlPaths]
-    content = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n%s\n</addons>\n' % (
-        '\n'.join(blocks))
-    addonsXmlPath = os.path.join(outDir, 'addons.xml')
-    with open(addonsXmlPath, 'w', encoding='utf-8', newline='\n') as fh:
-        fh.write(content)
-    digest = hashlib.md5(content.encode('utf-8')).hexdigest()
-    with open(os.path.join(outDir, 'addons.xml.md5'), 'w', encoding='utf-8', newline='') as fh:
-        fh.write(digest)
-    return addonsXmlPath
+def build(out_dir, pages_url=None, force=False):
+    addon_xml = os.path.join(PROJECT_DIR, 'addon.xml')
+    addon_id = _addon_field(addon_xml, 'id')
+    version = _addon_field(addon_xml, 'version')
+    print('Baue %s %s -> %s' % (addon_id, version, out_dir))
 
+    if os.path.exists(out_dir):
+        if not force:
+            sys.exit('Ausgabeverzeichnis existiert: %s (--force zum Ueberschreiben)' % out_dir)
+        shutil.rmtree(out_dir)
+    zips_dir = os.path.join(out_dir, 'zips', addon_id)
+    os.makedirs(zips_dir)
 
-def buildIndex(repoVersion, outDir):
-    """Erzeugt eine Kodi-lesbare Liste fuer die Repository-ZIP."""
-    content = '''<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GerXStream Kodi-Repository</title>
-</head>
-<body>
-  <h1>Index of /gerxstream/repo/</h1>
-  <a href="repository.gerxstream-%s.zip">repository.gerxstream-%s.zip</a><br>
-</body>
-</html>
-''' % (repoVersion, repoVersion)
-    with open(os.path.join(outDir, 'index.html'), 'w', encoding='utf-8', newline='\n') as fh:
-        fh.write(content)
+    with tempfile.TemporaryDirectory() as tmp:
+        payload = os.path.join(tmp, addon_id)
+        os.makedirs(payload)
+        for entry in PLUGIN_PAYLOAD:
+            src = os.path.join(PROJECT_DIR, entry)
+            if not os.path.exists(src):
+                sys.exit('Fehlende Laufzeitdatei: %s' % entry)
+            dst = os.path.join(payload, entry)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+            else:
+                shutil.copy2(src, dst)
+        _zip_dir(payload, addon_id, os.path.join(zips_dir, '%s-%s.zip' % (addon_id, version)))
+
+    # Sidecar-Metadaten + Assets (vor der Installation lesbar).
+    shutil.copy2(addon_xml, os.path.join(zips_dir, 'addon.xml'))
+    for extra in ('changelog.txt',):
+        p = os.path.join(PROJECT_DIR, extra)
+        if os.path.exists(p):
+            shutil.copy2(p, os.path.join(zips_dir, extra))
+    res_out = os.path.join(zips_dir, 'resources')
+    os.makedirs(res_out, exist_ok=True)
+    for asset in ASSETS:
+        a = os.path.join(PROJECT_DIR, 'resources', asset)
+        if os.path.exists(a):
+            shutil.copy2(a, os.path.join(res_out, asset))
+
+    # addons.xml zusammensetzen (Format identisch zum Shell-Build).
+    parts = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n']
+    resolver_xml = os.path.join(PROJECT_DIR, 'public', 'zips', RESOLVER_ID, 'addon.xml')
+    if os.path.exists(resolver_xml):
+        parts.append(_strip_xml_decl(open(resolver_xml, encoding='utf-8').read()))
+        if not parts[-1].endswith('\n'):
+            parts.append('\n')
+    parts.append(_strip_xml_decl(open(addon_xml, encoding='utf-8').read()))
+    if not parts[-1].endswith('\n'):
+        parts.append('\n')
+    parts.append('</addons>\n')
+    addons_xml = ''.join(parts)
+    open(os.path.join(out_dir, 'addons.xml'), 'w', encoding='utf-8').write(addons_xml)
+    md5 = hashlib.md5(addons_xml.encode('utf-8')).hexdigest()
+    with open(os.path.join(out_dir, 'addons.xml.md5'), 'w', encoding='utf-8') as fh:
+        fh.write(md5)  # ohne abschliessenden Zeilenumbruch (wie der Shell-Build)
+
+    # Optionaler Repository-Pointer, wenn eine Pages-URL angegeben ist.
+    tmpl = os.path.join(PROJECT_DIR, REPO_ID, 'addon.xml.in')
+    if pages_url and os.path.exists(tmpl):
+        rurl = pages_url.rstrip('/')
+        with tempfile.TemporaryDirectory() as tmp:
+            rp = os.path.join(tmp, REPO_ID)
+            os.makedirs(rp)
+            content = open(tmpl, encoding='utf-8').read().replace('@PAGES_URL@', rurl)
+            open(os.path.join(rp, 'addon.xml'), 'w', encoding='utf-8').write(content)
+            for asset in ('icon.png', 'fanart.jpg'):
+                a = os.path.join(PROJECT_DIR, 'resources', asset)
+                if os.path.exists(a):
+                    shutil.copy2(a, os.path.join(rp, asset))
+            repo_ver = _addon_field(os.path.join(rp, 'addon.xml'), 'version')
+            _zip_dir(rp, REPO_ID, os.path.join(out_dir, '%s-%s.zip' % (REPO_ID, repo_ver)))
+        print('Repository-Pointer gebaut (Pages-URL: %s)' % rurl)
+
+    print('Fertig. addons.xml.md5 = %s' % md5)
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='Baut den Hosting-Repo-Ordner fuer gerxstream/repo.')
-    parser.add_argument('--out-dir', default=os.path.join(PROJECT_ROOT, 'dist', 'gerxstream-repo'),
-                        help='Zielverzeichnis (Vorgabe: dist/gerxstream-repo)')
-    args = parser.parse_args(argv)
+    ap = argparse.ArgumentParser(description='GerXStream Repository-Build')
+    ap.add_argument('--out', default=os.path.join(PROJECT_DIR, 'dist'))
+    ap.add_argument('--bump', choices=('patch', 'minor', 'major'))
+    ap.add_argument('--pages-url', default=os.environ.get('PAGES_URL'))
+    ap.add_argument('--force', action='store_true')
+    args = ap.parse_args(argv)
 
-    outDir = args.out_dir
-    if os.path.isdir(outDir):
-        shutil.rmtree(outDir)
-    os.makedirs(outDir)
-    zipsDir = os.path.join(outDir, 'zips')
-
-    # 1. Plugin-Zip (wie tools/build_release.py, aber direkt in zips/ abgelegt)
-    pluginId, pluginVersion = build_release.readAddonMetadata(PROJECT_ROOT)
-    members, _fromGit = build_release.collectFiles(PROJECT_ROOT)
-    pluginZipDir = os.path.join(zipsDir, pluginId)
-    pluginZipPath = build_release.buildZip(PROJECT_ROOT, pluginZipDir, pluginId, pluginVersion, members)
-    build_release.verifyZip(pluginZipPath, pluginId, members)
-    for assetName in ('addon.xml', 'changelog.txt'):
-        shutil.copy2(os.path.join(PROJECT_ROOT, assetName), os.path.join(pluginZipDir, assetName))
-    for assetName in ('icon.png', 'fanart.jpg', 'banner.png', 'clearlogo.png'):
-        assetPath = os.path.join(PROJECT_ROOT, 'resources', assetName)
-        if os.path.isfile(assetPath):
-            shutil.copy2(assetPath, os.path.join(pluginZipDir, assetName))
-
-    # 2. Zeiger-Addons: repository.gerxstream + repository.resolveurl
-    addonXmlPaths = [os.path.join(PROJECT_ROOT, 'addon.xml')]
-    for repoId in REPO_ADDONS:
-        sourceDir = os.path.join(PROJECT_ROOT, repoId)
-        _id, version = readAddonXml(os.path.join(sourceDir, 'addon.xml'))
-        pointerZipDir = os.path.join(zipsDir, repoId)
-        buildPointerZip(sourceDir, repoId, version, pointerZipDir)
-        copyAddonAssets(sourceDir, pointerZipDir)
-        if repoId == 'repository.gerxstream':
-            buildIndex(version, pointerZipDir)
-        addonXmlPaths.append(os.path.join(sourceDir, 'addon.xml'))
-
-    # 3. ResolveURL direkt in diesem Katalog, damit die zwingende Abhaengigkeit
-    # beim Installieren von GerXStream verfuegbar ist.
-    addonXmlPaths.append(mirrorResolveUrl(zipsDir))
-
-    # repository.gerxstream steht zusaetzlich installierbar an der Wurzel,
-    # so wie Kodi-Repos das ueblicherweise anbieten (siehe K.U.S-Referenz).
-    gerxstreamRepoDir = os.path.join(PROJECT_ROOT, 'repository.gerxstream')
-    _id, repoVersion = readAddonXml(os.path.join(gerxstreamRepoDir, 'addon.xml'))
-    buildPointerZip(gerxstreamRepoDir, 'repository.gerxstream', repoVersion, outDir)
-    # Die Medienquelle zeigt direkt auf repo/. Darum liegen die Dateien des
-    # Repository-Addons zusaetzlich dort - nicht nur unter zips/.
-    copyAddonAssets(gerxstreamRepoDir, outDir)
-    copyAddonAssets(gerxstreamRepoDir, os.path.join(outDir, 'repository.gerxstream'))
-    buildIndex(repoVersion, outDir)
-
-    # 4. addons.xml + addons.xml.md5 ueber alle Addons
-    buildAddonsXml(addonXmlPaths, outDir)
-
-    print('Hosting-Ordner: %s' % outDir)
-    print('Enthaelt: addons.xml, addons.xml.md5, repository.gerxstream(-%s.zip), '
-            'zips/plugin.video.gerxstream, zips/repository.gerxstream, '
-            'zips/repository.resolveurl, zips/script.module.resolveurl' % repoVersion)
-    print('Naechster Schritt: Inhalt in repo/ auf Branch main von '
-          'https://github.com/flowinthefluid/gerxstream committen und pushen.')
-    return 0
+    if args.bump:
+        old = _addon_field(os.path.join(PROJECT_DIR, 'addon.xml'), 'version')
+        apply_bump(old, bump_version(old, args.bump))
+    build(args.out, pages_url=args.pages_url, force=args.force)
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    main()

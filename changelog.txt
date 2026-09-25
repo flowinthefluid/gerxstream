@@ -5,11 +5,33 @@
 - Webcam-Katalog nach Kategorien, mit Betreiberquelle und Pruefdatum.
 - Webcam-Eintraege sind von der Providerlogik in einen versionierten Katalog ausgelagert.
 
+[B]Version: 1.0.22[/B]
+
+24.09.2026
+
+- Epic-Favorites vor der globalen Suche eingefuegt
+- Eigene, verschachtelte Favoritenordner direkt per Kontextmenue anlegbar
+- Eintraege koennen beim Hinzufuegen in einen Zielordner gelegt sowie spaeter verschoben oder entfernt werden
+- Anzeigename von Epic-Favorites ist in den Einstellungen konfigurierbar
+- Staffeln werden optional als echte Kodi-Wiedergabeliste gestartet
+- Kodi "Naechster Titel" wechselt waehrend der Wiedergabe direkt zur folgenden Episode
+- Der Wechsel erfolgt ohne Unterbrechung; manuelles Stoppen beendet die Wiedergabe
+- Ex-/Import fuer Gesamtsicherungen sowie einzelne Einstellungen, Konten und Epic-Favorites ergaenzt
+
+[B]Version: 1.0.21[/B]
+
+23.09.2026
+
+- Wiedergabe-Historie mit Schalter, Begrenzung und Zuruecksetzen ergaenzt
+- Dokuquellen getrennt; YouTube-Doku-Kanaele nur unter Dokus
+- Lieblingshoster unter Alle Quellen oben oder unten positionierbar
+- Anime-Stream, KinoKing sowie Fehlerbehandlung fuer JSON- und Timeout-Quellen verbessert
+
 [B]Version: 1.0.20[/B]
 
 21.09.2026
 
-- Kodi-Repository auf die kurze Adresse flowinthefluid.github.io/gerxstream/repo umgestellt
+- Kodi-Repository auf GitLab Pages umgestellt
 
 [B]Version: 1.0.19[/B]
 

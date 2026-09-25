@@ -22,7 +22,7 @@ apiJson = None
 
 # Domain Abfrage ###
 
-SITE_NAME = 'API Suchmaschine'
+SITE_NAME = 'Lieblingshoster'
 SITE_ICON = 'api.png'
 SITE_IDENTIFIER = 'api_all'
 
@@ -450,7 +450,7 @@ def showHosters():
                     isMatch, aName = cParser.parse(stream['stream'], '//([^/]+)/')
                     if isMatch:
 #                        sName = cParser.urlparse(sUrl) ### angezeigter hostername api
-                        
+
                         sName = aName[0][:aName[0].rindex('.')]
                         if cConfig().isBlockedHoster(sName)[0]: continue  # Hoster aus settings.xml oder deaktivierten Resolver ausschließen
                         sHoster = sHoster + ' ' + sName
@@ -497,17 +497,17 @@ def showSearch():
 def _search(oGui, sSearchText):
     SSsearch(oGui, sSearchText)
 
-    
+
 def SSsearch(sGui=False, sSearchText=False):
     global apiJson
     oGui = sGui if sGui else cGui()
     params = ParameterHandler()
     sLanguage = cConfig().getSetting('prefLanguage')
-    
+
     # Falls die Daten noch nicht geladen wurden oder neu geladen werden sollen
     if apiJson is None or 'movies' not in apiJson:
         loadMoviesData()
-        
+
     if 'movies' not in apiJson or not isinstance(apiJson.get('movies'), list) or len(apiJson['movies']) == 0:
         oGui.showInfo()
         return
@@ -583,7 +583,7 @@ def loadMoviesData():
         sLang = '2'
     if sLanguage == '2':  # prefLang Englisch
         sLang = '3'
-    
+
     try:
         oRequest = cRequestHandler(URL_SEARCH % (sLang, 'new', '1'), caching=True)
         oRequest.addHeaderEntry('Referer', REFERER)
@@ -595,8 +595,7 @@ def loadMoviesData():
     except Exception:
         logger.error('Fehler beim Laden der API-Daten')
         apiJson = {'movies': []}
-        
+
 
 # Daten beim Import des Moduls laden
 loadMoviesData()
-

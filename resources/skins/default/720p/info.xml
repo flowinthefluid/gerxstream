@@ -102,7 +102,7 @@
 							<texture background="true" diffuse="poster-big.png" fallback="no-poster2.png">$INFO[Container(50).ListItem.Icon]</texture>
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<visible>Control.HasFocus(50) + !Container(50).OnNext + !Container(50).OnPrevious</visible>
-							<animation center="auto" easing="inout" effect="fade" end="100" start="0" time="400" tween="sine">Visible</animation>	
+							<animation center="auto" easing="inout" effect="fade" end="100" start="0" time="400" tween="sine">Visible</animation>
 						</control>
 						<control type="image">
 							<bordersize>15</bordersize>

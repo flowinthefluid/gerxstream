@@ -17,6 +17,7 @@ from resources.lib.tools import logger, cParser
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
+from resources.lib.jsonutils import loadResponse
 
 PATH = cConfig().getAddonInfo('path')
 ART = os.path.join(PATH, 'resources', 'art')
@@ -76,10 +77,12 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
     oRequest.removeNewLines(False)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
-    jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
-    if not jSearch: return  # Wenn Suche erfolglos - Abbruch
+    jSearch = loadResponse(oRequest.request(), SITE_NAME, entryUrl)
+    if not isinstance(jSearch, dict) or not isinstance(jSearch.get('data'), list):
+        if not sGui: oGui.showInfo()
+        return
     aResults = jSearch['data']
-    sNextUrl = jSearch['next'] # Für die nächste Seite
+    sNextUrl = jSearch.get('next', '') # Für die nächste Seite
     total = len(aResults)
     if len(aResults) == 0:
         if not sGui: oGui.showInfo()
@@ -92,9 +95,9 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         sName = str(i['name'])  # Name des Films / Serie
         isTvshow = True if 'series' in i['id'] else False
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showSeasons' if isTvshow else 'showHosters')
-        if 'releaseDate' in i and len(str(i['releaseDate'].split('-')[0].strip())) != '': 
+        if 'releaseDate' in i and len(str(i['releaseDate'].split('-')[0].strip())) != '':
             oGuiElement.setYear(str(i['releaseDate'].split('-')[0].strip()))
-        if 'description' in i and i['description'] != '': 
+        if 'description' in i and i['description'] != '':
             oGuiElement.setDescription(str(i['description']))  # Suche nach Desc, wenn es nicht leer dann setze GuiElement
         if 'poster' in i and i['poster'] != '':
             oGuiElement.setThumbnail(str(i['poster'])) # Suche nach Poster, wenn es nicht leer dann setze GuiElement
@@ -110,7 +113,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         params.setParam('sId', sId)
         params.setParam('sName', sName)
         oGui.addFolder(oGuiElement, params, isTvshow, total)
-    if not sGui and not sSearchText:
+    if not sGui and not sSearchText and sNextUrl:
         sNextUrl = URL_MAIN + 'api/list?id=' + sNextUrl
         params.setParam('sUrl', sNextUrl)
         oGui.addNextPage(SITE_IDENTIFIER, 'showEntries', params)
@@ -131,22 +134,24 @@ def showSeasons(entryUrl=False, sGui=False):
     oRequest.removeNewLines(False)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 6  # 6 Stunden
-    jSearch = json.loads(oRequest.request()) # Lade JSON aus dem Request der URL
-    if not jSearch: return # Wenn Suche erfolglos - Abbruch
+    jSearch = loadResponse(oRequest.request(), SITE_NAME, entryUrl)
+    if not isinstance(jSearch, dict) or not isinstance(jSearch.get('seasons'), dict):
+        if not sGui: oGui.showInfo()
+        return
     # Abfrage Poster
-    if 'poster' in jSearch: 
+    if 'poster' in jSearch:
         sThumbnail = str(jSearch['poster'])
-    else: 
+    else:
         sThumbnail = os.path.join(ART, 'no_cover.png')
     # Abfrage Beschreibung
-    if 'description' in jSearch: 
+    if 'description' in jSearch:
         sDesc = str(jSearch['description'])
-    else: 
+    else:
         sDesc = ' '
     #Abfrage Fanart
-    if 'backdrop' in jSearch: 
+    if 'backdrop' in jSearch:
         sFanart = str(jSearch['backdrop'])
-    else: 
+    else:
         sFanart = 'default.png'
     aResults = sorted(jSearch['seasons'], key=lambda reverse:True) # Sortiert die Staffeln
     total = len(aResults)
@@ -190,8 +195,10 @@ def showEpisodes(sGui=False):
     oRequest.removeNewLines(False)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 4  # 4 Stunden
-    jSearch = json.loads(oRequest.request()) # Lade JSON aus dem Request der URL
-    if not jSearch: return  # Wenn Suche erfolglos - Abbruch
+    jSearch = loadResponse(oRequest.request(), SITE_NAME, entryUrl)
+    if not isinstance(jSearch, dict) or sSeasonNr not in jSearch.get('seasons', {}):
+        if not sGui: oGui.showInfo()
+        return
     aResults = jSearch['seasons'][sSeasonNr] # Ausgabe der Suchresultate von jSearch + Season Nummer
     total = len(aResults) # Anzahl aller Ergebnisse
     if len(aResults) == 0:
@@ -224,8 +231,8 @@ def showHosters(sGui=False):
     oRequest.addHeaderEntry('Referer', URL_MAIN)
     oRequest.addHeaderEntry('Origin', 'https://' + DOMAIN)
     oRequest.removeNewLines(False)
-    jSearch = json.loads(oRequest.request())  # Lade JSON aus dem Request der URL
-    if not jSearch: return  # Wenn Suche erfolglos - Abbruch
+    jSearch = loadResponse(oRequest.request(), SITE_NAME, sUrl)
+    if not isinstance(jSearch, list): return
     sLanguage = cConfig().getSetting('prefLanguage')
     aResults = jSearch
     if len(aResults) == 0:

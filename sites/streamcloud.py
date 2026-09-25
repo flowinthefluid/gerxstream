@@ -72,7 +72,7 @@ def showGenre(entryUrl=False):
     oRequest = cRequestHandler(entryUrl)
     if cConfig().getSettingBool('global_search_' + SITE_IDENTIFIER, False):
         oRequest.cacheTime = 60 * 60 * 48  # 48 Stunden
-    sHtmlContent = oRequest.request()    
+    sHtmlContent = oRequest.request()
     pattern = '>Genres<.*?</div></div>'
     isMatch, sHtmlContainer = cParser.parseSingleResult(sHtmlContent, pattern)
     if isMatch:
@@ -165,7 +165,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False, sSearchPageText =
         params.setParam('sThumbnail', sThumbnail)
         params.setParam('sYear', sYear)
         oGui.addFolder(oGuiElement, params, isTvshow, total)
-        
+
     if not sGui and not sSearchText and not sSearchPageText:
         isMatchNextPage, sNextUrl = cParser.parseSingleResult(sHtmlContent, 'href="([^"]+)">Next')
         # Start Page Function
@@ -317,4 +317,3 @@ def showSearchPage(): # Suche für die Page Funktion
     sNextSearchPage = sNextPage.split('page/')[0].strip() + 'page/' + sSearchPageText + '/'
     showEntries(sNextSearchPage)
     cGui().setEndOfDirectory()
-

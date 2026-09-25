@@ -2,8 +2,9 @@
 # Python 3
 
 import sys
+import uuid
 import xbmc
-import xbmcgui 
+import xbmcgui
 import xbmcplugin
 
 from resources.lib import utils
@@ -15,6 +16,11 @@ from urllib.parse import quote_plus, urlencode
 
 
 class cGui:
+    # Einige aeltere Quellen erzeugen fuer jeden Listeneintrag ein neues
+    # cGui-Objekt. Die Queue muss deshalb pro Kodi-Verzeichnis geteilt und
+    # nicht nur an einer einzelnen Instanz haengen.
+    _episodeQueues = {}
+
     # This class "abstracts" a list of xbmc listitems.
     def __init__(self):
         try:
@@ -35,6 +41,8 @@ class cGui:
         self._collectMode = False
         self._isViewSet = False
         self.searchResults = []
+        self._episodeQueueKey = '%s|%s|%s' % (self.pluginPath, self.pluginHandle,
+                                               sys.argv[2] if len(sys.argv) > 2 else '')
 
     def addFolder(self, oGuiElement, params='', bIsFolder=True, iTotal=0, isHoster=False):
         # add GuiElement to Gui, adds listitem to a list
@@ -56,7 +64,19 @@ class cGui:
                 oGuiElement.getMeta(oGuiElement._mediaType, tmdbID, mode=self.metaMode)
             else:
                 oGuiElement.getMeta(oGuiElement._mediaType, mode=self.metaMode)
+        # Jede normale Episodenliste erhaelt eine kurzlebige Kennung. Die
+        # Liste selbst wird erst bei setEndOfDirectory gespeichert, wenn alle
+        # Folgeneintraege bekannt sind. Hoster- und Stream-URLs bleiben dabei
+        # ausschliesslich im normalen Wiedergabefluss, nie in der Queue.
+        trackEpisode = oGuiElement._mediaType == 'episode' and not bIsFolder
+        if trackEpisode:
+            queue = self._episodeQueues.setdefault(
+                self._episodeQueueKey, {'id': uuid.uuid4().hex, 'targets': []})
+            params.setParam('episodeQueue', queue['id'])
+            params.setParam('episodeIndex', len(queue['targets']))
         sUrl = self.__createItemUrl(oGuiElement, bIsFolder, params)
+        if trackEpisode:
+            self._episodeQueues[self._episodeQueueKey]['targets'].append(sUrl)
 #kasi
         try:
             if params.exist('trumb'): oGuiElement.setIcon(params.getValue('trumb'))
@@ -94,7 +114,7 @@ class cGui:
         if oGuiElement._sQuality != '':
             infoString += ' [%s]' % oGuiElement._sQuality
         if oGuiElement._sInfo != '':
-            infoString += ' [%s]' % oGuiElement._sInfo    
+            infoString += ' [%s]' % oGuiElement._sInfo
         # if self.globalSearch:
         #     infoString += ' %s' % oGuiElement.getSiteName()
         if infoString:
@@ -121,9 +141,9 @@ class cGui:
     def setInfoTagVideo(self, oGuiElement, listitem):
         itemValues = oGuiElement.getItemValues()
         vtag = listitem.getVideoInfoTag()
-        
+
         vtag.setMediaType(oGuiElement.getType())
-        
+
         # itemValues['title'] enthaelt bereits Label + Infostring (siehe createListItem)
         if 'title' in itemValues:
             try:
@@ -235,7 +255,7 @@ class cGui:
         if 'premiered' in itemValues:
             try:
                 vtag.setPremiered(itemValues['premiered'])
-            except: pass    
+            except: pass
     ### ÄNDERUNG ENDE ###
 
 
@@ -249,6 +269,25 @@ class cGui:
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s)" % (sTest,),)]
         itemValues = oGuiElement.getItemValues()
         contextitem = cContextElement()
+        # Eigene, verschachtelte GerXStream-Favoriten. Der originale
+        # Plugin-Aufruf wird gespeichert, nicht die (kurzlebige) Stream-URL;
+        # deshalb funktionieren Favoriten auch nach einem Hosterwechsel.
+        # Eintraege innerhalb von Epic-Favorites selbst markieren sich, damit
+        # dort nicht noch einmal "Hinzufuegen" erscheint.
+        if not itemValues.get('epicFavoritesManaged'):
+            from resources.lib import epicfavorites
+            favoriteParams = {
+                'target': sUrl,
+                'title': oGuiElement.getTitle(),
+                'isFolder': str(bool(bIsFolder)).lower(),
+                'thumbnail': oGuiElement.getThumbnail(),
+                'fanart': oGuiElement.getFanart(),
+                'description': oGuiElement.getDescription(),
+                'mediaType': oGuiElement._mediaType,
+            }
+            favoriteTitle = cConfig().getLocalizedString(30918) % epicfavorites.displayName()
+            contextmenus += [(favoriteTitle, "RunPlugin(%s?function=addEpicFavorite&%s)" %
+                             (self.pluginPath, urlencode(favoriteParams)))]
         if oGuiElement._mediaType == 'movie' or oGuiElement._mediaType == 'tvshow':
             if cConfig().getSettingBool('gerxstream.trailer', False):
                 if not xbmc.getCondVisibility('System.HasAddon(%s)' % 'script.module.xstream.trailer'):  # Schauen ob Addon installiert
@@ -312,6 +351,10 @@ class cGui:
 
     def setEndOfDirectory(self, success=True):
         # mark the listing as completed, this is mandatory
+        episodeQueue = self._episodeQueues.pop(self._episodeQueueKey, None)
+        if episodeQueue and len(episodeQueue['targets']) > 1:
+            from resources.lib import episodequeue
+            episodequeue.store(episodeQueue['id'], episodeQueue['targets'])
         if not self._isViewSet:
             self.setView('files')
         xbmcplugin.setPluginCategory(self.pluginHandle, "")

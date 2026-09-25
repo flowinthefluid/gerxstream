@@ -14,13 +14,13 @@ class cTMDB:
     URL = 'https://api.themoviedb.org/3/'
     URL_TRAILER = 'plugin://plugin.video.youtube/play/?video_id=%s'
     TMDB_LANGUAGE = cConfig().getSetting('tmdb_lang')
-    
+
     def __init__(self, api_key='', lang=TMDB_LANGUAGE):
         self.api_key = '86dd18b04874d9c94afadde7993d94e3'
         self.lang = lang
         self.poster = 'https://image.tmdb.org/t/p/%s' % cConfig().getSetting('poster_tmdb')
         self.fanart = 'https://image.tmdb.org/t/p/%s' % cConfig().getSetting('backdrop_tmdb')
-        
+
 
     def search_movie_name(self, name, year='', page=1, advanced='false'):
         name = re.sub(' +', ' ', name)

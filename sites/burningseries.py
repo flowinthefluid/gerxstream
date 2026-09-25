@@ -470,4 +470,3 @@ def showSearch():
 
 def _search(oGui, sSearchText):
     showAllSeries(URL_SERIES, oGui, sSearchText)
-

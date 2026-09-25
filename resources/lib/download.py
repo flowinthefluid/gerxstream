@@ -94,7 +94,7 @@ class cDownload:
                 if not data or self.__processIsCanceled == True:
                     break
                 f.write(data)
-                self.__stateCallBackFunction(iCount, chunk, iTotalSize)              
+                self.__stateCallBackFunction(iCount, chunk, iTotalSize)
 
         except Exception:
             log(cConfig().getLocalizedString(30166) + '-> [download]: download failed', LOGNOTICE)

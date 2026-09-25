@@ -31,7 +31,6 @@ CATEGORY_ORDER = (
     ('animes', 30853),
     ('dokus', 30852),
     ('kinder', 30854),
-    ('live', 30892),
 )
 
 # Oeffentliche Mediatheken/Archive bleiben als Kennung verfuegbar.
@@ -129,7 +128,17 @@ class cPluginHandler:
                 # Fuer "Alle" bewusst unsortiert: Reihenfolge wie in den
                 # aktivierten Plugins, damit der Ordner wie gewuenscht eine
                 # ungefilterte Sammelansicht bleibt.
-                plugins = [plugin for plugin in available]
+                plugins = [plugin for plugin in available
+                           if plugin.get('include_in_all', True)]
+                # Der Lieblingshoster ist eine gezielte Suche. Seine Position
+                # im Sammelordner ist deshalb bewusst ein Nutzersetting und
+                # nicht von der zufaelligen Dateisystem-Reihenfolge abhaengig.
+                apiPlugins = [plugin for plugin in plugins if plugin['id'] == 'api_all']
+                otherPlugins = [plugin for plugin in plugins if plugin['id'] != 'api_all']
+                if cConfig().getSetting('apiAllPosition', 'top') == 'bottom':
+                    plugins = otherPlugins + apiPlugins
+                else:
+                    plugins = apiPlugins + otherPlugins
                 categorizedIds.update(plugin['id'] for plugin in plugins)
                 if plugins:
                     result.append({
@@ -176,7 +185,9 @@ class cPluginHandler:
         # PluginID = Siteplugin Name
         for pluginID in pluginDB:
             plugin = pluginDB[pluginID] # Aus PluginDB lese PluginID
-            pluginSettingsName = 'plugin_%s' % pluginID # Name des Siteplugins
+            pluginSettingsName = plugin.get('enable_setting', 'plugin_%s' % pluginID)
+            if plugin.get('hidden', False):
+                continue
             plugin['id'] = pluginID
             # Die optionalen "sichtbar"-Schalter steuern sowohl Hauptmenue
             # als auch globale Suche. Aeltere Quellen ohne eigenen Schalter
@@ -255,6 +266,18 @@ class cPluginHandler:
             pluginData['categories'] = tuple(plugin.CONTENT_CATEGORIES)
         except Exception:
             pluginData['categories'] = ()
+        try:
+            pluginData['enable_setting'] = plugin.ENABLE_SETTING
+        except Exception:
+            pass
+        try:
+            pluginData['include_in_all'] = bool(plugin.INCLUDE_IN_ALL)
+        except Exception:
+            pass
+        try:
+            pluginData['hidden'] = bool(plugin.HIDDEN_SOURCE)
+        except Exception:
+            pass
         return pluginData
 
 
@@ -332,7 +355,7 @@ class cPluginHandler:
         result_string = result_string.replace('false', cConfig().getLocalizedString(30419))
         list_of_PluginData = (result_string) # Ergebnis der Liste
         # Settings Abragen
-        if cConfig().getSettingBool('githubUpdateResolver', False):  # Resolver Update An/Aus
+        if cConfig().getSettingBool('repositoryUpdateResolver', False):  # Resolver Update An/Aus
             UPDATERU = cConfig().getLocalizedString(30415)  # Aktiv
         else:
             UPDATERU = cConfig().getLocalizedString(30416)  # Inaktiv
@@ -410,7 +433,7 @@ class cPluginHandler:
                     cConfig().setSetting('plugin_' + provider + '.domain', '')  # Falls doch dann lösche Settings Eintrag
                     cConfig().setSetting('plugin_' + provider + '_status', '')  # lösche Status Code in den Settings
                     continue
-                
+
                 if not cConfig().getSettingBool('plugin_' + provider, False):  # Wenn SitePlugin deaktiviert
                     cConfig().setSetting('global_search_' + provider, 'false')  # setzte Globale Suche auf aus
                     cConfig().setSetting('plugin_' + provider + '_checkDomain', 'false')  # setzte Domain Check auf aus

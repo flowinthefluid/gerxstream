@@ -174,7 +174,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
             if 'Duration' in item['custom_fields'] and item['custom_fields']['Duration'][0]:
                 oGuiElement.addItemValue('duration', item['custom_fields']['Duration'][0])
             urls = ''
-            if 'Streaming' in item['custom_fields'] and item['custom_fields']['Streaming'][0]:                                  
+            if 'Streaming' in item['custom_fields'] and item['custom_fields']['Streaming'][0]:
                 urls += 'https://pmd.netzkino-seite.netzkino.de/%s.mp4' % item['custom_fields']['Streaming'][0]
             if 'Youtube_Delivery_Id' in item['custom_fields'] and item['custom_fields']['Youtube_Delivery_Id'][0]:
                 urls += '#' + 'plugin://plugin.video.youtube/play/?video_id=%s' % item['custom_fields']['Youtube_Delivery_Id'][0]
@@ -271,4 +271,3 @@ def showSearch():
 
 def _search(oGui, sSearchText):
     showEntries(URL_SEARCH % cParser.quotePlus(sSearchText), oGui, sSearchText)
-

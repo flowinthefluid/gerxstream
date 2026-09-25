@@ -5,7 +5,7 @@
 # 22.12.24 - Heptamer: m3u8 und mpd Files über inputstream adaptive abspielen lassen
 
 import xbmc
-import xbmcgui 
+import xbmcgui
 import xbmcplugin
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.gui.guiElement import cGuiElement
@@ -17,6 +17,7 @@ from resources.lib.tools import logger
 
 class cHosterGui:
     SITE_NAME = 'cHosterGui'
+    EPISODE_PLAYLIST_PROPERTY = 'GerXStream.EpisodePlaylist'
 
     def __init__(self):
         self.maxHoster = cConfig().getSettingInt('maxHoster', 100)
@@ -62,6 +63,74 @@ class cHosterGui:
             data = {'title': fileName, 'season': params.getValue('season'), 'episode': params.getValue('episode'), 'showTitle': params.getValue('TVShowTitle'), 'thumb': params.getValue('thumb'), 'link': link}
             return data
         return False
+
+    @classmethod
+    def _playlistState(cls):
+        """Return the queue id and first index of a native episode playlist."""
+        value = xbmcgui.Window(10000).getProperty(cls.EPISODE_PLAYLIST_PROPERTY)
+        try:
+            queueId, firstIndex = value.split(':', 1)
+            return queueId, int(firstIndex)
+        except (AttributeError, TypeError, ValueError):
+            return '', -1
+
+    @classmethod
+    def _isNativeEpisodePlaylistItem(cls, params):
+        """Whether Kodi is resolving a later item of our active playlist."""
+        queueId, firstIndex = cls._playlistState()
+        try:
+            index = int(params.getValue('episodeIndex'))
+        except (TypeError, ValueError):
+            return False
+        return bool(queueId and queueId == params.getValue('episodeQueue') and index > firstIndex)
+
+    @classmethod
+    def _buildEpisodePlaylist(cls, params, streamUrl, listItem):
+        """Create a real Kodi playlist from the remaining entries of a season.
+
+        Kodi resolves the later ``plugin://`` entries itself. Consequently its
+        regular "next item" remote action works as well as natural automatic
+        advancement; no direct hoster URLs are stored in the episode queue.
+        """
+        if not cConfig().getSettingBool('autoNextEpisodeEnabled', False):
+            return False
+        try:
+            firstIndex = int(params.getValue('episodeIndex'))
+        except (TypeError, ValueError):
+            return False
+        queueId = params.getValue('episodeQueue')
+        from resources.lib import episodequeue
+        targets = episodequeue.getTargets(queueId)
+        if firstIndex < 0 or firstIndex >= len(targets) - 1:
+            return False
+
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
+        playlist.add(streamUrl, listItem)
+        for target in targets[firstIndex + 1:]:
+            queuedItem = xbmcgui.ListItem(path=target)
+            queuedItem.setProperty('IsPlayable', 'true')
+            # Kodi >= 20 otherwise may reuse an old resolver result if the
+            # same episode is played again from this playlist.
+            queuedItem.setProperty('ForceResolvePlugin', 'true')
+            playlist.add(target, queuedItem)
+        if playlist.size() < 2:
+            return False
+        xbmcgui.Window(10000).setProperty(cls.EPISODE_PLAYLIST_PROPERTY,
+                                          '%s:%d' % (queueId, firstIndex))
+        return playlist
+
+    @classmethod
+    def _finishNativeEpisodePlaylist(cls, params):
+        """Forget the marker after Kodi asks the add-on to resolve its last item."""
+        try:
+            index = int(params.getValue('episodeIndex'))
+        except (TypeError, ValueError):
+            return
+        from resources.lib import episodequeue
+        targets = episodequeue.getTargets(params.getValue('episodeQueue'))
+        if targets and index >= len(targets) - 1:
+            xbmcgui.Window(10000).clearProperty(cls.EPISODE_PLAYLIST_PROPERTY)
 
     def play(self, siteResult=False):
         logger.info('-> [hoster]: attempt to play file')
@@ -125,11 +194,41 @@ class cHosterGui:
             except: pass
 
         list_item.setProperty('IsPlayable', 'true')
+        params = ParameterHandler()
+        # The following entries of a real Kodi playlist are invoked by Kodi
+        # only to obtain their resolved stream. They must return immediately;
+        # waiting for their playback would block the playlist transition.
+        if self._isNativeEpisodePlaylistItem(params):
+            if cGui().pluginHandle > 0:
+                xbmcplugin.setResolvedUrl(cGui().pluginHandle, True, list_item)
+            else:
+                xbmc.Player().play(data['link'], list_item)
+            self._finishNativeEpisodePlaylist(params)
+            return True
+
+        episodePlaylist = self._buildEpisodePlaylist(params, data['link'], list_item)
         if cGui().pluginHandle > 0:
+            # The original directory action still needs a resolved item. Kodi
+            # immediately replaces it with the playlist below when enabled.
             xbmcplugin.setResolvedUrl(cGui().pluginHandle, True, list_item)
-        else:
+        if episodePlaylist:
+            xbmc.Player().play(episodePlaylist)
+        elif cGui().pluginHandle <= 0:
             xbmc.Player().play(data['link'], list_item)
-        return cPlayer().startPlayer()
+        player = cPlayer()
+        started = player.startPlayer()
+        if started:
+            # Erst nach erfolgreichem Start erfassen; Links und Hoster werden
+            # bewusst nicht gespeichert, nur die lokal sichtbaren Metadaten.
+            try:
+                from resources.lib import history
+                history.record(data['title'], data.get('thumb', ''),
+                               params.getValue('mediaType') or 'movie',
+                               params.getValue('site'), params.getValue('season'),
+                               params.getValue('episode'), data.get('showTitle', ''))
+            except Exception:
+                logger.error('-> [hoster]: could not store playback history')
+        return started
 
     def addToPlaylist(self, siteResult=False):
         oGui = cGui()
@@ -222,12 +321,12 @@ class cHosterGui:
                 import resolveurl as resolver
             except Exception:
                 import urlresolver as resolver
-                 
+
             # accept hoster which is marked as resolveable by sitePlugin
             if hoster.get('resolveable', False):
                 ranking.append([0, hoster])
                 continue
-             
+
             try:
                 # serienstream VOE hoster = {'link': [sUrl, sName], aus array "[0]" True bzw. False
                 link = hoster['link'][0] if isinstance(hoster['link'], list) else hoster['link']
@@ -273,10 +372,10 @@ class cHosterGui:
                 ranking = sorted(ranking, key=lambda ranking: (ranking[1]["languageCode"],ranking[0]))
             else:
                 ranking = sorted(ranking, key=lambda ranking: ranking[0])
-        
-        
+
+
         hosterQueue = []
-        
+
         for i, hoster in ranking:
             hosterQueue.append(hoster)
         return hosterQueue

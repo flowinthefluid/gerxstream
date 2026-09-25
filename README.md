@@ -25,9 +25,11 @@ Filme, Serien und Streams direkt in die gewohnte Kodi-Oberfläche.
 ## Los geht's
 
 Installationsschritte, Voraussetzungen und Hinweise zur Datenübernahme stehen
-ausführlich in [INSTALL.md](INSTALL.md). Wer noch eine ältere xStream-Installation
-nutzt, kann direkt zu GerXStream wechseln: Einstellungen und Favoriten werden beim
-ersten Start automatisch übernommen, sofern xStream noch installiert ist.
+ausführlich in [INSTALL.md](INSTALL.md). Die veröffentlichte Kodi-Quelle wird über
+GitLab Pages bereitgestellt; die aktuelle Adresse steht im GitLab-Projekt unter
+**Deploy > Pages**. Wer noch eine ältere xStream-Installation nutzt, kann direkt zu
+GerXStream wechseln: Einstellungen und Favoriten werden beim ersten Start automatisch
+übernommen, sofern xStream noch installiert ist.
 
 ## Wie es funktioniert
 
@@ -38,10 +40,51 @@ Umfang und Angebot werden laufend erweitert und gepflegt.
 
 ## Mitentwickeln
 
-GerXStream läuft ausschließlich unter Python 3. Wer eine neue Quelle anbinden
-oder an der Oberfläche mitbauen möchte, findet den technischen Überblick in
-[docs/CODING-PLAN.md](docs/CODING-PLAN.md).
+GerXStream läuft ausschließlich unter Python 3. Quellcode, Tickets und Releases
+liegen im [GitLab-Projekt](https://gitlab.com/gerxstream/gerxstream).
 
 ***
 
 Lizenz: GPL-3.0-only, siehe [license.txt](license.txt).
+
+***
+
+## Livestreams (neu)
+
+Ein eigener, verschiebbarer Hauptmenüpunkt **Livestreams** mit fünf Bereichen:
+
+- **Fernsehen** — Sender nach Ländern und nach Genre; M3U-/XMLTV-Export für den
+  PVR IPTV Simple Client, in-Addon EPG „jetzt/danach".
+- **Sport & E-Sport**, **Social Media** (YouTube/Twitch über deren offizielle
+  Kodi-Addons), **Wetter** (Open-Meteo keyless / optional OpenWeatherMap),
+  **Webcams** (öffentliche, rechtlich belegte Kameras; Länder→Städte + Themen
+  wie Berge, Tiere, Vögel, Strände, Piers, Parks, Verkehr).
+- **Rabbithole** — zufällige Webcam ohne Wiederholung; „Zufällig (250)".
+
+### Konfiguration (Einstellungen)
+
+- **Menü anpassen**: sichtbare Bereiche, Länder-Whitelist/Blacklist, Genres,
+  Rabbithole-Kategorien.
+- **Erwachsene Inhalte (NSFW)**: ein einziger, expliziter Schalter (`showAdult`).
+  NSFW erscheint ausschließlich hierüber — nie implizit über eine Genre-/
+  Kategoriewahl. Fehlt einem Inhalt die Markierung, bleibt er bei ausgeschaltetem
+  Schalter unsichtbar (fail-closed).
+- **EPG**: XMLTV-Quellen (URLs, gzip/xz), Vorschaufenster.
+- **Wetter**: Stadt/Städte, Einheiten, optionaler OpenWeatherMap-Key.
+- **Social Media**: YouTube/Twitch ein/aus, optionale eigene API-Keys, Buttons
+  zu den Addon-Einstellungen (Konto/Login).
+- **Daten & Export**: Aktualisierung, „IPTV-Simple-Einrichtung anzeigen",
+  „Quellen prüfen".
+
+### IPTV Simple + Fehlerbehebung
+
+Der Service schreibt `playlist.m3u` und `guide.xml` nach
+`special://profile/addon_data/plugin.video.gerxstream/livestreams/`; den Pfad
+zeigt der Button „IPTV-Simple-Einrichtung anzeigen". Den IPTV Simple Client auf
+diese lokalen Dateien konfigurieren.
+
+### Rechterahmen
+
+Es werden nur Inhalte mit belegter Rechtelage gezeigt (offizielle Quelle oder
+`rights_evidence_url`); DRM/Login/Geo werden ehrlich markiert und nicht umgangen.
+Kein Auffinden ungesicherter fremder Kameras, keine Grauzonen-Aggregation.

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.23" provider-name="flowinthefluid">
+<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.23" provider-name="gerxstream">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 		<import addon="script.module.requests"/>
 		<import addon="script.module.resolveurl" version="5.1.209"/>
 		<import addon="repository.resolveurl" optional="true"/>
 		<import addon="script.module.inputstreamhelper" version="0.3.3" optional="true"/>
+		<!-- Livestreams: HLS/DASH via inputstream.adaptive, RTSP-Webcams via
+		     inputstream.rtsp. Beide optional - fehlt eines, entfaellt nur die
+		     jeweilige Wiedergabeart, das Addon bleibt lauffaehig. -->
+		<import addon="inputstream.adaptive" optional="true"/>
+		<import addon="inputstream.rtsp" optional="true"/>
 	</requires>
 	<extension point="xbmc.python.pluginsource" library="default.py">
 		<provides>video</provides>
@@ -22,8 +27,8 @@
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
 		<news>1.0.23 - Webcam-Katalog nach Kategorien mit Betreiberquelle und Pruefdatum.</news>
-		<website>https://github.com/flowinthefluid/gerxstream</website>
-		<source>https://github.com/flowinthefluid/gerxstream</source>
+		<website>https://gitlab.com/gerxstream/gerxstream</website>
+		<source>https://gitlab.com/gerxstream/gerxstream</source>
 		<assets>
 			<icon>resources/icon.png</icon>
 			<fanart>resources/fanart.jpg</fanart>
