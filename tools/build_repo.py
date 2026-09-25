@@ -178,6 +178,13 @@ def build(out_dir, pages_url=None, force=False):
     with open(os.path.join(out_dir, 'addons.xml.md5'), 'w', encoding='utf-8') as fh:
         fh.write(md5)  # ohne abschliessenden Zeilenumbruch (wie der Shell-Build)
 
+    # Kodi can cache the installation page as a directory listing containing
+    # only ZIPs. Its file opener then rejects other files in that directory.
+    catalog_dir = os.path.join(out_dir, 'catalog')
+    os.makedirs(catalog_dir)
+    for name in ('addons.xml', 'addons.xml.md5'):
+        shutil.copy2(os.path.join(out_dir, name), os.path.join(catalog_dir, name))
+
     print('Fertig. addons.xml.md5 = %s' % md5)
 
 

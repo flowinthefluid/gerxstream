@@ -16,11 +16,14 @@ def test_gitlab_repository_is_in_catalog_and_datadir(tmp_path):
     catalog = ET.fromstring(catalog_bytes)
     repository = catalog.find("addon[@id='repository.gerxstream']")
     assert repository is not None
-    assert repository.get('version') == '1.0.4'
-    assert repository.find('./extension/dir/info').text == 'https://example.gitlab.io/addons.xml'
+    assert repository.get('version') == '1.0.5'
+    assert repository.find('./extension/dir/info').text == 'https://example.gitlab.io/catalog/addons.xml'
+    assert repository.find('./extension/dir/checksum').text == 'https://example.gitlab.io/catalog/addons.xml.md5'
     assert hashlib.md5(catalog_bytes).hexdigest() == (output / 'addons.xml.md5').read_text()
+    assert (output / 'catalog' / 'addons.xml').read_bytes() == catalog_bytes
+    assert (output / 'catalog' / 'addons.xml.md5').read_text() == (output / 'addons.xml.md5').read_text()
 
-    name = 'repository.gerxstream-1.0.4.zip'
+    name = 'repository.gerxstream-1.0.5.zip'
     install_zip = output / name
     update_zip = output / 'zips' / 'repository.gerxstream' / name
     assert install_zip.read_bytes() == update_zip.read_bytes()
@@ -28,3 +31,4 @@ def test_gitlab_repository_is_in_catalog_and_datadir(tmp_path):
         assert archive.testzip() is None
         manifest = ET.fromstring(archive.read('repository.gerxstream/addon.xml'))
     assert manifest.get('version') == repository.get('version')
+    assert manifest.find('./extension/dir/checksum').text == repository.find('./extension/dir/checksum').text

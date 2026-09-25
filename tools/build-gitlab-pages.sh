@@ -7,7 +7,7 @@ pages_url="${1:?Usage: build-gitlab-pages.sh <GitLab-Pages-URL>}"
 pages_url="${pages_url%/}"
 public_dir="$project_dir/public"
 repository_id="repository.gerxstream"
-repository_version="1.0.4"
+repository_version="1.0.5"
 resolver_id="script.module.resolveurl"
 resolver_version="5.1.209"
 resolver_archive="$project_dir/release-inputs/$resolver_id-$resolver_version.zip"
@@ -98,6 +98,12 @@ install -m 0644 "$repository_payload/fanart.jpg" "$public_dir/zips/$repository_i
 } > "$public_dir/addons.xml"
 printf '%s' "$(md5sum "$public_dir/addons.xml" | awk '{print $1}')" \
     > "$public_dir/addons.xml.md5"
+
+# Kodi may cache the installation page as a directory containing only ZIPs.
+# Keep the index and checksum in a separate path that is never browsed for ZIPs.
+mkdir -p "$public_dir/catalog"
+install -m 0644 "$public_dir/addons.xml" "$public_dir/catalog/addons.xml"
+install -m 0644 "$public_dir/addons.xml.md5" "$public_dir/catalog/addons.xml.md5"
 
 sed "s|@REPOSITORY_VERSION@|$repository_version|g" "$project_dir/pages/index.html.in" \
     > "$public_dir/index.html"
