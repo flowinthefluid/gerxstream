@@ -81,10 +81,11 @@ direkter, rechtlich unbedenklicher Wiedergabepfad nachgewiesen sind.
 Die Domains aus den Abschnitten **Sport**, **Live-TV** und **Live Kino** der
 Nutzerliste werden nicht stillschweigend als VoD-Scraper behandelt. Sport-
 Aggregatoren sind zeitkritische Einbettungsketten; viele enthalten
-offensichtlich lizenzpflichtige Live-Uebertragungen. Fuer Live-TV ist
-`www.online-tv.de` der einzige bisher dokumentierte Kandidat mit direkten
-HLS-Adressen; seine Umsetzung braucht eine eigene, opt-in Live-TV-/M3U-/XMLTV-
-Funktion. Details stehen in `LIVE-UND-BACKLOG.md`.
+offensichtlich lizenzpflichtige Live-Uebertragungen. Das Add-on hat nun eine
+getrennte Quelle `sites/livetv.py` fuer direkte HLS-Livestreams
+oeffentlich-rechtlicher Sender, aber es scraped weder `www.online-tv.de` noch
+andere Live-TV-Aggregatoren. Eine opt-in M3U/XMLTV-/EPG-Funktion bleibt ein
+eigenes Thema. Details stehen in `LIVE-UND-BACKLOG.md`.
 
 ## Vollstaendiger Abgleich der zuletzt gesendeten Domainliste
 

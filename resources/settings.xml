@@ -5074,6 +5074,38 @@
 				</setting>
 			</group>
 		</category>
+		<category id="liveSources" label="30892" help="">
+			<group id="plugin_weathercams" label="30893">
+				<setting id="plugin_weathercams" type="boolean" label="30050" help="">
+					<level>0</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_weathercams_visible" type="boolean" label="30848" help="30849">
+					<level>0</level>
+					<default>True</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_weathercams">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+			</group>
+			<group id="plugin_livetv" label="30894">
+				<setting id="plugin_livetv" type="boolean" label="30050" help="">
+					<level>0</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_livetv_visible" type="boolean" label="30848" help="30849">
+					<level>0</level>
+					<default>True</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_livetv">false</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+			</group>
+		</category>
 		<category id="indexsiteVoD" label="30407" help="">
 			<group id="plugin_huhu" label="30790">
 				<setting id="plugin_huhu" type="boolean" label="30050" help="">

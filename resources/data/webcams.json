@@ -1,0 +1,74 @@
+{
+  "catalog_version": 1,
+  "description": "Nur Betreiber- oder Standortquellen mit direktem, bei Aufnahme geprueftem Livestream.",
+  "categories": [
+    {
+      "id": "cities",
+      "title": "Staedte und Orte",
+      "description": "Oeffentliche Plaetze, Ortsansichten und Sehenswuerdigkeiten."
+    },
+    {
+      "id": "coasts",
+      "title": "Kueste, Straende und Haefen",
+      "description": "Strand-, Promenaden-, See- und Hafenansichten."
+    },
+    {
+      "id": "mountains",
+      "title": "Berge und Ski",
+      "description": "Bergpanoramen, Skigebiete und alpine Standorte."
+    },
+    {
+      "id": "nature",
+      "title": "Natur und Landschaft",
+      "description": "Oeffentlich betriebene Natur- und Landschaftskameras."
+    },
+    {
+      "id": "animals",
+      "title": "Tiere",
+      "description": "Kameras von Zoos, Naturschutz- und Artenschutzprojekten."
+    },
+    {
+      "id": "transport",
+      "title": "Verkehr und Reise",
+      "description": "Nur offizielle Verkehrs-, Flughafen- und Bahnkameras."
+    }
+  ],
+  "cameras": [
+    {
+      "id": "hildesheim-an-der-lilie",
+      "title": "Hildesheim - Platz An der Lilie",
+      "category": "cities",
+      "country": "Deutschland",
+      "city": "Hildesheim",
+      "operator": "Stadt Hildesheim / Terra Livestream",
+      "source_url": "https://www.terra-livestream.eu/hildesheim-lilie/",
+      "stream": "https://www.terra-livestream.eu/hildesheim-lilie/hildesheim-lilie.m3u8",
+      "verified_at": "2026-09-25",
+      "description": "Liveblick vom historischen Rathaus ueber den oeffentlichen Platz An der Lilie."
+    },
+    {
+      "id": "kellenhusen-strand",
+      "title": "Kellenhusen - Strand und Promenade",
+      "category": "coasts",
+      "country": "Deutschland",
+      "city": "Kellenhusen",
+      "operator": "Kellenhusen / Nordwind",
+      "source_url": "https://www.kellenhusen.de/",
+      "stream": "https://srv-streaming-02.nordwind-ev.de/hls/kellenhusen.m3u8",
+      "verified_at": "2026-09-25",
+      "description": "Liveblick ueber den Strand, die Promenade und die Ostsee in Kellenhusen."
+    },
+    {
+      "id": "seebruck-hafen",
+      "title": "Seebruck - Hafen am Chiemsee",
+      "category": "coasts",
+      "country": "Deutschland",
+      "city": "Seebruck",
+      "operator": "Seebruck / Terra Livestream",
+      "source_url": "https://www.terra-livestream.eu/seebruck-hafen/",
+      "stream": "https://www.terra-livestream.eu/seebruck-hafen/seebruck-hafen.m3u8",
+      "verified_at": "2026-09-25",
+      "description": "Liveblick auf den oeffentlich zugaenglichen Hafen am Chiemsee in Seebruck."
+    }
+  ]
+}

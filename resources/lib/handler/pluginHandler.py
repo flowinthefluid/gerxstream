@@ -31,6 +31,7 @@ CATEGORY_ORDER = (
     ('animes', 30853),
     ('dokus', 30852),
     ('kinder', 30854),
+    ('live', 30892),
 )
 
 # Oeffentliche Mediatheken/Archive bleiben als Kennung verfuegbar.

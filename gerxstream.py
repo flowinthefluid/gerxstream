@@ -416,6 +416,7 @@ def showMainMenu(sFunction):
             'animes': 'anime.png',
             'dokus': 'dokus.png',
             'kinder': 'kinder.png',
+            'live': 'categories.png',
             'other': 'sources.png',
         }
         categories = oPluginHandler.getContentCategories(aPlugins)

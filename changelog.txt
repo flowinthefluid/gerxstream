@@ -1,3 +1,10 @@
+[B]Version: 1.0.23[/B]
+
+25.09.2026
+
+- Webcam-Katalog nach Kategorien, mit Betreiberquelle und Pruefdatum.
+- Webcam-Eintraege sind von der Providerlogik in einen versionierten Katalog ausgelagert.
+
 [B]Version: 1.0.20[/B]
 
 21.09.2026

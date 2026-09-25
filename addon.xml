@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.20" provider-name="flowinthefluid">
+<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.23" provider-name="flowinthefluid">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 		<import addon="script.module.requests"/>
@@ -21,7 +21,7 @@
 		<language>de en</language>
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
-		<news>1.0.16 - Globale Suche wird nicht mehr durch Cloudflare-/DDoS-Hinweise unterbrochen.</news>
+		<news>1.0.23 - Webcam-Katalog nach Kategorien mit Betreiberquelle und Pruefdatum.</news>
 		<website>https://github.com/flowinthefluid/gerxstream</website>
 		<source>https://github.com/flowinthefluid/gerxstream</source>
 		<assets>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.gerxstream" name="GerXStream Repository" version="1.0.1" provider-name="flowinthefluid">
+<addon id="repository.gerxstream" name="GerXStream Repository" version="1.0.3" provider-name="flowinthefluid">
 	<extension point="xbmc.addon.repository" name="GerXStream Repository">
 		<dir>
 			<info compressed="false">https://flowinthefluid.github.io/gerxstream/repo/addons.xml</info>

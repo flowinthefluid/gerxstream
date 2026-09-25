@@ -2053,6 +2053,18 @@ msgctxt "#30891"
 msgid "Higher values can take considerably longer because TMDB has no director-only list."
 msgstr ""
 
+msgctxt "#30892"
+msgid "Live streams"
+msgstr ""
+
+msgctxt "#30893"
+msgid "Public webcams"
+msgstr ""
+
+msgctxt "#30894"
+msgid "Public-service live TV"
+msgstr ""
+
 msgctxt "#30900"
 msgid "Global search timeout (seconds)"
 msgstr ""

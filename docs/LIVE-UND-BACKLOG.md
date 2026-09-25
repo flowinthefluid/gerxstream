@@ -11,6 +11,38 @@ gelieferten HTML auf technische Merkmale), nicht aus Schaetzungen.
 
 ---
 
+## Umgesetzt: oeffentliche Orts-Webcams
+
+Die Quelle `sites/weathercams.py` ist jetzt als **Livestreams -> Oeffentliche
+Webcams** im Add-on vorhanden und standardmaessig aktiviert. Sie ist bewusst
+ein reines Medienverzeichnis: keine Wetter-API, keine Vorhersage, keine
+Standortabfrage und keine Messwerte. Die aktuelle Wetterlage ergibt sich nur
+aus dem sichtbaren Livestream.
+
+Die Providerlogik liest den versionierten Katalog
+`resources/data/webcams.json`. Er gruppiert Eintraege nach Ort, Kueste,
+Bergen, Natur, Tieren und Verkehr und speichert pro Eintrag Betreiberquelle
+und Pruefdatum. Der Startbestand umfasst direkte HLS-Feeds von oeffentlich
+praesentierten Kameras am Platz An der Lilie in Hildesheim, am Strand von
+Kellenhusen und am Hafen in Seebruck. Am 25.09.2026 wurden fuer jeden Eintrag
+die Playlist und ein aktuelles Videosegment erfolgreich abgerufen. Abgelaufene
+oder nur als Einzelbild erreichbare Kameras gehoeren nicht in diesen Katalog.
+
+## Umgesetzt: oeffentlich-rechtliches Live-TV
+
+Die getrennte Quelle `sites/livetv.py` ergaenzt unter **Livestreams** sieben
+direkte HLS-Livestreams der oeffentlich-rechtlichen Sender: Das Erste, ZDF,
+Arte, WDR, rbb Berlin, KiKA und hr Fernsehen. Die Wiedergabe nutzt den
+vorhandenen `inputstream.adaptive`-Weg; alle Playlists und aktuelle Segmente
+wurden am 25.09.2026 abgerufen.
+
+Das ist bewusst kein PVR-Ersatz: M3U/XMLTV-Import, EPG und Programmvorschau
+bleiben getrennte Backlog-Themen. Die Sender koennen ihr Programm aus
+Lizenzgruenden ausserhalb Deutschlands oder bei einzelnen Sendungen
+einschraenken.
+
+---
+
 ## 1. Warum Live anders ist als VoD
 
 Bei VoD liefert eine Quelle eine Liste und pro Titel einen Hoster-Link, den
@@ -80,11 +112,12 @@ deutlich freundlicher als Sport.
 | tegotv.com (438 B), kool.ws (638 B) | Leere Geruestseiten, ohne JavaScript nichts zu holen |
 | nydus.org, raidrush.net | Foren/News-Seiten, keine Streaming-Kataloge - gehoeren eigentlich nicht in diese Liste |
 
-**Empfehlung fuer den naechsten Durchgang:** mit `www.online-tv.de`
-anfangen. Direkte HLS-Adressen bedeuten, dass der bestehende
-`getHosterUrl(resolved=True)`-Weg ausreicht, wie schon bei ARD, Arte und
-media.ccc.de. Damit liesse sich Live-TV zum Grossteil abdecken, ohne die
-Einbettungsketten der Sport-Seiten anfassen zu muessen.
+**Umgesetzt fuer den ersten Durchgang:** `sites/livetv.py` nutzt direkte
+HLS-Adressen oeffentlich-rechtlicher Sender ueber den bestehenden
+`getHosterUrl(resolved=True)`-Weg. Damit ist ein kleiner, lizenzklarer
+Live-TV-Katalog vorhanden, ohne die Einbettungsketten der Sport-Seiten
+anzufassen. `www.online-tv.de` wird nicht gescrapt und bleibt kein Ersatz
+fuer eine spaetere, opt-in M3U/XMLTV-Loesung.
 
 **Der sauberere Weg fuer echtes Live-TV mit Programmfuehrung** steht schon im
 Coding-Plan unter den geplanten Funktionen: M3U-Playlist plus XMLTV-EPG
