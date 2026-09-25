@@ -66,7 +66,12 @@ class cPlayer:
                 # Die Plugin-Aktion muss nach dem Start zurueckkehren. Sonst
                 # bleibt die Episodenliste waehrend der Wiedergabe aktiv.
                 if not xbmc.getCondVisibility('Window.IsActive(FullScreenVideo)'):
-                    xbmc.executebuiltin('ActivateWindow(FullScreenVideo)')
+                    # Kodi verweigert ActivateWindow, solange ein modaler
+                    # Dialog (z.B. vom Aufloesen des Streams) aktiv ist.
+                    # Beide Befehle synchron ausfuehren, bevor die Aktion
+                    # zur Episodenliste zurueckkehrt.
+                    xbmc.executebuiltin('Dialog.Close(all,true)', True)
+                    xbmc.executebuiltin('ActivateWindow(FullScreenVideo)', True)
                 return True
             if xbmcPlayer.streamFinished:
                 return False

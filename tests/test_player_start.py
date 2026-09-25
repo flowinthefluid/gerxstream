@@ -24,10 +24,35 @@ def test_playback_start_returns_without_waiting_for_video_end(monkeypatch):
     monkeypatch.setattr(player, 'GerxstreamPlayer', VideoPlayer)
     monkeypatch.setattr(player.xbmc, 'Monitor', Monitor)
     monkeypatch.setattr(player.xbmc, 'getCondVisibility', lambda condition: False)
-    monkeypatch.setattr(player.xbmc, 'executebuiltin', commands.append)
+    monkeypatch.setattr(player.xbmc, 'executebuiltin', lambda *args: commands.append(args))
 
     assert player.cPlayer().startPlayer() is True
-    assert commands == ['ActivateWindow(FullScreenVideo)']
+    assert commands == [
+        ('Dialog.Close(all,true)', True),
+        ('ActivateWindow(FullScreenVideo)', True),
+    ]
+
+
+def test_playback_already_fullscreen_keeps_dialogs_open(monkeypatch):
+    commands = []
+
+    class VideoPlayer:
+        streamFinished = False
+
+        def isPlayingVideo(self):
+            return True
+
+    class Monitor:
+        def abortRequested(self):
+            return False
+
+    monkeypatch.setattr(player, 'GerxstreamPlayer', VideoPlayer)
+    monkeypatch.setattr(player.xbmc, 'Monitor', Monitor)
+    monkeypatch.setattr(player.xbmc, 'getCondVisibility', lambda condition: True)
+    monkeypatch.setattr(player.xbmc, 'executebuiltin', lambda *args: commands.append(args))
+
+    assert player.cPlayer().startPlayer() is True
+    assert commands == []
 
 
 def test_playback_failure_does_not_open_fullscreen(monkeypatch):

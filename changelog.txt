@@ -1,3 +1,9 @@
+[B]Version: 1.0.25[/B]
+
+25.09.2026
+
+- Offene Kodi-Dialoge vor dem Vollbildwechsel synchron schliessen.
+
 [B]Version: 1.0.24[/B]
 
 25.09.2026
