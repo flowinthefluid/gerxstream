@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.gerxstream" name="GerXStream Repository" version="1.0.3" provider-name="flowinthefluid">
+<addon id="repository.gerxstream" name="GerXStream Repository" version="1.0.4" provider-name="gerxstream">
 	<extension point="xbmc.addon.repository" name="GerXStream Repository">
 		<dir>
-			<info compressed="false">https://flowinthefluid.github.io/gerxstream/repo/addons.xml</info>
-			<checksum>https://flowinthefluid.github.io/gerxstream/repo/addons.xml.md5</checksum>
-			<datadir zip="true">https://flowinthefluid.github.io/gerxstream/repo/zips/</datadir>
+			<info compressed="false">https://gerxstream-db50a2.gitlab.io/addons.xml</info>
+			<checksum>https://gerxstream-db50a2.gitlab.io/addons.xml.md5</checksum>
+			<datadir zip="true">https://gerxstream-db50a2.gitlab.io/zips/</datadir>
+			<hashes>false</hashes>
 		</dir>
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="de_de">GerXStream Repository</summary>
 		<summary lang="en_GB">GerXStream Repository</summary>
-		<description lang="de_de">Bezugsquelle fuer GerXStream und dessen Abhaengigkeiten (u.a. die ResolveURL-Repository-Quelle).</description>
-		<description lang="en_GB">Source for GerXStream and its dependencies (including the ResolveURL repository source).</description>
+		<description lang="de_de">Bezugsquelle fuer GerXStream und dessen Abhaengigkeiten.</description>
+		<description lang="en_GB">Source for GerXStream and its dependencies.</description>
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
-		<website>https://github.com/flowinthefluid/gerxstream</website>
-		<source>https://github.com/flowinthefluid/gerxstream</source>
+		<website>https://gitlab.com/gerxstream/gerxstream</website>
+		<source>https://gitlab.com/gerxstream/gerxstream</source>
 		<assets>
 			<icon>icon.png</icon>
 			<fanart>fanart.jpg</fanart>

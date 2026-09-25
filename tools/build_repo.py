@@ -129,6 +129,30 @@ def build(out_dir, pages_url=None, force=False):
         if os.path.exists(a):
             shutil.copy2(a, os.path.join(res_out, asset))
 
+    # Repository-ZIP sowohl als direkte Installationsdatei als auch im
+    # datadir ablegen. Nur letzterer Pfad kann Kodi selbst aktualisieren.
+    repository_manifest = None
+    tmpl = os.path.join(PROJECT_DIR, REPO_ID, 'addon.xml.in')
+    if pages_url and os.path.exists(tmpl):
+        rurl = pages_url.rstrip('/')
+        with tempfile.TemporaryDirectory() as tmp:
+            rp = os.path.join(tmp, REPO_ID)
+            os.makedirs(rp)
+            repository_manifest = open(tmpl, encoding='utf-8').read().replace('@PAGES_URL@', rurl)
+            with open(os.path.join(rp, 'addon.xml'), 'wb') as fh:
+                fh.write(repository_manifest.encode('utf-8'))
+            for asset in ('icon.png', 'fanart.jpg'):
+                shutil.copy2(os.path.join(PROJECT_DIR, 'resources', asset), os.path.join(rp, asset))
+            repo_ver = _addon_field(os.path.join(rp, 'addon.xml'), 'version')
+            repo_dir = os.path.join(out_dir, 'zips', REPO_ID)
+            os.makedirs(repo_dir)
+            repo_zip = '%s-%s.zip' % (REPO_ID, repo_ver)
+            _zip_dir(rp, REPO_ID, os.path.join(repo_dir, repo_zip))
+            shutil.copy2(os.path.join(repo_dir, repo_zip), os.path.join(out_dir, repo_zip))
+            for asset in ('addon.xml', 'icon.png', 'fanart.jpg'):
+                shutil.copy2(os.path.join(rp, asset), os.path.join(repo_dir, asset))
+        print('Repository-Pointer gebaut (Pages-URL: %s)' % rurl)
+
     # addons.xml zusammensetzen (Format identisch zum Shell-Build).
     parts = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n']
     resolver_xml = os.path.join(PROJECT_DIR, 'public', 'zips', RESOLVER_ID, 'addon.xml')
@@ -139,6 +163,10 @@ def build(out_dir, pages_url=None, force=False):
     parts.append(_strip_xml_decl(open(addon_xml, encoding='utf-8').read()))
     if not parts[-1].endswith('\n'):
         parts.append('\n')
+    if repository_manifest:
+        parts.append(_strip_xml_decl(repository_manifest))
+        if not parts[-1].endswith('\n'):
+            parts.append('\n')
     parts.append('</addons>\n')
     addons_xml = ''.join(parts)
     # Hash exactly the bytes served to Kodi. Text mode would translate LF to
@@ -149,23 +177,6 @@ def build(out_dir, pages_url=None, force=False):
     md5 = hashlib.md5(addons_bytes).hexdigest()
     with open(os.path.join(out_dir, 'addons.xml.md5'), 'w', encoding='utf-8') as fh:
         fh.write(md5)  # ohne abschliessenden Zeilenumbruch (wie der Shell-Build)
-
-    # Optionaler Repository-Pointer, wenn eine Pages-URL angegeben ist.
-    tmpl = os.path.join(PROJECT_DIR, REPO_ID, 'addon.xml.in')
-    if pages_url and os.path.exists(tmpl):
-        rurl = pages_url.rstrip('/')
-        with tempfile.TemporaryDirectory() as tmp:
-            rp = os.path.join(tmp, REPO_ID)
-            os.makedirs(rp)
-            content = open(tmpl, encoding='utf-8').read().replace('@PAGES_URL@', rurl)
-            open(os.path.join(rp, 'addon.xml'), 'w', encoding='utf-8').write(content)
-            for asset in ('icon.png', 'fanart.jpg'):
-                a = os.path.join(PROJECT_DIR, 'resources', asset)
-                if os.path.exists(a):
-                    shutil.copy2(a, os.path.join(rp, asset))
-            repo_ver = _addon_field(os.path.join(rp, 'addon.xml'), 'version')
-            _zip_dir(rp, REPO_ID, os.path.join(out_dir, '%s-%s.zip' % (REPO_ID, repo_ver)))
-        print('Repository-Pointer gebaut (Pages-URL: %s)' % rurl)
 
     print('Fertig. addons.xml.md5 = %s' % md5)
 

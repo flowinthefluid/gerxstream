@@ -7,7 +7,7 @@ pages_url="${1:?Usage: build-gitlab-pages.sh <GitLab-Pages-URL>}"
 pages_url="${pages_url%/}"
 public_dir="$project_dir/public"
 repository_id="repository.gerxstream"
-repository_version="1.0.2"
+repository_version="1.0.4"
 resolver_id="script.module.resolveurl"
 resolver_version="5.1.209"
 resolver_archive="$project_dir/release-inputs/$resolver_id-$resolver_version.zip"
@@ -78,8 +78,14 @@ install -m 0644 "$project_dir/resources/icon.png" "$repository_payload/icon.png"
 install -m 0644 "$project_dir/resources/fanart.jpg" "$repository_payload/fanart.jpg"
 (
     cd "$build_dir"
-    zip -X -q -r "$public_dir/$repository_id-$repository_version.zip" "$repository_id"
+    mkdir -p "$public_dir/zips/$repository_id"
+    zip -X -q -r "$public_dir/zips/$repository_id/$repository_id-$repository_version.zip" "$repository_id"
 )
+install -m 0644 "$public_dir/zips/$repository_id/$repository_id-$repository_version.zip" \
+    "$public_dir/$repository_id-$repository_version.zip"
+install -m 0644 "$repository_payload/addon.xml" "$public_dir/zips/$repository_id/addon.xml"
+install -m 0644 "$repository_payload/icon.png" "$public_dir/zips/$repository_id/icon.png"
+install -m 0644 "$repository_payload/fanart.jpg" "$public_dir/zips/$repository_id/fanart.jpg"
 
 # Kodi reads the add-on declarations from this catalogue and its checksum.
 {
@@ -87,6 +93,7 @@ install -m 0644 "$project_dir/resources/fanart.jpg" "$repository_payload/fanart.
     printf '%s\n' '<addons>'
     unzip -p "$resolver_archive" "$resolver_id/addon.xml" | sed '1{/^<?xml /d;}'
     sed '1{/^<?xml /d;}' "$project_dir/addon.xml"
+    sed '1{/^<?xml /d;}' "$repository_payload/addon.xml"
     printf '%s\n' '</addons>'
 } > "$public_dir/addons.xml"
 printf '%s' "$(md5sum "$public_dir/addons.xml" | awk '{print $1}')" \
