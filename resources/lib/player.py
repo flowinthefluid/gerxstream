@@ -61,15 +61,17 @@ class cPlayer:
         xbmcPlayer = GerxstreamPlayer()
         monitor = xbmc.Monitor()
         startTime = time.time()
-        streamStarted = False
-        while (not monitor.abortRequested()) and (not xbmcPlayer.streamFinished):
+        while not monitor.abortRequested():
             if xbmcPlayer.isPlayingVideo():
-                streamStarted = True
-                xbmcPlayer.playedTime = xbmcPlayer.getTime()
-            elif not streamStarted and (time.time() - startTime) >= 60:
-                xbmcPlayer.streamSuccess = False
-                xbmcPlayer.streamFinished = True
+                # Die Plugin-Aktion muss nach dem Start zurueckkehren. Sonst
+                # bleibt die Episodenliste waehrend der Wiedergabe aktiv.
+                if not xbmc.getCondVisibility('Window.IsActive(FullScreenVideo)'):
+                    xbmc.executebuiltin('ActivateWindow(FullScreenVideo)')
+                return True
+            if xbmcPlayer.streamFinished:
+                return False
+            if (time.time() - startTime) >= 60:
                 log(cConfig().getLocalizedString(30166) + ' -> [player]: Playback start timeout after 60s', LOGERROR)
-                break
+                return False
             monitor.waitForAbort(1)
-        return xbmcPlayer.streamSuccess
+        return False

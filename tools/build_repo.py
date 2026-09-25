@@ -141,8 +141,12 @@ def build(out_dir, pages_url=None, force=False):
         parts.append('\n')
     parts.append('</addons>\n')
     addons_xml = ''.join(parts)
-    open(os.path.join(out_dir, 'addons.xml'), 'w', encoding='utf-8').write(addons_xml)
-    md5 = hashlib.md5(addons_xml.encode('utf-8')).hexdigest()
+    # Hash exactly the bytes served to Kodi. Text mode would translate LF to
+    # CRLF on Windows and produce a checksum for different file contents.
+    addons_bytes = addons_xml.encode('utf-8')
+    with open(os.path.join(out_dir, 'addons.xml'), 'wb') as fh:
+        fh.write(addons_bytes)
+    md5 = hashlib.md5(addons_bytes).hexdigest()
     with open(os.path.join(out_dir, 'addons.xml.md5'), 'w', encoding='utf-8') as fh:
         fh.write(md5)  # ohne abschliessenden Zeilenumbruch (wie der Shell-Build)
 
