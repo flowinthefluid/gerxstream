@@ -82,15 +82,19 @@ class cHosterGui:
             index = int(params.getValue('episodeIndex'))
         except (TypeError, ValueError):
             return False
-        return bool(queueId and queueId == params.getValue('episodeQueue') and index > firstIndex)
+        return bool(queueId and queueId == params.getValue('episodeQueue')
+                    and index > firstIndex
+                    and xbmc.PlayList(xbmc.PLAYLIST_VIDEO).getposition() > 0)
 
     @classmethod
-    def _buildEpisodePlaylist(cls, params, streamUrl, listItem):
-        """Create a real Kodi playlist from the remaining entries of a season.
+    def _queueFollowingEpisodes(cls, params):
+        """Append later episodes to Kodi's already playing video playlist.
 
         Kodi resolves the later ``plugin://`` entries itself. Consequently its
         regular "next item" remote action works as well as natural automatic
         advancement; no direct hoster URLs are stored in the episode queue.
+        The selected episode is already in Kodi's playlist. Replacing and
+        playing that playlist again would restart the same video.
         """
         if not cConfig().getSettingBool('autoNextEpisodeEnabled', False):
             return False
@@ -105,8 +109,8 @@ class cHosterGui:
             return False
 
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        playlist.clear()
-        playlist.add(streamUrl, listItem)
+        if playlist.size() != 1 or playlist.getposition() != 0:
+            return False
         for target in targets[firstIndex + 1:]:
             queuedItem = xbmcgui.ListItem(path=target)
             queuedItem.setProperty('IsPlayable', 'true')
@@ -114,11 +118,9 @@ class cHosterGui:
             # same episode is played again from this playlist.
             queuedItem.setProperty('ForceResolvePlugin', 'true')
             playlist.add(target, queuedItem)
-        if playlist.size() < 2:
-            return False
         xbmcgui.Window(10000).setProperty(cls.EPISODE_PLAYLIST_PROPERTY,
                                           '%s:%d' % (queueId, firstIndex))
-        return playlist
+        return True
 
     @classmethod
     def _finishNativeEpisodePlaylist(cls, params):
@@ -206,14 +208,13 @@ class cHosterGui:
             self._finishNativeEpisodePlaylist(params)
             return True
 
-        episodePlaylist = self._buildEpisodePlaylist(params, data['link'], list_item)
-        if cGui().pluginHandle > 0:
-            # The original directory action still needs a resolved item. Kodi
-            # immediately replaces it with the playlist below when enabled.
-            xbmcplugin.setResolvedUrl(cGui().pluginHandle, True, list_item)
-        if episodePlaylist:
-            xbmc.Player().play(episodePlaylist)
-        elif cGui().pluginHandle <= 0:
+        pluginHandle = cGui().pluginHandle
+        if pluginHandle > 0:
+            self._queueFollowingEpisodes(params)
+            # Kodi is already opening this playable item. Resolving it is the
+            # sole playback start; future episodes were added to its playlist.
+            xbmcplugin.setResolvedUrl(pluginHandle, True, list_item)
+        else:
             xbmc.Player().play(data['link'], list_item)
         player = cPlayer()
         started = player.startPlayer()

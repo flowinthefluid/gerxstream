@@ -1,3 +1,9 @@
+[B]Version: 1.0.26[/B]
+
+25.09.2026
+
+- Kodi spielt die ausgewaehlte Folge nur einmal ab; die naechsten Folgen werden an seine bestehende Wiedergabeliste angehaengt.
+
 [B]Version: 1.0.25[/B]
 
 25.09.2026
