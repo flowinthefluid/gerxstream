@@ -37,6 +37,9 @@ def _direct_url(channel):
     source = selector.best_source(channel)
     if not source:
         return None
+    if source.get('resolver'):
+        # Sitzungsgebundene Adresse: nur ueber das Addon abspielbar.
+        return _plugin_play_url(channel)
     url = source['url']
     if source.get('headers'):
         # IPTV Simple / inputstream.adaptive erwarten Header als '|'-Suffix.

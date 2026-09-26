@@ -73,6 +73,10 @@ class GerxstreamPlayer(xbmc.Player):
                 return
             import xbmcgui
             xbmcgui.Window(10000).clearProperty(EPISODE_PLAYLIST_PROPERTY)
+            # Stop setzt auch den gemerkten Hoster zurueck: die naechste
+            # manuell gestartete Folge fragt wieder ganz normal.
+            from resources.lib import hosterprefs
+            hosterprefs.forgetSticky()
             cPlayer._activePlayer = None
         except Exception:
             pass

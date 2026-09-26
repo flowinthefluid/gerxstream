@@ -1,3 +1,19 @@
+[B]Version: 1.0.28[/B]
+
+26.09.2026
+
+- Live-TV: rund 220 frei empfangbare Sender aus Deutschland, Oesterreich und der Schweiz (ARD mit allen Dritten und WDR-Lokalzeiten, ZDF, ZDFneo, ZDFinfo, 3sat, phoenix, KiKA, arte, DW, WELT, ORF III, ORF Kids, ServusTV, Regionalsender, Offene Kanaele, Bundestag u. v. m.), nur von offiziellen Sender-Servern.
+- Live-TV: Pluto TV mit rund 190 kostenlosen Sendern ueber die offizielle Schnittstelle, abschaltbar in den Livestream-Einstellungen.
+- Sport-Bereich: Red Bull TV, DAZN Darts, Snooker, Tennis Channel, Auto Motor Sport, Top Gear, FIFA+, More Than Sports u. a. (ohne Baseball und American Football).
+- Kategorien > Mediatheken: ARD Mediathek, Arte, MediathekViewWeb und die Mediatheken aller Sender (ZDF, ZDFneo, ZDFinfo, 3sat, phoenix, ORF, SRF, KiKA, Dritte, DW ...).
+- Bevorzugte Hoster je Quelle (sortieren, filtern oder automatisch starten) und Kontextmenue "Mit Hoster-Auswahl abspielen".
+- Naechste Episode: optional den Hoster der ersten Folge beibehalten.
+- Einstellungen auf die Kodi-Stufen Einfach/Standard/Fortgeschritten/Experte verteilt.
+- Historie bis 1000 Eintraege oder unbegrenzt.
+- Beschreibung optional mit IMDb/Rotten-Tomatoes/TMDB-Wertung, Regie und Darstellern.
+- Personen nach Filmanzahl oder Oscars/Grammys sortierbar.
+- Cookie-Assistent fuer Quellen hinter Cloudflare/DDoS-Guard (Einfuegen als cURL, auch vom PC oder Handy).
+
 [B]Version: 1.0.27[/B]
 
 25.09.2026

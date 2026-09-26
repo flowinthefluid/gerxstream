@@ -1819,8 +1819,8 @@ msgid "Bot protection: matching user agent"
 msgstr "Bot-Schutz: passender User-Agent"
 
 msgctxt "#30828"
-msgid "Only needed if the source is behind Cloudflare or DDoS-Guard. Confirm the check once in your browser, then copy the cookie and the user agent here. Both belong together."
-msgstr "Nur noetig, wenn die Quelle hinter Cloudflare oder DDoS-Guard steht. Die Pruefung einmal im Browser bestaetigen, danach Cookie und User-Agent von dort hier eintragen. Beides gehoert zusammen."
+msgid "Only needed for sources behind Cloudflare or DDoS-Guard. Easiest via the cookie assistant. Manually: the cookie line (Cloudflare: cf_clearance, DDoS-Guard: __ddg...) and the exact user agent of the same browser, e.g. from 'Copy as cURL'."
+msgstr "Nur nötig für Quellen hinter Cloudflare oder DDoS-Guard. Am einfachsten über den Cookie-Assistenten. Von Hand: die Cookie-Zeile (Cloudflare: cf_clearance, DDoS-Guard: __ddg…) und der exakte User-Agent desselben Browsers, z. B. aus „Als cURL kopieren“."
 
 msgctxt "#30829"
 msgid "Use FlareSolverr for bot protection"
@@ -2091,8 +2091,8 @@ msgid "History entries"
 msgstr "Anzahl Historien-Eintraege"
 
 msgctxt "#30909"
-msgid "Maximum number of locally stored watched titles."
-msgstr "Maximale Anzahl lokal gespeicherter gesehener Titel."
+msgid "Number of watched titles shown. 'Unlimited' keeps everything."
+msgstr "Anzahl der angezeigten gesehenen Titel. „Unbegrenzt“ behält alles."
 
 msgctxt "#30910"
 msgid "Clear playback history"
@@ -2715,3 +2715,294 @@ msgctxt "#31330"
 msgid "Open Twitch add-on settings (account)"
 msgstr "Twitch-Addon-Einstellungen oeffnen (Konto)"
 
+msgctxt "#31400"
+msgid "Play with hoster selection"
+msgstr "Mit Hoster-Auswahl abspielen"
+
+msgctxt "#31401"
+msgid "Preferred hosters"
+msgstr "Bevorzugte Hoster"
+
+msgctxt "#31402"
+msgid "Set preferred hosters per source"
+msgstr "Bevorzugte Hoster je Quelle festlegen"
+
+msgctxt "#31403"
+msgid "Choose hosters for all sources or separately for each source. A source's own list replaces the list for all sources. The first chosen hoster is tried first."
+msgstr "Hoster für alle Quellen oder abweichend je Quelle wählen. Eine eigene Liste einer Quelle ersetzt die Liste für alle Quellen. Der zuerst gewählte Hoster wird zuerst probiert."
+
+msgctxt "#31404"
+msgid "Which hoster should be tried as no. %d?"
+msgstr "Welcher Hoster soll als Nr. %d probiert werden?"
+
+msgctxt "#31405"
+msgid "All sources (default)"
+msgstr "Alle Quellen (Standard)"
+
+msgctxt "#31406"
+msgid "none"
+msgstr "keine"
+
+msgctxt "#31407"
+msgid "same as 'All sources'"
+msgstr "wie „Alle Quellen“"
+
+msgctxt "#31408"
+msgid "No preferred hoster available - showing all"
+msgstr "Kein bevorzugter Hoster verfügbar – alle werden angezeigt"
+
+msgctxt "#31409"
+msgid "Enter another hoster..."
+msgstr "Anderen Hoster eingeben …"
+
+msgctxt "#31410"
+msgid "Use preferred hosters"
+msgstr "Bevorzugte Hoster verwenden"
+
+msgctxt "#31411"
+msgid "Off: unchanged. Sort to top: preferred hosters come first in the selection. Only preferred: other hosters are hidden (all are shown if none matches). Start automatically: the first working preferred hoster starts without asking; if none works, the selection appears. The context menu entry 'Play with hoster selection' always asks."
+msgstr "Aus: unverändert. Nach vorne sortieren: bevorzugte Hoster stehen in der Auswahl oben. Nur bevorzugte anzeigen: andere Hoster werden ausgeblendet (passt keiner, erscheinen alle). Automatisch starten: der erste funktionierende bevorzugte Hoster startet ohne Rückfrage; klappt keiner, kommt die normale Auswahl. Der Kontextmenü-Eintrag „Mit Hoster-Auswahl abspielen“ fragt immer."
+
+msgctxt "#31412"
+msgid "Off"
+msgstr "Aus"
+
+msgctxt "#31413"
+msgid "Sort to top"
+msgstr "Nach vorne sortieren"
+
+msgctxt "#31414"
+msgid "Show only preferred"
+msgstr "Nur bevorzugte anzeigen"
+
+msgctxt "#31415"
+msgid "Start first preferred automatically"
+msgstr "Ersten bevorzugten automatisch starten"
+
+msgctxt "#31416"
+msgid "Hoster for the following episodes"
+msgstr "Hoster bei den folgenden Episoden"
+
+msgctxt "#31417"
+msgid "Ask every time: every episode shows the hoster selection. Keep the first episode's hoster: the hoster (and language) chosen for the first episode is used again for the following episodes of the list, so the list plays through. Stop and a new manual start reset it."
+msgstr "Jedes Mal fragen: jede Folge zeigt die Hoster-Auswahl. Hoster der ersten Folge beibehalten: der bei der ersten Folge gewählte Hoster (samt Sprache) wird für die folgenden Folgen wieder genommen, die Liste läuft also durch. Stop und ein neuer manueller Start setzen das zurück; dann wird wieder normal gefragt."
+
+msgctxt "#31418"
+msgid "Ask every time"
+msgstr "Jedes Mal fragen"
+
+msgctxt "#31419"
+msgid "Keep the first episode's hoster"
+msgstr "Hoster der ersten Folge beibehalten"
+
+msgctxt "#31430"
+msgid "10"
+msgstr "10"
+
+msgctxt "#31431"
+msgid "25"
+msgstr "25"
+
+msgctxt "#31432"
+msgid "50"
+msgstr "50"
+
+msgctxt "#31433"
+msgid "100"
+msgstr "100"
+
+msgctxt "#31434"
+msgid "150"
+msgstr "150"
+
+msgctxt "#31435"
+msgid "200"
+msgstr "200"
+
+msgctxt "#31436"
+msgid "300"
+msgstr "300"
+
+msgctxt "#31437"
+msgid "500"
+msgstr "500"
+
+msgctxt "#31438"
+msgid "750"
+msgstr "750"
+
+msgctxt "#31439"
+msgid "1000"
+msgstr "1000"
+
+msgctxt "#31440"
+msgid "Unlimited"
+msgstr "Unbegrenzt"
+
+msgctxt "#31450"
+msgid "Number of films"
+msgstr "Anzahl der Filme"
+
+msgctxt "#31451"
+msgid "Awards (Oscars + Grammys)"
+msgstr "Auszeichnungen (Oscars + Grammys)"
+
+msgctxt "#31452"
+msgid "Number of films and awards come from Wikidata (community data, may be incomplete) and are cached for 14 days."
+msgstr "Filmanzahl und Auszeichnungen stammen aus Wikidata (Gemeinschaftsdaten, nicht immer vollständig) und werden 14 Tage zwischengespeichert."
+
+msgctxt "#31453"
+msgid "%s films"
+msgstr "%s Filme"
+
+msgctxt "#31454"
+msgid "%sx Oscar"
+msgstr "%s× Oscar"
+
+msgctxt "#31455"
+msgid "%sx Grammy"
+msgstr "%s× Grammy"
+
+msgctxt "#31456"
+msgid "Wikidata unavailable - sorted by popularity"
+msgstr "Wikidata nicht erreichbar – sortiert nach Popularität"
+
+msgctxt "#31460"
+msgid "Ratings, director and cast in the description"
+msgstr "Bewertungen, Regie und Darsteller in der Beschreibung"
+
+msgctxt "#31461"
+msgid "Director"
+msgstr "Regie"
+
+msgctxt "#31462"
+msgid "Created by"
+msgstr "Idee"
+
+msgctxt "#31463"
+msgid "Cast"
+msgstr "Darsteller"
+
+msgctxt "#31464"
+msgid "Adds TMDB rating, director and main cast below the description of movies and series; with an OMDb key also IMDb, Rotten Tomatoes and Metacritic. Needs the detailed TMDB lookup, so lists load somewhat slower."
+msgstr "Hängt unter die Beschreibung von Filmen und Serien TMDB-Wertung, Regie und Hauptdarsteller an; mit OMDb-Schlüssel zusätzlich IMDb, Rotten Tomatoes und Metacritic. Braucht die ausführliche TMDB-Abfrage, Listen laden daher etwas langsamer."
+
+msgctxt "#31465"
+msgid "OMDb API key (IMDb & Rotten Tomatoes)"
+msgstr "OMDb-API-Schlüssel (IMDb & Rotten Tomatoes)"
+
+msgctxt "#31466"
+msgid "Free key from omdbapi.com/apikey.aspx (1,000 requests per day). Without a key only TMDB rating, director and cast are shown."
+msgstr "Kostenloser Schlüssel von omdbapi.com/apikey.aspx (1.000 Abfragen pro Tag). Ohne Schlüssel erscheinen nur TMDB-Wertung, Regie und Darsteller."
+
+msgctxt "#31470"
+msgid "Cookie assistant"
+msgstr "Cookie-Assistent"
+
+msgctxt "#31471"
+msgid "Cookie assistant: choose source"
+msgstr "Cookie-Assistent: Quelle wählen"
+
+msgctxt "#31472"
+msgid "Show instructions"
+msgstr "Anleitung anzeigen"
+
+msgctxt "#31473"
+msgid "Paste from PC or phone (recommended)"
+msgstr "Vom PC oder Handy einfügen (empfohlen)"
+
+msgctxt "#31474"
+msgid "Paste here in Kodi"
+msgstr "Hier in Kodi einfügen"
+
+msgctxt "#31475"
+msgid "Test connection"
+msgstr "Verbindung testen"
+
+msgctxt "#31476"
+msgid "Delete stored cookie"
+msgstr "Hinterlegtes Cookie löschen"
+
+msgctxt "#31477"
+msgid "Paste cURL command, request headers or cookie"
+msgstr "cURL-Befehl, Anfrage-Header oder Cookie einfügen"
+
+msgctxt "#31478"
+msgid "Test now whether the source is reachable?"
+msgstr "Jetzt testen, ob die Quelle erreichbar ist?"
+
+msgctxt "#31479"
+msgid "Cookie deleted"
+msgstr "Cookie gelöscht"
+
+msgctxt "#31480"
+msgid "Only needed for sources behind Cloudflare or DDoS-Guard. Confirm the check in your browser, copy the request 'as cURL' and paste it - cookie and user agent are read automatically, also from your PC or phone."
+msgstr "Nur nötig für Quellen hinter Cloudflare oder DDoS-Guard. Prüfung im Browser bestätigen, die Anfrage „als cURL kopieren“ und einfügen – Cookie und User-Agent werden automatisch ausgelesen, auch bequem vom PC oder Handy aus."
+
+msgctxt "#31481"
+msgid "cookie stored"
+msgstr "Cookie hinterlegt"
+
+msgctxt "#31482"
+msgid "automatic session active"
+msgstr "automatische Sitzung aktiv"
+
+msgctxt "#31483"
+msgid "No cookie found. Please copy the request 'as cURL' in the browser's network tab and paste the whole text."
+msgstr "Kein Cookie gefunden. Bitte im Netzwerk-Reiter des Browsers die Anfrage „als cURL kopieren“ und den ganzen Text einfügen."
+
+msgctxt "#31484"
+msgid "Note: cf_clearance / __ddg cookies are missing - did the check in the browser complete?"
+msgstr "Hinweis: cf_clearance- bzw. __ddg-Cookies fehlen – war die Prüfung im Browser abgeschlossen?"
+
+msgctxt "#31485"
+msgid "The user agent is missing - without it the cookie is usually rejected. Better copy 'as cURL'."
+msgstr "Der User-Agent fehlt – ohne ihn wird das Cookie meist abgelehnt. Besser „als cURL“ kopieren."
+
+msgctxt "#31486"
+msgid "Cookie and user agent stored."
+msgstr "Cookie und User-Agent übernommen."
+
+msgctxt "#31487"
+msgid "Kodi has no network address in the home network, or no free port. Please use 'Paste here in Kodi'."
+msgstr "Kodi hat keine Adresse im Heimnetz oder keinen freien Port. Bitte „Hier in Kodi einfügen“ verwenden."
+
+msgctxt "#31488"
+msgid "Open in a browser on your PC or phone (same home network):[CR][B]%s[/B][CR]and paste the copied text there."
+msgstr "Im Browser am PC oder Handy (selbes Heimnetz) öffnen:[CR][B]%s[/B][CR]und dort den kopierten Text einfügen."
+
+msgctxt "#31489"
+msgid "[B]%(source)s - taking over a browser session[/B][CR][CR]1. Open https://%(domain)s in a browser (PC recommended) and complete the check until the normal page appears.[CR]2. Press F12, open the [B]Network[/B] tab, reload the page (F5), right-click the first line and choose [B]Copy > Copy as cURL[/B] (Chrome/Edge: 'Copy as cURL (bash)').[CR]3. Choose 'Paste from PC or phone' here and paste the text on the page shown - or paste it directly in Kodi.[CR][CR]GerXStream reads the cookie (%(cookies)s) and the matching user agent automatically.[CR][CR][B]Good to know[/B][CR]- Cookie and user agent belong together; 'as cURL' contains both.[CR]- The cookie usually only works for the internet connection (IP) it was obtained with: browser and Kodi must use the same connection (no VPN on only one device).[CR]- Cookies expire after hours to days depending on the site; then repeat. Fully automatic renewal is only possible with FlareSolverr (Settings > General > Network)."
+msgstr "[B]%(source)s – Browser-Sitzung übernehmen[/B][CR][CR]1. https://%(domain)s im Browser öffnen (am besten am PC) und die Prüfung bestätigen, bis die normale Seite erscheint.[CR]2. F12 drücken, Reiter [B]Netzwerk[/B] öffnen, Seite neu laden (F5), die oberste Zeile rechts anklicken und [B]Kopieren > Als cURL kopieren[/B] wählen (Chrome/Edge: „Als cURL (bash) kopieren“).[CR]3. Hier „Vom PC oder Handy einfügen“ wählen und den Text auf der angezeigten Seite einfügen – oder direkt in Kodi einfügen.[CR][CR]GerXStream liest daraus automatisch das Cookie (%(cookies)s) und den passenden User-Agent.[CR][CR][B]Gut zu wissen[/B][CR]– Cookie und User-Agent gehören zusammen; „als cURL“ enthält beides.[CR]– Das Cookie gilt meist nur für den Internetanschluss (IP), über den es geholt wurde: Browser und Kodi müssen denselben Anschluss nutzen (kein VPN nur auf einem Gerät).[CR]– Cookies laufen je nach Seite nach Stunden bis Tagen ab; dann einfach wiederholen. Vollautomatisch erneuern geht nur mit FlareSolverr (Einstellungen > Allgemein > Netzwerk)."
+
+msgctxt "#31490"
+msgid "The source is reachable with the stored session."
+msgstr "Die Quelle ist mit der hinterlegten Sitzung erreichbar."
+
+msgctxt "#31491"
+msgid "The source is still blocking. The cookie is probably expired, from another internet connection, or the user agent does not match. Please repeat the steps."
+msgstr "Die Quelle blockiert weiterhin. Das Cookie ist vermutlich abgelaufen, stammt von einem anderen Internetanschluss oder der User-Agent passt nicht. Bitte die Schritte wiederholen."
+
+msgctxt "#31492"
+msgid "The source could not be reached (network, domain or DNS block). This is not caused by the cookie."
+msgstr "Die Quelle war nicht erreichbar (Netzwerk, Domain oder DNS-Sperre). Das liegt nicht am Cookie."
+
+msgctxt "#31500"
+msgid "Media libraries"
+msgstr "Mediatheken"
+
+msgctxt "#31501"
+msgid "%s media library"
+msgstr "%s-Mediathek"
+
+msgctxt "#31502"
+msgid "No media library source enabled"
+msgstr "Keine Mediathek-Quelle aktiviert"
+
+msgctxt "#31503"
+msgid "Pluto TV (free channels)"
+msgstr "Pluto TV (kostenlose Sender)"
+
+msgctxt "#31504"
+msgid "About 190 free, ad-supported channels from Pluto TV incl. sports (official interface, no account). The channel list is refreshed when Kodi starts."
+msgstr "Rund 190 kostenlose, werbefinanzierte Sender von Pluto TV inkl. Sport (offizielle Schnittstelle, ohne Konto). Die Senderliste wird beim Kodi-Start aufgefrischt."

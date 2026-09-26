@@ -4,12 +4,12 @@
 		<category id="general" label="30020" help="">
 			<group id="presentation" label="30031">
 				<setting id="GlobalSearchPosition" type="boolean" label="30011" help="30411">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="SettingsFolder" type="boolean" label="30012" help="30411">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
@@ -19,38 +19,20 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="mainMenuOrderEditor" type="action" label="30879" help="30883">
-					<level>0</level>
+					<level>1</level>
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=mainMenuOrder)</data>
 					<control type="button" format="action">
 						<close>true</close>
 					</control>
 				</setting>
 				<setting id="mainMenuOrder" type="string" label="30879" help="">
-					<level>0</level>
+					<level>2</level>
 					<default>epicFavorites,globalSearch,sourceCategories,categories,random,history,settings</default>
 					<visible>false</visible>
 					<control type="edit" format="string"/>
 				</setting>
-				<setting id="flaresolverrEnabled" type="boolean" label="30829" help="30831">
-					<level>3</level>
-					<default>False</default>
-					<control type="toggle"/>
-				</setting>
-				<setting id="flaresolverrUrl" type="string" label="30830" help="30831">
-					<level>3</level>
-					<default>http://127.0.0.1:8191</default>
-					<constraints>
-						<allowempty>true</allowempty>
-					</constraints>
-					<dependencies>
-						<dependency type="enable" operator="!is" setting="flaresolverrEnabled">false</dependency>
-					</dependencies>
-					<control type="edit" format="string">
-						<heading>30830</heading>
-					</control>
-				</setting>
 				<setting id="replacefanart" type="boolean" label="30019" help="">
-					<level>0</level>
+					<level>2</level>
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
@@ -85,12 +67,12 @@
 					<control type="spinner" format="string"/>
 				</setting>
 				<setting id="gerxstream.trailer" type="boolean" label="30026" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="randomItemsCount" type="integer" label="30869" help="30870">
-					<level>0</level>
+					<level>2</level>
 					<default>250</default>
 					<constraints>
 						<minimum>1</minimum>
@@ -107,17 +89,27 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="watchHistoryLimit" type="integer" label="30908" help="30909">
-					<level>0</level>
+					<level>1</level>
 					<default>100</default>
 					<constraints>
-						<minimum>10</minimum>
-						<step>10</step>
-						<maximum>500</maximum>
+						<options>
+							<option label="31430">10</option>
+							<option label="31431">25</option>
+							<option label="31432">50</option>
+							<option label="31433">100</option>
+							<option label="31434">150</option>
+							<option label="31435">200</option>
+							<option label="31436">300</option>
+							<option label="31437">500</option>
+							<option label="31438">750</option>
+							<option label="31439">1000</option>
+							<option label="31440">0</option>
+						</options>
 					</constraints>
 					<dependencies>
 						<dependency type="enable" setting="watchHistoryEnabled">true</dependency>
 					</dependencies>
-					<control type="slider" format="integer"><popup>false</popup></control>
+					<control type="spinner" format="string"/>
 				</setting>
 				<setting id="watchHistoryClear" type="action" label="30910" help="30911">
 					<level>0</level>
@@ -125,7 +117,7 @@
 					<control type="button" format="action"><close>true</close></control>
 				</setting>
 				<setting id="epicFavoritesName" type="string" label="30916" help="30917">
-					<level>0</level>
+					<level>1</level>
 					<default>Epic-Favorites</default>
 					<constraints>
 						<allowempty>false</allowempty>
@@ -134,13 +126,8 @@
 						<heading>30916</heading>
 					</control>
 				</setting>
-				<setting id="autoNextEpisodeEnabled" type="boolean" label="30933" help="30934">
-					<level>0</level>
-					<default>False</default>
-					<control type="toggle"/>
-				</setting>
 				<setting id="favoriteActors" type="string" label="30871" help="30872">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -150,7 +137,7 @@
 					</control>
 				</setting>
 				<setting id="actorPeopleLimit" type="integer" label="30884" help="30885">
-					<level>0</level>
+					<level>2</level>
 					<default>500</default>
 					<constraints>
 						<minimum>25</minimum>
@@ -162,7 +149,7 @@
 					</control>
 				</setting>
 				<setting id="directorPeopleLimit" type="integer" label="30890" help="30891">
-					<level>0</level>
+					<level>2</level>
 					<default>100</default>
 					<constraints>
 						<minimum>25</minimum>
@@ -173,14 +160,16 @@
 						<popup>false</popup>
 					</control>
 				</setting>
-				<setting id="peopleSort" type="string" label="30886" help="">
-					<level>0</level>
+				<setting id="peopleSort" type="string" label="30886" help="31452">
+					<level>1</level>
 					<default>popularity</default>
 					<constraints>
 						<options>
 							<option label="30887">popularity</option>
 							<option label="30888">name</option>
 							<option label="30889">rating</option>
+							<option label="31450">films</option>
+							<option label="31451">awards</option>
 						</options>
 					</constraints>
 					<control type="spinner" format="string"/>
@@ -199,8 +188,59 @@
 					</constraints>
 					<control type="spinner" format="string"/>
 				</setting>
-				<setting id="maxHoster" type="integer" label="30007" help="">
+				<setting id="preferredHosterMode" type="string" label="31410" help="31411">
+					<level>1</level>
+					<default>off</default>
+					<constraints>
+						<options>
+							<option label="31412">off</option>
+							<option label="31413">sort</option>
+							<option label="31414">only</option>
+							<option label="31415">auto</option>
+						</options>
+					</constraints>
+					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="preferredHosterPicker" type="action" label="31402" help="31403">
+					<level>1</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=preferredHosterMenu)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="preferredHosterMode">off</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
+				</setting>
+				<setting id="preferredHosters" type="string" label="31402" help="">
+					<level>2</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<visible>false</visible>
+					<control type="edit" format="string"/>
+				</setting>
+				<setting id="autoNextEpisodeEnabled" type="boolean" label="30933" help="30934">
 					<level>0</level>
+					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="autoNextEpisodeHoster" type="string" label="31416" help="31417">
+					<level>1</level>
+					<default>ask</default>
+					<constraints>
+						<options>
+							<option label="31418">ask</option>
+							<option label="31419">sticky</option>
+						</options>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" setting="autoNextEpisodeEnabled">true</dependency>
+					</dependencies>
+					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="maxHoster" type="integer" label="30007" help="">
+					<level>2</level>
 					<default>420</default>
 					<constraints>
 						<minimum>10</minimum>
@@ -212,15 +252,15 @@
 					</control>
 				</setting>
 				<setting id="presortHoster" type="boolean" label="30009" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<dependencies>
-						<dependency type="enable" operator="!is" setting="hosterSelect">30130</dependency>
+						<dependency type="enable" operator="!is" setting="hosterSelect">Auto</dependency>
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
 				<setting id="blockedHoster" type="string" label="30404" help="">
-					<level>0</level>
+					<level>3</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -230,7 +270,7 @@
 					</control>
 				</setting>
 				<setting id="blockedHosterPicker" type="action" label="30861" help="30862">
-					<level>0</level>
+					<level>1</level>
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=blockedHosterMenu)</data>
 					<control type="button" format="action">
 						<close>true</close>
@@ -239,12 +279,12 @@
 			</group>
 			<group id="networkSettings" label="30035">
 				<setting id="bypassDNSlock" type="boolean" label="30025" help="">
-					<level>0</level>
+					<level>2</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="customDnsEnabled" type="boolean" label="30863" help="30865">
-					<level>0</level>
+					<level>2</level>
 					<default>False</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="bypassDNSlock">false</dependency>
@@ -253,7 +293,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="customDnsAddress" type="string" label="30864" help="30865">
-					<level>0</level>
+					<level>2</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -267,12 +307,12 @@
 					</control>
 				</setting>
 				<setting id="customProxyEnabled" type="boolean" label="30843" help="30847">
-					<level>0</level>
+					<level>3</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="customProxyAddress" type="string" label="30844" help="30847">
-					<level>0</level>
+					<level>3</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -286,7 +326,7 @@
 					</control>
 				</setting>
 				<setting id="customProxyUser" type="string" label="30845" help="30847">
-					<level>0</level>
+					<level>3</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -300,7 +340,7 @@
 					</control>
 				</setting>
 				<setting id="customProxyPass" type="string" label="30846" help="30847">
-					<level>0</level>
+					<level>3</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -313,13 +353,38 @@
 						<heading>30846</heading>
 					</control>
 				</setting>
+				<setting id="cookieAssistant" type="action" label="31470" help="31480">
+					<level>1</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant)</data>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
+				</setting>
+				<setting id="flaresolverrEnabled" type="boolean" label="30829" help="30831">
+					<level>3</level>
+					<default>False</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="flaresolverrUrl" type="string" label="30830" help="30831">
+					<level>3</level>
+					<default>http://127.0.0.1:8191</default>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="flaresolverrEnabled">false</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30830</heading>
+					</control>
+				</setting>
 				<setting id="volatileHtmlCache" type="boolean" label="30029" help="">
-					<level>0</level>
+					<level>3</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="cacheTime" type="integer" label="30006" help="">
-					<level>0</level>
+					<level>3</level>
 					<default>360</default>
 					<constraints>
 						<minimum>120</minimum>
@@ -331,7 +396,7 @@
 					</control>
 				</setting>
 				<setting id="requestTimeout" type="integer" label="30014" help="">
-					<level>0</level>
+					<level>2</level>
 					<default>10</default>
 					<constraints>
 						<minimum>1</minimum>
@@ -343,7 +408,7 @@
 					</control>
 				</setting>
 				<setting id="globalSearchTimeout" type="integer" label="30900" help="30901">
-					<level>0</level>
+					<level>2</level>
 					<default>30</default>
 					<constraints>
 						<minimum>5</minimum>
@@ -355,7 +420,7 @@
 					</control>
 				</setting>
 				<setting id="cacheDeltaDay" type="integer" label="30164" help="">
-					<level>0</level>
+					<level>3</level>
 					<default>2</default>
 					<constraints>
 						<minimum>1</minimum>
@@ -367,7 +432,7 @@
 					</control>
 				</setting>
 				<setting id="delHtmlCache" type="action" label="30165" help="">
-					<level>0</level>
+					<level>1</level>
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=clearCache)</data>
 					<control type="button" format="action">
 						<close>true</close>
@@ -402,6 +467,11 @@
 					<default>true</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="lsPlutoEnabled" type="boolean" label="31503" help="31504">
+					<level>1</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
 			</group>
 			<group id="lsRabbithole" label="31241">
 				<setting id="rhCategoriesEditor" type="action" label="31242" help="31243">
@@ -410,7 +480,7 @@
 					<control type="button" format="action"><close>true</close></control>
 				</setting>
 				<setting id="rhCategories" type="string" label="31242" help="">
-					<level>1</level>
+					<level>2</level>
 					<default></default>
 					<constraints><allowempty>true</allowempty></constraints>
 					<visible>false</visible>
@@ -419,12 +489,12 @@
 			</group>
 			<group id="lsSocial" label="31320">
 				<setting id="socialYoutube" type="boolean" label="31321" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>true</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="socialTwitch" type="boolean" label="31322" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>true</default>
 					<control type="toggle"/>
 				</setting>
@@ -488,7 +558,7 @@
 					<control type="button" format="action"><close>true</close></control>
 				</setting>
 				<setting id="lsCountries" type="string" label="30974" help="">
-					<level>1</level>
+					<level>2</level>
 					<default></default>
 					<constraints><allowempty>true</allowempty></constraints>
 					<visible>false</visible>
@@ -502,7 +572,7 @@
 					<control type="button" format="action"><close>true</close></control>
 				</setting>
 				<setting id="lsGenresHidden" type="string" label="30977" help="">
-					<level>1</level>
+					<level>2</level>
 					<default></default>
 					<constraints><allowempty>true</allowempty></constraints>
 					<visible>false</visible>
@@ -594,7 +664,7 @@
 					<control type="button" format="action"><close>true</close></control>
 				</setting>
 				<setting id="lsLastRefresh" type="string" label="30984" help="">
-					<level>3</level>
+					<level>2</level>
 					<default>0</default>
 					<visible>false</visible>
 					<control type="edit" format="string"/>
@@ -604,12 +674,12 @@
 		<category id="updates" label="14303" help="">
 			<group id="resolver.updates" label="30030">
 				<setting id="repositoryUpdateResolver" type="boolean" label="30015" help="30411">
-					<level>0</level>
+					<level>2</level>
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="resolver.branch" type="string" label="30098" help="30101">
-					<level>0</level>
+					<level>2</level>
 					<default>release</default>
 					<constraints>
 						<options>
@@ -625,7 +695,7 @@
 			</group>
 			<group id="notification" label="30270">
 				<setting id="update.notification" type="string" label="30271" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>full</default>
 					<constraints>
 						<options>
@@ -636,12 +706,12 @@
 					<control type="spinner" format="string"/>
 				</setting>
 				<setting id="popup.update.notification" type="boolean" label="30274" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="start.popup.update.notification" type="action" label="30276" help="">
-					<level>0</level>
+					<level>2</level>
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=changelog)</data>
 					<control type="button" format="action">
 						<close>true</close>
@@ -661,7 +731,7 @@
 		<category id="account" label="30024" help="">
 			<group id="aniworldacc" label="30700">
 				<setting id="aniworld.user" type="string" label="30083" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -671,7 +741,7 @@
 					</control>
 				</setting>
 				<setting id="aniworld.pass" type="string" label="30084" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -684,7 +754,7 @@
 			</group>
 			<group id="serienstreamacc" label="30714">
 				<setting id="serienstream.user" type="string" label="30083" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -694,7 +764,7 @@
 					</control>
 				</setting>
 				<setting id="serienstream.pass" type="string" label="30084" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -707,7 +777,7 @@
 			</group>
 			<group id="proxeracc" label="30837">
 				<setting id="proxer.user" type="string" label="30083" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -717,7 +787,7 @@
 					</control>
 				</setting>
 				<setting id="proxer.pass" type="string" label="30084" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -747,7 +817,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_aniworld" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_aniworld">False</dependency>
@@ -755,7 +825,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_aniworld_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_aniworld">False</dependency>
@@ -771,6 +841,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_aniworld">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_aniworld_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=aniworld)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_aniworld">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_aniworld">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_aniworld_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -822,7 +903,7 @@
 
 				<setting id="plugin_aniworld.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=aniworld&amp;function=showDomains)</data>
 
@@ -891,7 +972,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_api_all" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_api_all">False</dependency>
@@ -899,7 +980,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_api_all_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_api_all">False</dependency>
@@ -907,7 +988,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="apiAllPosition" type="string" label="30912" help="30913">
-					<level>0</level>
+					<level>2</level>
 					<default>top</default>
 					<constraints>
 						<options>
@@ -916,6 +997,17 @@
 						</options>
 					</constraints>
 					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="plugin_api_all_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=api_all)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_api_all">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_api_all">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_api_all_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -946,7 +1038,7 @@
 					</control>
 				</setting>
 				<setting id="plugin_api_all.domain" type="string" label="30278" help="">
-					<level>0</level>
+					<level>3</level>
 					<default>kinokiste.eu</default>
 					<constraints>
 						<options>
@@ -973,7 +1065,7 @@
 
 				<setting id="plugin_api_all.domainMenu" type="action" label="30866" help="30867">
 
-					<level>0</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=api_all&amp;function=showDomains)</data>
 
@@ -995,7 +1087,7 @@
 
 				<setting id="plugin_api_all.domainCustom" type="string" label="30278" help="">
 
-					<level>0</level>
+					<level>3</level>
 
 					<default/>
 
@@ -1042,7 +1134,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_burningseries" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_burningseries">False</dependency>
@@ -1050,7 +1142,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_burningseries_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_burningseries">False</dependency>
@@ -1066,6 +1158,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_burningseries">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_burningseries_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=burningseries)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_burningseries">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_burningseries">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_burningseries_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -1118,7 +1221,7 @@
 
 				<setting id="plugin_burningseries.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=burningseries&amp;function=showDomains)</data>
 
@@ -1168,7 +1271,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_dokus4me_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_dokus4me">False</dependency>
@@ -1185,7 +1288,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="dokus4me.youtube" type="action" label="30431" help="">
-					<level>0</level>
+					<level>2</level>
 					<data>Addon.OpenSettings(plugin.video.youtube)</data>
 					<control type="button" format="action">
 						<close>true</close>
@@ -1195,7 +1298,7 @@
 					</dependencies>
 				</setting>
 				<setting id="global_search_dokus4me" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<visible>False</visible><!-- versteckt -->
 					<dependencies>
@@ -1220,7 +1323,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_einschalten" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_einschalten">False</dependency>
@@ -1228,7 +1331,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_einschalten_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_einschalten">False</dependency>
@@ -1243,6 +1346,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_einschalten">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_einschalten_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=einschalten)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_einschalten">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_einschalten">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_einschalten_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -1289,7 +1403,7 @@
 
 				<setting id="plugin_einschalten.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=einschalten&amp;function=showDomains)</data>
 
@@ -1349,7 +1463,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_filmpalast_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_filmpalast">False</dependency>
@@ -1366,7 +1480,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_filmpalast" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_filmpalast">false</dependency>
@@ -1382,6 +1496,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_filmpalast">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_filmpalast_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=filmpalast)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_filmpalast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_filmpalast">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_filmpalast_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -1428,7 +1553,7 @@
 
 				<setting id="plugin_filmpalast.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=filmpalast&amp;function=showDomains)</data>
 
@@ -1497,7 +1622,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_hdfilme" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_hdfilme">False</dependency>
@@ -1505,7 +1630,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_hdfilme_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_hdfilme">False</dependency>
@@ -1521,6 +1646,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_hdfilme">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_hdfilme_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=hdfilme)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_hdfilme">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_hdfilme">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_hdfilme_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -1567,7 +1703,7 @@
 
 				<setting id="plugin_hdfilme.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=hdfilme&amp;function=showDomains)</data>
 
@@ -1636,7 +1772,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_hdfilme_1" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_hdfilme_1">False</dependency>
@@ -1644,7 +1780,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_hdfilme_1_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_hdfilme_1">False</dependency>
@@ -1660,6 +1796,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_hdfilme_1">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_hdfilme_1_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=hdfilme_1)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_hdfilme_1">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_hdfilme_1">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_hdfilme_1_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -1712,7 +1859,7 @@
 
 				<setting id="plugin_hdfilme_1.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=hdfilme_1&amp;function=showDomains)</data>
 
@@ -1771,7 +1918,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_internetarchive" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_internetarchive">False</dependency>
@@ -1779,12 +1926,23 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_internetarchive_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_internetarchive">False</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_internetarchive_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=internetarchive)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_internetarchive">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_internetarchive">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_internetarchive_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -1827,7 +1985,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_kids_tube_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kids_tube">False</dependency>
@@ -1844,7 +2002,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="kids_tube.youtube" type="action" label="30431" help="">
-					<level>0</level>
+					<level>2</level>
 					<data>Addon.OpenSettings(plugin.video.youtube)</data>
 					<control type="button" format="action">
 						<close>true</close>
@@ -1854,7 +2012,7 @@
 					</dependencies>
 				</setting>
 				<setting id="global_search_kids_tube" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<visible>False</visible><!-- versteckt -->
 					<dependencies>
@@ -1879,7 +2037,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_kinoger" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kinoger">False</dependency>
@@ -1887,7 +2045,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_kinoger_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kinoger">False</dependency>
@@ -1903,6 +2061,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_kinoger">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinoger_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=kinoger)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoger">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoger">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_kinoger_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -1951,7 +2120,7 @@
 
 				<setting id="plugin_kinoger.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=kinoger&amp;function=showDomains)</data>
 
@@ -2020,7 +2189,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_kinokiste" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kinokiste">False</dependency>
@@ -2028,7 +2197,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_kinokiste_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kinokiste">False</dependency>
@@ -2044,6 +2213,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_kinokiste">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinokiste_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=kinokiste)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinokiste">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinokiste">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_kinokiste_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -2090,7 +2270,7 @@
 
 				<setting id="plugin_kinokiste.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=kinokiste&amp;function=showDomains)</data>
 
@@ -2159,7 +2339,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_kinox" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kinox">False</dependency>
@@ -2167,7 +2347,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_kinox_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kinox">False</dependency>
@@ -2183,6 +2363,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_kinox">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinox_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=kinox)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinox">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinox">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_kinox_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -2242,7 +2433,7 @@
 
 				<setting id="plugin_kinox.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=kinox&amp;function=showDomains)</data>
 
@@ -2314,7 +2505,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_kkiste" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kkiste">False</dependency>
@@ -2322,7 +2513,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_kkiste_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kkiste">False</dependency>
@@ -2338,6 +2529,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_kkiste">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kkiste_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=kkiste)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kkiste">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kkiste">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_kkiste_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -2384,7 +2586,7 @@
 
 				<setting id="plugin_kkiste.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=kkiste&amp;function=showDomains)</data>
 
@@ -2453,7 +2655,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_megakino" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_megakino">False</dependency>
@@ -2461,7 +2663,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_megakino_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_megakino">False</dependency>
@@ -2477,6 +2679,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_megakino">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_megakino_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=megakino)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_megakino">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_megakino">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_megakino_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -2523,7 +2736,7 @@
 
 				<setting id="plugin_megakino.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=megakino&amp;function=showDomains)</data>
 
@@ -2583,7 +2796,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_moflix-stream_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_moflix-stream">False</dependency>
@@ -2600,7 +2813,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_moflix-stream" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_moflix-stream">False</dependency>
@@ -2616,6 +2829,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_moflix-stream">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_moflix-stream_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=moflix-stream)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_moflix-stream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_moflix-stream">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_moflix-stream_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -2662,7 +2886,7 @@
 
 				<setting id="plugin_moflix-stream.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=moflix-stream&amp;function=showDomains)</data>
 
@@ -2722,7 +2946,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_movie2k_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_movie2k">False</dependency>
@@ -2739,7 +2963,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_movie2k" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_movie4k">False</dependency>
@@ -2755,6 +2979,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_movie2k">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_movie2k_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=movie2k)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_movie2k">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_movie2k">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_movie2k_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -2801,7 +3036,7 @@
 
 				<setting id="plugin_movie2k.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=movie2k&amp;function=showDomains)</data>
 
@@ -2870,7 +3105,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_movie4k" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_movie4k">False</dependency>
@@ -2878,7 +3113,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_movie4k_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_movie4k">False</dependency>
@@ -2894,6 +3129,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_movie4k">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_movie4k_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=movie4k)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_movie4k">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_movie4k">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_movie4k_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -2940,7 +3186,7 @@
 
 				<setting id="plugin_movie4k.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=movie4k&amp;function=showDomains)</data>
 
@@ -3009,7 +3255,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_netzkino" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_netzkino">False</dependency>
@@ -3017,7 +3263,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_netzkino_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_netzkino">False</dependency>
@@ -3041,7 +3287,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_serienstream" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_serienstream">False</dependency>
@@ -3049,7 +3295,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_serienstream_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_serienstream">False</dependency>
@@ -3065,6 +3311,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_serienstream">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_serienstream_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=serienstream)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_serienstream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_serienstream">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_serienstream_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -3116,7 +3373,7 @@
 
 				<setting id="plugin_serienstream.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=serienstream&amp;function=showDomains)</data>
 
@@ -3185,7 +3442,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_streamcloud" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_streamcloud">False</dependency>
@@ -3193,7 +3450,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_streamcloud_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_streamcloud">False</dependency>
@@ -3209,6 +3466,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_streamcloud">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_streamcloud_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=streamcloud)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_streamcloud">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_streamcloud">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_streamcloud_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -3260,7 +3528,7 @@
 
 				<setting id="plugin_streamcloud.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=streamcloud&amp;function=showDomains)</data>
 
@@ -3310,7 +3578,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_topstreamfilm_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_topstreamfilm">False</dependency>
@@ -3327,7 +3595,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_topstreamfilm" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_topstreamfilm">false</dependency>
@@ -3343,6 +3611,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_topstreamfilm">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_topstreamfilm_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=topstreamfilm)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_topstreamfilm">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_topstreamfilm">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_topstreamfilm_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -3389,7 +3668,7 @@
 
 				<setting id="plugin_topstreamfilm.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=topstreamfilm&amp;function=showDomains)</data>
 
@@ -3458,7 +3737,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_xcine" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_xcine">False</dependency>
@@ -3466,7 +3745,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_xcine_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_xcine">False</dependency>
@@ -3482,6 +3761,17 @@
 						<dependency type="visible" operator="!is" setting="plugin_xcine">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_xcine_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=xcine)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_xcine">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_xcine">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_xcine_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -3533,7 +3823,7 @@
 
 				<setting id="plugin_xcine.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=xcine&amp;function=showDomains)</data>
 
@@ -3587,7 +3877,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_mediaccc" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_mediaccc">False</dependency>
@@ -3595,7 +3885,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_mediaccc_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_mediaccc">False</dependency>
@@ -3614,6 +3904,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_mediaccc_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=mediaccc)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_mediaccc">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_mediaccc">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_mediaccc_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -3660,7 +3961,7 @@
 
 				<setting id="plugin_mediaccc.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=mediaccc&amp;function=showDomains)</data>
 
@@ -3724,7 +4025,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_ardmediathek" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_ardmediathek">False</dependency>
@@ -3732,7 +4033,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_ardmediathek_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_ardmediathek">False</dependency>
@@ -3751,6 +4052,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_ardmediathek_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=ardmediathek)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_ardmediathek">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_ardmediathek">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_ardmediathek_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -3797,7 +4109,7 @@
 
 				<setting id="plugin_ardmediathek.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=ardmediathek&amp;function=showDomains)</data>
 
@@ -3861,7 +4173,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_arte" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_arte">False</dependency>
@@ -3869,7 +4181,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_arte_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_arte">False</dependency>
@@ -3888,6 +4200,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_arte_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=arte)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_arte">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_arte">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_arte_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -3934,7 +4257,7 @@
 
 				<setting id="plugin_arte.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=arte&amp;function=showDomains)</data>
 
@@ -3998,7 +4321,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_kinoking" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kinoking">False</dependency>
@@ -4006,7 +4329,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_kinoking_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kinoking">False</dependency>
@@ -4025,6 +4348,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kinoking_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=kinoking)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kinoking">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kinoking">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_kinoking_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -4071,7 +4405,7 @@
 
 				<setting id="plugin_kinoking.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=kinoking&amp;function=showDomains)</data>
 
@@ -4135,7 +4469,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_animetoast" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_animetoast">False</dependency>
@@ -4143,7 +4477,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_animetoast_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_animetoast">False</dependency>
@@ -4162,6 +4496,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animetoast_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=animetoast)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animetoast">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animetoast">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_animetoast_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -4208,7 +4553,7 @@
 
 				<setting id="plugin_animetoast.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=animetoast&amp;function=showDomains)</data>
 
@@ -4272,7 +4617,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_animeloads" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_animeloads">False</dependency>
@@ -4280,7 +4625,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_animeloads_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_animeloads">False</dependency>
@@ -4299,6 +4644,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animeloads_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=animeloads)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animeloads">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animeloads">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_animeloads_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -4345,7 +4701,7 @@
 
 				<setting id="plugin_animeloads.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=animeloads&amp;function=showDomains)</data>
 
@@ -4409,7 +4765,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_kayoanime" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kayoanime">False</dependency>
@@ -4417,7 +4773,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_kayoanime_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kayoanime">False</dependency>
@@ -4436,6 +4792,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kayoanime_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=kayoanime)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kayoanime">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kayoanime">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_kayoanime_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -4482,7 +4849,7 @@
 
 				<setting id="plugin_kayoanime.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=kayoanime&amp;function=showDomains)</data>
 
@@ -4546,7 +4913,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_animestream" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_animestream">False</dependency>
@@ -4554,7 +4921,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_animestream_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_animestream">False</dependency>
@@ -4573,6 +4940,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_animestream_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=animestream)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_animestream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_animestream">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_animestream_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -4619,7 +4997,7 @@
 
 				<setting id="plugin_animestream.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=animestream&amp;function=showDomains)</data>
 
@@ -4683,7 +5061,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_anime4" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_anime4">False</dependency>
@@ -4691,7 +5069,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_anime4_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_anime4">False</dependency>
@@ -4710,6 +5088,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_anime4_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=anime4)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_anime4">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_anime4">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_anime4_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -4756,7 +5145,7 @@
 
 				<setting id="plugin_anime4.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=anime4&amp;function=showDomains)</data>
 
@@ -4820,7 +5209,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_proxer" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_proxer">False</dependency>
@@ -4828,7 +5217,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_proxer_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_proxer">False</dependency>
@@ -4847,6 +5236,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_proxer_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=proxer)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_proxer">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_proxer">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_proxer_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -4893,7 +5293,7 @@
 
 				<setting id="plugin_proxer.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=proxer&amp;function=showDomains)</data>
 
@@ -4957,7 +5357,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_mediathekviewweb" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_mediathekviewweb">False</dependency>
@@ -4965,7 +5365,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_mediathekviewweb_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_mediathekviewweb">False</dependency>
@@ -4984,6 +5384,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_mediathekviewweb_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=mediathekviewweb)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_mediathekviewweb">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_mediathekviewweb">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_mediathekviewweb_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -5030,7 +5441,7 @@
 
 				<setting id="plugin_mediathekviewweb.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=mediathekviewweb&amp;function=showDomains)</data>
 
@@ -5094,7 +5505,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_flashmoviez" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_flashmoviez">False</dependency>
@@ -5102,7 +5513,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_flashmoviez_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_flashmoviez">False</dependency>
@@ -5121,6 +5532,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_flashmoviez_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=flashmoviez)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_flashmoviez">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_flashmoviez">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_flashmoviez_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -5167,7 +5589,7 @@
 
 				<setting id="plugin_flashmoviez.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=flashmoviez&amp;function=showDomains)</data>
 
@@ -5231,7 +5653,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_flixitvstream" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_flixitvstream">False</dependency>
@@ -5239,7 +5661,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_flixitvstream_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_flixitvstream">False</dependency>
@@ -5258,6 +5680,17 @@
 					<visible>false</visible>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_flixitvstream_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=flixitvstream)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_flixitvstream">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_flixitvstream">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_flixitvstream_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -5304,7 +5737,7 @@
 
 				<setting id="plugin_flixitvstream.domainMenu" type="action" label="30866" help="30867">
 
-					<level>3</level>
+					<level>2</level>
 
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=flixitvstream&amp;function=showDomains)</data>
 
@@ -5361,7 +5794,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_huhu_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_huhu">False</dependency>
@@ -5378,12 +5811,23 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_huhu" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_huhu">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_huhu_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=huhu)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_huhu">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_huhu">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_huhu_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -5426,7 +5870,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_kool_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kool">False</dependency>
@@ -5443,12 +5887,23 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_kool" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_kool">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_kool_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=kool)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_kool">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_kool">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_kool_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -5491,7 +5946,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_oha_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_oha">False</dependency>
@@ -5508,12 +5963,23 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_oha" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_oha">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_oha_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=oha)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_oha">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_oha">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_oha_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -5556,7 +6022,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="plugin_vavoo_visible" type="boolean" label="30848" help="30849">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_vavoo">False</dependency>
@@ -5573,12 +6039,23 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="global_search_vavoo" type="boolean" label="30052">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="plugin_vavoo">false</dependency>
 					</dependencies>
 					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_vavoo_cookieAssistant" type="action" label="31470" help="31480">
+					<level>2</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=cookieAssistant&amp;source=vavoo)</data>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plugin_vavoo">false</dependency>
+						<dependency type="visible" operator="!is" setting="plugin_vavoo">false</dependency>
+					</dependencies>
+					<control type="button" format="action">
+						<close>true</close>
+					</control>
 				</setting>
 				<setting id="plugin_vavoo_bypassCookie" type="string" label="30826" help="30828">
 					<level>3</level>
@@ -5623,7 +6100,7 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="metaOverwrite" type="boolean" label="30008" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>True</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="TMDBMETA">False</dependency>
@@ -5631,6 +6108,14 @@
 					<control type="toggle"/>
 				</setting>
 				<setting id="advanced" type="boolean" label="30044" help="">
+					<level>2</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="TMDBMETA">False</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plotExtras" type="boolean" label="31460" help="31464">
 					<level>0</level>
 					<default>False</default>
 					<dependencies>
@@ -5638,8 +6123,21 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+				<setting id="omdbApiKey" type="string" label="31465" help="31466">
+					<level>1</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="plotExtras">False</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>31465</heading>
+					</control>
+				</setting>
 				<setting id="poster_tmdb" type="string" label="30170" help="">
-					<level>0</level>
+					<level>2</level>
 					<default>w342</default>
 					<constraints>
 						<options>
@@ -5657,7 +6155,7 @@
 					</control>
 				</setting>
 				<setting id="backdrop_tmdb" type="string" label="30171" help="">
-					<level>0</level>
+					<level>2</level>
 					<default>w1280</default>
 					<constraints>
 						<options>
@@ -5674,7 +6172,7 @@
 			</group>
 			<group id="extentedtmdbhandler" label="30080">
 				<setting id="tmdb_lang" type="string" label="30172" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>de</default>
 					<constraints>
 						<options>
@@ -5728,7 +6226,7 @@
 					</control>
 				</setting>
 				<setting id="Color" type="string" label="30133" help="">
-					<level>0</level>
+					<level>2</level>
 					<default>lightblue</default>
 					<constraints>
 						<options>
@@ -5764,12 +6262,12 @@
 		<category id="view" label="30022" help="">
 			<group id="views" label="30022">
 				<setting id="auto-view" type="boolean" label="30060" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="files-view" type="integer" label="30061" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>55</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="auto-view">False</dependency>
@@ -5779,7 +6277,7 @@
 					</control>
 				</setting>
 				<setting id="movies-view" type="integer" label="30062" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>503</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="auto-view">False</dependency>
@@ -5789,7 +6287,7 @@
 					</control>
 				</setting>
 				<setting id="tvshows-view" type="integer" label="30063" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>503</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="auto-view">False</dependency>
@@ -5799,7 +6297,7 @@
 					</control>
 				</setting>
 				<setting id="seasons-view" type="integer" label="30064" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>504</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="auto-view">False</dependency>
@@ -5809,7 +6307,7 @@
 					</control>
 				</setting>
 				<setting id="episodes-view" type="integer" label="30065" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>504</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="auto-view">False</dependency>
@@ -5823,7 +6321,7 @@
 		<category id="recaptcha" label="30323" help="">
 			<group id="capcha_services" label="30328">
 				<setting id="captcha.provider" type="string" label="30326" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<options>
@@ -5835,7 +6333,7 @@
 					<control type="spinner" format="string"/>
 				</setting>
 				<setting id="captcha.timeout" type="string" label="30329" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>120</default>
 					<control type="edit" format="integer">
 					<heading>30329</heading>
@@ -5844,7 +6342,7 @@
 			</group>
 			<group id="2captchaacc" label="30324">
 				<setting id="2captcha.pass" type="string" label="30436" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -5857,12 +6355,12 @@
 			</group>
 			<group id="9kwacc" label="30325">
 				<setting id="9kw.selfsolve" type="boolean" label="30327" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="9kw.pass" type="string" label="30436" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -5887,19 +6385,19 @@
 					</control>
 				</setting>
 				<setting id="backgrounddownload" type="boolean" label="30132" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 			</group>
 			<group id="downloadplugins" label="30070">
 				<setting id="jd_enabled" type="boolean" label="30071" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="jd_host" type="string" label="30072" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>127.0.0.1</default>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -5912,7 +6410,7 @@
 					</control>
 				</setting>
 				<setting id="jd_port" type="integer" label="30073" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>10025</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="jd_enabled">False</dependency>
@@ -5924,12 +6422,12 @@
 			</group>
 			<group id="downloadplugins1" label="30076">
 				<setting id="jd2_enabled" type="boolean" label="30077" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="jd2_host" type="string" label="30072" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>127.0.0.1</default>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -5942,7 +6440,7 @@
 					</control>
 				</setting>
 				<setting id="jd2_port" type="integer" label="30073" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>9666</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="jd2_enabled">False</dependency>
@@ -5954,12 +6452,12 @@
 			</group>
 			<group id="downloadplugins2" label="30090">
 				<setting id="myjd_enabled" type="boolean" label="30091" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="myjd_device" type="string" label="30092" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>JDownloader@Device</default>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -5972,7 +6470,7 @@
 					</control>
 				</setting>
 				<setting id="myjd_user" type="string" label="30083" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>example@example.com</default>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -5985,7 +6483,7 @@
 					</control>
 				</setting>
 				<setting id="myjd_pass" type="string" label="30084" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -6001,12 +6499,12 @@
 			</group>
 			<group id="downloadplugins3" label="30257">
 				<setting id="pyload_enabled" type="boolean" label="30082" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="pyload_host" type="string" label="30072" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>127.0.0.1</default>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -6019,7 +6517,7 @@
 					</control>
 				</setting>
 				<setting id="pyload_port" type="integer" label="30073" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>8000</default>
 					<dependencies>
 						<dependency type="enable" operator="!is" setting="pyload_enabled">False</dependency>
@@ -6029,7 +6527,7 @@
 					</control>
 				</setting>
 				<setting id="pyload_user" type="string" label="30083" help="">
-					<level>0</level>
+					<level>1</level>
 					<default>user</default>
 					<constraints>
 						<allowempty>true</allowempty>
@@ -6042,7 +6540,7 @@
 					</control>
 				</setting>
 				<setting id="pyload_passwd" type="string" label="30084" help="">
-					<level>0</level>
+					<level>1</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>

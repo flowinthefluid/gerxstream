@@ -32,3 +32,25 @@ def clean_settings():
 def set_setting(sid, value):
     from resources.lib.config import cConfig
     cConfig().setSetting(sid, value)
+
+
+@pytest.fixture
+def real_strings(monkeypatch):
+    """Echte deutsche Texte statt '#ID' (fuer Code mit %-Platzhaltern)."""
+    import io
+    import re
+    from resources.lib.config import cConfig
+    path = os.path.join(_REPO_ROOT, 'resources', 'language', 'resource.language.de_de', 'strings.po')
+    text = io.open(path, encoding='utf-8').read()
+    strings = dict((int(sid), value.replace('\\"', '"'))
+                   for sid, value in re.findall(r'msgctxt "#(\d+)"\s+msgid "[^\n]*"\s+msgstr "([^\n]*)"', text))
+    monkeypatch.setattr(cConfig, 'getLocalizedString', lambda self, sid: strings.get(int(sid), ''))
+    return strings
+
+
+@pytest.fixture(autouse=True)
+def no_pluto_network(monkeypatch):
+    """Tests laden nie die echte Pluto-Senderliste aus dem Netz."""
+    from resources.lib.livestreams.providers import pluto
+    monkeypatch.setattr(pluto.PlutoProvider, 'channels', lambda self: [])
+    monkeypatch.setattr(pluto, 'refresh', lambda force=False: -1)

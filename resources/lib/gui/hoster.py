@@ -23,6 +23,9 @@ class cHosterGui:
     def __init__(self):
         self.maxHoster = cConfig().getSettingInt('maxHoster', 100)
         self.dialog = False
+        # Wird gesetzt, sobald Kodi einen Stream erhalten hat. Danach darf kein
+        # weiterer Hoster mehr versucht werden: Kodi hat das Ergebnis bereits.
+        self._playbackHandled = False
 
     # TODO: unify parts of play, download etc.
     def _getInfoAndResolve(self, siteResult):
@@ -164,6 +167,8 @@ class cHosterGui:
         targets = episodequeue.getTargets(params.getValue('episodeQueue'))
         if targets and index >= len(targets) - 1:
             xbmcgui.Window(10000).clearProperty(cls.EPISODE_PLAYLIST_PROPERTY)
+            from resources.lib import hosterprefs
+            hosterprefs.forgetSticky()
 
     def play(self, siteResult=False):
         logger.info('-> [hoster]: attempt to play file')
@@ -232,6 +237,7 @@ class cHosterGui:
         # only to obtain their resolved stream. They must return immediately;
         # waiting for their playback would block the playlist transition.
         if self._isNativeEpisodePlaylistItem(params):
+            self._playbackHandled = True
             if cGui().pluginHandle > 0:
                 xbmcplugin.setResolvedUrl(cGui().pluginHandle, True, list_item)
             else:
@@ -240,6 +246,7 @@ class cHosterGui:
             return True
 
         pluginHandle = cGui().pluginHandle
+        self._playbackHandled = True
         if pluginHandle > 0:
             self._queueFollowingEpisodes(params)
             # Kodi is already opening this playable item. Resolving it is the
@@ -412,7 +419,76 @@ class cHosterGui:
             hosterQueue.append(hoster)
         return hosterQueue
 
-    def stream(self, playMode, siteName, function, url):
+    def _applyPreferences(self, hosters, siteName, manual=False):
+        """Sortiert/filtert nach den bevorzugten Hostern dieser Quelle."""
+        from resources.lib import hosterprefs
+        mode = hosterprefs.mode()
+        preferred = hosterprefs.forSite(siteName) if mode != hosterprefs.MODE_OFF else []
+        if not preferred:
+            return hosters
+        if mode == hosterprefs.MODE_ONLY and not manual:
+            only = hosterprefs.onlyPreferred(hosters, preferred)
+            if only:
+                return only
+            # Lieber alle zeigen als eine leere Auswahl, die wie ein Fehler aussieht.
+            cGui().showInfo('GerXStream', cConfig().getLocalizedString(31408), 4)
+        return hosterprefs.reorder(hosters, preferred)
+
+    def _automaticCandidates(self, hosters, siteName, params):
+        """Hoster, die ohne Rueckfrage probiert werden duerfen (in Reihenfolge)."""
+        from resources.lib import hosterprefs
+        if hosterprefs.stickyEnabled() and self._isNativeEpisodePlaylistItem(params):
+            remembered = hosterprefs.sticky(params.getValue('episodeQueue'), siteName)
+            candidates = hosterprefs.stickyCandidates(hosters, remembered)
+            if candidates:
+                return candidates
+        if hosterprefs.mode() == hosterprefs.MODE_AUTO:
+            return hosterprefs.onlyPreferred(hosters, hosterprefs.forSite(siteName))
+        return []
+
+    @staticmethod
+    def _rememberChoice(params, siteName, hoster):
+        """Merkt den gewaehlten Hoster fuer die folgenden Episoden dieser Liste."""
+        from resources.lib import hosterprefs
+        if not hosterprefs.stickyEnabled():
+            return
+        queueId = params.getValue('episodeQueue')
+        if queueId and params.getValue('episodeIndex') not in (False, None, ''):
+            hosterprefs.rememberSticky(queueId, siteName, hoster)
+
+    def _tryHosters(self, plugin, functionName, candidates, siteName, params):
+        """Startet den ersten funktionierenden Hoster aus ``candidates``.
+
+        Liefert True, wenn Kodi einen Stream bekommen hat (oder der Nutzer
+        abgebrochen hat); False, wenn keiner ging und gefragt werden soll.
+        """
+        for hoster in candidates[:5]:
+            if (self.dialog and self.dialog.iscanceled()) or xbmc.Monitor().abortRequested():
+                return True
+            name = hoster.get('displayedName') or hoster.get('name', '')
+            logger.info('-> [hoster]: automatic hoster %s' % hoster.get('name', ''))
+            try:
+                self.dialog.update(70, cConfig().getLocalizedString(30147) + ' %s' % name)
+            except Exception:
+                pass
+            try:
+                links = getattr(plugin, functionName)(hoster['link'])
+            except Exception as e:
+                logger.error('-> [hoster]: automatic hoster failed (%s)' % type(e).__name__)
+                continue
+            if not isinstance(links, list):
+                links = [links]
+            if not links or not isinstance(links[0], dict):
+                continue
+            part = links[0] if len(links) == 1 else self._choosePart(links)
+            if not part:
+                return True
+            self._rememberChoice(params, siteName, hoster)
+            if self.play(part) or self._playbackHandled:
+                return True
+        return False
+
+    def stream(self, playMode, siteName, function, url, manual=False):
         self.dialog = xbmcgui.DialogProgress()
         try:
             self.dialog.create('GerXStream', cConfig().getLocalizedString(30138))
@@ -452,12 +528,20 @@ class cHosterGui:
                 if not siteResult:
                     cGui().showInfo('GerXStream', cConfig().getLocalizedString(30144))
                     return False
+                from resources.lib import hosterprefs
+                hosterprefs.rememberSeen(siteName, siteResult)
+                siteResult = self._applyPreferences(siteResult, siteName, manual)
                 self.dialog.update(90)
                 if len(siteResult) > self.maxHoster:
                     siteResult = siteResult[:self.maxHoster - 1]
                 if cConfig().getSetting('hosterSelect') == 'List':
                     self.showHosterFolder(siteResult, siteName, functionName)
                     return
+                params = ParameterHandler()
+                if playMode == 'play' and not manual:
+                    candidates = self._automaticCandidates(siteResult, siteName, params)
+                    if candidates and self._tryHosters(plugin, functionName, candidates, siteName, params):
+                        return
                 if len(siteResult) > 1:
                     # choose hoster
                     siteResult = self._chooseHoster(siteResult)
@@ -465,6 +549,8 @@ class cHosterGui:
                         return
                 else:
                     siteResult = siteResult[0]
+                if playMode == 'play':
+                    self._rememberChoice(params, siteName, siteResult)
                 # get stream links
                 logger.info(siteResult['link'])
                 function = getattr(plugin, functionName)
@@ -543,6 +629,14 @@ class cHosterGui:
                 self.dialog.close()
                 cGui().showInfo('GerXStream', cConfig().getLocalizedString(30144))
                 return False
+            from resources.lib import hosterprefs
+            hosterprefs.rememberSeen(siteName, hosters)
+            hosters = self._applyPreferences(hosters, siteName)
+            params = ParameterHandler()
+            # Der Hoster der ersten Folge wird auch hier zuerst probiert.
+            preferredFirst = [hoster for hoster in self._automaticCandidates(hosters, siteName, params)
+                              if hoster in hosters]
+            hosters = preferredFirst + [hoster for hoster in hosters if hoster not in preferredFirst]
             if len(siteResult) > self.maxHoster:
                 siteResult = siteResult[:self.maxHoster - 1]
             check = False
@@ -558,6 +652,8 @@ class cHosterGui:
                     # get stream links
                     function = getattr(plugin, functionName)
                     siteResult = function(hoster['link'])
+                    if playMode == 'play':
+                        self._rememberChoice(params, siteName, hoster)
                     check = self.__autoEnqueue(siteResult, playMode)
                     if check:
                         return True
@@ -591,11 +687,13 @@ class cHosterGui:
             return False
 
     def _choosePart(self, siteResult):
-        self.dialog = xbmcgui.Dialog()
+        # Eigene Variable: self.dialog ist der Fortschrittsdialog und wird
+        # danach noch mit create()/update() weiterverwendet.
+        dialog = xbmcgui.Dialog()
         titles = []
         for result in siteResult:
             titles.append(str(result['title']))
-        index = self.dialog.select(cConfig().getLocalizedString(30150), titles)
+        index = dialog.select(cConfig().getLocalizedString(30150), titles)
         if index > -1:
             siteResult = siteResult[index]
             return siteResult

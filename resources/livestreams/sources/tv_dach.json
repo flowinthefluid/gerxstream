@@ -1,0 +1,6680 @@
+{
+ "version": 1,
+ "_comment": "Erzeugt mit tools/build_tv_catalog.py am 2026-09-26 aus iptv-org (de, at, ch). Nur Streams auf Sender- bzw. Verbreiter-Servern; jeder Stream geprueft.",
+ "channels": [
+  {
+   "id": "gxs:tv:at:arte-germany",
+   "name": "arte (Germany)",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "arte-germany",
+   "logo": "https://i.imgur.com/ecXMjNl.png",
+   "epg_id": "arte.de@SD",
+   "sources": [
+    {
+     "source_id": "arte-germany-hls",
+     "url": "https://artesimulcast.akamaized.net/hls/live/2030993/artelive_de/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:hitradio-o3",
+   "name": "Hitradio O3",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "hitradio-o3",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Hitradio_%C3%963.svg/960px-Hitradio_%C3%963.svg.png",
+   "epg_id": "HitradioO3.at@SD",
+   "sources": [
+    {
+     "source_id": "hitradio-o3-dash",
+     "url": "https://studiocam-oe3.mdn.ors.at/orf/studiocam_oe3/q6a/manifest.mpd",
+     "protocol": "dash",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:ndr-fernsehen-international",
+   "name": "NDR Fernsehen International",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ndr-fernsehen-international",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Logo_NDR_Fernsehen_2017.svg/960px-Logo_NDR_Fernsehen_2017.svg.png",
+   "epg_id": "NDRFernsehenInternational.de@SD",
+   "sources": [
+    {
+     "source_id": "ndr-fernsehen-international-hls",
+     "url": "https://ndrint.akamaized.net/hls/live/2020766/ndr_int/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:orf-iii-hd",
+   "name": "ORF III HD",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "orf-iii-hd",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/ORF_III_Logo_Monochrom.svg/960px-ORF_III_Logo_Monochrom.svg.png",
+   "epg_id": "ORFIII.at@HD",
+   "sources": [
+    {
+     "source_id": "orf-iii-hd-hls",
+     "url": "https://orf3.mdn.ors.at/orf/orf3/qxa/manifest.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:orf-kids",
+   "name": "ORF Kids",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "kids",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "orf-kids",
+   "logo": "https://i.imgur.com/Zxuah2b.png",
+   "epg_id": "ORFKids.at@SD",
+   "sources": [
+    {
+     "source_id": "orf-kids-dash",
+     "url": "https://web12.mdn.ors.at/orf/web12/qxa/manifest.mpd",
+     "protocol": "dash",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:antenne-k-rnten",
+   "name": "Antenne Kärnten",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "antenne-k-rnten",
+   "logo": "https://i.imgur.com/nUKFDsb.jpeg",
+   "epg_id": "AntenneKaernten.at@SD",
+   "sources": [
+    {
+     "source_id": "antenne-k-rnten-hls",
+     "url": "https://60efd7a2b4d02.streamlock.net/a_kaernten/ngrp:livestream_all/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:antenne-steiermark",
+   "name": "Antenne Steiermark",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "antenne-steiermark",
+   "logo": "https://i.imgur.com/qnappvd.jpeg",
+   "epg_id": "AntenneSteiermark.at@SD",
+   "sources": [
+    {
+     "source_id": "antenne-steiermark-hls",
+     "url": "https://60efd7a2b4d02.streamlock.net/a_steiermark/ngrp:livestream_all/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:at:fifa-german",
+   "name": "FIFA+ German",
+   "section": "sports",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "fifa-german",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/FIFA%2B_(2025).svg/960px-FIFA%2B_(2025).svg.png",
+   "epg_id": "FIFAPlus.uk@German",
+   "sources": [
+    {
+     "source_id": "fifa-german-hls",
+     "url": "https://4397879b.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWRlX0ZJRkFQbHVzR2VybWFuX0hMUw/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:fs1-salzburg",
+   "name": "FS1 Salzburg",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "fs1-salzburg",
+   "logo": "https://i.imgur.com/74gMaPK.png",
+   "epg_id": "FS1Salzburg.at@SD",
+   "sources": [
+    {
+     "source_id": "fs1-salzburg-hls",
+     "url": "http://stream.fs1.tv:8080/hls/webstream.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:k-tv",
+   "name": "K-TV",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "k-tv",
+   "logo": "https://i.imgur.com/RYbR4Sf.png",
+   "epg_id": "KTV.at@SD",
+   "sources": [
+    {
+     "source_id": "k-tv-hls",
+     "url": "https://d1pz8zear993v8.cloudfront.net/hlsme/kathtv.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:kit-tv",
+   "name": "KIT-TV",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "kit-tv",
+   "logo": "https://i.imgur.com/5rDo1Za.png",
+   "epg_id": "KITTV.at@SD",
+   "sources": [
+    {
+     "source_id": "kit-tv-hls",
+     "url": "https://everest.pa-hosting.de:3591/live/joseflive.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:kronehit",
+   "name": "Kronehit",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "kronehit",
+   "logo": "https://i.imgur.com/dQJQv1X.png",
+   "epg_id": "Kronehit.at@SD",
+   "sources": [
+    {
+     "source_id": "kronehit-hls",
+     "url": "https://bitcdn-kronehit.bitmovin.com/v2/hls/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:landle-tv",
+   "name": "Landle TV",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "landle-tv",
+   "logo": "https://i.imgur.com/omLVQ4r.png",
+   "epg_id": "LandleTV.at@SD",
+   "sources": [
+    {
+     "source_id": "landle-tv-hls",
+     "url": "https://streaming13.huberwebmedia.at/LiveApp/streams/985585225397790082777809.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:love-the-planet-de",
+   "name": "Love The Planet DE",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "love-the-planet-de",
+   "logo": "https://i.imgur.com/RBcD49X.png",
+   "epg_id": "LoveThePlanet.es@DE",
+   "sources": [
+    {
+     "source_id": "love-the-planet-de-hls",
+     "url": "https://amg01821-amg01821c12-rlaxx-gb-10461.playouts.now.amagi.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:nachrichten-360",
+   "name": "Nachrichten 360",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "news"
+   ],
+   "nsfw": false,
+   "publisher": "nachrichten-360",
+   "logo": "https://tvpnlogopeu.samsungcloud.tv/platform/image/sourcelogo/vc/00/02/34/DE4300003MR_20251209T125847SQUARE.png",
+   "epg_id": "Nachrichten360.de@HD",
+   "sources": [
+    {
+     "source_id": "nachrichten-360-hls",
+     "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01821-lovetvfast-nachrichten360-samsungde/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:okto",
+   "name": "Okto",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "okto",
+   "logo": "https://i.imgur.com/9XfhgbS.png",
+   "epg_id": "Okto.at@SD",
+   "sources": [
+    {
+     "source_id": "okto-hls",
+     "url": "https://cdn3.wowza.com/1/MHFtazJReW5rOFhP/N2NWNDZ2/hls/live/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:r9",
+   "name": "R9",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "r9",
+   "logo": "https://i.imgur.com/SVJiXxh.png",
+   "epg_id": "R9.at@SD",
+   "sources": [
+    {
+     "source_id": "r9-hls",
+     "url": "https://ms01.w24.at/R9/smil:liveeventR9.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:at:red-bull-tv",
+   "name": "Red Bull TV",
+   "section": "sports",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "nature",
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "red-bull-tv",
+   "logo": "https://images.pluto.tv/channels/5e7cb84a172a0f0007da69e4/colorLogoPNG.png",
+   "epg_id": "RedBullTV.at@DE",
+   "sources": [
+    {
+     "source_id": "red-bull-tv-hls",
+     "url": "https://46cfeb23c7f74853bba7a256655a3119.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-582-WORBDACHDEFAST-WHALETVPLUS/582/whaletvplus/hls/master/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:rtv-austria",
+   "name": "RTV (Austria)",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "rtv-austria",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/e/ed/RTV_OOE_Logo.png",
+   "epg_id": "RTV.at@SD",
+   "sources": [
+    {
+     "source_id": "rtv-austria-hls",
+     "url": "http://iptv.rtv-ooe.at/stream.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:schladming-dachstein-tv",
+   "name": "Schladming-Dachstein TV",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "nature"
+   ],
+   "nsfw": false,
+   "publisher": "schladming-dachstein-tv",
+   "logo": "https://i.ibb.co/VjnzhMM/Logo-Schl-Dachstein-TV-HP-JPG.jpg",
+   "epg_id": "SchladmingDachsteinTV.at@SD",
+   "sources": [
+    {
+     "source_id": "schladming-dachstein-tv-hls",
+     "url": "https://m317.video-stream-hosting.de/gzSoftware-live/_definst_/smil:livestream.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:servustv",
+   "name": "ServusTV",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "servustv",
+   "logo": "https://i.imgur.com/6W637Gn.png",
+   "epg_id": "ServusTV.at@SD",
+   "sources": [
+    {
+     "source_id": "servustv-hls",
+     "url": "https://stv-live.akamaized.net/hls/live/2031011/lingeoSTVATwebPri/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:steiermark-tv",
+   "name": "Steiermark TV",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "steiermark-tv",
+   "logo": "https://i.imgur.com/AJrUPze.png",
+   "epg_id": "SteiermarkTV.at@SD",
+   "sources": [
+    {
+     "source_id": "steiermark-tv-hls",
+     "url": "https://h056.video-stream-hosting.de/easycast8-live/_definst_/mp4:livestreamhd4/playlist.m3u8?ref=",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:swamiji-tv-american",
+   "name": "Swamiji TV American",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "nature"
+   ],
+   "nsfw": false,
+   "publisher": "swamiji-tv-american",
+   "logo": "https://i.imgur.com/nrLcuzs.png",
+   "epg_id": "SwamijiTVAmerican.at@SD",
+   "sources": [
+    {
+     "source_id": "swamiji-tv-american-hls",
+     "url": "https://stream.swamiji.tv/YogaIPTV/smil:YogaStreamUS.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:swamiji-tv-australian",
+   "name": "Swamiji TV Australian",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "nature"
+   ],
+   "nsfw": false,
+   "publisher": "swamiji-tv-australian",
+   "logo": "https://i.imgur.com/nrLcuzs.png",
+   "epg_id": "SwamijiTVAustralian.at@SD",
+   "sources": [
+    {
+     "source_id": "swamiji-tv-australian-hls",
+     "url": "https://stream.swamiji.tv/YogaIPTV/smil:YogaStreamAU.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:swamiji-tv-european",
+   "name": "Swamiji TV European",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "nature"
+   ],
+   "nsfw": false,
+   "publisher": "swamiji-tv-european",
+   "logo": "https://i.imgur.com/nrLcuzs.png",
+   "epg_id": "SwamijiTVEuropean.at@SD",
+   "sources": [
+    {
+     "source_id": "swamiji-tv-european-hls",
+     "url": "https://stream.swamiji.tv/YogaIPTV/smil:YogaStream.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:terra-mater-wild",
+   "name": "Terra Mater WILD",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "terra-mater-wild",
+   "logo": "https://i.imgur.com/EbMK3Ph.png",
+   "epg_id": "TerraMaterWILD.de@German",
+   "sources": [
+    {
+     "source_id": "terra-mater-wild-hls",
+     "url": "https://53ff3982.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmxheHhUVi1ldV9UZXJyYU1hdGVyV2lsZF9ITFM/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:tirol-tv",
+   "name": "Tirol TV",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "tirol-tv",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/TIROL_TV_Logo_2019.png/960px-TIROL_TV_Logo_2019.png",
+   "epg_id": "TirolTV.at@SD",
+   "sources": [
+    {
+     "source_id": "tirol-tv-hls",
+     "url": "https://streaming14.huberwebmedia.at/LiveApp/streams/livestream.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:tv-1-ober-sterreich",
+   "name": "TV 1 Oberösterreich",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "tv-1-ober-sterreich",
+   "logo": "https://i.imgur.com/KbMkEIn.png",
+   "epg_id": "TV1Oberosterreich.at@SD",
+   "sources": [
+    {
+     "source_id": "tv-1-ober-sterreich-hls",
+     "url": "https://streaming10.huberwebmedia.at/LiveApp/streams/238985177034727564068269_adaptive.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:w24",
+   "name": "W24",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "w24",
+   "logo": "https://i.imgur.com/FpVNrxk.png",
+   "epg_id": "W24.at@SD",
+   "sources": [
+    {
+     "source_id": "w24-hls",
+     "url": "https://ms01.w24.at/W24/smil:liveevent.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:at:zee-one-german",
+   "name": "Zee One German",
+   "section": "tv",
+   "country": "at",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "zee-one-german",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/2/24/Zee_One_Logo_2025.png",
+   "epg_id": "ZeeOne.uk@German",
+   "sources": [
+    {
+     "source_id": "zee-one-german-hls",
+     "url": "https://e4955b54.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1kZV9aZWVPbmVfSExT/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "at",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:ndr-fernsehen-international",
+   "name": "NDR Fernsehen International",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ndr-fernsehen-international",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Logo_NDR_Fernsehen_2017.svg/960px-Logo_NDR_Fernsehen_2017.svg.png",
+   "epg_id": "NDRFernsehenInternational.de@SD",
+   "sources": [
+    {
+     "source_id": "ndr-fernsehen-international-hls",
+     "url": "https://ndrint.akamaized.net/hls/live/2020766/ndr_int/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:canal-alpha-jura",
+   "name": "Canal Alpha Jura",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "canal-alpha-jura",
+   "logo": "https://i.imgur.com/eQ8xHK9.jpg",
+   "epg_id": "CanalAlphaJura.ch@SD",
+   "sources": [
+    {
+     "source_id": "canal-alpha-jura-hls",
+     "url": "https://canalalphaju.vedge.infomaniak.com/livecast/ik:canalalphaju/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:canal-alpha-neuchatel",
+   "name": "Canal Alpha Neuchatel",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "canal-alpha-neuchatel",
+   "logo": "https://i.imgur.com/eQ8xHK9.jpg",
+   "epg_id": "CanalAlphaNeuchatel.ch@SD",
+   "sources": [
+    {
+     "source_id": "canal-alpha-neuchatel-hls",
+     "url": "https://canalalpha.vedge.infomaniak.com/livecast/ik:canalalpha/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:carac-2",
+   "name": "Carac 2",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "carac-2",
+   "logo": "https://i.imgur.com/hCoIPen.png",
+   "epg_id": "Carac2.ch@SD",
+   "sources": [
+    {
+     "source_id": "carac-2-hls",
+     "url": "https://onefmhd.vedge.infomaniak.com/livecast/ik:onefmhd/manifest.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:carac-3",
+   "name": "Carac 3",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "carac-3",
+   "logo": "https://i.imgur.com/C4e8cjt.png",
+   "epg_id": "Carac3.ch@SD",
+   "sources": [
+    {
+     "source_id": "carac-3-hls",
+     "url": "https://lfmhd.vedge.infomaniak.com/livecast/lfmhd/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:carac-4",
+   "name": "Carac 4",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "carac-4",
+   "logo": "https://i.imgur.com/Dj5LPy3.png",
+   "epg_id": "Carac4.ch@SD",
+   "sources": [
+    {
+     "source_id": "carac-4-hls",
+     "url": "https://edge17.vedge.infomaniak.com/livecast/ik:compack_media_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:carac-5",
+   "name": "Carac 5",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "carac-5",
+   "logo": "https://i.imgur.com/giDfku4.png",
+   "epg_id": "Carac5.ch@SD",
+   "sources": [
+    {
+     "source_id": "carac-5-hls",
+     "url": "https://lfmmd.vedge.infomaniak.com/livecast/ik:carac5/manifest.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:cine-nanar",
+   "name": "Cine Nanar",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "cine-nanar",
+   "logo": "https://i.imgur.com/YnUZd3W.png",
+   "epg_id": "CineNanar.fr@SD",
+   "sources": [
+    {
+     "source_id": "cine-nanar-hls",
+     "url": "https://zylo-cinenanar-rakuten.amagi.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:cine-western-france",
+   "name": "Cine Western (France)",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "cine-western-france",
+   "logo": "https://i.imgur.com/tteOFkL.png",
+   "epg_id": "CineWestern.fr@SD",
+   "sources": [
+    {
+     "source_id": "cine-western-france-hls",
+     "url": "https://amg00711-zylo-amg00711c8-rakuten-uk-2686.playouts.now.amagi.tv/playlist/amg00711-zylofast-cinewestern-rakutenuk/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:die-neue-zeit-tv",
+   "name": "Die Neue Zeit TV",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "die-neue-zeit-tv",
+   "logo": "https://i.imgur.com/K3lvrog.png",
+   "epg_id": "DieNeueZeitTV.ch@SD",
+   "sources": [
+    {
+     "source_id": "die-neue-zeit-tv-hls",
+     "url": "https://bild-und-ton.stream/die-neue-zeit-tv-live/smil:dnz-de.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:emotion-l",
+   "name": "Emotion L",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "emotion-l",
+   "logo": "https://i.imgur.com/MP34aaj.png",
+   "epg_id": "EmotionL.fr@SD",
+   "sources": [
+    {
+     "source_id": "emotion-l-hls",
+     "url": "https://rakutenaa-zylo-emotional-rakuten-r1zkm.amagi.tv/playlist/rakutenAA-zylo-emotional-rakuten/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:espansione-tv",
+   "name": "Espansione TV",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "espansione-tv",
+   "logo": "https://i.imgur.com/NZJi7mm.png",
+   "epg_id": "EspansioneTV.it@SD",
+   "sources": [
+    {
+     "source_id": "espansione-tv-hls",
+     "url": "https://b53136fc0d724da78cac7754d601393d.msvdn.net/live/S13070333/lgUidxJCmpO3/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:ch:fifa-french",
+   "name": "FIFA+ French",
+   "section": "sports",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "fifa-french",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/FIFA%2B_(2025).svg/960px-FIFA%2B_(2025).svg.png",
+   "epg_id": "FIFAPlus.uk@French",
+   "sources": [
+    {
+     "source_id": "fifa-french-hls",
+     "url": "https://37b4c228.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWZyX0ZJRkFQbHVzRnJlbmNoX0hMUw/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:ch:fifa-german",
+   "name": "FIFA+ German",
+   "section": "sports",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "fifa-german",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/FIFA%2B_(2025).svg/960px-FIFA%2B_(2025).svg.png",
+   "epg_id": "FIFAPlus.uk@German",
+   "sources": [
+    {
+     "source_id": "fifa-german-hls",
+     "url": "https://4397879b.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWRlX0ZJRkFQbHVzR2VybWFuX0hMUw/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:frequence-novelas",
+   "name": "Frequence Novelas",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "frequence-novelas",
+   "logo": "https://i.imgur.com/fEjNAps.png",
+   "epg_id": "FrequenceNovelas.fr@SD",
+   "sources": [
+    {
+     "source_id": "frequence-novelas-hls",
+     "url": "https://d20oth1416y9a1.cloudfront.net/playlist/amg00711-zylofast-frequencenovelas-rakutenus/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:immaculata-tv",
+   "name": "Immaculata TV",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "immaculata-tv",
+   "logo": "https://i.imgur.com/8WsYVpt.png",
+   "epg_id": "ImmaculataTV.ch@SD",
+   "sources": [
+    {
+     "source_id": "immaculata-tv-hls",
+     "url": "https://g5nl63z8lpq6-hls-live.5centscdn.com/tvistream/a5586d8ea3b7b021120a05c60dc59876.sdp/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:into-crime",
+   "name": "Into Crime",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "into-crime",
+   "logo": "https://i.imgur.com/43at4M2.png",
+   "epg_id": "IntoCrime.fr@SD",
+   "sources": [
+    {
+     "source_id": "into-crime-hls",
+     "url": "https://amg00711-zylo-amg00711c10-rakuten-fr-6731.playouts.now.amagi.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:love-the-planet-de",
+   "name": "Love The Planet DE",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "love-the-planet-de",
+   "logo": "https://i.imgur.com/RBcD49X.png",
+   "epg_id": "LoveThePlanet.es@DE",
+   "sources": [
+    {
+     "source_id": "love-the-planet-de-hls",
+     "url": "https://amg01821-amg01821c12-rlaxx-gb-10461.playouts.now.amagi.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:max-tv",
+   "name": "Max TV",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "max-tv",
+   "logo": "https://i.imgur.com/13PjEk8.png",
+   "epg_id": "MaxTV.ch@SD",
+   "sources": [
+    {
+     "source_id": "max-tv-hls",
+     "url": "https://cdn.katapy.io/cache/stream/katapytv/dieu/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:meteonews",
+   "name": "Meteonews",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "meteonews",
+   "logo": "https://i.imgur.com/YtYhbJD.png",
+   "epg_id": "Meteonews.ch@SD",
+   "sources": [
+    {
+     "source_id": "meteonews-hls",
+     "url": "https://streaming.meteonews.net/hls/stream.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:ch:more-than-sports-tv",
+   "name": "More Than Sports TV",
+   "section": "sports",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "more-than-sports-tv",
+   "logo": "https://i.imgur.com/SLrjImc.png",
+   "epg_id": "MoreThanSportsTV.de@SD",
+   "sources": [
+    {
+     "source_id": "more-than-sports-tv-hls",
+     "url": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:nachrichten-360",
+   "name": "Nachrichten 360",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "news"
+   ],
+   "nsfw": false,
+   "publisher": "nachrichten-360",
+   "logo": "https://tvpnlogopeu.samsungcloud.tv/platform/image/sourcelogo/vc/00/02/34/DE4300003MR_20251209T125847SQUARE.png",
+   "epg_id": "Nachrichten360.de@HD",
+   "sources": [
+    {
+     "source_id": "nachrichten-360-hls",
+     "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01821-lovetvfast-nachrichten360-samsungde/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:radio-3i",
+   "name": "Radio 3i",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "radio-3i",
+   "logo": "https://i.imgur.com/0Kmh49G.png",
+   "epg_id": "Radio3i.ch@SD",
+   "sources": [
+    {
+     "source_id": "radio-3i-hls",
+     "url": "https://vstream-cdn.ch/hls/radio3i.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:radio-discount-tv",
+   "name": "RADIO DISCOunt TV",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "radio-discount-tv",
+   "logo": "https://i.imgur.com/ScNYMmx.png",
+   "epg_id": "RADIODISCOuntTV.ch@SD",
+   "sources": [
+    {
+     "source_id": "radio-discount-tv-hls",
+     "url": "https://585b674743bbb.streamlock.net/9030/9030/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:ch:red-bull-tv",
+   "name": "Red Bull TV",
+   "section": "sports",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "nature",
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "red-bull-tv",
+   "logo": "https://images.pluto.tv/channels/5e7cb84a172a0f0007da69e4/colorLogoPNG.png",
+   "epg_id": "RedBullTV.at@DE",
+   "sources": [
+    {
+     "source_id": "red-bull-tv-hls",
+     "url": "https://46cfeb23c7f74853bba7a256655a3119.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-582-WORBDACHDEFAST-WHALETVPLUS/582/whaletvplus/hls/master/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:rhone-tv",
+   "name": "Rhone TV",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "rhone-tv",
+   "logo": "https://i.imgur.com/YyXJaBN.png",
+   "epg_id": "RhoneTV.ch@SD",
+   "sources": [
+    {
+     "source_id": "rhone-tv-hls",
+     "url": "https://edge14.vedge.infomaniak.com/livecast/ik:rhonetv/manifest.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:screamin",
+   "name": "ScreamIN",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "screamin",
+   "logo": "https://i.imgur.com/tGmKbil.png",
+   "epg_id": "ScreamIN.fr@SD",
+   "sources": [
+    {
+     "source_id": "screamin-hls",
+     "url": "https://rakutenaa-zylo-screamin-rakuten-p11ej.amagi.tv/playlist/rakutenAA-zylo-screamin-rakuten/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:telenova",
+   "name": "Telenova",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "telenova",
+   "logo": "https://i.imgur.com/lo9OiWg.png",
+   "epg_id": "Telenova.it@SD",
+   "sources": [
+    {
+     "source_id": "telenova-hls",
+     "url": "https://64b16f23efbee.streamlock.net/telenova/telenova/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:teleticino",
+   "name": "TeleTicino",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "teleticino",
+   "logo": "https://i.imgur.com/u6dLKa9.png",
+   "epg_id": "TeleTicino.ch@SD",
+   "sources": [
+    {
+     "source_id": "teleticino-hls",
+     "url": "https://vstream-cdn.ch/hls/teleticino.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:terra-mater-wild",
+   "name": "Terra Mater WILD",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "terra-mater-wild",
+   "logo": "https://i.imgur.com/EbMK3Ph.png",
+   "epg_id": "TerraMaterWILD.de@German",
+   "sources": [
+    {
+     "source_id": "terra-mater-wild-hls",
+     "url": "https://53ff3982.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmxheHhUVi1ldV9UZXJyYU1hdGVyV2lsZF9ITFM/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:waterbear",
+   "name": "WaterBear",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "doc",
+    "nature"
+   ],
+   "nsfw": false,
+   "publisher": "waterbear",
+   "logo": "https://framerusercontent.com/images/41VQQ7F0fYlp1MX1N4Ixog5QnPI.png",
+   "epg_id": "WaterBear.ch@SD",
+   "sources": [
+    {
+     "source_id": "waterbear-hls",
+     "url": "https://amg01415-waterbearnetwor-waterbear-samsunguk-1h0y8.amagi.tv/playlist/amg01415-waterbearnetwor-waterbear-samsunguk/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:wedo-big-stories",
+   "name": "Wedo Big Stories",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "wedo-big-stories",
+   "logo": "https://provider-static.plex.tv/epg/cms/production/49cf6309-0a4a-4d39-bdcc-fa48e4ef84a7/WEDOBIGSTORIES_LIGHTTHEME_-_Sorin_Stoian.png",
+   "epg_id": "WedoBigStories.ch@SD",
+   "sources": [
+    {
+     "source_id": "wedo-big-stories-hls",
+     "url": "https://amg00735-videosolutionsa-wedobigdocs-ono-0urlz.amagi.tv/playlist/amg00735-videosolutionsa-wedobigdocs-ono/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:wedo-tv-amor",
+   "name": "Wedo TV Amor",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wedo-tv-amor",
+   "logo": "https://cdn-01.watch4.com/01/1720621000_wedo-amor_white_logo.png",
+   "epg_id": "WedoTVAmor.ch@SD",
+   "sources": [
+    {
+     "source_id": "wedo-tv-amor-hls",
+     "url": "https://amg00735-videosolutions-amg00735c15-wedotv-eu-1915.playouts.now.amagi.tv/playlist/amg00735-videosolutionsagfast-wedoamor-wedotveu/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:zee-one-french",
+   "name": "Zee One French",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "zee-one-french",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/2/24/Zee_One_Logo_2025.png",
+   "epg_id": "ZeeOne.uk@French",
+   "sources": [
+    {
+     "source_id": "zee-one-french-hls",
+     "url": "https://7689426c.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1mcl9aZWVNYWdpY19ITFM/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:ch:zee-one-german",
+   "name": "Zee One German",
+   "section": "tv",
+   "country": "ch",
+   "language": [],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "zee-one-german",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/2/24/Zee_One_Logo_2025.png",
+   "epg_id": "ZeeOne.uk@German",
+   "sources": [
+    {
+     "source_id": "zee-one-german-hls",
+     "url": "https://e4955b54.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1kZV9aZWVPbmVfSExT/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "ch",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:3sat",
+   "name": "3sat",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "3sat",
+   "logo": "",
+   "epg_id": "",
+   "sources": [
+    {
+     "source_id": "3sat-hls",
+     "url": "https://zdf-hls-18.akamaized.net/hls/live/2016501/dach/high/master.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ard-alpha",
+   "name": "ARD-alpha",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "ard-alpha",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/ARD_alpha.svg/960px-ARD_alpha.svg.png",
+   "epg_id": "ARDalpha.de@SD",
+   "sources": [
+    {
+     "source_id": "ard-alpha-hls",
+     "url": "https://mcdn.br.de/br/fs/ard_alpha/hls/de/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:arte-germany",
+   "name": "arte (Germany)",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "arte-germany",
+   "logo": "https://i.imgur.com/ecXMjNl.png",
+   "epg_id": "arte.de@SD",
+   "sources": [
+    {
+     "source_id": "arte-germany-hls",
+     "url": "https://artesimulcast.akamaized.net/hls/live/2030993/artelive_de/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:br-fernsehen",
+   "name": "BR Fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "br-fernsehen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Logo_Bayerischer_Rundfunk_2024.svg/960px-Logo_Bayerischer_Rundfunk_2024.svg.png",
+   "epg_id": "BRFernsehen.de@Nord",
+   "sources": [
+    {
+     "source_id": "br-fernsehen-hls",
+     "url": "https://mcdn.br.de/br/fs/bfs_nord/hls/de/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:br-fernsehen-s-d",
+   "name": "BR Fernsehen Süd",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "br-fernsehen-s-d",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Logo_Bayerischer_Rundfunk_2024.svg/960px-Logo_Bayerischer_Rundfunk_2024.svg.png",
+   "epg_id": "BRFernsehen.de@Sud",
+   "sources": [
+    {
+     "source_id": "br-fernsehen-s-d-hls",
+     "url": "https://mcdn.br.de/br/fs/bfs_sued/hls/de/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:das-erste-hd",
+   "name": "Das Erste HD",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "das-erste-hd",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/ARD_Dachmarke_2014.svg/960px-ARD_Dachmarke_2014.svg.png",
+   "epg_id": "DasErste.de@HD",
+   "sources": [
+    {
+     "source_id": "das-erste-hd-hls",
+     "url": "https://daserste-live.ard-mcdn.de/daserste/live/hls/int/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:dasding-90-8",
+   "name": "DASDING 90.8",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "dasding-90-8",
+   "logo": "https://i.imgur.com/BmklHs8.png",
+   "epg_id": "DASDING908.de@SD",
+   "sources": [
+    {
+     "source_id": "dasding-90-8-hls",
+     "url": "https://swrdasdingvr-hls.akamaized.net/hls/live/2018681/dasdingvr/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:dw-deutsch",
+   "name": "DW Deutsch",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "news",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "dw-deutsch",
+   "logo": "",
+   "epg_id": "",
+   "sources": [
+    {
+     "source_id": "dw-deutsch-hls",
+     "url": "https://dwamdstream106.akamaized.net/hls/live/2017965/dwstream106/index.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:dw-english",
+   "name": "DW English",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "news",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "dw-english",
+   "logo": "",
+   "epg_id": "",
+   "sources": [
+    {
+     "source_id": "dw-english-hls",
+     "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:dw-russian",
+   "name": "DW Russian",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "news",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "dw-russian",
+   "logo": "https://i.imgur.com/8MRNFb9.png",
+   "epg_id": "DW.de@Russian",
+   "sources": [
+    {
+     "source_id": "dw-russian-hls",
+     "url": "https://dwamdstream110.akamaized.net/hls/live/2017971/dwstream110/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:hr-fernsehen",
+   "name": "hr-fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "hr-fernsehen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/HR-Fernsehen_Logo_2023.svg/960px-HR-Fernsehen_Logo_2023.svg.png",
+   "epg_id": "hrfernsehen.de@SD",
+   "sources": [
+    {
+     "source_id": "hr-fernsehen-hls",
+     "url": "https://hrhls.akamaized.net/hls/live/2024525/hrhls/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:kika",
+   "name": "KiKA",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "kids",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "kika",
+   "logo": "https://i.imgur.com/vZdNp5S.png",
+   "epg_id": "KiKA.de@SD",
+   "sources": [
+    {
+     "source_id": "kika-hls",
+     "url": "https://kikahls.akamaized.net/hls/live/2022690/livetvkika_ww/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:mdr-fernsehen",
+   "name": "MDR Fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "mdr-fernsehen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/MDR_Logo_2017.svg/960px-MDR_Logo_2017.svg.png",
+   "epg_id": "MDRFernsehen.de@Sachsen",
+   "sources": [
+    {
+     "source_id": "mdr-fernsehen-hls",
+     "url": "https://mdrtvsnhls.akamaized.net/hls/live/2016928/mdrtvsn/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:mdr-fernsehen-sachsen-anhalt",
+   "name": "MDR Fernsehen Sachsen Anhalt",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "mdr-fernsehen-sachsen-anhalt",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/MDR_Logo_2017.svg/960px-MDR_Logo_2017.svg.png",
+   "epg_id": "MDRFernsehen.de@SachsenAnhalt",
+   "sources": [
+    {
+     "source_id": "mdr-fernsehen-sachsen-anhalt-hls",
+     "url": "https://mdrtvsahls.akamaized.net/hls/live/2016879/mdrtvsa/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ndr-fernsehen",
+   "name": "NDR Fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ndr-fernsehen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Logo_NDR_Fernsehen_2017.svg/960px-Logo_NDR_Fernsehen_2017.svg.png",
+   "epg_id": "NDRFernsehen.de@Hamburg",
+   "sources": [
+    {
+     "source_id": "ndr-fernsehen-hls",
+     "url": "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_hh/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ndr-fernsehen-mecklenburg-vorpommern",
+   "name": "NDR Fernsehen Mecklenburg Vorpommern",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ndr-fernsehen-mecklenburg-vorpommern",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Logo_NDR_Fernsehen_2017.svg/960px-Logo_NDR_Fernsehen_2017.svg.png",
+   "epg_id": "NDRFernsehen.de@MecklenburgVorpommern",
+   "sources": [
+    {
+     "source_id": "ndr-fernsehen-mecklenburg-vorpommern-hls",
+     "url": "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_mv/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ndr-fernsehen-niedersachsen",
+   "name": "NDR Fernsehen Niedersachsen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ndr-fernsehen-niedersachsen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Logo_NDR_Fernsehen_2017.svg/960px-Logo_NDR_Fernsehen_2017.svg.png",
+   "epg_id": "NDRFernsehen.de@Niedersachsen",
+   "sources": [
+    {
+     "source_id": "ndr-fernsehen-niedersachsen-hls",
+     "url": "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_nds/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ndr-fernsehen-schleswig-holstein",
+   "name": "NDR Fernsehen Schleswig Holstein",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ndr-fernsehen-schleswig-holstein",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Logo_NDR_Fernsehen_2017.svg/960px-Logo_NDR_Fernsehen_2017.svg.png",
+   "epg_id": "NDRFernsehen.de@SchleswigHolstein",
+   "sources": [
+    {
+     "source_id": "ndr-fernsehen-schleswig-holstein-hls",
+     "url": "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_sh/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:parlamentsfernsehen-1",
+   "name": "Parlamentsfernsehen 1",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "news",
+    "public"
+   ],
+   "nsfw": false,
+   "publisher": "parlamentsfernsehen-1",
+   "logo": "https://i.imgur.com/mksEgwx.png",
+   "epg_id": "Parlamentsfernsehen1.de@SD",
+   "sources": [
+    {
+     "source_id": "parlamentsfernsehen-1-hls",
+     "url": "https://cldf-hlsgw.r53.cdn.tv1.eu/1000153copo/hk1.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:phoenix",
+   "name": "phoenix",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "phoenix",
+   "logo": "https://i.imgur.com/T1532t9.png",
+   "epg_id": "phoenix.de@HD",
+   "sources": [
+    {
+     "source_id": "phoenix-hls",
+     "url": "https://zdf-hls-19.akamaized.net/hls/live/2016502/de/high/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:radio-bremen-fernsehen",
+   "name": "Radio Bremen Fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "radio-bremen-fernsehen",
+   "logo": "https://i.imgur.com/wsTOcuX.png",
+   "epg_id": "RadioBremenFernsehen.de@SD",
+   "sources": [
+    {
+     "source_id": "radio-bremen-fernsehen-hls",
+     "url": "https://rbhlslive.akamaized.net/hls/live/2020435/rbfs/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rbb-fernsehen-berlin",
+   "name": "rbb Fernsehen Berlin",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "rbb-fernsehen-berlin",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Rbb_Fernsehen_Logo_2017.08.svg/960px-Rbb_Fernsehen_Logo_2017.08.svg.png",
+   "epg_id": "rbbFernsehen.de@Berlin",
+   "sources": [
+    {
+     "source_id": "rbb-fernsehen-berlin-hls",
+     "url": "https://rbb-hls-berlin.akamaized.net/hls/live/2017824/rbb_berlin/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rbb-fernsehen-brandenburg",
+   "name": "rbb Fernsehen Brandenburg",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "rbb-fernsehen-brandenburg",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Rbb_Fernsehen_Logo_2017.08.svg/960px-Rbb_Fernsehen_Logo_2017.08.svg.png",
+   "epg_id": "rbbFernsehen.de@Brandenburg",
+   "sources": [
+    {
+     "source_id": "rbb-fernsehen-brandenburg-hls",
+     "url": "https://rbb-hls-brandenburg.akamaized.net/hls/live/2017825/rbb_brandenburg/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sr-fernsehen",
+   "name": "SR Fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sr-fernsehen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/SR_Fernsehen_Logo_2023.svg/960px-SR_Fernsehen_Logo_2023.svg.png",
+   "epg_id": "SRFernsehen.de@SD",
+   "sources": [
+    {
+     "source_id": "sr-fernsehen-hls",
+     "url": "https://srfs.akamaized.net/hls/live/689649/srfsgeo/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:swr-3-visual-radio",
+   "name": "SWR 3 Visual Radio",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "swr-3-visual-radio",
+   "logo": "https://i.imgur.com/PxSgxRO.jpg",
+   "epg_id": "SWR3VisualRadio.de@SD",
+   "sources": [
+    {
+     "source_id": "swr-3-visual-radio-hls",
+     "url": "https://swrswr3vr-hls.akamaized.net/hls/live/2018683/swr3vr/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:swr-fernsehen-baden-w-rttemberg",
+   "name": "SWR Fernsehen Baden-Württemberg",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "swr-fernsehen-baden-w-rttemberg",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/SWR_Logo_2023.svg/960px-SWR_Logo_2023.svg.png",
+   "epg_id": "SWRFernsehenBadenWurttemberg.de@SD",
+   "sources": [
+    {
+     "source_id": "swr-fernsehen-baden-w-rttemberg-hls",
+     "url": "https://swrbwd-hls.akamaized.net/hls/live/2018672/swrbwd/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:swr-fernsehen-rheinland-pfalz",
+   "name": "SWR Fernsehen Rheinland-Pfalz",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "swr-fernsehen-rheinland-pfalz",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/SWR_Logo_2023.svg/960px-SWR_Logo_2023.svg.png",
+   "epg_id": "SWRFernsehenRheinlandPfalz.de@SD",
+   "sources": [
+    {
+     "source_id": "swr-fernsehen-rheinland-pfalz-hls",
+     "url": "https://swrrpd-hls.akamaized.net/hls/live/2018676/swrrpd/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:tagesschau24",
+   "name": "tagesschau24",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "tagesschau24",
+   "logo": "https://i.imgur.com/LH0Gctv.png",
+   "epg_id": "tagesschau24.de@SD",
+   "sources": [
+    {
+     "source_id": "tagesschau24-hls",
+     "url": "https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:unserding",
+   "name": "Unserding",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "unserding",
+   "logo": "https://i.imgur.com/4j4MZTT.png",
+   "epg_id": "Unserding.de@SD",
+   "sources": [
+    {
+     "source_id": "unserding-hls",
+     "url": "https://srde.akamaized.net/hls/live/2031842/visualradio-unserding/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-1-live",
+   "name": "WDR 1 Live",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-1-live",
+   "logo": "https://i.imgur.com/RbqDMYx.png",
+   "epg_id": "WDR1Live.de@SD",
+   "sources": [
+    {
+     "source_id": "wdr-1-live-hls",
+     "url": "https://wdrfs247.akamaized.net/hls/live/681509/wdr_msl4_fs247/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen",
+   "name": "WDR Fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Koln",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-hls",
+     "url": "https://wdr-live.ard-mcdn.de/wdr/live/hls/de/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-aachen",
+   "name": "WDR Fernsehen Aachen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-aachen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Aachen",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-aachen-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018019-b/wdrlz_aachen/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-bielefeld",
+   "name": "WDR Fernsehen Bielefeld",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-bielefeld",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Bielefeld",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-bielefeld-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018026-b/wdrlz_bielefeld/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-bonn",
+   "name": "WDR Fernsehen Bonn",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-bonn",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Bonn",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-bonn-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018021-b/wdrlz_bonn/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-dortmund",
+   "name": "WDR Fernsehen Dortmund",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-dortmund",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Dortmund",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-dortmund-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018022-b/wdrlz_dortmund/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-duisburg",
+   "name": "WDR Fernsehen Duisburg",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-duisburg",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Duisburg",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-duisburg-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018024-b/wdrlz_duisburg/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-d-sseldorf",
+   "name": "WDR Fernsehen Düsseldorf",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-d-sseldorf",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Dusseldorf",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-d-sseldorf-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018023-b/wdrlz_duesseldorf/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-essen",
+   "name": "WDR Fernsehen Essen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-essen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Essen",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-essen-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018027-b/wdrlz_essen/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-m-nster",
+   "name": "WDR Fernsehen Münster",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-m-nster",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Munster",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-m-nster-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018025-b/wdrlz_muensterland/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-siegen",
+   "name": "WDR Fernsehen Siegen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-siegen",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Siegen",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-siegen-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018020-b/wdrlz_siegen/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:wdr-fernsehen-wuppertal",
+   "name": "WDR Fernsehen Wuppertal",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "wdr-fernsehen-wuppertal",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/WDR_Fernsehen_Logo_2018.svg/960px-WDR_Fernsehen_Logo_2018.svg.png",
+   "epg_id": "WDRFernsehen.de@Wuppertal",
+   "sources": [
+    {
+     "source_id": "wdr-fernsehen-wuppertal-hls",
+     "url": "https://wdrlokalzeit.akamaized.net/hls/live/2018028-b/wdrlz_wuppertal/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:zdf",
+   "name": "ZDF",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "zdf",
+   "logo": "",
+   "epg_id": "",
+   "sources": [
+    {
+     "source_id": "zdf-hls",
+     "url": "https://zdf-hls-15.akamaized.net/hls/live/2016498/de/high/master.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:zdfinfo",
+   "name": "ZDFinfo",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "zdfinfo",
+   "logo": "https://i.imgur.com/vtq1IWp.png",
+   "epg_id": "ZDFinfo.de@SD",
+   "sources": [
+    {
+     "source_id": "zdfinfo-hls",
+     "url": "https://zdf-hls-17.akamaized.net/hls/live/2016500/de/high/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:zdfneo",
+   "name": "ZDFneo",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "public",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "zdfneo",
+   "logo": "",
+   "epg_id": "",
+   "sources": [
+    {
+     "source_id": "zdfneo-hls",
+     "url": "https://zdf-hls-16.akamaized.net/hls/live/2016499/de/high/master.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:1-2-3-tv",
+   "name": "1-2-3.tv",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "1-2-3-tv",
+   "logo": "https://i.imgur.com/slSUDNX.png",
+   "epg_id": "123tv.de@SD",
+   "sources": [
+    {
+     "source_id": "1-2-3-tv-hls",
+     "url": "https://123tv-mx1.flex-cdn.net/index.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:adria-music-television",
+   "name": "Adria Music Television",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "adria-music-television",
+   "logo": "https://i.imgur.com/QoDpnKg.png",
+   "epg_id": "AdriaMusicTelevision.de@SD",
+   "sources": [
+    {
+     "source_id": "adria-music-television-hls",
+     "url": "https://adriaapp.b-cdn.net/1080p/index.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:adventure-earth",
+   "name": "Adventure Earth",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "adventure-earth",
+   "logo": "https://d3b6luslimvglo.cloudfront.net/images/79/rlaxximages/channels-rescaled/icon-white/adventureearth_white.png",
+   "epg_id": "AdventureEarth.de@SD",
+   "sources": [
+    {
+     "source_id": "adventure-earth-hls",
+     "url": "https://a57e9c69976649b582a8d7604c00e69a.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RlaxxTV-eu_AdventureEarth/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:alex-berlin",
+   "name": "Alex Berlin",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "alex-berlin",
+   "logo": "https://i.imgur.com/eTmHk4e.png",
+   "epg_id": "AlexBerlin.de@SD",
+   "sources": [
+    {
+     "source_id": "alex-berlin-hls",
+     "url": "https://alex-stream.rosebud-media.de/bounce/alexlivetv50.smil/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:allg-u-tv",
+   "name": "Allgäu TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "allg-u-tv",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Allg%C3%A4u_TV_Logo_%282021%29.svg/960px-Allg%C3%A4u_TV_Logo_%282021%29.svg.png",
+   "epg_id": "AllgauTV.de@SD",
+   "sources": [
+    {
+     "source_id": "allg-u-tv-hls",
+     "url": "https://stream01.welocal.stream/stream/fhd-allgaeutv_25679/ngrp:stream_all/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:augsburg-tv",
+   "name": "Augsburg TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "augsburg-tv",
+   "logo": "https://i.imgur.com/27AKMUL.png",
+   "epg_id": "AugsburgTV.de@SD",
+   "sources": [
+    {
+     "source_id": "augsburg-tv-hls",
+     "url": "https://stream02.welocal.stream/stream/fhd-augsburgtv_104951/ngrp:stream_all/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:autentic-history",
+   "name": "Autentic History",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "autentic-history",
+   "logo": "https://d3b6luslimvglo.cloudfront.net/images/79/rlaxximages/channels-rescaled/icon-white/autentichistory_white.png",
+   "epg_id": "AutenticHistory.de@SD",
+   "sources": [
+    {
+     "source_id": "autentic-history-hls",
+     "url": "https://9e754fa707344ccca6d84955c8fcaf36.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RlaxxTV-eu_AutenticHistory/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:autentic-travel",
+   "name": "Autentic Travel",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "autentic-travel",
+   "logo": "https://d3b6luslimvglo.cloudfront.net/images/79/rlaxximages/channels-rescaled/icon-white/autentictravel_white.png",
+   "epg_id": "AutenticTravel.de@SD",
+   "sources": [
+    {
+     "source_id": "autentic-travel-hls",
+     "url": "https://cb0c87cc605942ff9766a4e6744bbadc.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RlaxxTV-eu_AutenticTravel/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:bibel-tv",
+   "name": "Bibel TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "bibel-tv",
+   "logo": "https://i.imgur.com/RLwmrk3.png",
+   "epg_id": "BibelTV.de@SD",
+   "sources": [
+    {
+     "source_id": "bibel-tv-hls",
+     "url": "https://bibint01.iptv-playoutcenter.de/bibint01/bibint01.stream_all/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:bibel-tv-impuls",
+   "name": "Bibel TV Impuls",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "bibel-tv-impuls",
+   "logo": "https://i.imgur.com/k4tbW3W.png",
+   "epg_id": "BibelTVImpuls.de@SD",
+   "sources": [
+    {
+     "source_id": "bibel-tv-impuls-hls",
+     "url": "https://bibeltv02.iptv-playoutcenter.de/bibeltv02/bibeltv02.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:bibel-tv-musik",
+   "name": "Bibel TV Musik",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "bibel-tv-musik",
+   "logo": "https://i.imgur.com/yIqOcP5.png",
+   "epg_id": "BibelTVMusik.de@SD",
+   "sources": [
+    {
+     "source_id": "bibel-tv-musik-hls",
+     "url": "https://bibeltv03.iptv-playoutcenter.de/bibeltv03/bibeltv03.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:cira-tv",
+   "name": "Cira TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "cira-tv",
+   "logo": "https://i.imgur.com/YFnmSLW.png",
+   "epg_id": "CiraTV.de@SD",
+   "sources": [
+    {
+     "source_id": "cira-tv-hls",
+     "url": "https://hlspackager.akamaized.net/live/DB/CIRA_TV/HLS/CIRA_TV.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:deluxe-dance",
+   "name": "Deluxe Dance",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "deluxe-dance",
+   "logo": "https://i.imgur.com/Qu7t15Y.png",
+   "epg_id": "DeluxeDance.de@SD",
+   "sources": [
+    {
+     "source_id": "deluxe-dance-hls",
+     "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/64733/64733_264_live.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:deluxe-music",
+   "name": "Deluxe Music",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "deluxe-music",
+   "logo": "https://i.imgur.com/HimuPPb.png",
+   "epg_id": "DeluxeMusic.de@SD",
+   "sources": [
+    {
+     "source_id": "deluxe-music-hls",
+     "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/13456/13456_264_live.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:deluxe-rap",
+   "name": "Deluxe Rap",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "deluxe-rap",
+   "logo": "https://i.imgur.com/s3h67hx.png",
+   "epg_id": "DeluxeRap.de@SD",
+   "sources": [
+    {
+     "source_id": "deluxe-rap-hls",
+     "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/65183/65183_264_live.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:die-neue-zeit-tv",
+   "name": "Die Neue Zeit TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "die-neue-zeit-tv",
+   "logo": "https://i.imgur.com/K3lvrog.png",
+   "epg_id": "DieNeueZeitTV.ch@SD",
+   "sources": [
+    {
+     "source_id": "die-neue-zeit-tv-hls",
+     "url": "https://bild-und-ton.stream/die-neue-zeit-tv-live/smil:dnz-de.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:dmf",
+   "name": "DMF",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "dmf",
+   "logo": "https://i.imgur.com/sJaBU7X.jpeg",
+   "epg_id": "DMF.de@SD",
+   "sources": [
+    {
+     "source_id": "dmf-hls",
+     "url": "https://d-m-f.iptv-playoutcenter.de/dmf/dmf1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:dokusat",
+   "name": "Dokusat",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "dokusat",
+   "logo": "https://i.imgur.com/GadfTwF.png",
+   "epg_id": "Dokusat.de@SD",
+   "sources": [
+    {
+     "source_id": "dokusat-hls",
+     "url": "https://muc3.iptv-playoutcenter.de/dokusat/dokusat1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:echtjetzt-tv",
+   "name": "EchtJetzt TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "echtjetzt-tv",
+   "logo": "https://i.ibb.co/ccNRGVj/download-10.png",
+   "epg_id": "EchtJetztTV.de@SD",
+   "sources": [
+    {
+     "source_id": "echtjetzt-tv-hls",
+     "url": "https://bibeltv03.iptv-playoutcenter.de/bibeltv03/bibeltv03.stream_all/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:erz-tv-stollberg",
+   "name": "Erz-TV Stollberg",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "erz-tv-stollberg",
+   "logo": "https://i.imgur.com/6FHl9B1.png",
+   "epg_id": "ErzTVStollberg.de@SD",
+   "sources": [
+    {
+     "source_id": "erz-tv-stollberg-hls",
+     "url": "https://5acade5fc0c29.streamlock.net/kabeljournal/live2020.stream/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ewtn-germany",
+   "name": "EWTN (Germany)",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ewtn-germany",
+   "logo": "https://i.imgur.com/NXeygNk.png",
+   "epg_id": "EWTN.de@SD",
+   "sources": [
+    {
+     "source_id": "ewtn-germany-hls",
+     "url": "https://cdn3.wowza.com/1/ZUkxSDBrZHlMbjVn/ZkhNRFNZ/hls/live/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:de:fifa-german",
+   "name": "FIFA+ German",
+   "section": "sports",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "fifa-german",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/FIFA%2B_(2025).svg/960px-FIFA%2B_(2025).svg.png",
+   "epg_id": "FIFAPlus.uk@German",
+   "sources": [
+    {
+     "source_id": "fifa-german-hls",
+     "url": "https://4397879b.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWRlX0ZJRkFQbHVzR2VybWFuX0hMUw/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:filstalwelle",
+   "name": "Filstalwelle",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "filstalwelle",
+   "logo": "https://i.imgur.com/19iKLvf.png",
+   "epg_id": "Filstalwelle.de@SD",
+   "sources": [
+    {
+     "source_id": "filstalwelle-hls",
+     "url": "https://h055.video-stream-hosting.de/filstalwelle-live/_definst_/mp4:livestream/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:finest-tv",
+   "name": "Finest TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "finest-tv",
+   "logo": "https://i.imgur.com/1uoP10V.png",
+   "epg_id": "FinestTV.de@SD",
+   "sources": [
+    {
+     "source_id": "finest-tv-hls",
+     "url": "https://media.finest.tv/hls/live.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:folx-music-television",
+   "name": "Folx Music Television",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "folx-music-television",
+   "logo": "https://i.imgur.com/ze04puX.png",
+   "epg_id": "FolxMusicTelevision.de@SD",
+   "sources": [
+    {
+     "source_id": "folx-music-television-hls",
+     "url": "https://folxapp.b-cdn.net/1080p/index.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:franken-fernsehen",
+   "name": "Franken Fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "franken-fernsehen",
+   "logo": "https://i.imgur.com/3pGGLLD.png",
+   "epg_id": "FrankenFernsehen.de@SD",
+   "sources": [
+    {
+     "source_id": "franken-fernsehen-hls",
+     "url": "https://frankentv.iptv-playoutcenter.de/frankentv/frankentv.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:grjngo-western-movies",
+   "name": "Grjngo Western Movies",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "grjngo-western-movies",
+   "logo": "https://i.imgur.com/wFqhK3p.png",
+   "epg_id": "GrjngoWesternMovies.de@SD",
+   "sources": [
+    {
+     "source_id": "grjngo-western-movies-hls",
+     "url": "https://amogonetworx-grjngo-3-dk.samsung.wurl.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:handystar",
+   "name": "Handystar",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "handystar",
+   "logo": "https://i.imgur.com/oMIygVf.png",
+   "epg_id": "Handystar.de@SD",
+   "sources": [
+    {
+     "source_id": "handystar-hls",
+     "url": "https://sparhandytv.cdn.ses-ps.com/live/channel01/hls/index.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:horse-country-tv",
+   "name": "Horse & Country TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "nature"
+   ],
+   "nsfw": false,
+   "publisher": "horse-country-tv",
+   "logo": "https://i.imgur.com/1x6zYZr.png",
+   "epg_id": "HorseCountryTV.uk@SD",
+   "sources": [
+    {
+     "source_id": "horse-country-tv-hls",
+     "url": "https://hnc-free-viewlift.amagi.tv/HNC_AUSTRALIA.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:hse",
+   "name": "HSE",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "hse",
+   "logo": "https://i.imgur.com/IecRNCk.png",
+   "epg_id": "HSE.de@SD",
+   "sources": [
+    {
+     "source_id": "hse-hls",
+     "url": "https://hse24.akamaized.net/hls/live/2006663/hse24/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:hse-extra",
+   "name": "HSE Extra",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "hse-extra",
+   "logo": "https://i.imgur.com/nvMpbip.png",
+   "epg_id": "HSEExtra.de@SD",
+   "sources": [
+    {
+     "source_id": "hse-extra-hls",
+     "url": "https://hse24extra.akamaized.net/hls/live/2006596/hse24extra/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:hse-trend",
+   "name": "HSE Trend",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "hse-trend",
+   "logo": "https://i.imgur.com/qwh2urX.png",
+   "epg_id": "HSETrend.de@SD",
+   "sources": [
+    {
+     "source_id": "hse-trend-hls",
+     "url": "https://hse24trend.akamaized.net/hls/live/2006597/hse24trend/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:istuff",
+   "name": "iSTUFF",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "istuff",
+   "logo": "https://i.imgur.com/1V3UXVb.jpg",
+   "epg_id": "iSTUFF.de@SD",
+   "sources": [
+    {
+     "source_id": "istuff-hls",
+     "url": "https://relay2.cdn.fem-net.de/hls/loop/istuff_live/istuff_live-720p.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:juwelo-germany",
+   "name": "Juwelo (Germany)",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "juwelo-germany",
+   "logo": "https://i.imgur.com/vmX8Qin.png",
+   "epg_id": "Juwelo.de@SD",
+   "sources": [
+    {
+     "source_id": "juwelo-germany-hls",
+     "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/7441/7441_264_live.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:kaufbei-tv",
+   "name": "KaufBei TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "kaufbei-tv",
+   "logo": "https://i.imgur.com/CVJWiM0.png",
+   "epg_id": "KaufBeiTV.de@SD",
+   "sources": [
+    {
+     "source_id": "kaufbei-tv-hls",
+     "url": "https://api.alpaca.t62a.com/hls/9103/index.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:kulturmd",
+   "name": "KulturMD",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "kulturmd",
+   "logo": "https://i.imgur.com/io7cJ1Z.png",
+   "epg_id": "KulturMD.de@SD",
+   "sources": [
+    {
+     "source_id": "kulturmd-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/kulturmd_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:lausitzwelle",
+   "name": "Lausitzwelle",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "lausitzwelle",
+   "logo": "https://i.imgur.com/4kYF4bK.png",
+   "epg_id": "Lausitzwelle.de@SD",
+   "sources": [
+    {
+     "source_id": "lausitzwelle-hls",
+     "url": "https://h056.video-stream-hosting.de/easycast11-live/_definst_/mp4:livestreamhd2/playlist.m3u8?ref=",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:light-channel-germany",
+   "name": "Light Channel (Germany)",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "light-channel-germany",
+   "logo": "https://i.imgur.com/0OmBlfE.png",
+   "epg_id": "LightChannel.de@SD",
+   "sources": [
+    {
+     "source_id": "light-channel-germany-hls",
+     "url": "http://streamer1.streamhost.org:1935/salive/lctvde/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:love-the-planet-de",
+   "name": "Love The Planet DE",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "love-the-planet-de",
+   "logo": "https://i.imgur.com/RBcD49X.png",
+   "epg_id": "LoveThePlanet.es@DE",
+   "sources": [
+    {
+     "source_id": "love-the-planet-de-hls",
+     "url": "https://amg01821-amg01821c12-rlaxx-gb-10461.playouts.now.amagi.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:mc-tv",
+   "name": "MC TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "mc-tv",
+   "logo": "https://upload.wikimedia.org/wikipedia/tr/c/ca/MC_TV_logosu.png",
+   "epg_id": "MCTV.de@HD",
+   "sources": [
+    {
+     "source_id": "mc-tv-hls",
+     "url": "https://rrr.sz.xlcdn.com/?account=mceutv&file=mc2&output=playlist.m3u8&protocol=https&service=wowza&type=live",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:mdf-1",
+   "name": "MDF.1",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "mdf-1",
+   "logo": "https://i.imgur.com/IFGXK6u.png",
+   "epg_id": "MDF1.de@SD",
+   "sources": [
+    {
+     "source_id": "mdf-1-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/mdf1_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:de:more-than-sports-tv",
+   "name": "More Than Sports TV",
+   "section": "sports",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "more-than-sports-tv",
+   "logo": "https://i.imgur.com/SLrjImc.png",
+   "epg_id": "MoreThanSportsTV.de@SD",
+   "sources": [
+    {
+     "source_id": "more-than-sports-tv-hls",
+     "url": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:m-nchen-tv",
+   "name": "München TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "m-nchen-tv",
+   "logo": "https://i.imgur.com/lt7xNWW.png",
+   "epg_id": "MunchenTV.de@SD",
+   "sources": [
+    {
+     "source_id": "m-nchen-tv-hls",
+     "url": "https://muenchentv.iptv-playoutcenter.de/muenchentv/muenchentv.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:niederbayern-tv",
+   "name": "Niederbayern TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "niederbayern-tv",
+   "logo": "https://i.imgur.com/9uaMgTk.png",
+   "epg_id": "NiederbayernTV.de@SD",
+   "sources": [
+    {
+     "source_id": "niederbayern-tv-hls",
+     "url": "https://stream03.welocal.stream/stream/sat-nby/ngrp:sat-nby.stream_all/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:niederbayern-tv-deggendorf-straubing",
+   "name": "Niederbayern TV Deggendorf & Straubing",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "niederbayern-tv-deggendorf-straubing",
+   "logo": "https://i.imgur.com/mAaIh3C.png",
+   "epg_id": "NiederbayernTVDeggendorfStraubing.de@SD",
+   "sources": [
+    {
+     "source_id": "niederbayern-tv-deggendorf-straubing-hls",
+     "url": "https://stream03.welocal.stream/stream/fhd-nbydeggendorf_99148/ngrp:stream_all/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:niederbayern-tv-landshut",
+   "name": "Niederbayern TV Landshut",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "niederbayern-tv-landshut",
+   "logo": "https://i.imgur.com/5sHzZAh.png",
+   "epg_id": "NiederbayernTVLandshut.de@SD",
+   "sources": [
+    {
+     "source_id": "niederbayern-tv-landshut-hls",
+     "url": "https://stream03.welocal.stream/stream/fhd-nbylandshut_75262/ngrp:stream_all/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:niederbayern-tv-passau",
+   "name": "Niederbayern TV Passau",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "niederbayern-tv-passau",
+   "logo": "https://i.imgur.com/0wnFhNi.png",
+   "epg_id": "NiederbayernTVPassau.de@SD",
+   "sources": [
+    {
+     "source_id": "niederbayern-tv-passau-hls",
+     "url": "https://stream03.welocal.stream/stream/fhd-nbypassau_49171/ngrp:stream_all/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:noa4-hamburg",
+   "name": "noa4 Hamburg",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "noa4-hamburg",
+   "logo": "https://i.imgur.com/7A2LRKI.png",
+   "epg_id": "noa4Hamburg.de@SD",
+   "sources": [
+    {
+     "source_id": "noa4-hamburg-hls",
+     "url": "https://hls1.wtnet.de/noa4hh/apple/wifi6500.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:noa4-norderstedt",
+   "name": "noa4 Norderstedt",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "noa4-norderstedt",
+   "logo": "https://i.imgur.com/941nrGb.png",
+   "epg_id": "noa4Norderstedt.de@SD",
+   "sources": [
+    {
+     "source_id": "noa4-norderstedt-hls",
+     "url": "https://hls1.wtnet.de/noa4/apple/wifi6500.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:nrwision",
+   "name": "NRWision",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "nrwision",
+   "logo": "https://i.imgur.com/RkF2Kmx.png",
+   "epg_id": "NRWision.de@SD",
+   "sources": [
+    {
+     "source_id": "nrwision-hls",
+     "url": "https://fms.nrwision.de/live/ngrp:livestreamHD.stream/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:oberpfalz-tv",
+   "name": "Oberpfalz TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "oberpfalz-tv",
+   "logo": "https://i.imgur.com/ISI5KDd.png",
+   "epg_id": "OberpfalzTV.de@SD",
+   "sources": [
+    {
+     "source_id": "oberpfalz-tv-hls",
+     "url": "https://oberpfalztv.iptv-playoutcenter.de/oberpfalztv/oberpfalztv.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-dessau",
+   "name": "OK Dessau",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-dessau",
+   "logo": "https://i.imgur.com/nx4Wc8l.png",
+   "epg_id": "OKDessau.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-dessau-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/ok-dessau_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-flensburg",
+   "name": "OK Flensburg",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-flensburg",
+   "logo": "https://i.imgur.com/NPbfgQC.png",
+   "epg_id": "OKFlensburg.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-flensburg-hls",
+     "url": "https://live-cdn.oksh.de/play/hls/flensburgtv/index.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-kaiserslautern",
+   "name": "OK Kaiserslautern",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-kaiserslautern",
+   "logo": "https://i.imgur.com/MRrETTh.png",
+   "epg_id": "OKKaiserslautern.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-kaiserslautern-hls",
+     "url": "https://s.ok54.de/abr_okkl/webstream/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-kassel",
+   "name": "OK Kassel",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-kassel",
+   "logo": "https://i.imgur.com/igZ9sx2.png",
+   "epg_id": "OKKassel.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-kassel-hls",
+     "url": "https://s.ok54.de/mok-ks/kassel/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-kiel",
+   "name": "OK Kiel",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-kiel",
+   "logo": "https://i.imgur.com/eToHabX.png",
+   "epg_id": "OKKiel.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-kiel-hls",
+     "url": "https://live-cdn.oksh.de/play/hls/kieltv/index.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-magdeburg",
+   "name": "OK Magdeburg",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-magdeburg",
+   "logo": "https://i.imgur.com/zftoymR.png",
+   "epg_id": "OKMagdeburg.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-magdeburg-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/ok-magdeburg_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-merseburg-querfurt",
+   "name": "OK Merseburg-Querfurt",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-merseburg-querfurt",
+   "logo": "https://i.imgur.com/QfzdESc.png",
+   "epg_id": "OKMerseburgQuerfurt.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-merseburg-querfurt-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/ok-merseburg_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-rhein-main",
+   "name": "OK Rhein-Main",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-rhein-main",
+   "logo": "https://i.imgur.com/XsmPI4N.jpg",
+   "epg_id": "OKRheinMain.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-rhein-main-hls",
+     "url": "https://s.ok54.de/mok-rm/mok-rm/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-salzwedel",
+   "name": "OK Salzwedel",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-salzwedel",
+   "logo": "https://i.imgur.com/jDmiTOS.png",
+   "epg_id": "OKSalzwedel.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-salzwedel-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/ok-salzwedel_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-stendal",
+   "name": "OK Stendal",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-stendal",
+   "logo": "https://i.imgur.com/s9wo85l.png",
+   "epg_id": "OKStendal.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-stendal-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/ok-stendal_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-trier",
+   "name": "OK Trier",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-trier",
+   "logo": "https://i.imgur.com/nq32HIs.png",
+   "epg_id": "OKTrier.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-trier-hls",
+     "url": "https://s.ok54.de/ott/webstream/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok-wernigerode",
+   "name": "OK Wernigerode",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok-wernigerode",
+   "logo": "https://i.imgur.com/3gQvhSy.png",
+   "epg_id": "OKWernigerode.de@SD",
+   "sources": [
+    {
+     "source_id": "ok-wernigerode-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/mp4:ok-wernigerode_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok4",
+   "name": "OK4",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok4",
+   "logo": "https://i.imgur.com/cUlMOlt.png",
+   "epg_id": "OK4.de@SD",
+   "sources": [
+    {
+     "source_id": "ok4-hls",
+     "url": "https://s.ok54.de/abr_ok4/live/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ok54",
+   "name": "OK54",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ok54",
+   "logo": "https://ok54.de/wp-content/uploads/2013/04/ok54_logo_schwarz.png",
+   "epg_id": "OK54.de@SD",
+   "sources": [
+    {
+     "source_id": "ok54-hls",
+     "url": "https://s.ok54.de/ott/webstream/tv/webstream_720p/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": true,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:one-adria",
+   "name": "One Adria",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "one-adria",
+   "logo": "https://i.imgur.com/NYkMamU.png",
+   "epg_id": "OneAdria.de@SD",
+   "sources": [
+    {
+     "source_id": "one-adria-hls",
+     "url": "https://oneadriaapp.b-cdn.net/1080p/index.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:one-music-television",
+   "name": "One Music Television",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "one-music-television",
+   "logo": "https://i.imgur.com/dLgoKJ0.png",
+   "epg_id": "OneMusicTelevision.de@SD",
+   "sources": [
+    {
+     "source_id": "one-music-television-hls",
+     "url": "https://oneapp.b-cdn.net/1080p/index.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ost-west-24",
+   "name": "Ost West 24",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc",
+    "news"
+   ],
+   "nsfw": false,
+   "publisher": "ost-west-24",
+   "logo": "https://i.imgur.com/voeQ6x1.png",
+   "epg_id": "OstWest24.de@SD",
+   "sources": [
+    {
+     "source_id": "ost-west-24-hls",
+     "url": "http://stream.mcquack.net/455/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true,
+     "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:punktum-fernsehen",
+   "name": "PUNKTum Fernsehen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "punktum-fernsehen",
+   "logo": "https://i.imgur.com/3yamOmw.png",
+   "epg_id": "PUNKTumFernsehen.de@SD",
+   "sources": [
+    {
+     "source_id": "punktum-fernsehen-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/punktum_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:qvc-germany",
+   "name": "QVC (Germany)",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "qvc-germany",
+   "logo": "https://i.imgur.com/EybRtsI.png",
+   "epg_id": "QVC.de@SD",
+   "sources": [
+    {
+     "source_id": "qvc-germany-hls",
+     "url": "https://qvcde-live.akamaized.net/hls/live/2097104/qvc/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:qvc-style-germany",
+   "name": "QVC Style (Germany)",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "qvc-style-germany",
+   "logo": "https://i.imgur.com/DwdkHGj.png",
+   "epg_id": "QVCStyle.de@SD",
+   "sources": [
+    {
+     "source_id": "qvc-style-germany-hls",
+     "url": "https://qvcde-live.akamaized.net/hls/live/2097104/qby/master.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:qvc-zwei",
+   "name": "QVC Zwei",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "shopping"
+   ],
+   "nsfw": false,
+   "publisher": "qvc-zwei",
+   "logo": "https://i.imgur.com/f94kPed.png",
+   "epg_id": "QVCZwei.de@SD",
+   "sources": [
+    {
+     "source_id": "qvc-zwei-hls",
+     "url": "https://qvcde-live.akamaized.net/hls/live/2097104/qps/master.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:radio-weser-tv-bremen",
+   "name": "Radio Weser TV Bremen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "radio-weser-tv-bremen",
+   "logo": "",
+   "epg_id": "RadioWeserTVBremen.de@SD",
+   "sources": [
+    {
+     "source_id": "radio-weser-tv-bremen-hls",
+     "url": "https://5857499ee635b.streamlock.net/radiowesertv-live/_definst_/mp4:livestreamTV/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rakuten-tv-action-movies-germany",
+   "name": "Rakuten TV Action Movies Germany",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "rakuten-tv-action-movies-germany",
+   "logo": "https://i.imgur.com/Meew6eX.png",
+   "epg_id": "RakutenTVActionMovies.es@Germany",
+   "sources": [
+    {
+     "source_id": "rakuten-tv-action-movies-germany-hls",
+     "url": "https://284824cf70404fdfb6ddf9349009c710.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6066/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rakuten-tv-comedy-movies-germany",
+   "name": "Rakuten TV Comedy Movies Germany",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "rakuten-tv-comedy-movies-germany",
+   "logo": "https://i.imgur.com/Meew6eX.png",
+   "epg_id": "RakutenTVComedyMovies.es@Germany",
+   "sources": [
+    {
+     "source_id": "rakuten-tv-comedy-movies-germany-hls",
+     "url": "https://ecac08c9e2214375b907d6825aaf9a01.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6182/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rakuten-tv-drama-movies-germany",
+   "name": "Rakuten TV Drama Movies Germany",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "rakuten-tv-drama-movies-germany",
+   "logo": "https://i.imgur.com/Meew6eX.png",
+   "epg_id": "RakutenTVDramaMovies.es@Germany",
+   "sources": [
+    {
+     "source_id": "rakuten-tv-drama-movies-germany-hls",
+     "url": "https://968754c2483045c1a9a7f677caec35b6.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6096/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rakuten-tv-family-movies-germany",
+   "name": "Rakuten TV Family Movies Germany",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "movies",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "rakuten-tv-family-movies-germany",
+   "logo": "https://i.imgur.com/Meew6eX.png",
+   "epg_id": "RakutenTVFamilyMovies.es@Germany",
+   "sources": [
+    {
+     "source_id": "rakuten-tv-family-movies-germany-hls",
+     "url": "https://af230031eeac45f3b78d4f8a13265105.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6209/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rakuten-tv-top-movies-germany",
+   "name": "Rakuten TV Top Movies Germany",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "movies"
+   ],
+   "nsfw": false,
+   "publisher": "rakuten-tv-top-movies-germany",
+   "logo": "https://i.imgur.com/Meew6eX.png",
+   "epg_id": "RakutenTVTopMovies.es@Germany",
+   "sources": [
+    {
+     "source_id": "rakuten-tv-top-movies-germany-hls",
+     "url": "https://cbb622b29f5d43b598991f3fa19de291.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-5985/master.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ran1",
+   "name": "RAN1",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ran1",
+   "logo": "https://i.imgur.com/zRg2BEa.png",
+   "epg_id": "RAN1.de@SD",
+   "sources": [
+    {
+     "source_id": "ran1-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/ran1_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rbw",
+   "name": "RBW",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "rbw",
+   "logo": "https://i.imgur.com/A0UKdix.png",
+   "epg_id": "RBW.de@SD",
+   "sources": [
+    {
+     "source_id": "rbw-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/rbw_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:de:red-bull-tv",
+   "name": "Red Bull TV",
+   "section": "sports",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "nature",
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "red-bull-tv",
+   "logo": "https://images.pluto.tv/channels/5e7cb84a172a0f0007da69e4/colorLogoPNG.png",
+   "epg_id": "RedBullTV.at@DE",
+   "sources": [
+    {
+     "source_id": "red-bull-tv-hls",
+     "url": "https://46cfeb23c7f74853bba7a256655a3119.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-582-WORBDACHDEFAST-WHALETVPLUS/582/whaletvplus/hls/master/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    },
+    {
+     "source_id": "red-bull-tv-hls-2",
+     "url": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:regio-tv-bodensee",
+   "name": "Regio TV Bodensee",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "regio-tv-bodensee",
+   "logo": "https://i.imgur.com/3koyLef.png",
+   "epg_id": "RegioTVBodensee.de@SD",
+   "sources": [
+    {
+     "source_id": "regio-tv-bodensee-hls",
+     "url": "https://regiotv-b.iptv-playoutcenter.de/regiotv-b/regiotv-b.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:regio-tv-stuttgart",
+   "name": "Regio TV Stuttgart",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "regio-tv-stuttgart",
+   "logo": "https://i.imgur.com/3koyLef.png",
+   "epg_id": "RegioTVStuttgart.de@SD",
+   "sources": [
+    {
+     "source_id": "regio-tv-stuttgart-hls",
+     "url": "https://regiotv-s.iptv-playoutcenter.de/regiotv-s/regiotv-s.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:rfh",
+   "name": "RFH",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "rfh",
+   "logo": "https://i.imgur.com/8DZa7in.png",
+   "epg_id": "RFH.de@SD",
+   "sources": [
+    {
+     "source_id": "rfh-hls",
+     "url": "http://58bd5b7a98e04.streamlock.net/medienasa-live/RFH_high/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:ric",
+   "name": "RiC",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "kids",
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "ric",
+   "logo": "https://i.imgur.com/4wMZ8Em.png",
+   "epg_id": "RiC.de@SD",
+   "sources": [
+    {
+     "source_id": "ric-hls",
+     "url": "https://rictv.iptv-playoutcenter.de/rictv/rictv-web/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:saarland-fernsehen-1",
+   "name": "Saarland Fernsehen 1",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "saarland-fernsehen-1",
+   "logo": "https://i.imgur.com/OodehFV.png",
+   "epg_id": "SaarlandFernsehen1.de@SD",
+   "sources": [
+    {
+     "source_id": "saarland-fernsehen-1-hls",
+     "url": "https://saarland1.iptv-playoutcenter.de/saarland1/saarland1.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:saarland-fernsehen-2",
+   "name": "Saarland Fernsehen 2",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "saarland-fernsehen-2",
+   "logo": "https://i.imgur.com/Yv7j4ia.png",
+   "epg_id": "SaarlandFernsehen2.de@SD",
+   "sources": [
+    {
+     "source_id": "saarland-fernsehen-2-hls",
+     "url": "https://saarland2.iptv-playoutcenter.de/saarland2/saarland2.stream_2/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sachsen-eins",
+   "name": "Sachsen Eins",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sachsen-eins",
+   "logo": "https://i.imgur.com/2EXNdd8.png",
+   "epg_id": "SachsenEins.de@SD",
+   "sources": [
+    {
+     "source_id": "sachsen-eins-hls",
+     "url": "https://sachsen1.iptv-playoutcenter.de/sachsen1/sachsen1.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sachsen-fernsehen-chemnitz",
+   "name": "Sachsen Fernsehen Chemnitz",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sachsen-fernsehen-chemnitz",
+   "logo": "https://i.imgur.com/4SEAbVf.png",
+   "epg_id": "SachsenFernsehenChemnitz.de@SD",
+   "sources": [
+    {
+     "source_id": "sachsen-fernsehen-chemnitz-hls",
+     "url": "https://chemnitz.iptv-playoutcenter.de/chemnitz/chemnitzfernsehen.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sachsen-fernsehen-dresden",
+   "name": "Sachsen Fernsehen Dresden",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sachsen-fernsehen-dresden",
+   "logo": "https://i.imgur.com/rnvprGj.png",
+   "epg_id": "SachsenFernsehenDresden.de@SD",
+   "sources": [
+    {
+     "source_id": "sachsen-fernsehen-dresden-hls",
+     "url": "https://dresden.iptv-playoutcenter.de/dresden/dresdenfernsehen.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sachsen-fernsehen-leipzig",
+   "name": "Sachsen Fernsehen Leipzig",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sachsen-fernsehen-leipzig",
+   "logo": "https://i.imgur.com/easmJUw.png",
+   "epg_id": "SachsenFernsehenLeipzig.de@SD",
+   "sources": [
+    {
+     "source_id": "sachsen-fernsehen-leipzig-hls",
+     "url": "https://leipzig.iptv-playoutcenter.de/leipzig/leipzigfernsehen.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:seenluft24",
+   "name": "Seenluft24",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "seenluft24",
+   "logo": "https://i.imgur.com/3TgBg9v.jpg",
+   "epg_id": "Seenluft24.de@SD",
+   "sources": [
+    {
+     "source_id": "seenluft24-hls",
+     "url": "https://h056.video-stream-hosting.de/easycast7-live/_definst_/mp4:livestreamhd20/playlist.m3u8?ref=",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sender-neu-jerusalem",
+   "name": "Sender Neu Jerusalem",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sender-neu-jerusalem",
+   "logo": "",
+   "epg_id": "SenderNeuJerusalem.de@SD",
+   "sources": [
+    {
+     "source_id": "sender-neu-jerusalem-hls",
+     "url": "https://bild-und-ton.stream/snj-de/snj-de.smil/.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sonnenklar-tv",
+   "name": "Sonnenklar TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sonnenklar-tv",
+   "logo": "https://i.imgur.com/g4QeXwF.png",
+   "epg_id": "SonnenklarTV.de@SD",
+   "sources": [
+    {
+     "source_id": "sonnenklar-tv-hls",
+     "url": "http://euvia.cdn.ses-ps.com/HLS-Live/index.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sophia-tv-germany",
+   "name": "Sophia TV (Germany)",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sophia-tv-germany",
+   "logo": "https://i.imgur.com/1hNgHbB.png",
+   "epg_id": "SophiaTV.de@SD",
+   "sources": [
+    {
+     "source_id": "sophia-tv-germany-hls",
+     "url": "https://bild-und-ton.stream/sophiatv-en/smil:sophia-tv-en.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sophia-tv-espanol",
+   "name": "Sophia TV Espanol",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sophia-tv-espanol",
+   "logo": "https://i.imgur.com/T2JPCq2.png",
+   "epg_id": "SophiaTVEspanol.de@SD",
+   "sources": [
+    {
+     "source_id": "sophia-tv-espanol-hls",
+     "url": "https://bild-und-ton.stream/sophiatv-es/smil:sophia-tv-es.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:sophia-tv-francais",
+   "name": "Sophia TV Francais",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "sophia-tv-francais",
+   "logo": "https://i.imgur.com/T2JPCq2.png",
+   "epg_id": "SophiaTVFrancais.de@SD",
+   "sources": [
+    {
+     "source_id": "sophia-tv-francais-hls",
+     "url": "https://bild-und-ton.stream/sophiatv-fr/smil:sophia-tv-fr.smil/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:de:strongman",
+   "name": "Strongman",
+   "section": "sports",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "strongman",
+   "logo": "https://i.imgur.com/bVQBF6R.png",
+   "epg_id": "Strongman.us@Germany",
+   "sources": [
+    {
+     "source_id": "strongman-hls",
+     "url": "https://rightsboosterltd-scl-2-eu.rakuten.wurl.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:teltowkanal",
+   "name": "teltOwkanal",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "teltowkanal",
+   "logo": "https://i.imgur.com/G0cImlU.png",
+   "epg_id": "teltOwkanal.de@SD",
+   "sources": [
+    {
+     "source_id": "teltowkanal-hls",
+     "url": "https://h056.video-stream-hosting.de/easycast8-live/_definst_/mp4:livestreamhd8/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:terra-mater-wild",
+   "name": "Terra Mater WILD",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "doc"
+   ],
+   "nsfw": false,
+   "publisher": "terra-mater-wild",
+   "logo": "https://i.imgur.com/EbMK3Ph.png",
+   "epg_id": "TerraMaterWILD.de@German",
+   "sources": [
+    {
+     "source_id": "terra-mater-wild-hls",
+     "url": "https://53ff3982.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmxheHhUVi1ldV9UZXJyYU1hdGVyV2lsZF9ITFM/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:the-graham-norton-show",
+   "name": "The Graham Norton Show",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "the-graham-norton-show",
+   "logo": "https://image.tmdb.org/t/p/w500/xZkWYamzlT6nFu9MI2Rr6NkjedX.png",
+   "epg_id": "TheGrahamNortonShow.uk@SD",
+   "sources": [
+    {
+     "source_id": "the-graham-norton-show-hls",
+     "url": "https://amg00654-itv-amg00654c35-rakuten-gb-7598.playouts.now.amagi.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:tv-ingolstadt",
+   "name": "TV Ingolstadt",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "tv-ingolstadt",
+   "logo": "https://i.imgur.com/Ymh11VV.png",
+   "epg_id": "TVIngolstadt.de@SD",
+   "sources": [
+    {
+     "source_id": "tv-ingolstadt-hls",
+     "url": "https://stream01.welocal.stream/stream/fhd-tvingolstadt_44349/ngrp:stream_all/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:tv-mainfranken",
+   "name": "TV Mainfranken",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "tv-mainfranken",
+   "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tvmainfranken.png",
+   "epg_id": "TVMainfranken.de@SD",
+   "sources": [
+    {
+     "source_id": "tv-mainfranken-hls",
+     "url": "https://tvtouringw.iptv-playoutcenter.de/tvtouringw/tvtouringw.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:tv-oberfranken",
+   "name": "TV Oberfranken",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "tv-oberfranken",
+   "logo": "https://i.imgur.com/tjD9fX2.png",
+   "epg_id": "TVOberfranken.de@SD",
+   "sources": [
+    {
+     "source_id": "tv-oberfranken-hls",
+     "url": "https://tvoberfranken.iptv-playoutcenter.de/tvoberfranken/tvoberfranken.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:tv38-s-dost-niedersachsen",
+   "name": "TV38 Südost-Niedersachsen",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "tv38-s-dost-niedersachsen",
+   "logo": "https://i.imgur.com/ob9JJPU.png",
+   "epg_id": "TV38SudostNiedersachen.de@SD",
+   "sources": [
+    {
+     "source_id": "tv38-s-dost-niedersachsen-hls",
+     "url": "https://h057.video-stream-hosting.de/tv38-live/_definst_/smil:livestream.smil/playlist.m3u8?ref=",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:tva-germany",
+   "name": "TVA (Germany)",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "tva-germany",
+   "logo": "https://i.imgur.com/Gg6d4Jb.png",
+   "epg_id": "TVA.de@SD",
+   "sources": [
+    {
+     "source_id": "tva-germany-hls",
+     "url": "https://tvaktuellr.iptv-playoutcenter.de/tvaktuellr/tvaktuellr.stream_1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "low",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:volksmusik-tv",
+   "name": "Volksmusik TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "volksmusik-tv",
+   "logo": "https://i.imgur.com/EsWuCJ3.png",
+   "epg_id": "VolksmusikTV.de@SD",
+   "sources": [
+    {
+     "source_id": "volksmusik-tv-hls",
+     "url": "https://vmtv.iptv-playoutcenter.de/vmtv/vmtv1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:welt",
+   "name": "WELT",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "news"
+   ],
+   "nsfw": false,
+   "publisher": "welt",
+   "logo": "",
+   "epg_id": "",
+   "sources": [
+    {
+     "source_id": "welt-hls",
+     "url": "https://welt.personalstream.tv/v1/master.m3u8?ads.country=de&ads.pf=welttv",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    },
+    {
+     "source_id": "welt-hls-2",
+     "url": "https://w-live2weltcms.akamaized.net/hls/live/2041019/Welt-LivePGM/index.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:welt-der-wunder-tv",
+   "name": "Welt der Wunder TV",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "welt-der-wunder-tv",
+   "logo": "https://i.imgur.com/DLXssJe.png",
+   "epg_id": "WeltderWunderTV.de@SD",
+   "sources": [
+    {
+     "source_id": "welt-der-wunder-tv-hls",
+     "url": "https://wdw.iptv-playoutcenter.de/wdw/wdw1/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "sd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:sports:de:world-of-freesports",
+   "name": "World of Freesports",
+   "section": "sports",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "sports"
+   ],
+   "nsfw": false,
+   "publisher": "world-of-freesports",
+   "logo": "https://i.imgur.com/lta5Mog.png",
+   "epg_id": "WorldofFreesports.de@SD",
+   "sources": [
+    {
+     "source_id": "world-of-freesports-hls",
+     "url": "https://mainstreammedia-worldoffreesportsintl-rakuten.amagi.tv/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:xite-hits-germany",
+   "name": "XITE Hits Germany",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "xite-hits-germany",
+   "logo": "https://i.imgur.com/N51Rp7E.png",
+   "epg_id": "XITEHits.nl@Germany",
+   "sources": [
+    {
+     "source_id": "xite-hits-germany-hls",
+     "url": "https://d726x48n2pd5h.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-skxr1pazhltvp/XITE_Hits.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:zee-one-german",
+   "name": "Zee One German",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "series"
+   ],
+   "nsfw": false,
+   "publisher": "zee-one-german",
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/2/24/Zee_One_Logo_2025.png",
+   "epg_id": "ZeeOne.uk@German",
+   "sources": [
+    {
+     "source_id": "zee-one-german-hls",
+     "url": "https://e4955b54.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1kZV9aZWVPbmVfSExT/playlist.m3u8",
+     "protocol": "hls",
+     "quality": "hd",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  },
+  {
+   "id": "gxs:tv:de:zwei-music-television",
+   "name": "Zwei Music Television",
+   "section": "tv",
+   "country": "de",
+   "language": [
+    "de"
+   ],
+   "genre": [
+    "music"
+   ],
+   "nsfw": false,
+   "publisher": "zwei-music-television",
+   "logo": "https://i.imgur.com/RbdpCNf.png",
+   "epg_id": "ZweiMusicTelevision.de@SD",
+   "sources": [
+    {
+     "source_id": "zwei-music-television-hls",
+     "url": "https://zweiapp.b-cdn.net/1080p/index.m3u8",
+     "protocol": "hls",
+     "quality": "unknown",
+     "official": true,
+     "reliability": "medium",
+     "region": "de",
+     "geo_restricted": false,
+     "last_verified_at": "2026-09-26",
+     "active": true
+    }
+   ]
+  }
+ ]
+}

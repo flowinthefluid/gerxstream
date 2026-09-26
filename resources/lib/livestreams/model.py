@@ -18,6 +18,8 @@ _SLUG_RE = re.compile(r'[^a-z0-9]+')
 VALID_PROTOCOLS = ('hls', 'dash', 'mp4', 'rtmp', 'rtsp', 'mjpeg', 'jpeg', 'plugin')
 VALID_QUALITY = ('uhd', 'hd', 'sd', 'unknown')
 VALID_RELIABILITY = ('high', 'medium', 'low', 'unknown')
+# Quellen, deren Adresse erst beim Abspielen mit frischer Sitzung entsteht.
+VALID_RESOLVERS = ('pluto',)
 
 # Rechte-Status einer Variante. Fail-closed: alles ausser 'approved' bleibt aus
 # dem Standardkatalog fern (siehe catalog.approved_channels).
@@ -156,6 +158,7 @@ def normalize_source(raw):
         'rights_status': compute_rights_status(official, rights_evidence_url, drm, login_required),
         'last_verified_at': (raw.get('last_verified_at') or '').strip(),
         'priority': int(raw.get('priority', 0)) if str(raw.get('priority', '')).lstrip('-').isdigit() else 0,
+        'resolver': raw.get('resolver') if raw.get('resolver') in VALID_RESOLVERS else '',
         'active': active,
     }
 

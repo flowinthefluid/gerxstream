@@ -54,3 +54,5 @@ def _load_defaults():
     # hier importiert und registriert werden - siehe docs §10.
     from resources.lib.livestreams.providers.curated import CuratedProvider
     register(CuratedProvider())
+    from resources.lib.livestreams.providers.pluto import PlutoProvider
+    register(PlutoProvider())

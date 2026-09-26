@@ -211,6 +211,96 @@ def parseCookieString(value):
     return cookies
 
 
+def _cookieHeader(pairs):
+    return '; '.join('%s=%s' % (name, value) for name, value in pairs.items())
+
+
+def _unescapeWindowsCurl(text):
+    # Chrome "Als cURL (cmd) kopieren" maskiert Sonderzeichen mit ^.
+    if '^"' in text:
+        text = re.sub(r'\^(.)', r'\1', text)
+    return text
+
+
+def parseBrowserExport(text):
+    """Cookie und User-Agent aus dem, was ein Browser zum Kopieren anbietet.
+
+    Erkannt werden:
+    * "Als cURL kopieren" (Chrome, Edge, Firefox; bash und cmd),
+    * kopierte Anfrage-Header ("Cookie: ..." und "User-Agent: ..."),
+    * cookies.txt im Netscape-Format und JSON-Exporte von Cookie-Erweiterungen,
+    * eine blosse Cookie-Zeile "name=wert; name2=wert2".
+
+    Liefert (cookieHeader, userAgent); beides kann leer sein.
+    """
+    text = str(text or '').strip()
+    if not text:
+        return '', ''
+    cookies = {}
+    userAgent = ''
+
+    # JSON-Export (Cookie-Editor, EditThisCookie): [{"name":..,"value":..}]
+    if text[:1] in '[{':
+        try:
+            data = json.loads(text)
+        except ValueError:
+            data = None
+        if isinstance(data, dict):
+            data = data.get('cookies') or [data]
+        if isinstance(data, list):
+            for entry in data:
+                if isinstance(entry, dict) and entry.get('name') and entry.get('value') is not None:
+                    cookies[str(entry['name']).strip()] = str(entry['value']).strip()
+            if cookies:
+                return _cookieHeader(cookies), ''
+
+    if re.match(r'^\s*curl\s', text, re.I):
+        text = _unescapeWindowsCurl(text)
+        for quote, header in re.findall(r'''(?:-H|--header)\s+(['"])(.*?)\1''', text, re.S):
+            name, _, value = header.partition(':')
+            name = name.strip().lower()
+            if name == 'cookie':
+                cookies.update(parseCookieString(value))
+            elif name == 'user-agent':
+                userAgent = value.strip()
+        for quote, value in re.findall(r'''(?:\s-b|--cookie)\s+(['"])(.*?)\1''', text, re.S):
+            cookies.update(parseCookieString(value))
+        for quote, value in re.findall(r'''(?:\s-A|--user-agent)\s+(['"])(.*?)\1''', text, re.S):
+            userAgent = value.strip()
+        return _cookieHeader(cookies), userAgent
+
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    netscape = False
+    for line in lines:
+        fields = line.split('\t')
+        if len(fields) == 7 and not line.startswith('#'):
+            # domain, subdomains, path, secure, ablauf, name, wert
+            netscape = True
+            if fields[5].strip():
+                cookies[fields[5].strip()] = fields[6].strip()
+            continue
+        match = re.match(r'^(cookie|user-agent)\s*:\s*(.*)$', line, re.I)
+        if match:
+            if match.group(1).lower() == 'cookie':
+                cookies.update(parseCookieString(match.group(2)))
+            else:
+                userAgent = match.group(2).strip()
+    if cookies or userAgent or netscape:
+        return _cookieHeader(cookies), userAgent
+
+    # Einzelne Zeile: nur Cookies, oder nur ein User-Agent.
+    if text.startswith('Mozilla/'):
+        return '', text
+    return _cookieHeader(parseCookieString(text)), ''
+
+
+def missingProtectionCookies(cookieHeader):
+    """Ob in einer Cookie-Zeile keines der bekannten Schutz-Cookies steckt."""
+    names = set(parseCookieString(cookieHeader).keys())
+    known = set(name for group in RELEVANT_COOKIES.values() for name in group)
+    return not (names & known)
+
+
 def flaresolverrUrl():
     """Adresse eines FlareSolverr-Dienstes, falls eingerichtet.
 
@@ -352,12 +442,12 @@ def notifyOnce(siteId, kind, url='', interactive=True):
             '%s schuetzt diese Quelle. Kodi kann die Pruefung nicht selbst '
             'bestaetigen.\n\n'
             'So wird die Quelle nutzbar: die Seite einmal im Browser oeffnen '
-            'und die Pruefung dort bestaetigen. Danach in den '
-            'Entwickler-Werkzeugen des Browsers das Cookie (%s) sowie den '
-            'User-Agent auslesen und beide in den Einstellungen dieser '
-            'Quelle eintragen.\n\n'
-            'Beide Angaben gehoeren zusammen - das Cookie gilt nur fuer den '
-            'User-Agent, mit dem es ausgestellt wurde.' % (label, names))
+            'und die Pruefung dort bestaetigen. Danach hilft der '
+            'Cookie-Assistent (Einstellungen > Allgemein > Netzwerk) beim '
+            'Uebernehmen - dort genuegt es, die Anfrage im Browser "als cURL" '
+            'zu kopieren und einzufuegen, auch bequem vom Handy oder PC aus. '
+            'Benoetigt wird das Cookie %s zusammen mit dem User-Agent des '
+            'Browsers.' % (label, names))
     source = urlparse(url).netloc or siteId
     if source:
         message += '\n\nBetroffene Quelle: %s' % source

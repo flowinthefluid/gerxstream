@@ -27,6 +27,9 @@ class ListItem(object):
     def setProperty(self, k, v):
         self._props[k] = v
 
+    def getPath(self):
+        return self._path
+
     def setArt(self, art):
         self._art.update(art)
 

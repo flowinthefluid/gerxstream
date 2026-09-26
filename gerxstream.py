@@ -328,6 +328,14 @@ def parseUrl():
         elif sFunction == 'blockedHosterMenu':
             showBlockedHosterMenu()
             return
+        elif sFunction == 'preferredHosterMenu':
+            showPreferredHosterMenu()
+            return
+        elif sFunction == 'cookieAssistant':
+            from resources.lib import cookieassistant
+            source = params.getValue('source')
+            cookieassistant.run(source if isinstance(source, str) and re.fullmatch(r'[a-z0-9_\-]+', source) else None)
+            return
         elif sFunction == 'changelog':
             from resources.lib import tools
             cConfig().setSetting('changelog_version', '')
@@ -377,7 +385,7 @@ def parseUrl():
         if cConfig().getSetting('hosterSelect') == 'Auto' and playMode != 'jd' and playMode != 'jd2' and playMode != 'pyload' and not manual:
             cHosterGui().streamAuto(playMode, sSiteName, sFunction)
         else:
-            cHosterGui().stream(playMode, sSiteName, sFunction, url)
+            cHosterGui().stream(playMode, sSiteName, sFunction, url, manual=manual)
         return
 
     log(cConfig().getLocalizedString(30166) + " -> [gerxstream]: Call function '%s' from '%s'" % (sFunction, sSiteName), LOGNOTICE)
@@ -1191,6 +1199,98 @@ def showBlockedHosterMenu():
     chosen = [domains[i] for i in picked]
     cConfig().setSetting('blockedHoster', ','.join(chosen))
     cGui().showInfo(cConfig().getLocalizedString(30166), '%s: %s' % (cConfig().getLocalizedString(30404), len(chosen)))
+
+
+def _resolverHosterNames():
+    """Namen aller ResolveURL-Hoster (ohne Debrid-/Universaldienste)."""
+    names = {}
+    try:
+        try:
+            resolvers = resolver.relevant_resolvers(include_universal=False, order_matters=False)
+        except TypeError:
+            resolvers = resolver.relevant_resolvers(order_matters=False)
+        for resolverCls in resolvers:
+            if '*' in (getattr(resolverCls, 'domains', None) or ()):
+                continue  # Debrid-/Universaldienste sind keine Hoster
+            name = str(getattr(resolverCls, 'name', '') or '').strip()
+            if name and name.lower() not in names:
+                names[name.lower()] = name
+    except Exception:
+        pass
+    return sorted(names.values(), key=lambda value: value.casefold())
+
+
+def _orderPreferredHosters(names):
+    """Legt die Reihenfolge fest: zuerst gewaehlter Hoster wird zuerst probiert."""
+    remaining = list(names)
+    ordered = []
+    while len(remaining) > 1:
+        index = xbmcgui.Dialog().select(cConfig().getLocalizedString(31404) % (len(ordered) + 1), remaining)
+        if index < 0:
+            break
+        ordered.append(remaining.pop(index))
+    return ordered + remaining
+
+
+def _editPreferredHosters(site, siteLabel, current):
+    from resources.lib import hosterprefs
+
+    names = hosterprefs.seenNames(site)
+    if site == hosterprefs.ALL_SOURCES or len(names) < 3:
+        known = set(hosterprefs.normalize(name) for name in names)
+        names += [name for name in _resolverHosterNames() if hosterprefs.normalize(name) not in known]
+    known = set(hosterprefs.normalize(name) for name in names)
+    names = [name for name in current if hosterprefs.normalize(name) not in known] + names
+    wanted = set(hosterprefs.normalize(name) for name in current)
+    preselect = [index for index, name in enumerate(names) if hosterprefs.normalize(name) in wanted]
+    options = names + [cConfig().getLocalizedString(31409)]
+    picked = xbmcgui.Dialog().multiselect('%s: %s' % (cConfig().getLocalizedString(31401), siteLabel),
+                                          options, preselect=preselect)
+    if picked is None:
+        return
+    chosen = [names[index] for index in picked if index < len(names)]
+    if len(names) in picked:
+        typed = cGui().showKeyBoard('', cConfig().getLocalizedString(31409))
+        if typed and hosterprefs.normalize(typed):
+            chosen.append(typed.strip())
+    # Bisherige Reihenfolge behalten, neue Namen hinten anhaengen.
+    ordered = [name for name in current if name in chosen] + [name for name in chosen if name not in current]
+    if len(ordered) > 1:
+        ordered = _orderPreferredHosters(ordered)
+    hosterprefs.setForSite(site, ordered)
+    summary = ', '.join(ordered) if ordered else cConfig().getLocalizedString(31406)
+    cGui().showInfo('GerXStream', '%s: %s' % (siteLabel, summary), 4)
+
+
+def showPreferredHosterMenu():
+    """Bevorzugte Hoster fuer alle Quellen oder abweichend je Quelle festlegen."""
+    from resources.lib import hosterprefs
+
+    sources = [(hosterprefs.ALL_SOURCES, cConfig().getLocalizedString(31405))]
+    try:
+        plugins = sorted(cPluginHandler().getAvailablePlugins(),
+                         key=lambda plugin: str(plugin.get('name') or plugin.get('id')).casefold())
+        for plugin in plugins:
+            if plugin.get('id') and plugin.get('id') != 'livestreams':
+                sources.append((plugin['id'], plugin.get('name') or plugin['id']))
+    except Exception:
+        logger.error('-> [gerxstream]: source list for preferred hosters unavailable')
+    while True:
+        data = hosterprefs.load()
+        labels = []
+        for site, label in sources:
+            if data.get(site):
+                summary = ', '.join(data[site])
+            elif site == hosterprefs.ALL_SOURCES:
+                summary = cConfig().getLocalizedString(31406)
+            else:
+                summary = cConfig().getLocalizedString(31407)
+            labels.append('%s  [I]%s[/I]' % (label, summary))
+        index = xbmcgui.Dialog().select(cConfig().getLocalizedString(31402), labels)
+        if index < 0:
+            return
+        site, label = sources[index]
+        _editPreferredHosters(site, label, data.get(site, []))
 
 
 def showHosterGui(sFunction):

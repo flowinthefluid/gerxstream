@@ -43,6 +43,7 @@ class cGuiElement:
         self._tmdbID = ''
         self._rating = ''
         self._isMetaSet = False
+        self._plotExtrasAdded = False
 
     def setType(self, sType):
         self.__sType = sType
@@ -293,20 +294,23 @@ class cGuiElement:
             log(cConfig().getLocalizedString(30166) + ' -> [guiElement]: Could not get MetaInformations for %s, mediaType not defined' % self.getTitle(), LOGERROR)
             return False
         from resources.lib.tmdb import cTMDB
+        from resources.lib import plotinfo
         oMetaget = cTMDB()
         if not oMetaget:
             return False
+        # Regie, Darsteller und die IMDb-ID gibt es nur in den TMDB-Details.
+        advanced = 'true' if plotinfo.enabled() else cConfig().getSetting('advanced')
 
         if self._mediaType == 'movie':
             if self._sYear:
-                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), year=self._sYear, advanced=cConfig().getSetting('advanced'))
+                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), year=self._sYear, advanced=advanced)
             else:
-                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), advanced=cConfig().getSetting('advanced'))
+                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), advanced=advanced)
         elif self._mediaType == 'tvshow':
             if self._sYear:
-                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), year=self._sYear, advanced=cConfig().getSetting('advanced'))
+                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), year=self._sYear, advanced=advanced)
             else:
-                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), advanced=cConfig().getSetting('advanced'))
+                meta = oMetaget.get_meta(self._mediaType, self.getTitle(), advanced=advanced)
         elif self._mediaType == 'season':
             meta = {}
         elif self._mediaType == 'episode':
@@ -340,5 +344,21 @@ class cGuiElement:
             self.setItemValues(meta)
         if 'tmdb_id' in meta:
             self._tmdbID = meta['tmdb_id']
+        if self._mediaType in ('movie', 'tvshow') and plotinfo.enabled():
+            self.__addPlotExtras()
         self._isMetaSet = True
         return meta
+
+    def __addPlotExtras(self):
+        """Haengt Wertungen, Regie und Darsteller einmalig an die Beschreibung."""
+        if self._plotExtrasAdded:
+            return
+        from resources.lib import plotinfo
+        values = self.__aItemValues
+        ratings = plotinfo.omdbRatings(values.get('imdb_id'))
+        lines = plotinfo.buildLines(values, ratings, self._mediaType)
+        if lines:
+            values['plot'] = plotinfo.appendTo(self.getDescription(), lines)
+        if 'imdb' in ratings:
+            values['imdb_rating'] = ratings['imdb']
+        self._plotExtrasAdded = True

@@ -7,7 +7,7 @@ _STORE = {}   # addon_id -> {setting_id: str}
 _INFO_DEFAULTS = {
     'id': 'plugin.video.gerxstream',
     'name': 'GerXStream',
-    'version': '1.0.27',
+    'version': '1.0.28',
     'profile': os.environ.get('GXS_PROFILE', '/tmp/gxs-test-profile'),
     'path': os.environ.get('GXS_ADDON_PATH', os.getcwd()),
     'fanart': '',

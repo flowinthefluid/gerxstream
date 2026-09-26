@@ -124,6 +124,14 @@ def main():
     # Livestream-Listen (M3U + EPG) fuer den IPTV Simple Client erzeugen.
     # Baut hoechstens alle N Stunden neu und wirft nie - ein Fehler hier darf
     # den Kodi-Start nicht stoeren.
+    # Pluto-TV-Senderliste (offizielle, anonyme Schnittstelle) auffrischen.
+    try:
+        if cConfig().getSettingBool('lsPlutoEnabled', True):
+            from resources.lib.livestreams.providers import pluto
+            pluto.refresh()
+    except Exception as exc:
+        log('%s - Pluto-TV-Aktualisierung uebersprungen: %s' % (__name__, exc), LOGWARNING)
+
     try:
         from resources.lib.livestreams import export as livestreams_export
         livestreams_export.refresh()

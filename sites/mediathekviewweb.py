@@ -58,7 +58,12 @@ PAGE_SIZE = 50
 # einzeln geprueft - Sender ohne Treffer waeren nur leere Menuepunkte.
 CHANNELS = (
     ('ARD', 'ARD'),
+    ('ONE', 'ONE'),
+    ('tagesschau24', 'tagesschau24'),
+    ('ARD-alpha', 'ARD-alpha'),
     ('ZDF', 'ZDF'),
+    ('ZDFneo', 'ZDFneo'),
+    ('ZDFinfo', 'ZDFinfo'),
     ('3sat', '3Sat'),
     ('arte', 'ARTE.DE'),
     ('phoenix', 'PHOENIX'),
@@ -67,7 +72,9 @@ CHANNELS = (
     ('MDR', 'MDR'),
     ('NDR', 'NDR'),
     ('RBB', 'RBB'),
+    ('Radio Bremen', 'Radio Bremen TV'),
     ('SR', 'SR'),
+    ('SWR', 'SWR'),
     ('WDR', 'WDR'),
     ('KiKA', 'KiKA'),
     ('ZDFtivi', 'ZDF-tivi'),

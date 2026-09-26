@@ -19,8 +19,8 @@ fi
 
 addon_id="$(xmllint --xpath 'string(/addon/@id)' "$project_dir/addon.xml")"
 addon_version="$(xmllint --xpath 'string(/addon/@version)' "$project_dir/addon.xml")"
-if [[ "$addon_id" != "plugin.video.gerxstream" || "$addon_version" != "1.0.27" ]]; then
-	printf 'Erwartet wird plugin.video.gerxstream 1.0.27, gefunden: %s %s\n' \
+if [[ "$addon_id" != "plugin.video.gerxstream" || "$addon_version" != "1.0.28" ]]; then
+	printf 'Erwartet wird plugin.video.gerxstream 1.0.28, gefunden: %s %s\n' \
         "$addon_id" "$addon_version" >&2
     exit 1
 fi

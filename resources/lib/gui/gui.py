@@ -207,6 +207,14 @@ class cGui:
             try:
                 vtag.setRating(float(itemValues['rating']))
             except: pass
+        if 'imdb_rating' in itemValues:
+            # IMDb-Wertung aus OMDb zusaetzlich zur TMDB-Wertung (plotinfo.py)
+            try:
+                ratings = {'imdb': (float(itemValues['imdb_rating'][0]), int(itemValues['imdb_rating'][1]))}
+                if 'rating' in itemValues:
+                    ratings['themoviedb'] = (float(itemValues['rating']), int(itemValues.get('votes') or 0))
+                vtag.setRatings(ratings, 'imdb')
+            except: pass
         if 'votes' in itemValues:
             try:
                 vtag.setVotes(int(itemValues['votes']))
@@ -342,9 +350,10 @@ class cGui:
             if cConfig().getSettingBool('pyload_enabled', False):
                 contextitem.setTitle(cConfig().getLocalizedString(30250))   # Send Pyload
                 contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=pyload)" % (sUrl,),)]
-            if cConfig().getSetting('hosterSelect') == 'Auto':
-                contextitem.setTitle(cConfig().getLocalizedString(30149))   # select Hoster
-                contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=play&manual=1)" % (sUrl,),)]
+            # Immer verfuegbar: umgeht automatisches Abspielen, bevorzugte
+            # Hoster mit Autostart und den gemerkten Hoster der Folgenliste.
+            contextitem.setTitle(cConfig().getLocalizedString(31400))   # Mit Hoster-Auswahl abspielen
+            contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=play&manual=1)" % (sUrl,),)]
         listitem.addContextMenuItems(contextmenus)
         # listitem.addContextMenuItems(contextmenus, True)
         return listitem

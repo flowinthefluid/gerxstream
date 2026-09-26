@@ -314,6 +314,11 @@ class cTMDB:
                     _meta['genre'] += genre
                 else:
                     _meta['genre'] += ' / ' + genre
+        if meta.get('created_by'):
+            creators = [str(person.get('name')) for person in meta['created_by']
+                        if isinstance(person, dict) and person.get('name')]
+            if creators:
+                _meta['creator'] = ' / '.join(creators)
         if 'production_companies' in meta and meta['production_companies']:
             _meta['studio'] = ''
             for studio in meta['production_companies']:

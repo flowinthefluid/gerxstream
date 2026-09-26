@@ -27,7 +27,8 @@ SITE_IDENTIFIER = 'categories'
 # Nur diese Ebenen sind ueber die URL erreichbar.
 LEVELS = ('root', 'indexall', 'genres', 'collections', 'charts', 'decades',
           'keywords', 'peopleMenu', 'people', 'genreList', 'entries',
-          'ratings', 'outsideHollywood', 'companies', 'locations')
+          'ratings', 'outsideHollywood', 'companies', 'locations',
+          'mediatheken')
 
 MEDIA_TYPES = ('movie', 'tv')
 
@@ -296,6 +297,7 @@ def showMenu():
         'outsideHollywood': _outsideHollywood,
         'companies': _companies,
         'locations': _locations,
+        'mediatheken': _mediatheken,
     }[level]
     handler(params)
 
@@ -303,6 +305,8 @@ def showMenu():
 def _root(params):
     params.setParam('catLevel', 'indexall')
     _addFolder(_label(30857, 'Alle'), 'categories', params)
+    params.setParam('catLevel', 'mediatheken')
+    _addFolder(_label(31500, 'Mediatheken'), 'categories', params)
     for level, stringId, fallback in (
             ('genres', 30506, 'Genre'),
             ('collections', 30815, 'Sammlungen'),
@@ -320,6 +324,53 @@ def _root(params):
             ('locations', 'Beruehmte Drehorte')):
         params.setParam('catLevel', level)
         _addFolder(title, 'categories', params)
+    cGui().setEndOfDirectory()
+
+
+# Eigene Mediathek-Quellen; die Sender-Mediatheken darunter laufen ueber die
+# Senderfilter von MediathekViewWeb (ARD, ZDF, 3sat, ORF, SRF, Dritte ...).
+MEDIATHEK_SITES = ('ardmediathek', 'arte', 'mediathekviewweb')
+
+
+def _mediathekChannels():
+    try:
+        import os
+        import sys
+        sitesDir = os.path.join(cConfig().getAddonInfo('path'), 'sites')
+        if sitesDir not in sys.path:
+            sys.path.append(sitesDir)
+        return tuple(__import__('mediathekviewweb').CHANNELS)
+    except Exception as e:
+        logger.error('-> [categories]: MediathekViewWeb-Senderliste nicht ladbar (%s)' % type(e).__name__)
+        return ()
+
+
+def _mediatheken(params):
+    """Alle Mediatheken des deutschen und oesterreichischen Fernsehens."""
+    from resources.lib.handler.pluginHandler import cPluginHandler
+    enabled = dict((plugin.get('id'), plugin) for plugin in cPluginHandler().getAvailablePlugins())
+    listed = 0
+    for siteId in MEDIATHEK_SITES:
+        plugin = enabled.get(siteId)
+        if not plugin:
+            continue
+        element = cGuiElement(plugin.get('name') or siteId, siteId, 'load')
+        if plugin.get('icon'):
+            element.setThumbnail(plugin['icon'])
+        cGui().addFolder(element)
+        listed += 1
+    if 'mediathekviewweb' in enabled:
+        for label, channel in _mediathekChannels():
+            channelParams = ParameterHandler()
+            channelParams.setParam('mvwMode', 'channel')
+            channelParams.setParam('mvwValue', channel)
+            channelParams.setParam('page', '0')
+            element = cGuiElement(_label(31501, '%s-Mediathek').replace('%s', label),
+                                  'mediathekviewweb', 'showEntries')
+            cGui().addFolder(element, channelParams)
+            listed += 1
+    if not listed:
+        cGui().showInfo('GerXStream', _label(31502, 'Keine Mediathek-Quelle aktiviert'))
     cGui().setEndOfDirectory()
 
 
@@ -599,14 +650,41 @@ def _knownForRating(person):
     return best
 
 
-def _personSortKey(person, sortMode):
+PEOPLE_SORT_MODES = ('popularity', 'name', 'rating', 'films', 'awards')
+
+
+def _personSortKey(person, sortMode, extra=None):
     name = (person.get('name') or '').casefold()
+    popularity = -float(person.get('popularity') or 0)
     if sortMode == 'name':
         return (name,)
     if sortMode == 'rating':
         rating, votes = _knownForRating(person)
-        return (-rating, -votes, -float(person.get('popularity') or 0), name)
-    return (-float(person.get('popularity') or 0), name)
+        return (-rating, -votes, popularity, name)
+    if sortMode in ('films', 'awards'):
+        data = (extra or {}).get(str(person.get('id'))) or {}
+        films = int(data.get('films') or 0)
+        awards = int(data.get('oscars') or 0) + int(data.get('grammys') or 0)
+        if sortMode == 'films':
+            return (-films, -awards, popularity, name)
+        return (-awards, -int(data.get('oscars') or 0), -films, popularity, name)
+    return (popularity, name)
+
+
+def _personLabel(person, sortMode, extra):
+    """Zeigt bei Film-/Preis-Sortierung die Zahl, nach der sortiert wurde."""
+    name = person.get('name') or ''
+    data = (extra or {}).get(str(person.get('id')))
+    if not data or sortMode not in ('films', 'awards'):
+        return name
+    details = []
+    if sortMode == 'films' and data.get('films'):
+        details.append(cConfig().getLocalizedString(31453) % data['films'])
+    if data.get('oscars'):
+        details.append(cConfig().getLocalizedString(31454) % data['oscars'])
+    if data.get('grammys'):
+        details.append(cConfig().getLocalizedString(31455) % data['grammys'])
+    return '%s  [I]%s[/I]' % (name, ' · '.join(details)) if details else name
 
 
 def _people(params):
@@ -614,7 +692,7 @@ def _people(params):
     role = params.getValue('catRole') or 'Acting'
     peopleLimit = _peopleLimit(role)
     sortMode = cConfig().getSetting('peopleSort', 'popularity')
-    if sortMode not in ('popularity', 'name', 'rating'):
+    if sortMode not in PEOPLE_SORT_MODES:
         sortMode = 'popularity'
     page = 1
     listed = 0
@@ -654,8 +732,17 @@ def _people(params):
             popularListed += 1
         page += 1
 
-    for person in sorted(people, key=lambda item: _personSortKey(item, sortMode)):
-        if _addPersonFolder(params, person):
+    extra = {}
+    if sortMode in ('films', 'awards') and people:
+        try:
+            from resources.lib import persondata
+            extra = persondata.counts([person.get('id') for person in people], role)
+        except Exception as e:
+            logger.error('-> [categories]: person counts unavailable (%s)' % type(e).__name__)
+        if not extra:
+            cGui().showInfo('GerXStream', cConfig().getLocalizedString(31456), 4)
+    for person in sorted(people, key=lambda item: _personSortKey(item, sortMode, extra)):
+        if _addPersonFolder(params, person, _personLabel(person, sortMode, extra)):
             listed += 1
 
     if listed == 0:

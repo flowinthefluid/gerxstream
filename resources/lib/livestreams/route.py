@@ -366,6 +366,14 @@ def show_sources(params):
     oGui.setEndOfDirectory()
 
 
+def _playable_url(source):
+    """Adresse zum Abspielen; Pluto-Quellen bekommen erst hier ihre Sitzung."""
+    if source.get('resolver') == 'pluto':
+        from resources.lib.livestreams.providers import pluto
+        return pluto.resolve_url(pluto.channel_id_from_url(source['url'])) or source['url']
+    return source['url']
+
+
 def _list_item_for(channel, source):
     """ListItem je nach Protokoll aufbauen. Unterstuetzt werden die vom Addon
     sauber abspielbaren Arten: HLS/DASH (inputstream.adaptive) und RTSP
@@ -373,7 +381,7 @@ def _list_item_for(channel, source):
     laufen ueber die Slideshow (siehe play()), nicht hierueber.
     """
     protocol = source['protocol']
-    url = source['url']
+    url = _playable_url(source)
     list_item = xbmcgui.ListItem(path=url)
     if protocol in ('hls', 'dash'):
         list_item.setProperty('inputstream', 'inputstream.adaptive')
@@ -432,7 +440,7 @@ def _play_channel(channel, forced_source_id=None, use_resolve=True):
         if use_resolve and index == 0 and handle > 0:
             xbmcplugin.setResolvedUrl(handle, True, list_item)
         else:
-            xbmc.Player().play(source['url'], list_item)
+            xbmc.Player().play(list_item.getPath(), list_item)
         if cPlayer().startPlayer():
             selector.mark_ok(channel['id'], source['source_id'])
             return True
