@@ -16,6 +16,7 @@ Beispiele:
 import argparse
 import hashlib
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -43,6 +44,37 @@ def _strip_xml_decl(text):
     if lines and lines[0].lstrip().startswith('<?xml '):
         return ''.join(lines[1:])
     return text
+
+
+def _version_tuple(version):
+    if not re.match(r'^\d+(\.\d+){2}$', version):
+        raise ValueError('Ungueltiges Versionsformat: %s' % version)
+    return tuple(int(part) for part in version.split('.'))
+
+
+def _find_latest_resolver_archive():
+    release_dir = os.path.join(PROJECT_DIR, 'release-inputs')
+    if not os.path.isdir(release_dir):
+        sys.exit('Verzeichnis fehlt: %s' % release_dir)
+
+    prefix = RESOLVER_ID + '-'
+    candidates = []
+    for name in os.listdir(release_dir):
+        if not (name.startswith(prefix) and name.endswith('.zip')):
+            continue
+        version = name[len(prefix):-4]
+        try:
+            parsed = _version_tuple(version)
+        except ValueError:
+            continue
+        candidates.append((parsed, version, os.path.join(release_dir, name)))
+
+    if not candidates:
+        sys.exit('Kein %s-<version>.zip in %s gefunden' % (RESOLVER_ID, release_dir))
+
+    candidates.sort()
+    _parsed, version, archive = candidates[-1]
+    return archive, version
 
 
 def bump_version(version, part):
@@ -102,6 +134,24 @@ def build(out_dir, pages_url=None, force=False):
     zips_dir = os.path.join(out_dir, 'zips', addon_id)
     os.makedirs(zips_dir)
 
+    # ResolveURL als harte Laufzeitabhaengigkeit direkt mit ausliefern.
+    resolver_archive, resolver_version = _find_latest_resolver_archive()
+    resolver_dir = os.path.join(out_dir, 'zips', RESOLVER_ID)
+    os.makedirs(resolver_dir)
+    resolver_zip_name = '%s-%s.zip' % (RESOLVER_ID, resolver_version)
+    shutil.copy2(resolver_archive, os.path.join(resolver_dir, resolver_zip_name))
+    with zipfile.ZipFile(resolver_archive) as resolver_zip:
+        broken = resolver_zip.testzip()
+        if broken is not None:
+            sys.exit('ResolveURL-Archiv beschaedigt: %s' % broken)
+
+        resolver_manifest = resolver_zip.read('%s/addon.xml' % RESOLVER_ID).decode('utf-8')
+        with open(os.path.join(resolver_dir, 'addon.xml'), 'wb') as fh:
+            fh.write(resolver_manifest.encode('utf-8'))
+        for asset in ('icon.png', 'fanart.jpg'):
+            with open(os.path.join(resolver_dir, asset), 'wb') as fh:
+                fh.write(resolver_zip.read('%s/%s' % (RESOLVER_ID, asset)))
+
     with tempfile.TemporaryDirectory() as tmp:
         payload = os.path.join(tmp, addon_id)
         os.makedirs(payload)
@@ -132,6 +182,7 @@ def build(out_dir, pages_url=None, force=False):
     # Repository-ZIP sowohl als direkte Installationsdatei als auch im
     # datadir ablegen. Nur letzterer Pfad kann Kodi selbst aktualisieren.
     repository_manifest = None
+    repository_version = None
     tmpl = os.path.join(PROJECT_DIR, REPO_ID, 'addon.xml.in')
     if pages_url and os.path.exists(tmpl):
         rurl = pages_url.rstrip('/')
@@ -144,6 +195,7 @@ def build(out_dir, pages_url=None, force=False):
             for asset in ('icon.png', 'fanart.jpg'):
                 shutil.copy2(os.path.join(PROJECT_DIR, 'resources', asset), os.path.join(rp, asset))
             repo_ver = _addon_field(os.path.join(rp, 'addon.xml'), 'version')
+            repository_version = repo_ver
             repo_dir = os.path.join(out_dir, 'zips', REPO_ID)
             os.makedirs(repo_dir)
             repo_zip = '%s-%s.zip' % (REPO_ID, repo_ver)
@@ -155,11 +207,9 @@ def build(out_dir, pages_url=None, force=False):
 
     # addons.xml zusammensetzen (Format identisch zum Shell-Build).
     parts = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n']
-    resolver_xml = os.path.join(PROJECT_DIR, 'public', 'zips', RESOLVER_ID, 'addon.xml')
-    if os.path.exists(resolver_xml):
-        parts.append(_strip_xml_decl(open(resolver_xml, encoding='utf-8').read()))
-        if not parts[-1].endswith('\n'):
-            parts.append('\n')
+    parts.append(_strip_xml_decl(resolver_manifest))
+    if not parts[-1].endswith('\n'):
+        parts.append('\n')
     parts.append(_strip_xml_decl(open(addon_xml, encoding='utf-8').read()))
     if not parts[-1].endswith('\n'):
         parts.append('\n')
@@ -184,6 +234,14 @@ def build(out_dir, pages_url=None, force=False):
     os.makedirs(catalog_dir)
     for name in ('addons.xml', 'addons.xml.md5'):
         shutil.copy2(os.path.join(out_dir, name), os.path.join(catalog_dir, name))
+
+    # Kodi's source browser needs an HTML entry point to discover ZIP files.
+    if repository_version:
+        index_tpl = os.path.join(PROJECT_DIR, 'pages', 'index.html.in')
+        if os.path.exists(index_tpl):
+            index_html = open(index_tpl, encoding='utf-8').read().replace('@REPOSITORY_VERSION@', repository_version)
+            with open(os.path.join(out_dir, 'index.html'), 'w', encoding='utf-8') as fh:
+                fh.write(index_html)
 
     print('Fertig. addons.xml.md5 = %s' % md5)
 

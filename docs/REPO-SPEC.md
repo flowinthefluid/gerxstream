@@ -1,20 +1,40 @@
-# Spezifikation: Kodi-Repository `gerxstream/repo`
+# Spezifikation: Kodi-Repository GerXStream
 
-Stand: 2026-09-21 · Ziel-Repo: `https://github.com/flowinthefluid/gerxstream` (Branch `main`, Unterordner `repo/`)
+Stand: 2026-10-05. Quelle: `https://gitlab.com/gerxstream/gerxstream`, Branch `main`.
 
-Dieses Dokument beschreibt, welche Struktur das Repository haben muss, damit
-(a) Kodi es als Addon-Quelle akzeptiert und (b) der spaeter zu verdrahtende
-Update-Pfad in `service.py` darauf zugreifen kann.
+## Aktueller Release-Stand
 
-Strukturvorlage: `https://github.com/jinbinzh/kodi-xstream-mod-repo` (analog zu
-frei verfuegbaren AllInOne-Kodi-Repos wie K.U.S).
+- GerXStream: **1.0.29**. Repository-Addon: **1.0.6**.
+- `.gitlab-ci.yml` fuehrt zuerst die Tests und dann den Pages-Build aus.
+- `tools/build-gitlab-pages.sh` verwendet `tools/build_repo.py` und die von
+  GitLab gelieferte `CI_PAGES_URL`. Versionsnummern werden aus den Manifesten
+  gelesen, ResolveURL aus dem neuesten versionierten `release-inputs/`-Archiv.
+- Die Pages-Ausgabe `public/` wird in CI gebaut, nicht in Git committet.
+  Lokale Pakete unter `repo/` und `dist/` sind ebenfalls generierte Ausgaben.
+- Aktuelle Kodi-Quelle: `https://gerxstream-db50a2.gitlab.io/`.
+- Installation: `repository.gerxstream-1.0.6.zip` im Pages-Wurzelverzeichnis.
+- Katalog: `catalog/addons.xml` und `catalog/addons.xml.md5`.
+- ZIPs: `zips/<addon-id>/<addon-id>-<version>.zip`.
+- Der Katalog enthaelt GerXStream, das Repository-Addon selbst und
+  `script.module.resolveurl`. Die verpflichtende ResolveURL-Untergrenze ist
+  **5.1.209**, diese Version wird mitgeliefert.
+- Updates erfolgen ueber Kodis Add-on-Verwaltung, nicht durch eigenes
+  Entpacken nach `special://home/addons/`.
+- Die optionalen GitHub-Workflows bleiben als Mirror-Build erhalten; das
+  primaere Push- und Veroeffentlichungsziel ist GitLab.
 
-Umgesetzt: Die Zeiger-Addon-Quellen liegen als `repository.gerxstream/` und
-`repository.resolveurl/` in diesem Repo, `tools/build_repo.py` baut daraus den
-kompletten Hosting-Ordner (`dist/gerxstream-repo/`) inklusive `addons.xml`,
-`addons.xml.md5` und `zips/`. Dessen Inhalt wird 1:1 in den Branch `main` von
-`gerxstream/repo` committet — der Verdrahtungsschritt ist noch der Push
-selbst plus die spaetere Aktivierung von `checkVersion()` (Abschnitt 4).
+Lokaler Build:
+
+```sh
+python tools/build_repo.py --out dist --force --pages-url https://gerxstream-db50a2.gitlab.io
+```
+
+## Historischer Entwurf
+
+Die folgenden Abschnitte dokumentieren den Entwurf vom 2026-09-21. Alte
+Versionsnummern, GitHub-URLs, optionale ResolveURL-Abhaengigkeiten und geplante
+Selbst-Updates sind **nicht** der aktuelle Implementierungsstand. Fuer
+Installation und Release-Build gilt ausschliesslich der Abschnitt oben.
 
 ---
 
@@ -56,8 +76,8 @@ entspricht — also `plugin.video.gerxstream/…` als oberste Ebene im Archiv.
        provider-name="flowinthefluid">
   <extension point="xbmc.addon.repository" name="GeerXStream Repository">
     <dir>
-      <info compressed="false">https://flowinthefluid.github.io/gerxstream/repo/addons.xml</info>
-      <checksum>https://flowinthefluid.github.io/gerxstream/repo/addons.xml.md5</checksum>
+      <info compressed="false">https://flowinthefluid.github.io/gerxstream/repo/catalog/addons.xml</info>
+      <checksum>https://flowinthefluid.github.io/gerxstream/repo/catalog/addons.xml.md5</checksum>
       <datadir zip="true">https://flowinthefluid.github.io/gerxstream/repo/zips/</datadir>
     </dir>
   </extension>

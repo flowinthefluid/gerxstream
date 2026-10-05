@@ -3006,3 +3006,95 @@ msgstr "Pluto TV (kostenlose Sender)"
 msgctxt "#31504"
 msgid "About 190 free, ad-supported channels from Pluto TV incl. sports (official interface, no account). The channel list is refreshed when Kodi starts."
 msgstr "Rund 190 kostenlose, werbefinanzierte Sender von Pluto TV inkl. Sport (offizielle Schnittstelle, ohne Konto). Die Senderliste wird beim Kodi-Start aufgefrischt."
+
+msgctxt "#31600"
+msgid "Actors"
+msgstr "Schauspieler"
+
+msgctxt "#31601"
+msgid "Choose production groups"
+msgstr "Produktionsgruppen waehlen"
+
+msgctxt "#31602"
+msgid "All"
+msgstr "Alle"
+
+msgctxt "#31603"
+msgid "Hollywood (USA)"
+msgstr "Hollywood (USA)"
+
+msgctxt "#31604"
+msgid "German"
+msgstr "Deutsche"
+
+msgctxt "#31605"
+msgid "Japanese"
+msgstr "Japanische"
+
+msgctxt "#31606"
+msgid "Korean"
+msgstr "Koreanische"
+
+msgctxt "#31607"
+msgid "Indian"
+msgstr "Indische"
+
+msgctxt "#31608"
+msgid "Other"
+msgstr "Other (weitere Laender)"
+
+msgctxt "#31609"
+msgid "IMDb: best film"
+msgstr "IMDb: bester Film"
+
+msgctxt "#31610"
+msgid "IMDb: average"
+msgstr "IMDb: Durchschnitt"
+
+msgctxt "#31611"
+msgid "Multiple selections allowed. Groups use film production countries from Wikidata, not nationality. Co-productions can place a person in several groups. Unknown countries are not classified as Other. All removes the filter."
+msgstr "Mehrfachauswahl moeglich. Gruppen richten sich nach Film-Produktionslaendern aus Wikidata, nicht nach Nationalitaet. Koproduktionen koennen Personen mehreren Gruppen zuordnen. Unbekannte Laender gelten nicht als Other. Alle hebt den Filter auf."
+
+msgctxt "#31612"
+msgid "IMDb uses available film ratings from OMDb and needs your OMDb key under TMDB. The average is unweighted; missing ratings are excluded. Lists sort a pool of up to 500 popular people, not everyone worldwide. Wikidata filmographies may be incomplete; the first IMDb lookup may take time and use many API requests."
+msgstr "IMDb nutzt verfuegbare Filmwertungen von OMDb und braucht deinen OMDb-Schluessel unter TMDB. Der Durchschnitt ist ungewichtet; fehlende Wertungen werden ausgelassen. Sortiert wird ein Pool von bis zu 500 beliebten Personen, keine weltweite Rangliste. Wikidata-Filmografien koennen unvollstaendig sein; die erste IMDb-Abfrage kann dauern und viele API-Abfragen verbrauchen."
+
+msgctxt "#31613"
+msgid "IMDb sorting requires an OMDb API key in Settings > TMDB."
+msgstr "Fuer die IMDb-Sortierung bitte einen OMDb-API-Schluessel unter Einstellungen > TMDB hinterlegen."
+
+msgctxt "#31614"
+msgid "Production countries and filmographies could not be loaded. Please try again later."
+msgstr "Produktionslaender und Filmografien konnten nicht geladen werden. Bitte spaeter erneut versuchen."
+
+msgctxt "#31615"
+msgid "No IMDb film ratings available. Check your OMDb key and daily API limit."
+msgstr "Keine IMDb-Filmwertungen verfuegbar. Bitte OMDb-Schluessel und taegliches API-Limit pruefen."
+
+msgctxt "#31616"
+msgid "Loading IMDb film ratings..."
+msgstr "IMDb-Filmwertungen werden geladen..."
+
+msgctxt "#31617"
+msgid "Maximum entries after filtering and sorting, e.g. 100 for Top 100. 0 shows all matching people in the loaded pool (up to 500 popular people plus your own actors)."
+msgstr "Maximale Eintraege nach Filtern und Sortieren, z. B. 100 fuer Top 100. 0 zeigt alle passenden Personen im geladenen Pool (bis zu 500 beliebte Personen plus eigene Schauspieler)."
+
+msgctxt "#31618"
+msgid "Previous shared sorting"
+msgstr "Bisherige gemeinsame Sortierung"
+
+msgctxt "#31619"
+msgid "Directors"
+msgstr "Regisseure"
+
+msgctxt "#31620"
+msgid "Index sites"
+msgstr "Indexseiten"
+
+msgctxt "#31621"
+msgid "No matching results for \"%s\". Some sources may be temporarily unavailable."
+msgstr "Keine passenden Treffer fuer \"%s\". Einige Quellen koennen voruebergehend nicht erreichbar sein."
+
+msgctxt "#31622"
+msgid "No results. Some sources may be temporarily unavailable."
+msgstr "Keine Treffer. Einige Quellen koennen voruebergehend nicht erreichbar sein."

@@ -7,7 +7,9 @@ Dieses Addon nutzt die ID `plugin.video.gerxstream`.
 1. Kodi 22 (primaer) oder Kodi 21 (weicher Fallback)
 2. `script.module.resolveurl` muss installiert sein
 3. Das GerXStream Repository (`repository.gerxstream`) aus der ZIP-Datei der
-   GitLab-Pages-Quelle installieren. Anschliessend kann GerXStream über
+   GitLab-Pages-Quelle installieren (`https://gerxstream-db50a2.gitlab.io/`).
+   Aktuelle Repository-ZIP: `repository.gerxstream-1.0.6.zip`.
+   Anschliessend kann GerXStream über
    **Aus Repository installieren** installiert werden. ResolveURL 5.1.209 wird
    als Abhängigkeit aus demselben Repository bereitgestellt.
 
@@ -23,6 +25,31 @@ Dieses Addon nutzt die ID `plugin.video.gerxstream`.
 
 - GerXStream und ResolveURL werden über Kodis Add-on-Verwaltung aktualisiert.
 - Direkte Selbst-Updates aus GitHub werden nicht als Veröffentlichungsweg verwendet.
+- GitLab CI testet jeden neuen Stand und baut auf `main` den Pages-Katalog samt
+   ZIPs aus den Quellen. Nach erfolgreicher Pipeline steht Version 1.0.29 unter
+   `zips/plugin.video.gerxstream/plugin.video.gerxstream-1.0.29.zip` bereit.
+
+## Personenlisten ab 1.0.29
+
+In den Einstellungen gibt es eigene Seitenleistenbereiche **Schauspieler** und
+**Regisseure**. Dort sind Sortierung, Produktionsgruppen (Mehrfachauswahl) und
+Anzahl getrennt einstellbar. Die bisherige gemeinsame Sortierung bleibt als
+Vorgabe erhalten, bis eine neue Sortierung ausgewaehlt wird. Die Suche wurde
+nicht verschoben; **Indexseiten 1** und **Indexseiten 2** sind jetzt **Indexseiten**.
+
+- **A-Z**, **IMDb: bester Film** und **IMDb: Durchschnitt** sind verfuegbar.
+- Fuer IMDb einen eigenen OMDb-Schluessel unter **TMDB** hinterlegen.
+   Der kostenlose Tarif erlaubt 1.000 Abfragen pro Tag. Der erste Abruf kann
+   laenger dauern; Filmwertungen werden 14 Tage gespeichert und fuer gemeinsame
+   Filme mehrerer Personen wiederverwendet. Der Durchschnitt ist ungewichtet und
+   beruecksichtigt nur verfuegbare Wertungen aus den Wikidata-Filmografien.
+- Produktionsgruppen richten sich nach Film-Produktionslaendern, nicht nach
+   Nationalitaet. Koproduktionen erlauben mehrere Gruppen pro Person.
+- Eine Anzahl wie **100** begrenzt die Liste nach Filtern und Sortieren;
+   **0** zeigt alle passenden Personen im geladenen Pool. Dieser umfasst bis zu
+   500 beliebte Personen je Rolle plus eigene Schauspieler, keine vollstaendige
+   weltweite Rangliste. Wikidata-Laender und Filmografien koennen unvollstaendig
+   sein; unbekannte Laender werden nicht pauschal als **Other** einsortiert.
 
 ## Datenmigration bei ID-Wechsel
 

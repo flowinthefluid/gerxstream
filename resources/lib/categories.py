@@ -406,6 +406,10 @@ def _indexAll(params):
         if item.get('backdrop_path'):
             oGuiElement.setFanart('https://image.tmdb.org/t/p/w1280' + item['backdrop_path'])
         params.setParam('searchTitle', title)
+        params.setParam('searchOriginalTitle', item.get('original_title') or item.get('original_name') or '')
+        params.setParam('searchYear', year)
+        params.setParam('searchMedia', 'movie' if item.get('title') else 'tvshow')
+        params.setParam('searchTmdbID', item.get('id'))
         cGui().addFolder(oGuiElement, params, True, total)
 
     if page < max(movie.get('total_pages', 1), tv.get('total_pages', 1)):
@@ -548,12 +552,12 @@ def _peopleMenu(params):
     actorLimit = _peopleLimit('Acting')
     directorLimit = _peopleLimit('Directing')
     ownActors = len(favoriteActors())
-    actorTitle = _label(30823, 'Beliebte Schauspieler') + ' (%s' % actorLimit
+    actorTitle = _label(30823, 'Beliebte Schauspieler') + ' (%s' % (actorLimit or _label(31602, 'Alle'))
     if ownActors:
         actorTitle += ' + %s eigene' % ownActors
     actorTitle += ')'
     for title, role in ((actorTitle, 'Acting'),
-                        (_label(30860, 'Beliebte Regisseure') + ' (%s)' % directorLimit, 'Directing')):
+                        (_label(30860, 'Beliebte Regisseure') + ' (%s)' % (directorLimit or _label(31602, 'Alle')), 'Directing')):
         params.setParam('catLevel', 'people')
         params.setParam('catRole', role)
         _addFolder(title, 'categories', params)
@@ -629,7 +633,7 @@ def _findPersonByName(name):
 def _peopleLimit(role):
     setting = 'directorPeopleLimit' if role == 'Directing' else 'actorPeopleLimit'
     default = DIRECTOR_DEFAULT_LIMIT if role == 'Directing' else ACTOR_DEFAULT_LIMIT
-    return max(PEOPLE_MIN_LIMIT, min(
+    return max(0, min(
         PEOPLE_MAX_LIMIT,
         cConfig().getSettingInt(setting, default)))
 
@@ -650,7 +654,45 @@ def _knownForRating(person):
     return best
 
 
-PEOPLE_SORT_MODES = ('popularity', 'name', 'rating', 'films', 'awards')
+PEOPLE_SORT_MODES = ('popularity', 'name', 'rating', 'films', 'awards', 'imdb_best', 'imdb_average')
+PEOPLE_GROUPS = (('all', 31602), ('hollywood', 31603), ('german', 31604),
+                 ('japanese', 31605), ('korean', 31606), ('indian', 31607), ('other', 31608))
+
+
+def _peopleGroups(role):
+    prefix = 'director' if role == 'Directing' else 'actor'
+    valid = {key for key, _labelId in PEOPLE_GROUPS}
+    selected = set(cConfig().getSetting(prefix + 'PeopleGroups', 'all').split(',')) & valid
+    return selected or {'all'}
+
+
+def editPeopleGroups(params):
+    import xbmcgui
+
+    role = params.getValue('catRole')
+    prefix = 'director' if role == 'Directing' else 'actor'
+    current = _peopleGroups(role)
+    selected = xbmcgui.Dialog().multiselect(
+        _label(31601), [_label(labelId) for _key, labelId in PEOPLE_GROUPS],
+        preselect=[index for index, (key, _labelId) in enumerate(PEOPLE_GROUPS) if key in current])
+    if selected is None:
+        return
+    groups = [PEOPLE_GROUPS[index][0] for index in selected if 0 <= index < len(PEOPLE_GROUPS)]
+    if not groups or groups == ['all']:
+        groups = ['all']
+    elif len(groups) > 1 and 'all' in groups:
+        groups.remove('all')
+    cConfig().setSetting(prefix + 'PeopleGroups', ','.join(groups))
+    cGui().showInfo('GerXStream', ', '.join(_label(labelId) for key, labelId in PEOPLE_GROUPS
+                                          if key in groups), 4)
+
+
+def _personInGroups(person, groups, profiles):
+    if 'all' in groups:
+        return True
+    from resources.lib import persondata
+    profile = profiles.get(str(person.get('id'))) or {}
+    return bool(groups & persondata.productionGroups(profile.get('countries') or []))
 
 
 def _personSortKey(person, sortMode, extra=None):
@@ -661,6 +703,9 @@ def _personSortKey(person, sortMode, extra=None):
     if sortMode == 'rating':
         rating, votes = _knownForRating(person)
         return (-rating, -votes, popularity, name)
+    if sortMode in ('imdb_best', 'imdb_average'):
+        data = (extra or {}).get(str(person.get('id'))) or {}
+        return (-float(data.get(sortMode) or 0), popularity, name)
     if sortMode in ('films', 'awards'):
         data = (extra or {}).get(str(person.get('id'))) or {}
         films = int(data.get('films') or 0)
@@ -675,6 +720,9 @@ def _personLabel(person, sortMode, extra):
     """Zeigt bei Film-/Preis-Sortierung die Zahl, nach der sortiert wurde."""
     name = person.get('name') or ''
     data = (extra or {}).get(str(person.get('id')))
+    if sortMode in ('imdb_best', 'imdb_average'):
+        rating = (data or {}).get(sortMode)
+        return '%s  [I]IMDb %.2f[/I]' % (name, rating) if rating else name
     if not data or sortMode not in ('films', 'awards'):
         return name
     details = []
@@ -689,16 +737,28 @@ def _personLabel(person, sortMode, extra):
 
 def _people(params):
     """TMDB-Popular-Liste nach Rolle, erweitert um eigene Schauspieler."""
-    role = params.getValue('catRole') or 'Acting'
+    role = 'Directing' if params.getValue('catRole') == 'Directing' else 'Acting'
     peopleLimit = _peopleLimit(role)
-    sortMode = cConfig().getSetting('peopleSort', 'popularity')
+    prefix = 'director' if role == 'Directing' else 'actor'
+    sortMode = cConfig().getSetting(prefix + 'PeopleSort') or cConfig().getSetting('peopleSort', 'popularity')
     if sortMode not in PEOPLE_SORT_MODES:
         sortMode = 'popularity'
+    groups = _peopleGroups(role)
+    if sortMode in ('imdb_best', 'imdb_average'):
+        from resources.lib import plotinfo
+        import xbmcgui
+        if not (cConfig().getSetting(plotinfo.OMDB_KEY_SETTING) or '').strip():
+            xbmcgui.Dialog().ok('GerXStream', _label(31613))
+            cGui().setEndOfDirectory(False)
+            return
     page = 1
     listed = 0
     popularListed = 0
     total_pages = 1
     listedIds = set()
+    people = []
+    targetPool = (peopleLimit if sortMode == 'popularity' and groups == {'all'} and peopleLimit
+                  else PEOPLE_MAX_LIMIT)
 
     # Eigene Namen stehen in der gleichen Schauspielerliste, nicht in einem
     # separaten Unterordner. So erscheint ein im Infofenster gespeicherter
@@ -708,19 +768,17 @@ def _people(params):
             person = _findPersonByName(name)
             if not person or person.get('id') in listedIds:
                 continue
-            if _addPersonFolder(params, person, u'★ ' + person.get('name', name)):
-                listedIds.add(person.get('id'))
-                listed += 1
+            listedIds.add(person.get('id'))
+            people.append(person)
 
-    people = []
-    while popularListed < peopleLimit and page <= total_pages:
+    while popularListed < targetPool and page <= min(total_pages, 500):
         data = cTMDB().getUrl('person/popular', page) or {}
         results = data.get('results') or []
         total_pages = data.get('total_pages', 1)
         if not results:
             break
         for person in results:
-            if popularListed >= peopleLimit:
+            if popularListed >= targetPool:
                 break
             if role and person.get('known_for_department') and person.get('known_for_department') != role:
                 continue
@@ -733,6 +791,25 @@ def _people(params):
         page += 1
 
     extra = {}
+    profiles = {}
+    if 'all' not in groups or sortMode in ('imdb_best', 'imdb_average'):
+        from resources.lib import persondata
+        profiles = persondata.filmProfiles([person.get('id') for person in people], role)
+        if not profiles:
+            cGui().showInfo('GerXStream', _label(31614), 4)
+            cGui().setEndOfDirectory(False)
+            return
+    people = [person for person in people if _personInGroups(person, groups, profiles)]
+    if sortMode in ('imdb_best', 'imdb_average'):
+        from resources.lib import persondata
+        extra = persondata.imdbScores([person.get('id') for person in people], profiles)
+        if extra is None:
+            cGui().setEndOfDirectory(False)
+            return
+        if not any(data.get('imdb_count') for data in extra.values()):
+            cGui().showInfo('GerXStream', _label(31615), 4)
+            cGui().setEndOfDirectory(False)
+            return
     if sortMode in ('films', 'awards') and people:
         try:
             from resources.lib import persondata
@@ -741,12 +818,16 @@ def _people(params):
             logger.error('-> [categories]: person counts unavailable (%s)' % type(e).__name__)
         if not extra:
             cGui().showInfo('GerXStream', cConfig().getLocalizedString(31456), 4)
-    for person in sorted(people, key=lambda item: _personSortKey(item, sortMode, extra)):
+    ordered = sorted(people, key=lambda item: _personSortKey(item, sortMode, extra))
+    if peopleLimit:
+        ordered = ordered[:peopleLimit]
+    for person in ordered:
         if _addPersonFolder(params, person, _personLabel(person, sortMode, extra)):
             listed += 1
 
     if listed == 0:
         cGui().showInfo()
+        cGui().setEndOfDirectory(False)
         return
 
     if page <= total_pages and popularListed >= peopleLimit:
@@ -798,7 +879,8 @@ def _buildQuery(params):
     if keywordId:
         terms.append('with_keywords=%s' % keywordId)
     if personId:
-        terms.append('with_cast=%s' % personId)
+        field = 'with_crew' if params.getValue('catRole') == 'Directing' else 'with_cast'
+        terms.append('%s=%s' % (field, personId))
     if decade:
         field = 'primary_release_date' if media == 'movie' else 'first_air_date'
         terms.append('%s.gte=%s-01-01' % (field, decade))
@@ -842,6 +924,10 @@ def _entries(params):
         # Der Klick geht in die globale Suche - so gilt die Kategorie fuer
         # alle aktivierten Quellen, nicht nur fuer eine Webseite.
         params.setParam('searchTitle', title)
+        params.setParam('searchOriginalTitle', item.get('original_title') or item.get('original_name') or '')
+        params.setParam('searchYear', released[:4])
+        params.setParam('searchMedia', 'movie' if media == 'movie' else 'tvshow')
+        params.setParam('searchTmdbID', item.get('id'))
         cGui().addFolder(oGuiElement, params, True, total)
 
     if data.get('page', 1) < data.get('total_pages', 1):

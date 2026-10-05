@@ -126,43 +126,10 @@
 						<heading>30916</heading>
 					</control>
 				</setting>
-				<setting id="favoriteActors" type="string" label="30871" help="30872">
-					<level>1</level>
-					<default/>
-					<constraints>
-						<allowempty>true</allowempty>
-					</constraints>
-					<control type="edit" format="string">
-						<heading>30871</heading>
-					</control>
-				</setting>
-				<setting id="actorPeopleLimit" type="integer" label="30884" help="30885">
-					<level>2</level>
-					<default>500</default>
-					<constraints>
-						<minimum>25</minimum>
-						<step>25</step>
-						<maximum>500</maximum>
-					</constraints>
-					<control type="slider" format="integer">
-						<popup>false</popup>
-					</control>
-				</setting>
-				<setting id="directorPeopleLimit" type="integer" label="30890" help="30891">
-					<level>2</level>
-					<default>100</default>
-					<constraints>
-						<minimum>25</minimum>
-						<step>25</step>
-						<maximum>500</maximum>
-					</constraints>
-					<control type="slider" format="integer">
-						<popup>false</popup>
-					</control>
-				</setting>
 				<setting id="peopleSort" type="string" label="30886" help="31452">
 					<level>1</level>
 					<default>popularity</default>
+					<visible>false</visible>
 					<constraints>
 						<options>
 							<option label="30887">popularity</option>
@@ -799,8 +766,91 @@
 				</setting>
 			</group>
 		</category>
-		<!-- Kategorie Indexseiten 1 (30094) und Indexseiten 2 (30095) werden vom PluginHandler gesetzt und sind somit kein fester Bestandteil der settings.xml -->
-		<category id="indexsite1" label="30094">
+		<category id="actors" label="31600">
+			<group id="actorLists" label="31600">
+				<setting id="actorPeopleSort" type="string" label="30886" help="31612">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+						<options>
+							<option label="31618"></option>
+							<option label="30887">popularity</option>
+							<option label="30888">name</option>
+							<option label="31609">imdb_best</option>
+							<option label="31610">imdb_average</option>
+							<option label="30889">rating</option>
+							<option label="31450">films</option>
+							<option label="31451">awards</option>
+						</options>
+					</constraints>
+					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="actorPeopleGroupsPicker" type="action" label="31601" help="31611">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=peopleGroups&amp;catRole=Acting)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="actorPeopleGroups" type="string" label="31601">
+					<level>0</level>
+					<default>all</default>
+					<visible>false</visible>
+					<control type="edit" format="string"/>
+				</setting>
+				<setting id="actorPeopleLimit" type="integer" label="30884" help="31617">
+					<level>0</level>
+					<default>500</default>
+					<constraints><minimum>0</minimum><step>1</step><maximum>500</maximum></constraints>
+					<control type="edit" format="integer"/>
+				</setting>
+				<setting id="favoriteActors" type="string" label="30871" help="30872">
+					<level>1</level>
+					<default/>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>30871</heading></control>
+				</setting>
+			</group>
+		</category>
+		<category id="directors" label="31619">
+			<group id="directorLists" label="31619">
+				<setting id="directorPeopleSort" type="string" label="30886" help="31612">
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+						<options>
+							<option label="31618"></option>
+							<option label="30887">popularity</option>
+							<option label="30888">name</option>
+							<option label="31609">imdb_best</option>
+							<option label="31610">imdb_average</option>
+							<option label="30889">rating</option>
+							<option label="31450">films</option>
+							<option label="31451">awards</option>
+						</options>
+					</constraints>
+					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="directorPeopleGroupsPicker" type="action" label="31601" help="31611">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=peopleGroups&amp;catRole=Directing)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="directorPeopleGroups" type="string" label="31601">
+					<level>0</level>
+					<default>all</default>
+					<visible>false</visible>
+					<control type="edit" format="string"/>
+				</setting>
+				<setting id="directorPeopleLimit" type="integer" label="30890" help="31617">
+					<level>0</level>
+					<default>100</default>
+					<constraints><minimum>0</minimum><step>1</step><maximum>500</maximum></constraints>
+					<control type="edit" format="integer"/>
+				</setting>
+			</group>
+		</category>
+		<category id="indexsites" label="31620">
 			<group id="aniworld" label="30700">
 				<setting id="plugin_aniworld" type="boolean" label="30050" help="30411">
 					<level>0</level>
@@ -2486,9 +2536,6 @@
 					<control type="toggle"/>
 				</setting>
 			</group>
-		</category>
-		<!-- Kategorie Indexseiten 1 (30094) und Indexseiten 2 (30095) werden vom PluginHandler gesetzt und sind somit kein fester Bestandteil der settings.xml -->
-		<category id="indexsite2" label="30095">
 			<group id="plugin_kkiste" label="30709">
 				<setting id="plugin_kkiste" type="boolean" label="30050" help="30411">
 					<level>0</level>

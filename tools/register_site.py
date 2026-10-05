@@ -184,7 +184,7 @@ def main(argv=None):
     parser.add_argument('label', help='freie String-ID fuer das Gruppenlabel')
     parser.add_argument('name', help='Anzeigename, z. B. "media.ccc.de"')
     parser.add_argument('--vod', action='store_true',
-                        help='in die VoD-Kategorie statt indexsite2')
+                        help='in die VoD-Kategorie statt Indexseiten')
     args = parser.parse_args(argv)
 
     if not re.fullmatch(r'[a-z0-9_-]+', args.sid):

@@ -269,6 +269,10 @@ def parseUrl():
             from resources.lib import categories
             categories.showMenu()
             return
+        elif sFunction == 'peopleGroups':
+            from resources.lib import categories
+            categories.editPeopleGroups(params)
+            return
         elif sFunction == 'randomMovies':
             showRandomMovies()
             return
@@ -1134,6 +1138,7 @@ def showRandomMovies():
             continue
 
         oGuiElement = cGuiElement(title, 'random', 'searchTMDB')
+        oGuiElement.setMediaType('movie')
         released = (item.get('release_date') or '')[:4]
         if released.isdigit():
             oGuiElement.setYear(released)
@@ -1146,6 +1151,10 @@ def showRandomMovies():
 
         params = ParameterHandler()
         params.setParam('searchTitle', title)
+        params.setParam('searchOriginalTitle', item.get('original_title') or '')
+        params.setParam('searchYear', released)
+        params.setParam('searchMedia', 'movie')
+        params.setParam('searchTmdbID', item.get('id'))
         oGui.addFolder(oGuiElement, params, True, total)
 
     oGui.setView('movies')
@@ -1401,7 +1410,7 @@ def _collectGlobalSearchResults(searchText, includePlugin):
     # weiterhin selbst; hier werden nur eventuell alte Warteschlangen geleert.
     protection.discardPendingNotifications()
     if not completed:
-        oGui.setEndOfDirectory()
+        oGui.setEndOfDirectory(False)
         return None
 
     # Manche reine Anime-Quellen liefern bei einer Suchseite die feste
@@ -1449,9 +1458,9 @@ def _renderCollectedSearchResults(oGui, results=None):
     collected = oGui.searchResults if results is None else results
     total = len(collected)
     if total == 0:
-        oGui.setView()
-        oGui.setEndOfDirectory()
-        return True
+        xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(31622))
+        oGui.setEndOfDirectory(False)
+        return False
     for count, result in enumerate(sorted(collected, key=lambda k: k['guiElement'].getSiteName()), 1):
         oGui.addFolder(result['guiElement'], result['params'], bIsFolder=result['isFolder'], iTotal=total)
     oGui.setView()
@@ -1463,8 +1472,8 @@ def searchGlobal(sSearchText=False, scope='alle'):
     if not sSearchText:
         sSearchText = cGui().showKeyBoard(sHeading=cConfig().getLocalizedString(30280)) # Bitte Suchbegriff eingeben
     if not sSearchText:
-        cGui().setEndOfDirectory()
-        return True
+        cGui().setEndOfDirectory(False)
+        return False
 
     def _includePlugin(pluginEntry):
         if pluginEntry['globalsearch'] == 'false' or pluginEntry['globalsearch'] == '':
@@ -1519,7 +1528,8 @@ def searchAlter(params):
         if guiElement._sYear and searchYear and guiElement._sYear != searchYear: continue
         if searchImdbId and guiElement.getItemProperties().get('imdbID', False) and guiElement.getItemProperties().get('imdbID', False) != searchImdbId: continue
         filteredResults.append(result)
-    _renderCollectedSearchResults(oGui, filteredResults)
+    if not _renderCollectedSearchResults(oGui, filteredResults):
+        return False
     xbmc.executebuiltin('Container.Update')
     return True
 
@@ -1527,14 +1537,55 @@ def searchAlter(params):
 def searchTMDB(params):
     sSearchText = params.getValue('searchTitle')
     if not sSearchText:
-        cGui().setEndOfDirectory()
+        cGui().setEndOfDirectory(False)
         return True
     oGui = _collectGlobalSearchResults(
         sSearchText,
-        lambda pluginEntry: pluginEntry['globalsearch'] != 'false')
+        lambda pluginEntry: str(pluginEntry.get('globalsearch')).lower() == 'true')
     if oGui is None:
         return False
-    return _renderCollectedSearchResults(oGui)
+    matching = [result for result in oGui.searchResults if _matchesSelectedTitle(result, params)]
+    original = params.getValue('searchOriginalTitle')
+    if not matching and original and original.casefold() != sSearchText.casefold():
+        originalGui = _collectGlobalSearchResults(
+            original, lambda pluginEntry: str(pluginEntry.get('globalsearch')).lower() == 'true')
+        if originalGui is None:
+            return False
+        matching = [result for result in originalGui.searchResults if _matchesSelectedTitle(result, params)]
+    if not matching:
+        xbmcgui.Dialog().ok('GerXStream', cConfig().getLocalizedString(31621) % sSearchText)
+        oGui.setEndOfDirectory(False)
+        return False
+    return _renderCollectedSearchResults(oGui, matching)
+
+
+def _matchesSelectedTitle(result, params):
+    import unicodedata
+
+    def normalize(title):
+        title = re.sub(r'\[(?:/?[BI]|/?COLOR[^\]]*)\]', '', str(title), flags=re.I)
+        title = re.sub(r'\s*\((?:19|20)\d{2}\)\s*$', '', title)
+        title = unicodedata.normalize('NFKD', title.casefold())
+        return ''.join(char for char in title if char.isalnum())
+
+    element = result['guiElement']
+    title = element.getTitle()
+    media = params.getValue('searchMedia')
+    if media and element._mediaType and media != element._mediaType:
+        return False
+    properties = element.getItemProperties()
+    tmdbId = params.getValue('searchTmdbID')
+    resultId = properties.get('tmdbID') or element._tmdbID
+    if tmdbId and resultId and str(tmdbId) != str(resultId):
+        return False
+    expected = {normalize(params.getValue('searchTitle'))}
+    original = params.getValue('searchOriginalTitle')
+    if original:
+        expected.add(normalize(original))
+    if not (tmdbId and resultId) and normalize(title) not in expected:
+        return False
+    year = params.getValue('searchYear')
+    return not (year and element._sYear and str(year) != str(element._sYear))
 
 
 def _pluginSearch(pluginEntry, sSearchText):
@@ -1546,9 +1597,10 @@ def _pluginSearch(pluginEntry, sSearchText):
     oGui._collectMode = True
     try:
         log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: %s: search started' % pluginEntry['name'], LOGNOTICE)
-        plugin = __import__(pluginEntry['id'], globals(), locals())
-        function = getattr(plugin, '_search')
-        function(oGui, sSearchText)
+        with cRequestHandler.backgroundRequests():
+            plugin = __import__(pluginEntry['id'], globals(), locals())
+            function = getattr(plugin, '_search')
+            function(oGui, sSearchText)
         log(cConfig().getLocalizedString(30166) + ' -> [gerxstream]: %s: search finished (%s results)' %
             (pluginEntry['name'], len(oGui.searchResults)), LOGNOTICE)
         return oGui.searchResults

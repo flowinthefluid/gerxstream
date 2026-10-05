@@ -24,5 +24,6 @@ Thumbs.db
 # Test- und lokale Build-Artefakte (nicht committen)
 .pytest_cache/
 /dist/
+/repo/
 .venv/
 tests/_profile/

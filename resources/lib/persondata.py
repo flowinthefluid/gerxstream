@@ -154,3 +154,113 @@ def counts(personIds, role='Acting'):
                      if isinstance(value, dict) and now - int(value.get('ts', 0)) < CACHE_MAX_AGE)
         _saveCache(cache)
     return result
+
+
+def productionGroups(countries):
+    mapping = {'US': 'hollywood', 'DE': 'german', 'JP': 'japanese',
+               'KR': 'korean', 'IN': 'indian'}
+    return {mapping.get(country.upper(), 'other') for country in countries if country}
+
+
+def filmProfiles(personIds, role='Acting'):
+    wanted = list(dict.fromkeys(str(personId) for personId in personIds
+                                if re.fullmatch(r'\d+', str(personId or ''))))
+    cache = _loadCache()
+    now = int(time.time())
+    result = {}
+    missing = []
+    for personId in wanted:
+        entry = cache.get('profile:' + _cacheKey(role, personId))
+        if isinstance(entry, dict) and now - int(entry.get('ts', 0)) < CACHE_MAX_AGE:
+            result[personId] = entry
+        else:
+            missing.append(personId)
+    changed = False
+    for start in range(0, len(missing), BATCH_SIZE):
+        batch = missing[start:start + BATCH_SIZE]
+        query = '''SELECT DISTINCT ?tmdb ?country ?imdb WHERE {
+  VALUES ?tmdb { %s }
+  ?person wdt:P4985 ?tmdb .
+  ?film wdt:%s ?person ; wdt:P31/wdt:P279* wd:Q11424 .
+  OPTIONAL { ?film wdt:P495/wdt:P297 ?country . }
+  OPTIONAL { ?film wdt:P345 ?imdb . }
+}''' % (' '.join('"%s"' % personId for personId in batch), ROLE_PROPERTY.get(role, 'P161'))
+        payload = _request(query)
+        if not isinstance(payload, dict):
+            continue
+        rows = (payload.get('results') or {}).get('bindings')
+        if not isinstance(rows, list):
+            logger.info('-> [persondata]: production countries unavailable')
+            continue
+        found = {personId: {'countries': set(), 'imdb_ids': set()} for personId in batch}
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            personId = (row.get('tmdb') or {}).get('value')
+            if personId not in found:
+                continue
+            country = (row.get('country') or {}).get('value')
+            imdbId = (row.get('imdb') or {}).get('value')
+            if country:
+                found[personId]['countries'].add(country.upper())
+            if imdbId and re.fullmatch(r'tt\d{5,10}', imdbId):
+                found[personId]['imdb_ids'].add(imdbId)
+        for personId, profile in found.items():
+            entry = {key: sorted(value) for key, value in profile.items()}
+            entry['ts'] = now
+            result[personId] = entry
+            cache['profile:' + _cacheKey(role, personId)] = entry
+            changed = True
+    if changed:
+        _saveCache(cache)
+    return result
+
+
+def summarizeImdb(ratings):
+    values = [float(rating) for rating in ratings if rating and 0 < float(rating) <= 10]
+    if not values:
+        return {'imdb_count': 0}
+    return {'imdb_best': max(values), 'imdb_average': sum(values) / len(values),
+            'imdb_count': len(values)}
+
+
+def imdbScores(personIds, profiles):
+    import xbmc
+    import xbmcgui
+    from resources.lib import plotinfo
+    from concurrent.futures import ThreadPoolExecutor
+
+    imdbIds = sorted({imdbId for personId in personIds
+                      for imdbId in (profiles.get(str(personId)) or {}).get('imdb_ids', [])})
+    ratings = {}
+    cache = _loadCache()
+    now = int(time.time())
+    for imdbId in imdbIds:
+        entry = cache.get('imdb:' + imdbId) or {}
+        if now - int(entry.get('ts', 0)) < CACHE_MAX_AGE and 0 < float(entry.get('rating') or 0) <= 10:
+            ratings[imdbId] = float(entry['rating'])
+    pending = [imdbId for imdbId in imdbIds if imdbId not in ratings]
+    dialog = xbmcgui.DialogProgress()
+    dialog.create('GerXStream', cConfig().getLocalizedString(31616))
+    monitor = xbmc.Monitor()
+    executor = ThreadPoolExecutor(max_workers=6)
+    changed = False
+    try:
+        for start in range(0, len(pending), 6):
+            if dialog.iscanceled() or monitor.abortRequested():
+                return None
+            batch = pending[start:start + 6]
+            fetched = executor.map(plotinfo.omdbRatings, batch)
+            for imdbId, data in zip(batch, fetched):
+                ratings[imdbId] = (data.get('imdb') or (0, 0))[0]
+                if ratings[imdbId]:
+                    cache['imdb:' + imdbId] = {'rating': ratings[imdbId], 'ts': now}
+                    changed = True
+            dialog.update(min(100, (start + len(batch)) * 100 // max(1, len(pending))))
+        return {str(personId): summarizeImdb(ratings.get(imdbId) for imdbId in
+                (profiles.get(str(personId)) or {}).get('imdb_ids', [])) for personId in personIds}
+    finally:
+        executor.shutdown(wait=False)
+        dialog.close()
+        if changed:
+            _saveCache(cache)

@@ -11,6 +11,8 @@ import ssl
 import socket
 import zlib
 import http.client
+import threading
+from contextlib import contextmanager
 
 from resources.lib.config import cConfig
 from resources.lib.handler import protection
@@ -75,6 +77,18 @@ class RedirectFilter(HTTPRedirectHandler):
 class cRequestHandler:
     # useful for e.g. tmdb request where multiple requests are made within a loop
     persistent_openers = {}
+    _background = threading.local()
+
+    @classmethod
+    @contextmanager
+    def backgroundRequests(cls):
+        previous = getattr(cls._background, 'active', False)
+        cls._background.active = True
+        try:
+            yield
+        finally:
+            cls._background.active = previous
+
     _SENSITIVE_LOG_KEYS = frozenset((
         'accesstoken', 'apikey', 'authorization', 'clientsecret', 'cookie',
         'email', 'key', 'pass',
@@ -149,7 +163,7 @@ class cRequestHandler:
         self.caching = caching
         self.method = method
         self.data = data
-        self.ignoreErrors = ignoreErrors
+        self.ignoreErrors = ignoreErrors or getattr(self._background, 'active', False)
         self.compression = compression
         self.jspost = jspost
         self.cacheTime = cConfig().getSettingInt('cacheTime', 360) * 60 # 360 Minuten * 60 = 6 Stunden Cachetime
@@ -459,9 +473,18 @@ class cRequestHandler:
 
         self._sResponseHeader = oResponse.info()
 
+        try:
+            raw_content = oResponse.read()
+        except (TimeoutError, socket.timeout, HTTPException) as error:
+            if not self.ignoreErrors:
+                xbmcgui.Dialog().ok('GerXStream', str(error) or 'Zeitueberschreitung')
+            logger.error(' -> [requestHandler]: ReadError %s Url: %s' % (error, self._safeUrlForLog(self._sUrl)))
+            return 'TIMEOUT'
+        finally:
+            oResponse.close()
+
         content_encoding = self._sResponseHeader.get('Content-Encoding', '').lower()
         if content_encoding:
-            raw_content = oResponse.read()
             if content_encoding == 'gzip':
                 decompressed = zlib.decompress(raw_content, wbits=zlib.MAX_WBITS | 16)
             elif content_encoding == 'deflate':
@@ -470,7 +493,7 @@ class cRequestHandler:
                 decompressed = raw_content
             sContent = decompressed.decode('utf-8', 'replace')
         else:
-            sContent = oResponse.read().decode('utf-8', 'replace')
+            sContent = raw_content.decode('utf-8', 'replace')
 
         if 'lazingfast' in sContent:
             bf = cBF().resolve(self._sUrl, sContent, cookieJar, self._USER_AGENT, sParameters, self.requestTimeout)

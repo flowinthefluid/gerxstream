@@ -506,10 +506,11 @@ def SSsearch(sGui=False, sSearchText=False):
 
     # Falls die Daten noch nicht geladen wurden oder neu geladen werden sollen
     if apiJson is None or 'movies' not in apiJson:
-        loadMoviesData()
+        loadMoviesData(ignoreErrors=bool(sGui))
 
-    if 'movies' not in apiJson or not isinstance(apiJson.get('movies'), list) or len(apiJson['movies']) == 0:
-        oGui.showInfo()
+    if not isinstance(apiJson, dict) or not apiJson.get('movies'):
+        if not sGui:
+            oGui.showInfo()
         return
 
     sst = sSearchText.lower()
@@ -574,28 +575,22 @@ def SSsearch(sGui=False, sSearchText=False):
     if not sGui:
         dialog.close()
 
-def loadMoviesData():
+def loadMoviesData(ignoreErrors=False):
     global apiJson
     sLanguage = cConfig().getSetting('prefLanguage')
-    if sLanguage == '0':  # prefLang Alle Sprachen
-        sLang = 'all'
-    if sLanguage == '1':  # prefLang Deutsch
-        sLang = '2'
-    if sLanguage == '2':  # prefLang Englisch
-        sLang = '3'
+    sLang = {'0': 'all', '1': '2', '2': '3'}.get(sLanguage, 'all')
 
     try:
-        oRequest = cRequestHandler(URL_SEARCH % (sLang, 'new', '1'), caching=True)
+        oRequest = cRequestHandler(URL_SEARCH % (sLang, 'new', '1'), caching=True,
+                                  ignoreErrors=ignoreErrors)
         oRequest.addHeaderEntry('Referer', REFERER)
         oRequest.addHeaderEntry('Origin', ORIGIN)
         oRequest.cacheTime = 60 * 60 * 48  # HTML Cache Zeit 2 Tage
         sJson = oRequest.request()
         apiJson = loads(sJson)
+        if not isinstance(apiJson, dict) or not isinstance(apiJson.get('movies'), list):
+            raise ValueError('Ungueltiger Filmkatalog')
         logger.info('API-Daten erfolgreich geladen')
     except Exception:
         logger.error('Fehler beim Laden der API-Daten')
-        apiJson = {'movies': []}
-
-
-# Daten beim Import des Moduls laden
-loadMoviesData()
+        apiJson = None

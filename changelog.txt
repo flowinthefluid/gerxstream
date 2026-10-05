@@ -1,3 +1,16 @@
+[B]Version: 1.0.29[/B]
+
+05.10.2026
+
+- Zufallsfilme und TMDB-Kategorien suchen die ausgewaehlten Titel mit Originaltitel, Jahr und Medientyp statt unpassende Provider-Listen zu oeffnen.
+- Fehlende Suchtreffer und abgebrochene Suchen behalten die vorherige Liste bei.
+- Kein Katalogabruf beim Import der Quellen; Hintergrundsuchen unterdruecken Netzwerk-Dialoge, auch bei Lese-Timeouts.
+- Schauspieler und Regisseure mit eigenen Einstellungsbereichen, A-Z, IMDb nach bestem Film oder ungewichtetem Durchschnitt (OMDb-Schluessel erforderlich).
+- Produktionsgruppen mehrfach waehlbar: Alle, Hollywood, Deutsche, Japanische, Koreanische, Indische und Other; Laender und Filmografien aus Wikidata.
+- Anzahl nach Filtern und Sortieren einstellbar, z. B. Top 100; 0 zeigt alle passenden Eintraege im geladenen Pool von bis zu 500 beliebten Personen plus eigenen Schauspielern. Keine weltweite Rangliste; Daten koennen unvollstaendig sein.
+- IMDb-Filmwertungen werden quellenuebergreifend 14 Tage gespeichert, um das API-Limit zu schonen.
+- Indexseiten 1 und 2 zu Indexseiten zusammengefuehrt; vorhandene Quelleneinstellungen bleiben erhalten. Suche bleibt an ihrer bisherigen Stelle.
+
 [B]Version: 1.0.28[/B]
 
 26.09.2026

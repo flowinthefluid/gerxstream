@@ -25,9 +25,12 @@ Filme, Serien und Streams direkt in die gewohnte Kodi-Oberfläche.
 ## Los geht's
 
 Installationsschritte, Voraussetzungen und Hinweise zur Datenübernahme stehen
-ausführlich in [INSTALL.md](INSTALL.md). Die veröffentlichte Kodi-Quelle wird über
-GitLab Pages bereitgestellt; die aktuelle Adresse steht im GitLab-Projekt unter
-**Deploy > Pages**. Wer noch eine ältere xStream-Installation nutzt, kann direkt zu
+ausführlich in [INSTALL.md](INSTALL.md). Die Kodi-Quelle wird nach erfolgreicher
+GitLab-Pipeline ueber GitLab Pages bereitgestellt:
+`https://gerxstream-db50a2.gitlab.io/`.
+Die Repository-ZIP heisst `repository.gerxstream-1.0.6.zip`; GerXStream selbst
+hat die Version **1.0.29**. Updates erfolgen ueber Kodis Add-on-Verwaltung.
+Wer noch eine ältere xStream-Installation nutzt, kann direkt zu
 GerXStream wechseln: Einstellungen und Favoriten werden beim ersten Start automatisch
 übernommen, sofern xStream noch installiert ist.
 
@@ -41,7 +44,7 @@ Umfang und Angebot werden laufend erweitert und gepflegt.
 ## Mitentwickeln
 
 GerXStream läuft ausschließlich unter Python 3. Quellcode, Tickets und Releases
-liegen im [GitLab-Projekt](https://gitlab.com/gerxstream/gerxstream).
+liegen im [GitLab-Repository](https://gitlab.com/gerxstream/gerxstream).
 
 ***
 

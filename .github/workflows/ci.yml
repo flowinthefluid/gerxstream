@@ -1,10 +1,8 @@
 # CI fuer GerXStream.
 #
-# Hinweis: Das Projekt wird primaer auf GitLab gepflegt; die Live-Auslieferung
-# des Kodi-Repositorys erfolgt ueber .gitlab-ci.yml + tools/build-gitlab-pages.sh
-# (GitLab Pages). Diese GitHub Action ist ein zusaetzlicher Weg (Tests + Build)
-# fuer den Fall, dass das Repo auch nach GitHub gespiegelt wird. Sie schreibt
-# nach dist/ und laesst public/ unberuehrt.
+# Hinweis: Die Live-Auslieferung des Kodi-Repositorys erfolgt ueber
+# .github/workflows/deploy-pages.yml (GitHub Pages). Diese Workflow-Datei prueft
+# Build + Tests und baut dasselbe Artefakt in dist/.
 
 name: ci
 on:
@@ -35,7 +33,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Build repository artifacts (dist/)
-        run: python tools/build_repo.py --out dist --force
+        run: python tools/build_repo.py --out dist --force --pages-url https://flowinthefluid.github.io/gerxstream/repo
       - name: Validate addon.xml + settings.xml are well-formed
         run: |
           python -c "import xml.dom.minidom as m; m.parse('addon.xml'); m.parse('resources/settings.xml'); print('XML ok')"
