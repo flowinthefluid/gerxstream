@@ -26,8 +26,8 @@ Dieses Addon nutzt die ID `plugin.video.gerxstream`.
 - GerXStream und ResolveURL werden über Kodis Add-on-Verwaltung aktualisiert.
 - Direkte Selbst-Updates aus GitHub werden nicht als Veröffentlichungsweg verwendet.
 - GitLab CI testet jeden neuen Stand und baut auf `main` den Pages-Katalog samt
-   ZIPs aus den Quellen. Nach erfolgreicher Pipeline steht Version 1.0.30 unter
-   `zips/plugin.video.gerxstream/plugin.video.gerxstream-1.0.30.zip` bereit.
+   ZIPs aus den Quellen. Nach erfolgreicher Pipeline steht Version 1.0.31 unter
+   `zips/plugin.video.gerxstream/plugin.video.gerxstream-1.0.31.zip` bereit.
 
 ## Personenlisten ab 1.0.29
 

@@ -71,6 +71,36 @@ def omdbRatings(imdbId):
         return {}
 
 
+def minimumRating(setting):
+    return max(0.0, min(cConfig().getSettingNumber(setting, 0.0), 10.0))
+
+
+def requireImdbKey(minimum):
+    if not minimum:
+        return True
+    if re.fullmatch(r'[A-Za-z0-9]{4,40}', cConfig().getSetting(OMDB_KEY_SETTING).strip()):
+        return True
+    from resources.lib.gui.gui import cGui
+    cGui().showInfo('GerXStream', cConfig().getLocalizedString(31710))
+    return False
+
+
+def matchesMinimum(item, media, minimum):
+    if not minimum:
+        return True
+    from resources.lib.tmdb import cTMDB
+
+    imdb_id = item.get('imdb_id')
+    if not imdb_id:
+        tmdb_id = item.get('id')
+        if not str(tmdb_id or '').isdigit() or media not in ('movie', 'tv'):
+            return False
+        external = cTMDB().getUrl('%s/%s/external_ids' % (media, tmdb_id)) or {}
+        imdb_id = external.get('imdb_id')
+    rating = (omdbRatings(imdb_id).get('imdb') or (0, 0))[0]
+    return minimum <= rating <= 10
+
+
 def _actors(meta):
     names = []
     for entry in meta.get('cast') or []:

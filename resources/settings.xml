@@ -13,11 +13,6 @@
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
-				<setting id="showCategories" type="boolean" label="30824" help="">
-					<level>0</level>
-					<default>True</default>
-					<control type="toggle"/>
-				</setting>
 				<setting id="mainMenuOrderEditor" type="action" label="30879" help="30883">
 					<level>1</level>
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=mainMenuOrder)</data>
@@ -70,18 +65,6 @@
 					<level>1</level>
 					<default>True</default>
 					<control type="toggle"/>
-				</setting>
-				<setting id="randomItemsCount" type="integer" label="30869" help="30870">
-					<level>2</level>
-					<default>250</default>
-					<constraints>
-						<minimum>1</minimum>
-						<step>1</step>
-						<maximum>1000</maximum>
-					</constraints>
-					<control type="slider" format="integer">
-						<popup>false</popup>
-					</control>
 				</setting>
 				<setting id="watchHistoryEnabled" type="boolean" label="30904" help="30905">
 					<level>0</level>
@@ -763,6 +746,66 @@
 						<heading>30084</heading>
 						<hidden>true</hidden>
 					</control>
+				</setting>
+			</group>
+		</category>
+		<category id="randommovies" label="30868">
+			<group id="randomSelection" label="30868">
+				<setting id="randomGenresPicker" type="action" label="31701" help="31705">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=randomGenres)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="randomExcludedGenres" type="string" label="31701">
+					<level>0</level>
+					<default/>
+					<visible>false</visible>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"/>
+				</setting>
+				<setting id="randomItemsCount" type="integer" label="30869" help="31720">
+					<level>0</level>
+					<default>250</default>
+					<constraints><minimum>1</minimum><step>1</step><maximum>1000</maximum></constraints>
+					<control type="edit" format="integer"/>
+				</setting>
+				<setting id="randomMinImdb" type="number" label="31700" help="31706">
+					<level>0</level>
+					<default>0.0</default>
+					<constraints><minimum>0.0</minimum><step>0.1</step><maximum>10.0</maximum></constraints>
+					<control type="slider" format="number"><popup>false</popup></control>
+				</setting>
+			</group>
+		</category>
+		<category id="categories" label="30507">
+			<group id="categorySelection" label="30507">
+				<setting id="showCategories" type="boolean" label="30824">
+					<level>0</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="categoryMinImdb" type="number" label="31700" help="31706">
+					<level>0</level>
+					<default>0.0</default>
+					<constraints><minimum>0.0</minimum><step>0.1</step><maximum>10.0</maximum></constraints>
+					<control type="slider" format="number"><popup>false</popup></control>
+				</setting>
+				<setting id="categoryMinTmdb" type="number" label="31707" help="31713">
+					<level>0</level>
+					<default>0.0</default>
+					<constraints><minimum>0.0</minimum><step>0.1</step><maximum>10.0</maximum></constraints>
+					<control type="slider" format="number"><popup>false</popup></control>
+				</setting>
+				<setting id="categoryMinVotes" type="integer" label="31708" help="31709">
+					<level>0</level>
+					<default>0</default>
+					<constraints><minimum>0</minimum><step>1</step><maximum>100000</maximum></constraints>
+					<control type="edit" format="integer"/>
+				</setting>
+				<setting id="categoryMediathekenAll" type="boolean" label="31716" help="31717">
+					<level>0</level>
+					<default>True</default>
+					<control type="toggle"/>
 				</setting>
 			</group>
 		</category>

@@ -3099,3 +3099,91 @@ msgstr "No matching results for \"%s\". Some sources may be temporarily unavaila
 msgctxt "#31622"
 msgid "No results. Some sources may be temporarily unavailable."
 msgstr "No results. Some sources may be temporarily unavailable."
+
+msgctxt "#31700"
+msgid "Minimum IMDb rating (0 = off)"
+msgstr "Minimum IMDb rating (0 = off)"
+
+msgctxt "#31701"
+msgid "Allowed genres for Random"
+msgstr "Allowed genres for Random"
+
+msgctxt "#31702"
+msgid "By genre"
+msgstr "By genre"
+
+msgctxt "#31703"
+msgid "By production company"
+msgstr "By production company"
+
+msgctxt "#31704"
+msgid "%d of %d requested films found. The catalogue or filter may provide fewer matches."
+msgstr "%d of %d requested films found. The catalogue or filter may provide fewer matches."
+
+msgctxt "#31705"
+msgid "Checked genres are allowed. Films belonging to any unchecked genre are excluded from Random. Family and Animation can exclude children's films; these are not exact age classifications. Explicit genre/company selections ignore these exclusions."
+msgstr "Checked genres are allowed. Films belonging to any unchecked genre are excluded from Random. Family and Animation can exclude children's films; these are not exact age classifications. Explicit genre/company selections ignore these exclusions."
+
+msgctxt "#31706"
+msgid "Actual IMDb ratings from OMDb, not TMDB. Requires your OMDb API key under TMDB. Missing ratings are excluded. First lookups take time and consume your daily API quota. Applies to catalogue films and series, not people or media libraries. Random checks at most 1000 candidates and may return fewer matches."
+msgstr "Actual IMDb ratings from OMDb, not TMDB. Requires your OMDb API key under TMDB. Missing ratings are excluded. First lookups take time and consume your daily API quota. Applies to catalogue films and series, not people or media libraries. Random checks at most 1000 candidates and may return fewer matches."
+
+msgctxt "#31707"
+msgid "Minimum TMDB rating (0 = off)"
+msgstr "Minimum TMDB rating (0 = off)"
+
+msgctxt "#31708"
+msgid "Minimum TMDB votes (0 = no additional filter)"
+msgstr "Minimum TMDB votes (0 = no additional filter)"
+
+msgctxt "#31709"
+msgid "Additional filter for catalogue films and series. Existing chart/theme minimums remain in effect."
+msgstr "Additional filter for catalogue films and series. Existing chart/theme minimums remain in effect."
+
+msgctxt "#31710"
+msgid "IMDb filtering requires a valid OMDb API key in Settings > TMDB."
+msgstr "IMDb filtering requires a valid OMDb API key in Settings > TMDB."
+
+msgctxt "#31711"
+msgid "Current trends (films and series)"
+msgstr "Current trends (films and series)"
+
+msgctxt "#31712"
+msgid "Wilderness settings"
+msgstr "Wilderness settings"
+
+msgctxt "#31713"
+msgid "TMDB user ratings, separate from IMDb. No OMDb key required. Applies to catalogue films and series."
+msgstr "TMDB user ratings, separate from IMDb. No OMDb key required. Applies to catalogue films and series."
+
+msgctxt "#31714"
+msgid "No titles on this page match your filters. Other pages may contain matches."
+msgstr "No titles on this page match your filters. Other pages may contain matches."
+
+msgctxt "#31715"
+msgid "The TMDB catalogue could not be loaded. Please try again later."
+msgstr "The TMDB catalogue could not be loaded. Please try again later."
+
+msgctxt "#31716"
+msgid "Show all public-service media libraries"
+msgstr "Show all public-service media libraries"
+
+msgctxt "#31717"
+msgid "Direct shortcuts also show disabled/hidden media-library sources. Global search and source menus retain your existing switches. Turn off to show only enabled, visible sources."
+msgstr "Direct shortcuts also show disabled/hidden media-library sources. Global search and source menus retain your existing switches. Turn off to show only enabled, visible sources."
+
+msgctxt "#31718"
+msgid "Nature and wildlife documentaries"
+msgstr "Nature and wildlife documentaries"
+
+msgctxt "#31719"
+msgid "No exact TMDB keyword found for this theme. No unrelated titles will be shown."
+msgstr "No exact TMDB keyword found for this theme. No unrelated titles will be shown."
+
+msgctxt "#31720"
+msgid "Default 250. Random selection across dated, released, non-adult TMDB films (since 1800), not a popularity shortlist. Unknown release dates are excluded. Strong filters or a small catalogue can return fewer films."
+msgstr "Default 250. Random selection across dated, released, non-adult TMDB films (since 1800), not a popularity shortlist. Unknown release dates are excluded. Strong filters or a small catalogue can return fewer films."
+
+msgctxt "#31721"
+msgid "No genres are allowed or the selected filter is invalid. Please check your random-film settings."
+msgstr "No genres are allowed or the selected filter is invalid. Please check your random-film settings."

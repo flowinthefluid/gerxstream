@@ -4,7 +4,7 @@ Stand: 2026-10-09. Quelle: `https://gitlab.com/gerxstream/gerxstream`, Branch `m
 
 ## Aktueller Release-Stand
 
-- GerXStream: **1.0.30**. Repository-Addon: **1.0.7**.
+- GerXStream: **1.0.31**. Repository-Addon: **1.0.7**.
 - `.gitlab-ci.yml` fuehrt zuerst die Tests und dann den Pages-Build aus.
 - `tools/build-gitlab-pages.sh` verwendet `tools/build_repo.py` und die von
   GitLab gelieferte `CI_PAGES_URL`. Versionsnummern werden aus den Manifesten

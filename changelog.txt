@@ -1,3 +1,16 @@
+[B]Version: 1.0.31[/B]
+
+09.10.2026
+
+- Zufallsfilme oeffnen zuerst Random, Nach Genre oder Nach Filmproduktion; Standard bleibt 250 Filme.
+- Zufallsauswahl aus dem datierten, erschienenen TMDB-Katalog statt einer Popularitaetsauswahl; Datumsbereiche umgehen das TMDB-Seitenlimit. Unbekannte Erscheinungsdaten und Erwachsenenmarkierungen bleiben ausgeschlossen.
+- Eigene Einstellungsseite fuer erlaubte Random-Genres, Anzahl und echte IMDb-Mindestwertung ueber OMDb. Abgewaehlte Genres gelten nicht fuer gezielte Genre-/Firmenauswahl.
+- Kategorien mit eigener Einstellungsseite fuer IMDb-/TMDB-Mindestwertungen und Mindeststimmen; IMDb braucht einen OMDb-Schluessel, fehlende Wertungen werden ausgeschlossen. Starke Filter koennen weniger Zufallstreffer liefern.
+- Oeffentlich-rechtliche Mediatheken standardmaessig direkt sichtbar, unabhaengig von den Suchquellenschaltern; in den Kategorie-Einstellungen abschaltbar.
+- Alle in Aktuelle Trends umbenannt, Charts nach Filmen und Serien getrennt, Sammlungen unter Themen integriert und separaten Bewertungsmenuepunkt entfernt.
+- Themen verlangen exakte TMDB-Schlagwoerter statt fachfremder Ersatzlisten. Wildnis als Schauplatz praezisiert; Natur- und Tierdokumentationen mit Dokumentarfilm-Filter ergaenzt.
+- Repository bleibt auf Version 1.0.7; bestehende Update-URLs unveraendert.
+
 [B]Version: 1.0.30[/B]
 
 09.10.2026

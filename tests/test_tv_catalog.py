@@ -121,8 +121,14 @@ def test_mediatheken_folder_lists_sources_and_channels(monkeypatch, real_strings
     monkeypatch.setattr('resources.lib.handler.pluginHandler.cPluginHandler', Handler)
     categories._mediatheken(None)
     titles = [entry[0] for entry in added]
-    assert 'ARD Mediathek' in titles and 'MediathekViewWeb' in titles
+    assert 'ARD Mediathek' in titles and 'MediathekViewWeb' in titles and 'arte' in titles
     assert any(title.startswith('ZDF') for title in titles)
     assert any(title.startswith('ORF') for title in titles)
     assert any(title.startswith('phoenix') for title in titles)
-    assert all(entry[1] in ('ardmediathek', 'mediathekviewweb') for entry in added)
+    assert all(entry[1] in ('ardmediathek', 'arte', 'mediathekviewweb') for entry in added)
+
+    added.clear()
+    from conftest import set_setting
+    set_setting('categoryMediathekenAll', 'false')
+    categories._mediatheken(None)
+    assert 'arte' not in [entry[0] for entry in added]

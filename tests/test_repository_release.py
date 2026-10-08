@@ -35,13 +35,17 @@ def test_repository_is_in_catalog_and_datadir(tmp_path, pages_url):
     assert (output / 'catalog' / 'addons.xml.md5').read_text() == (output / 'addons.xml.md5').read_text()
 
     plugin = catalog.find("addon[@id='plugin.video.gerxstream']")
-    assert plugin.get('version') == '1.0.30'
-    plugin_zip = output / 'zips' / 'plugin.video.gerxstream' / 'plugin.video.gerxstream-1.0.30.zip'
+    assert plugin.get('version') == '1.0.31'
+    plugin_zip = output / 'zips' / 'plugin.video.gerxstream' / 'plugin.video.gerxstream-1.0.31.zip'
     with zipfile.ZipFile(plugin_zip) as archive:
         assert archive.testzip() is None
         plugin_manifest = ET.fromstring(archive.read('plugin.video.gerxstream/addon.xml'))
         settings = ET.fromstring(archive.read('plugin.video.gerxstream/resources/settings.xml'))
+        random_movies = archive.read('plugin.video.gerxstream/resources/lib/randommovies.py').decode('utf-8')
     assert plugin_manifest.get('version') == plugin.get('version')
+    assert 'def sampleCatalog(' in random_movies
+    assert settings.find(".//category[@id='randommovies']//setting[@id='randomMinImdb']") is not None
+    assert settings.find(".//category[@id='categories']//setting[@id='categoryMinImdb']") is not None
     for setting_id in ('actorPeopleSort', 'directorPeopleSort'):
         setting = settings.find(".//setting[@id='%s']" % setting_id)
         assert setting.find('default').text == 'inherit'

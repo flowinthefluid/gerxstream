@@ -431,6 +431,214 @@ def test_people_sort_inherit_and_legacy_empty_keep_previous_sort(monkeypatch):
             assert listed == ['Anna', 'Zoe']
 
 
+def test_random_and_category_settings_have_own_sidebar_pages():
+    import xml.etree.ElementTree as ET
+    from pathlib import Path
+
+    root = ET.parse(Path(__file__).resolve().parents[1] / 'resources' / 'settings.xml').getroot()
+    random_settings = root.find(".//category[@id='randommovies']")
+    category_settings = root.find(".//category[@id='categories']")
+    assert {setting.get('id') for setting in random_settings.findall('.//setting')} >= {
+        'randomItemsCount', 'randomGenresPicker', 'randomExcludedGenres', 'randomMinImdb'}
+    assert {setting.get('id') for setting in category_settings.findall('.//setting')} >= {
+        'showCategories', 'categoryMinImdb', 'categoryMinTmdb', 'categoryMinVotes', 'categoryMediathekenAll'}
+    ids = [setting.get('id') for setting in root.findall('.//setting')]
+    assert len(ids) == len(set(ids))
+    assert random_settings.find(".//setting[@id='randomItemsCount']/default").text == '250'
+
+
+def test_random_menu_route_returns_before_scraper_dispatch(monkeypatch):
+    import sys
+
+    main = _main_module(monkeypatch)
+    monkeypatch.setattr(sys, 'argv', ['plugin://plugin.video.gerxstream/', '1',
+                                    '?site=random&function=randomMovies'])
+    shown = []
+    monkeypatch.setattr(main, 'showRandomMovies', lambda: shown.append(True))
+    monkeypatch.setattr(main, '_isAllowedScraperRoute', lambda *args: (_ for _ in ()).throw(
+        AssertionError('Unexpected scraper dispatch')))
+    main.parseUrl()
+    assert shown == [True]
+
+
+def test_random_menu_does_not_fetch_movies(monkeypatch):
+    from resources.lib import randommovies
+
+    listed = []
+    monkeypatch.setattr(randommovies.cTMDB, 'getUrl', lambda *args: (_ for _ in ()).throw(AssertionError('API called')))
+    monkeypatch.setattr(randommovies, '_folder', lambda title, level, mode='', value='': listed.append((level, mode)))
+    randommovies.showMenu()
+    assert listed == [('entries', 'random'), ('genres', ''), ('companies', '')]
+
+
+def test_imdb_filter_uses_actual_omdb_rating_and_rejects_missing(monkeypatch):
+    set_setting('randomMinImdb', '8.0')
+    assert plotinfo.minimumRating('randomMinImdb') == 8.0
+    monkeypatch.setattr(plotinfo, 'omdbRatings', lambda imdb_id: {'imdb': (7.0, 123)})
+    assert not plotinfo.matchesMinimum({'imdb_id': 'tt1234567', 'vote_average': 9.5}, 'movie', 8.0)
+    monkeypatch.setattr(plotinfo, 'omdbRatings', lambda imdb_id: {'imdb': (8.0, 123)})
+    assert plotinfo.matchesMinimum({'imdb_id': 'tt1234567', 'vote_average': 1.0}, 'movie', 8.0)
+    assert not plotinfo.matchesMinimum({}, 'movie', 8.0)
+    assert plotinfo.matchesMinimum({}, 'movie', 0)
+
+
+def test_random_entry_route_preserves_metadata_and_cleans_up(monkeypatch, real_strings):
+    import sys
+    import types
+    from resources.lib import randommovies
+
+    main = _main_module(monkeypatch)
+    monkeypatch.setattr(sys, 'argv', ['plugin://plugin.video.gerxstream/', '1',
+                                    '?function=randomMovies&randomLevel=entries&randomMode=genre&randomValue=28'])
+    set_setting('randomItemsCount', '2')
+    closed = []
+    updates = []
+    canceled = [False]
+    monkeypatch.setattr(randommovies.xbmcgui, 'DialogProgress', lambda: types.SimpleNamespace(
+        create=lambda *args: None, update=updates.append,
+        iscanceled=lambda: canceled[0], close=lambda: closed.append(True)), raising=False)
+    monkeypatch.setattr(randommovies.xbmc, 'Monitor', lambda: types.SimpleNamespace(
+        abortRequested=lambda: False), raising=False)
+    items = [{'id': 1, 'title': 'Film A', 'original_title': 'Original A', 'release_date': '2007-01-01'},
+             {'id': 2, 'title': 'Film B', 'release_date': '2020-01-01'}]
+    monkeypatch.setattr(randommovies.cTMDB, 'getUrl', lambda *args: {'total_results': 2, 'results': items})
+    added = []
+    ended = []
+    monkeypatch.setattr(randommovies.cGui, 'addFolder', lambda self, element, params, *args: added.append(
+        (element.getFunction(), dict(params.getAllParameters()))))
+    monkeypatch.setattr(randommovies.cGui, 'setEndOfDirectory', lambda self, success=True: ended.append(success))
+    main.showRandomMovies()
+    assert len(added) == 2 and closed == [True] and ended == [True]
+    assert all(function == 'searchTMDB' for function, params in added)
+    first = next(params for function, params in added if params['searchTmdbID'] == '1')
+    assert first['searchYear'] == '2007' and first['searchOriginalTitle'] == 'Original A'
+    assert first['searchMedia'] == 'movie'
+    assert updates and all(0 <= update <= 100 for update in updates)
+    added.clear()
+    canceled[0] = True
+    main.showRandomMovies()
+    assert not added and ended[-1] is False and len(closed) == 2
+    canceled[0] = False
+    set_setting('randomExcludedGenres', '16')
+    items[0]['genre_ids'] = [16, 28]
+    monkeypatch.setattr(sys, 'argv', ['plugin://plugin.video.gerxstream/', '1',
+                                    '?function=randomMovies&randomLevel=entries&randomMode=random'])
+    main.showRandomMovies()
+    assert len(added) == 1 and added[0][1]['searchTmdbID'] == '2'
+
+
+def test_random_catalog_failure_and_cancel_do_not_fake_results():
+    import pytest
+    from resources.lib import randommovies
+
+    class Unavailable:
+        def getUrl(self, *args):
+            return {}
+
+    with pytest.raises(ValueError):
+        randommovies.sampleCatalog(Unavailable(), '', 250)
+    assert randommovies.sampleCatalog(Unavailable(), '', 250, canceled=lambda: True) == []
+
+
+def test_random_genre_picker_preserves_cancel_and_allows_excluding_everything(monkeypatch):
+    from resources.lib import randommovies
+
+    set_setting('randomExcludedGenres', '16')
+    monkeypatch.setattr(randommovies.xbmcgui.Dialog, 'multiselect', lambda *args, **kwargs: None)
+    randommovies.editGenres()
+    assert randommovies._excludedGenres() == {'16'}
+    monkeypatch.setattr(randommovies.xbmcgui.Dialog, 'multiselect', lambda *args, **kwargs: [])
+    randommovies.editGenres()
+    assert randommovies._query('random', '') is None
+
+
+def test_random_catalog_sampling_reaches_beyond_tmdb_page_limit(monkeypatch):
+    from datetime import date
+    from urllib.parse import parse_qs
+    from resources.lib import randommovies
+
+    calls = []
+
+    class TMDB:
+        def getUrl(self, path, page, extra):
+            terms = parse_qs(extra)
+            first = terms['primary_release_date.gte'][0]
+            last = terms['primary_release_date.lte'][0]
+            full = first == '2020-01-01' and last == '2020-01-04'
+            total = 12000 if full else 6000
+            base = 6000 if first == '2020-01-03' else 0
+            calls.append((first, last, page))
+            return {'total_results': total, 'results': [
+                {'id': base + (page - 1) * 20 + offset + 1, 'title': 'Film'} for offset in range(20)]}
+
+    monkeypatch.setattr(randommovies.random, 'sample', lambda population, count: [0, 11999])
+    items = randommovies.sampleCatalog(TMDB(), 'include_adult=false', 2,
+                                       start=date(2020, 1, 1), end=date(2020, 1, 4))
+    assert {item['id'] for item in items} == {1, 12000}
+    assert all(page <= 500 for first, last, page in calls)
+
+
+def test_random_query_filters_are_whitelisted_and_mode_specific():
+    from resources.lib import randommovies
+
+    set_setting('randomExcludedGenres', '10751,16,bogus')
+    assert 'without_genres=10751,16' in randommovies._query('random', '')
+    assert 'vote_count' not in randommovies._query('random', '')
+    assert 'without_genres' not in randommovies._query('genre', '28')
+    assert 'with_companies=2' in randommovies._query('company', '2')
+    assert randommovies._query('genre', '28&include_adult=true') is None
+    assert randommovies._query('company', '999999') is None
+
+
+def test_category_filters_and_exact_theme_matching(monkeypatch):
+    from resources.lib import categories
+    from resources.lib.handler.ParameterHandler import ParameterHandler
+
+    set_setting('categoryMinTmdb', '7.0')
+    set_setting('categoryMinVotes', '100')
+    items = [{'id': 1, 'vote_average': 8.0, 'vote_count': 200},
+             {'id': 2, 'vote_average': 6.0, 'vote_count': 200},
+             {'id': 3, 'vote_average': 9.0, 'vote_count': 5}]
+    assert categories._filterItems(items, 0) == items[:1]
+    monkeypatch.setattr(categories, 'KEYWORD_SEARCH_CACHE', {})
+    monkeypatch.setattr(categories.cTMDB, 'getUrl', lambda *args: {'results': [{'id': 123, 'name': 'human nature'}]})
+    assert categories._keywordIdByTerm('nature') == 0
+    params = ParameterHandler()
+    params.setParam('catPreset', 'kw:nature')
+    assert categories._buildQuery(params)[0] is None
+    monkeypatch.setattr(categories, '_keywordIdByTerm', lambda term: 456)
+    path, extra, page = categories._buildQuery(params)
+    assert path == 'discover/movie'
+    assert 'with_genres=99' in extra
+    assert 'with_keywords=456' in extra
+
+
+def test_category_navigation_splits_charts_and_merges_collections(monkeypatch, real_strings):
+    from resources.lib import categories
+    from resources.lib.handler.ParameterHandler import ParameterHandler
+
+    listed = []
+    monkeypatch.setattr(categories, '_addFolder', lambda title, function, params: listed.append(
+        (title, params.getValue('catLevel'), params.getValue('catMedia'))))
+    params = ParameterHandler()
+    categories._charts(params)
+    assert [(level, media) for title, level, media in listed] == [('chartList', 'movie'), ('chartList', 'tv')]
+    listed.clear()
+    params.setParam('catMedia', 'tv')
+    categories._chartList(params)
+    assert all(level == 'entries' and media == 'tv' for title, level, media in listed)
+    assert len(listed) == len(categories.CHARTS)
+    listed.clear()
+    categories._root(params)
+    assert not any(level in ('collections', 'ratings') for title, level, media in listed)
+    assert listed[0][0] == 'Aktuelle Trends (Filme und Serien)'
+    listed.clear()
+    categories._keywords(params)
+    titles = [title for title, level, media in listed]
+    assert 'Marvel Cinematic Universe' in titles
+    assert titles.count('Superhelden') == 1
+
+
 def test_category_links_preserve_selected_film_metadata(monkeypatch):
     from resources.lib import categories
     from resources.lib.handler.ParameterHandler import ParameterHandler

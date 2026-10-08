@@ -3098,3 +3098,91 @@ msgstr "Keine passenden Treffer fuer \"%s\". Einige Quellen koennen voruebergehe
 msgctxt "#31622"
 msgid "No results. Some sources may be temporarily unavailable."
 msgstr "Keine Treffer. Einige Quellen koennen voruebergehend nicht erreichbar sein."
+
+msgctxt "#31700"
+msgid "Minimum IMDb rating (0 = off)"
+msgstr "IMDb-Mindestwertung (0 = aus)"
+
+msgctxt "#31701"
+msgid "Allowed genres for Random"
+msgstr "Erlaubte Genres fuer Random"
+
+msgctxt "#31702"
+msgid "By genre"
+msgstr "Nach Genre"
+
+msgctxt "#31703"
+msgid "By production company"
+msgstr "Nach Filmproduktion"
+
+msgctxt "#31704"
+msgid "%d of %d requested films found. The catalogue or filter may provide fewer matches."
+msgstr "%d von %d gewuenschten Filmen gefunden. Katalog oder Filter liefern eventuell weniger Treffer."
+
+msgctxt "#31705"
+msgid "Checked genres are allowed. Films belonging to any unchecked genre are excluded from Random. Family and Animation can exclude children's films; these are not exact age classifications. Explicit genre/company selections ignore these exclusions."
+msgstr "Markierte Genres sind erlaubt. Filme mit einem abgewahlten Genre werden aus Random ausgeschlossen. Familie und Animation koennen Kinderfilme ausschliessen; sie sind keine Altersfreigaben. Gezielte Genre-/Firmenauswahl ignoriert diese Ausschluesse."
+
+msgctxt "#31706"
+msgid "Actual IMDb ratings from OMDb, not TMDB. Requires your OMDb API key under TMDB. Missing ratings are excluded. First lookups take time and consume your daily API quota. Applies to catalogue films and series, not people or media libraries. Random checks at most 1000 candidates and may return fewer matches."
+msgstr "Echte IMDb-Wertungen von OMDb, nicht TMDB. OMDb-API-Schluessel unter TMDB erforderlich. Fehlende Wertungen werden ausgeschlossen. Erste Abfragen dauern und verbrauchen dein Tageskontingent. Gilt fuer Katalogfilme/-serien, nicht Personen oder Mediatheken. Random prueft maximal 1000 Kandidaten und liefert eventuell weniger Treffer."
+
+msgctxt "#31707"
+msgid "Minimum TMDB rating (0 = off)"
+msgstr "TMDB-Mindestwertung (0 = aus)"
+
+msgctxt "#31708"
+msgid "Minimum TMDB votes (0 = no additional filter)"
+msgstr "Mindestzahl TMDB-Stimmen (0 = kein Zusatzfilter)"
+
+msgctxt "#31709"
+msgid "Additional filter for catalogue films and series. Existing chart/theme minimums remain in effect."
+msgstr "Zusaetzlicher Filter fuer Katalogfilme und -serien. Vorhandene Mindeststimmen der Charts/Themen bleiben bestehen."
+
+msgctxt "#31710"
+msgid "IMDb filtering requires a valid OMDb API key in Settings > TMDB."
+msgstr "Fuer IMDb-Filter bitte einen gueltigen OMDb-API-Schluessel unter Einstellungen > TMDB hinterlegen."
+
+msgctxt "#31711"
+msgid "Current trends (films and series)"
+msgstr "Aktuelle Trends (Filme und Serien)"
+
+msgctxt "#31712"
+msgid "Wilderness settings"
+msgstr "Wildnis als Schauplatz"
+
+msgctxt "#31713"
+msgid "TMDB user ratings, separate from IMDb. No OMDb key required. Applies to catalogue films and series."
+msgstr "TMDB-Nutzerwertungen, getrennt von IMDb. Kein OMDb-Schluessel erforderlich. Gilt fuer Katalogfilme und -serien."
+
+msgctxt "#31714"
+msgid "No titles on this page match your filters. Other pages may contain matches."
+msgstr "Auf dieser Seite passt kein Titel zu deinen Filtern. Weitere Seiten koennen Treffer enthalten."
+
+msgctxt "#31715"
+msgid "The TMDB catalogue could not be loaded. Please try again later."
+msgstr "Der TMDB-Katalog konnte nicht geladen werden. Bitte spaeter erneut versuchen."
+
+msgctxt "#31716"
+msgid "Show all public-service media libraries"
+msgstr "Alle oeffentlich-rechtlichen Mediatheken anzeigen"
+
+msgctxt "#31717"
+msgid "Direct shortcuts also show disabled/hidden media-library sources. Global search and source menus retain your existing switches. Turn off to show only enabled, visible sources."
+msgstr "Direkte Verknuepfungen zeigen auch deaktivierte/ausgeblendete Mediathek-Quellen. Globale Suche und Quellenmenues behalten deine bisherigen Schalter. Ausgeschaltet werden nur aktivierte, sichtbare Quellen angezeigt."
+
+msgctxt "#31718"
+msgid "Nature and wildlife documentaries"
+msgstr "Natur- und Tierdokumentationen"
+
+msgctxt "#31719"
+msgid "No exact TMDB keyword found for this theme. No unrelated titles will be shown."
+msgstr "Kein exaktes TMDB-Schlagwort fuer dieses Thema gefunden. Es werden keine fachfremden Titel angezeigt."
+
+msgctxt "#31720"
+msgid "Default 250. Random selection across dated, released, non-adult TMDB films (since 1800), not a popularity shortlist. Unknown release dates are excluded. Strong filters or a small catalogue can return fewer films."
+msgstr "Standard 250. Zufallsauswahl aus datierten, erschienenen TMDB-Filmen ohne Erwachsenenmarkierung (seit 1800), keine Popularitaetsauswahl. Unbekannte Erscheinungsdaten werden ausgeschlossen. Starke Filter oder kleine Kataloge koennen weniger Filme liefern."
+
+msgctxt "#31721"
+msgid "No genres are allowed or the selected filter is invalid. Please check your random-film settings."
+msgstr "Keine Genres erlaubt oder ungueltiger Auswahlfilter. Bitte die Zufallsfilm-Einstellungen pruefen."

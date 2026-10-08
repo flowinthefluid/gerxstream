@@ -29,10 +29,50 @@ ausführlich in [INSTALL.md](INSTALL.md). Die Kodi-Quelle wird nach erfolgreiche
 GitLab-Pipeline ueber GitLab Pages bereitgestellt:
 `https://gerxstream-db50a2.gitlab.io/`.
 Die Repository-ZIP heisst `repository.gerxstream-1.0.7.zip`; GerXStream selbst
-hat die Version **1.0.30**. Updates erfolgen ueber Kodis Add-on-Verwaltung.
+hat die Version **1.0.31**. Updates erfolgen ueber Kodis Add-on-Verwaltung.
 Wer noch eine ältere xStream-Installation nutzt, kann direkt zu
 GerXStream wechseln: Einstellungen und Favoriten werden beim ersten Start automatisch
 übernommen, sofern xStream noch installiert ist.
+
+## Zufallsfilme und Kategorien
+
+**Zufaellige Filme** oeffnet zuerst die Auswahl **Random**, **Nach Genre** oder
+**Nach Filmproduktion** (zum Beispiel Walt Disney Pictures oder Pixar).
+Unter **Einstellungen > Zufaellige Filme** stehen erlaubte Genres fuer Random,
+die Anzahl (Standard 250) und eine IMDb-Mindestwertung. Bei mehreren Genres wird
+ein Film ausgeschlossen, sobald er einem abgewahlten Genre angehoert. Die
+gezielte Genre-/Firmenauswahl ignoriert diese Genre-Ausschluesse.
+
+Die Zufallsauswahl nutzt den datierten, erschienenen TMDB-Filmkatalog ohne
+Erwachsenenmarkierung seit 1800, nicht nur die populaersten 10.000 Titel.
+Datumsbereiche werden aufgeteilt, um das TMDB-Limit von 500 Seiten einzuhalten.
+Filme ohne bekanntes Erscheinungsdatum fehlen; Streaming-Verfuegbarkeit wird
+erst beim Klick ueber die aktivierten Quellen gesucht.
+
+Unter **Einstellungen > Kategorien** gibt es getrennte Mindestwerte fuer IMDb,
+TMDB und TMDB-Stimmen. **IMDb** verwendet echte OMDb-Wertungen und erfordert
+einen eigenen OMDb-API-Schluessel unter **TMDB**. Fehlende Wertungen werden bei
+aktivem IMDb-Filter ausgeschlossen. Erste Abfragen koennen dauern und das
+Tageskontingent verbrauchen. Random prueft maximal 1000 Kandidaten; kleine
+Kataloge oder starke Filter koennen weniger als die gewuenschte Anzahl liefern.
+Kategorien filtern seitenweise und behalten die naechste Seite bei.
+
+Der fruehere Punkt **Alle** heisst jetzt **Aktuelle Trends (Filme und Serien)**:
+Er kombiniert die woechentlichen TMDB-Trends, nicht den gesamten Katalog.
+**Charts** trennt Filme und Serien. Die bisherigen **Sammlungen** stehen unter
+**Themen**. Themen beruhen auf TMDB-Schlagwoertern, nicht auf redaktionell
+kuratierten Titellisten: **Wildnis als Schauplatz** kann auch Horror und Dramen
+enthalten; **Natur- und Tierdokumentationen** verlangt zusaetzlich das Genre
+Dokumentarfilm. Ohne exakt passendes Schlagwort gibt es keine allgemeine
+Popularitaetsliste als Ersatz.
+
+**Mediatheken** bietet direkte Verknuepfungen zu ARD, ZDF, 3sat, arte, phoenix,
+den Dritten, KiKA, funk und weiteren oeffentlich-rechtlichen Angeboten ueber
+MediathekViewWeb sowie die eigenen ARD-/arte-Quellen. Diese Verknuepfungen sind
+standardmaessig unabhaengig von den Suchquellenschaltern sichtbar; in den
+Kategorie-Einstellungen laesst sich das abschalten. Globale Suche und
+Quellenmenues behalten ihre bisherigen Schalter. Bewertungsfilter gelten nur
+fuer den TMDB-Katalog, nicht fuer die Mediatheken oder Personenlisten.
 
 ## Wie es funktioniert
 

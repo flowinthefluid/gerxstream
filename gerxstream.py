@@ -276,6 +276,11 @@ def parseUrl():
         elif sFunction == 'randomMovies':
             showRandomMovies()
             return
+
+        elif sFunction == 'randomGenres':
+            from resources.lib import randommovies
+            randommovies.editGenres()
+            return
         elif sFunction == 'clearWatchHistory':
             clearWatchHistory()
             return
@@ -1022,8 +1027,7 @@ def removeEpicFavoriteEntry(params):
 
 def randomGuiElement():
     ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
-    count = max(1, min(cConfig().getSettingInt('randomItemsCount', 250), 1000))
-    title = '%s (%s)' % (cConfig().getLocalizedString(30868), count)
+    title = cConfig().getLocalizedString(30868)
 
     oGuiElement = cGuiElement()
     oGuiElement.setTitle(title)
@@ -1099,66 +1103,8 @@ def clearWatchHistory():
 
 
 def showRandomMovies():
-    """Zeigt zufaellige TMDB-Filme, deren Klick in die globale Suche fuehrt."""
-    from resources.lib.tmdb import cTMDB
-
-    limit = max(1, min(cConfig().getSettingInt('randomItemsCount', 250), 1000))
-    targetPool = max(limit * 2, 180)
-    maxAttempts = 80
-    extra = 'sort_by=popularity.desc&vote_count.gte=80&include_adult=false'
-
-    tmdb = cTMDB()
-    pool = []
-    seenIds = set()
-    attempts = 0
-    while len(pool) < targetPool and attempts < maxAttempts:
-        attempts += 1
-        page = random.randint(1, 500)
-        data = tmdb.getUrl('discover/movie', page, extra) or {}
-        results = data.get('results') or []
-        for item in results:
-            itemId = item.get('id')
-            title = item.get('title')
-            if not itemId or not title or itemId in seenIds:
-                continue
-            seenIds.add(itemId)
-            pool.append(item)
-
-    if not pool:
-        cGui().showInfo()
-        return
-
-    random.shuffle(pool)
-    selected = pool[:limit]
-    oGui = cGui()
-    total = len(selected)
-    for item in selected:
-        title = item.get('title')
-        if not title:
-            continue
-
-        oGuiElement = cGuiElement(title, 'random', 'searchTMDB')
-        oGuiElement.setMediaType('movie')
-        released = (item.get('release_date') or '')[:4]
-        if released.isdigit():
-            oGuiElement.setYear(released)
-        if item.get('overview'):
-            oGuiElement.setDescription(item['overview'])
-        if item.get('poster_path'):
-            oGuiElement.setThumbnail('https://image.tmdb.org/t/p/w342' + item['poster_path'])
-        if item.get('backdrop_path'):
-            oGuiElement.setFanart('https://image.tmdb.org/t/p/w1280' + item['backdrop_path'])
-
-        params = ParameterHandler()
-        params.setParam('searchTitle', title)
-        params.setParam('searchOriginalTitle', item.get('original_title') or '')
-        params.setParam('searchYear', released)
-        params.setParam('searchMedia', 'movie')
-        params.setParam('searchTmdbID', item.get('id'))
-        oGui.addFolder(oGuiElement, params, True, total)
-
-    oGui.setView('movies')
-    oGui.setEndOfDirectory()
+    from resources.lib import randommovies
+    randommovies.showMenu()
 
 
 def showGlobalSearchMenu():

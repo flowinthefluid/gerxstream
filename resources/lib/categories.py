@@ -28,7 +28,7 @@ SITE_IDENTIFIER = 'categories'
 LEVELS = ('root', 'indexall', 'genres', 'collections', 'charts', 'decades',
           'keywords', 'peopleMenu', 'people', 'genreList', 'entries',
           'ratings', 'outsideHollywood', 'companies', 'locations',
-          'mediatheken')
+          'mediatheken', 'chartList')
 
 MEDIA_TYPES = ('movie', 'tv')
 
@@ -147,7 +147,8 @@ KEYWORDS = (
     ('Musicals', 'kw:musical'),
     ('Tanz', 'kw:dancing'),
     ('Kochen und Essen', 'kw:cooking'),
-    ('Natur und Wildnis', 'kw:wilderness'),
+    ('Wildnis als Schauplatz', 'kw:wilderness'),
+    ('Natur- und Tierdokumentationen', 'kw:nature'),
     ('Geister', 'kw:ghost'),
     ('Daemonen', 'kw:demon'),
     ('Monster', 'kw:monster'),
@@ -166,10 +167,10 @@ KEYWORDS = (
 )
 
 RATING_PRESETS = (
-    ('IMDb ueber 7.5 (Filme)', 'imdb75_movies'),
-    ('IMDb ueber 8.0 (Filme)', 'imdb80_movies'),
-    ('IMDb ueber 7.5 (Serien)', 'imdb75_tv'),
-    ('IMDb ueber 8.0 (Serien)', 'imdb80_tv'),
+    ('TMDB ueber 7.5 (Filme)', 'imdb75_movies'),
+    ('TMDB ueber 8.0 (Filme)', 'imdb80_movies'),
+    ('TMDB ueber 7.5 (Serien)', 'imdb75_tv'),
+    ('TMDB ueber 8.0 (Serien)', 'imdb80_tv'),
 )
 
 OUTSIDE_HOLLYWOOD_PRESETS = (
@@ -287,6 +288,7 @@ def showMenu():
         'genres': _mediaChoice,
         'collections': _collections,
         'charts': _charts,
+        'chartList': _chartList,
         'decades': _decades,
         'keywords': _keywords,
         'peopleMenu': _peopleMenu,
@@ -304,12 +306,11 @@ def showMenu():
 
 def _root(params):
     params.setParam('catLevel', 'indexall')
-    _addFolder(_label(30857, 'Alle'), 'categories', params)
+    _addFolder(_label(31711, 'Aktuelle Trends (Filme und Serien)'), 'categories', params)
     params.setParam('catLevel', 'mediatheken')
     _addFolder(_label(31500, 'Mediatheken'), 'categories', params)
     for level, stringId, fallback in (
             ('genres', 30506, 'Genre'),
-            ('collections', 30815, 'Sammlungen'),
             ('charts', 30816, 'Charts'),
             ('decades', 30817, 'Jahrzehnte'),
             ('keywords', 30859, 'Themen'),
@@ -318,7 +319,6 @@ def _root(params):
         _addFolder(_label(stringId, fallback), 'categories', params)
 
     for level, title in (
-            ('ratings', 'Bewertungen (IMDb/Top Rated)'),
             ('outsideHollywood', 'Ausserhalb Hollywood'),
             ('companies', 'Produktionsfirmen'),
             ('locations', 'Beruehmte Drehorte')):
@@ -347,8 +347,12 @@ def _mediathekChannels():
 
 def _mediatheken(params):
     """Alle Mediatheken des deutschen und oesterreichischen Fernsehens."""
-    from resources.lib.handler.pluginHandler import cPluginHandler
-    enabled = dict((plugin.get('id'), plugin) for plugin in cPluginHandler().getAvailablePlugins())
+    if cConfig().getSettingBool('categoryMediathekenAll', True):
+        enabled = {site_id: {'name': name} for site_id, name in (
+            ('ardmediathek', 'ARD Mediathek'), ('arte', 'arte'), ('mediathekviewweb', 'MediathekViewWeb'))}
+    else:
+        from resources.lib.handler.pluginHandler import cPluginHandler
+        enabled = dict((plugin.get('id'), plugin) for plugin in cPluginHandler().getAvailablePlugins())
     listed = 0
     for siteId in MEDIATHEK_SITES:
         plugin = enabled.get(siteId)
@@ -374,15 +378,60 @@ def _mediatheken(params):
     cGui().setEndOfDirectory()
 
 
+def _filterItems(items, minimum, media=None):
+    from resources.lib import plotinfo
+    from resources.lib.handler.requestHandler import cRequestHandler
+
+    tmdb_minimum = plotinfo.minimumRating('categoryMinTmdb')
+    votes_minimum = max(0, cConfig().getSettingInt('categoryMinVotes', 0))
+    candidates = [item for item in items if (item.get('vote_average') or 0) >= tmdb_minimum
+                  and (item.get('vote_count') or 0) >= votes_minimum]
+    if not minimum or not candidates:
+        return candidates
+    import xbmc
+    import xbmcgui
+
+    progress = xbmcgui.DialogProgress()
+    progress.create('GerXStream', _label(31616))
+    monitor = xbmc.Monitor()
+    selected = []
+    try:
+        with cRequestHandler.backgroundRequests():
+            for index, item in enumerate(candidates):
+                if progress.iscanceled() or monitor.abortRequested():
+                    return None
+                progress.update(index * 100 // len(candidates))
+                item_media = media or ('movie' if item.get('title') else 'tv')
+                if plotinfo.matchesMinimum(item, item_media, minimum):
+                    selected.append(item)
+            return None if progress.iscanceled() or monitor.abortRequested() else selected
+    finally:
+        progress.close()
+
+
 def _indexAll(params):
     """Kombinierter Index aus Trend-Filmen und -Serien, quelluebergreifend."""
+    from resources.lib import plotinfo
+
+    minimum = plotinfo.minimumRating('categoryMinImdb')
+    if not plotinfo.requireImdbKey(minimum):
+        cGui().setEndOfDirectory(False)
+        return
     page = _int(params, 'page', 1)
     movie = cTMDB().getUrl('trending/movie/week', page) or {}
     tv = cTMDB().getUrl('trending/tv/week', page) or {}
     items = (movie.get('results') or []) + (tv.get('results') or [])
     if not items:
         cGui().showInfo()
+        cGui().setEndOfDirectory(False)
         return
+
+    items = _filterItems(items, minimum)
+    if items is None:
+        cGui().setEndOfDirectory(False)
+        return
+    if not items:
+        cGui().showInfo('GerXStream', _label(31714))
 
     seen = set()
     total = len(items)
@@ -466,7 +515,15 @@ def _collections(params):
 
 
 def _keywords(params):
-    for name, keywordRef in KEYWORDS:
+    listed = set()
+    for name, keywordRef in COLLECTIONS + KEYWORDS:
+        if name in listed:
+            continue
+        listed.add(name)
+        if keywordRef == 'kw:wilderness':
+            name = _label(31712, name)
+        elif keywordRef == 'kw:nature':
+            name = _label(31718, name)
         params.setParam('catLevel', 'entries')
         if isinstance(keywordRef, int):
             params.setParam('catMedia', 'movie')
@@ -496,20 +553,17 @@ def _keywordIdByTerm(term):
     results = data.get('results') or []
 
     exactId = 0
-    firstId = 0
     for entry in results:
         if not isinstance(entry, dict):
             continue
         candidate = entry.get('id')
         if not candidate:
             continue
-        if not firstId:
-            firstId = candidate
         if (entry.get('name') or '').strip().lower() == key:
             exactId = candidate
             break
 
-    resolved = exactId or firstId or 0
+    resolved = exactId or 0
     KEYWORD_SEARCH_CACHE[key] = resolved
     return resolved
 
@@ -567,19 +621,25 @@ def _peopleMenu(params):
 def _charts(params):
     for media, mediaString, mediaFallback in (('movie', 30502, 'Filme'),
                                               ('tv', 30511, 'Serien')):
-        mediaName = _label(mediaString, mediaFallback)
-        for key, stringId, _path, _extra in CHARTS:
-            params.setParam('catLevel', 'entries')
-            params.setParam('catMedia', media)
-            params.setParam('catChart', key)
-            params.setParam('catGenre', '')
-            params.setParam('catKeyword', '')
-            params.setParam('catDecade', '')
-            params.setParam('catPerson', '')
-            params.setParam('catPreset', '')
-            params.setParam('page', '1')
-            _addFolder('%s - %s' % (mediaName, _label(stringId, key)),
-                       'categories', params)
+        params.setParam('catLevel', 'chartList')
+        params.setParam('catMedia', media)
+        _addFolder(_label(mediaString, mediaFallback), 'categories', params)
+    cGui().setEndOfDirectory()
+
+
+def _chartList(params):
+    media = _mediaType(params)
+    for key, stringId, _path, _extra in CHARTS:
+        params.setParam('catLevel', 'entries')
+        params.setParam('catMedia', media)
+        params.setParam('catChart', key)
+        params.setParam('catGenre', '')
+        params.setParam('catKeyword', '')
+        params.setParam('catDecade', '')
+        params.setParam('catPerson', '')
+        params.setParam('catPreset', '')
+        params.setParam('page', '1')
+        _addFolder(_label(stringId, key), 'categories', params)
     cGui().setEndOfDirectory()
 
 
@@ -854,11 +914,17 @@ def _buildQuery(params):
     presetKey = params.getValue('catPreset') or ''
 
     if presetKey.startswith('kw:'):
+        if presetKey not in {ref for name, ref in KEYWORDS + LOCATION_PRESETS if isinstance(ref, str)}:
+            return None, '', page
         keywordId = _keywordIdByTerm(presetKey[3:])
         if keywordId:
-            return 'discover/%s' % media, 'with_keywords=%s&sort_by=popularity.desc&vote_count.gte=50' % keywordId, page
+            extra = 'with_keywords=%s&sort_by=popularity.desc&vote_count.gte=50' % keywordId
+            if presetKey == 'kw:nature':
+                extra += '&with_genres=99'
+                media = 'movie'
+            return 'discover/%s' % media, extra, page
         logger.info('-> [categories]: kein TMDB-Keyword fuer %r gefunden' % presetKey)
-        return 'discover/%s' % media, 'sort_by=popularity.desc&vote_count.gte=50', page
+        return None, '', page
 
     if presetKey in PRESET_QUERIES:
         media, extra = PRESET_QUERIES[presetKey]
@@ -895,14 +961,32 @@ def _buildQuery(params):
 
 
 def _entries(params):
-    media = _mediaType(params)
+    from resources.lib import plotinfo
+
+    minimum = plotinfo.minimumRating('categoryMinImdb')
+    if not plotinfo.requireImdbKey(minimum):
+        cGui().setEndOfDirectory(False)
+        return
     path, extra, page = _buildQuery(params)
+    if not path:
+        cGui().showInfo('GerXStream', _label(31719))
+        cGui().setEndOfDirectory(False)
+        return
+    media = 'tv' if 'tv' in path.split('/') else 'movie'
     data = cTMDB().getUrl(path, page, extra) or {}
     results = data.get('results') or []
     if not results:
         logger.info('-> [categories]: keine Treffer fuer %s (%s)' % (path, extra))
         cGui().showInfo()
+        cGui().setEndOfDirectory(False)
         return
+
+    results = _filterItems(results, minimum, media)
+    if results is None:
+        cGui().setEndOfDirectory(False)
+        return
+    if not results:
+        cGui().showInfo('GerXStream', _label(31714))
 
     total = len(results)
     for item in results:
