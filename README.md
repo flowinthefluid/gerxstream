@@ -28,8 +28,8 @@ Installationsschritte, Voraussetzungen und Hinweise zur Datenübernahme stehen
 ausführlich in [INSTALL.md](INSTALL.md). Die Kodi-Quelle wird nach erfolgreicher
 GitLab-Pipeline ueber GitLab Pages bereitgestellt:
 `https://gerxstream-db50a2.gitlab.io/`.
-Die Repository-ZIP heisst `repository.gerxstream-1.0.6.zip`; GerXStream selbst
-hat die Version **1.0.29**. Updates erfolgen ueber Kodis Add-on-Verwaltung.
+Die Repository-ZIP heisst `repository.gerxstream-1.0.7.zip`; GerXStream selbst
+hat die Version **1.0.30**. Updates erfolgen ueber Kodis Add-on-Verwaltung.
 Wer noch eine ältere xStream-Installation nutzt, kann direkt zu
 GerXStream wechseln: Einstellungen und Favoriten werden beim ersten Start automatisch
 übernommen, sofern xStream noch installiert ist.

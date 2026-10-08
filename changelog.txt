@@ -1,3 +1,11 @@
+[B]Version: 1.0.30[/B]
+
+09.10.2026
+
+- Leere Auswahlwerte in den Schauspieler- und Regisseur-Einstellungen ersetzt, um einen nativen Kodi-Absturz beim Laden der Einstellungen zu vermeiden.
+- Vorhandene Personensortierung bleibt beim Uebernehmen der bisherigen Einstellung erhalten.
+- Neue Versionsnummer fuer die Auslieferung der Korrektur; GerXStream Repository auf 1.0.7 aktualisiert.
+
 [B]Version: 1.0.29[/B]
 
 05.10.2026

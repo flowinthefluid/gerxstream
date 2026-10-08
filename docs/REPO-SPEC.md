@@ -1,10 +1,10 @@
 # Spezifikation: Kodi-Repository GerXStream
 
-Stand: 2026-10-05. Quelle: `https://gitlab.com/gerxstream/gerxstream`, Branch `main`.
+Stand: 2026-10-09. Quelle: `https://gitlab.com/gerxstream/gerxstream`, Branch `main`.
 
 ## Aktueller Release-Stand
 
-- GerXStream: **1.0.29**. Repository-Addon: **1.0.6**.
+- GerXStream: **1.0.30**. Repository-Addon: **1.0.7**.
 - `.gitlab-ci.yml` fuehrt zuerst die Tests und dann den Pages-Build aus.
 - `tools/build-gitlab-pages.sh` verwendet `tools/build_repo.py` und die von
   GitLab gelieferte `CI_PAGES_URL`. Versionsnummern werden aus den Manifesten
@@ -12,7 +12,7 @@ Stand: 2026-10-05. Quelle: `https://gitlab.com/gerxstream/gerxstream`, Branch `m
 - Die Pages-Ausgabe `public/` wird in CI gebaut, nicht in Git committet.
   Lokale Pakete unter `repo/` und `dist/` sind ebenfalls generierte Ausgaben.
 - Aktuelle Kodi-Quelle: `https://gerxstream-db50a2.gitlab.io/`.
-- Installation: `repository.gerxstream-1.0.6.zip` im Pages-Wurzelverzeichnis.
+- Installation: `repository.gerxstream-1.0.7.zip` im Pages-Wurzelverzeichnis.
 - Katalog: `catalog/addons.xml` und `catalog/addons.xml.md5`.
 - ZIPs: `zips/<addon-id>/<addon-id>-<version>.zip`.
 - Der Katalog enthaelt GerXStream, das Repository-Addon selbst und

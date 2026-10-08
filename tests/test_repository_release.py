@@ -27,14 +27,27 @@ def test_repository_is_in_catalog_and_datadir(tmp_path, pages_url):
 
     repository = catalog.find("addon[@id='repository.gerxstream']")
     assert repository is not None
-    assert repository.get('version') == '1.0.6'
+    assert repository.get('version') == '1.0.7'
     assert repository.find('./extension/dir/info').text == pages_url + '/catalog/addons.xml'
     assert repository.find('./extension/dir/checksum').text == pages_url + '/catalog/addons.xml.md5'
     assert hashlib.md5(catalog_bytes).hexdigest() == (output / 'addons.xml.md5').read_text()
     assert (output / 'catalog' / 'addons.xml').read_bytes() == catalog_bytes
     assert (output / 'catalog' / 'addons.xml.md5').read_text() == (output / 'addons.xml.md5').read_text()
 
-    name = 'repository.gerxstream-1.0.6.zip'
+    plugin = catalog.find("addon[@id='plugin.video.gerxstream']")
+    assert plugin.get('version') == '1.0.30'
+    plugin_zip = output / 'zips' / 'plugin.video.gerxstream' / 'plugin.video.gerxstream-1.0.30.zip'
+    with zipfile.ZipFile(plugin_zip) as archive:
+        assert archive.testzip() is None
+        plugin_manifest = ET.fromstring(archive.read('plugin.video.gerxstream/addon.xml'))
+        settings = ET.fromstring(archive.read('plugin.video.gerxstream/resources/settings.xml'))
+    assert plugin_manifest.get('version') == plugin.get('version')
+    for setting_id in ('actorPeopleSort', 'directorPeopleSort'):
+        setting = settings.find(".//setting[@id='%s']" % setting_id)
+        assert setting.find('default').text == 'inherit'
+        assert setting.find('constraints/options/option').text == 'inherit'
+
+    name = 'repository.gerxstream-1.0.7.zip'
     install_zip = output / name
     update_zip = output / 'zips' / 'repository.gerxstream' / name
     assert install_zip.read_bytes() == update_zip.read_bytes()
