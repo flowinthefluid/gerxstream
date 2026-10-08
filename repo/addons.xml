@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.20" provider-name="flowinthefluid">
+	<requires>
+		<import addon="xbmc.python" version="3.0.1"/>
+		<import addon="script.module.requests"/>
+		<import addon="script.module.resolveurl" version="5.1.209"/>
+		<import addon="repository.resolveurl" optional="true"/>
+		<import addon="script.module.inputstreamhelper" version="0.3.3" optional="true"/>
+	</requires>
+	<extension point="xbmc.python.pluginsource" library="default.py">
+		<provides>video</provides>
+	</extension>
+    <extension point="xbmc.service" library="service.py" start="startup" />
+	<extension point="xbmc.addon.metadata">
+		<summary lang="de_de">GerXStream – deine Suchmaschine für Filme &amp; Serien in Kodi</summary>
+		<summary lang="en_GB">GerXStream – your search engine for movies &amp; series in Kodi</summary>
+		<description lang="de_de">GerXStream ist ein Video-Addon für Kodi. GerXStream dient als Suchmaschine für Filme und Serien auf verschiedenen Webseiten.</description>
+		<description lang="en_GB">GerXStream is a video add-on for Kodi. GerXStream serves as a search engine for films and series on various websites.</description>
+		<disclaimer lang="de_de">Sie können dieses Video Addon gerne verwenden. Der bereitgestellte Inhalt der Webseiten steht in keinem Bezug zu GerXStream oder den Entwicklern! Weitere Informationen finden Sie in unserer Wiki und FaQ.</disclaimer>
+		<disclaimer lang="en_GB">You are welcome to use this video addon. The content provided on the websites has no connection to GerXStream or the developers! For more information, see our Wiki and FaQ.</disclaimer>
+		<language>de en</language>
+		<platform>all</platform>
+		<license>GPL-3.0-only</license>
+		<news>1.0.16 - Globale Suche wird nicht mehr durch Cloudflare-/DDoS-Hinweise unterbrochen.</news>
+		<website>https://github.com/flowinthefluid/gerxstream</website>
+		<source>https://github.com/flowinthefluid/gerxstream</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+			<banner>resources/banner.png</banner>
+			<clearlogo>resources/clearlogo.png</clearlogo>
+		</assets>
+	</extension>
+</addon>
+<addon id="repository.gerxstream" name="GerXStream Repository" version="1.0.1" provider-name="flowinthefluid">
+	<extension point="xbmc.addon.repository" name="GerXStream Repository">
+		<dir>
+			<info compressed="false">https://flowinthefluid.github.io/gerxstream/repo/addons.xml</info>
+			<checksum>https://flowinthefluid.github.io/gerxstream/repo/addons.xml.md5</checksum>
+			<datadir zip="true">https://flowinthefluid.github.io/gerxstream/repo/zips/</datadir>
+		</dir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="de_de">GerXStream Repository</summary>
+		<summary lang="en_GB">GerXStream Repository</summary>
+		<description lang="de_de">Bezugsquelle fuer GerXStream und dessen Abhaengigkeiten (u.a. die ResolveURL-Repository-Quelle).</description>
+		<description lang="en_GB">Source for GerXStream and its dependencies (including the ResolveURL repository source).</description>
+		<platform>all</platform>
+		<license>GPL-3.0-only</license>
+		<website>https://github.com/flowinthefluid/gerxstream</website>
+		<source>https://github.com/flowinthefluid/gerxstream</source>
+		<assets>
+			<icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+		</assets>
+	</extension>
+</addon>
+<addon id="repository.resolveurl" name="ResolveURL Repository" provider-name="gujal" version="1.0.0">
+  <extension point="xbmc.addon.repository" name="ResolveURL Repository">
+    <dir>
+      <info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
+      <checksum>https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.githubusercontent.com/Gujal00/smrzips/master/zips/</datadir>
+    </dir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <description lang="en_GB">ResolveURL and Link Tester</description>
+    <license></license>
+    <language></language>
+    <website></website>
+    <news></news>
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon>
+<addon id="script.module.resolveurl" name="ResolveURL" version="5.1.209" provider-name="gujal">
+    <requires>
+        <!-- <import addon="xbmc.python" version="3.0.0" /> -->
+        <import addon="script.module.six" />
+        <import addon="script.module.kodi-six" />
+        <import addon="script.module.pyqrcode" />
+        <import addon="script.module.cloudrequest" optional="true" />
+        <import addon="plugin.video.youtube" optional="true" />
+        <import addon="script.module.python.twitch" optional="true" />
+        <import addon="plugin.googledrive" optional="true" />
+    </requires>
+    <extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.python.pluginsource" library="lib/default.py" />
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang="en_GB">Resolve common video host URL's to be playable in XBMC/Kodi.</summary>
+        <summary lang="es_ES">Resolver enlaces a videos de sitios populares para poder reproducirlos en XBMC/Kodi.</summary>
+        <summary lang="hr_HR">Prilagodi najčešće URL-ove video izvora kako bi radili u XBMC/Kodiju.</summary>
+        <summary lang="el_GR">Επίλυση συνδέσμων κοινών εξυπηρετητών σε μορφή βίντεο ικανό για αναπαραγωγή στο XBMC/Kodi.</summary>
+        <description lang="en_GB">Resolve common video host URL's to be playable in XBMC/Kodi, simplify addon development of video plugins requiring multi video hosts.</description>
+        <description lang="el_GR">Επίλυση συνδέσμων κοινών εξυπηρετητών σε μορφή βίντεο ικανό για αναπαραγωγή στο XBMC/Kodi, απλοποίηση της ανάπτυξης των προσθέτων που χρησιμοποιούν πολλαπλούς εξυπηρετητές για υλικό βίντεο</description>
+        <description lang="hr_HR">Prilagodi najčešće URL-ove video izvora kako bi radili u XBMC/Kodiju, pojednostavnjuje razvoj priključaka za video dodatke koji zahtjevaju višestruke video izvore.</description>
+        <disclaimer lang="en_GB">This script only resolves video content from legitimate file lockers without prejudice. If this script is being used by 3rd parties to resolve content that you feel infringes upon your Intellectual Property then please take your complaints to the actual website or developer linking to such content and not here. This script in no way searches for any content whatsoever.</disclaimer>
+        <disclaimer lang="el_GR">Το ανωτέρο σενάριο το μόνο που κάνει είναι να επιλύει οπτικοακουστικό περιεχόμενο από νόμιμες πηγές χωρίς προκατάληψη. Εάν το ανωτέρο σενάριο χρησιμοποιηθεί από τρίτους ώστε να επιλύσει περιεχόμενο το οποίο σας προκαλεί αντίδραση ότι παραβιάζει την πνευματική σας ιδιοκτησία παρακαλώ μεταφέρετε τα παραπονά σας στον ιστότοπο τον οποίο βρίσκεται το εν λόγω περιεχόμενο η τον δημιουργό ο οποίος πραγματοποιεί την σύνδεση και όχι εδω. Το σενάριο αυτό ουδεμία περίπτωση πραγματοποιεί αναζήτηση περιεχομένου.</disclaimer>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+</addons>

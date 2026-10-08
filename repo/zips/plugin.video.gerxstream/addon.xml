@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.20" provider-name="flowinthefluid">
+	<requires>
+		<import addon="xbmc.python" version="3.0.1"/>
+		<import addon="script.module.requests"/>
+		<import addon="script.module.resolveurl" version="5.1.209"/>
+		<import addon="repository.resolveurl" optional="true"/>
+		<import addon="script.module.inputstreamhelper" version="0.3.3" optional="true"/>
+	</requires>
+	<extension point="xbmc.python.pluginsource" library="default.py">
+		<provides>video</provides>
+	</extension>
+    <extension point="xbmc.service" library="service.py" start="startup" />
+	<extension point="xbmc.addon.metadata">
+		<summary lang="de_de">GerXStream – deine Suchmaschine für Filme &amp; Serien in Kodi</summary>
+		<summary lang="en_GB">GerXStream – your search engine for movies &amp; series in Kodi</summary>
+		<description lang="de_de">GerXStream ist ein Video-Addon für Kodi. GerXStream dient als Suchmaschine für Filme und Serien auf verschiedenen Webseiten.</description>
+		<description lang="en_GB">GerXStream is a video add-on for Kodi. GerXStream serves as a search engine for films and series on various websites.</description>
+		<disclaimer lang="de_de">Sie können dieses Video Addon gerne verwenden. Der bereitgestellte Inhalt der Webseiten steht in keinem Bezug zu GerXStream oder den Entwicklern! Weitere Informationen finden Sie in unserer Wiki und FaQ.</disclaimer>
+		<disclaimer lang="en_GB">You are welcome to use this video addon. The content provided on the websites has no connection to GerXStream or the developers! For more information, see our Wiki and FaQ.</disclaimer>
+		<language>de en</language>
+		<platform>all</platform>
+		<license>GPL-3.0-only</license>
+		<news>1.0.16 - Globale Suche wird nicht mehr durch Cloudflare-/DDoS-Hinweise unterbrochen.</news>
+		<website>https://github.com/flowinthefluid/gerxstream</website>
+		<source>https://github.com/flowinthefluid/gerxstream</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+			<banner>resources/banner.png</banner>
+			<clearlogo>resources/clearlogo.png</clearlogo>
+		</assets>
+	</extension>
+</addon>
