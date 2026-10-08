@@ -770,11 +770,11 @@
 			<group id="actorLists" label="31600">
 				<setting id="actorPeopleSort" type="string" label="30886" help="31612">
 					<level>0</level>
-					<default/>
+					<default>inherit</default>
 					<constraints>
 						<allowempty>true</allowempty>
 						<options>
-							<option label="31618"></option>
+							<option label="31618">inherit</option>
 							<option label="30887">popularity</option>
 							<option label="30888">name</option>
 							<option label="31609">imdb_best</option>
@@ -815,11 +815,11 @@
 			<group id="directorLists" label="31619">
 				<setting id="directorPeopleSort" type="string" label="30886" help="31612">
 					<level>0</level>
-					<default/>
+					<default>inherit</default>
 					<constraints>
 						<allowempty>true</allowempty>
 						<options>
-							<option label="31618"></option>
+							<option label="31618">inherit</option>
 							<option label="30887">popularity</option>
 							<option label="30888">name</option>
 							<option label="31609">imdb_best</option>

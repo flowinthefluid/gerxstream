@@ -740,7 +740,9 @@ def _people(params):
     role = 'Directing' if params.getValue('catRole') == 'Directing' else 'Acting'
     peopleLimit = _peopleLimit(role)
     prefix = 'director' if role == 'Directing' else 'actor'
-    sortMode = cConfig().getSetting(prefix + 'PeopleSort') or cConfig().getSetting('peopleSort', 'popularity')
+    sortMode = cConfig().getSetting(prefix + 'PeopleSort')
+    if not sortMode or sortMode == 'inherit':
+        sortMode = cConfig().getSetting('peopleSort', 'popularity')
     if sortMode not in PEOPLE_SORT_MODES:
         sortMode = 'popularity'
     groups = _peopleGroups(role)

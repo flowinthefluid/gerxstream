@@ -202,6 +202,19 @@ def test_background_requests_restore_interactive_errors():
     assert not cRequestHandler('https://example.org').ignoreErrors
 
 
+def test_static_setting_options_have_values_for_kodi_parser():
+    from pathlib import Path
+    from xml.etree import ElementTree
+
+    settings_path = Path(__file__).resolve().parents[1] / 'resources' / 'settings.xml'
+    settings = ElementTree.parse(settings_path)
+    empty_options = [setting.get('id') for setting in settings.findall('.//setting')
+                     for option in setting.findall('./constraints/options/option')
+                     if not option.text or not option.text.strip()]
+
+    assert empty_options == []
+
+
 def _main_module(monkeypatch):
     import importlib
     import sys
@@ -394,6 +407,28 @@ def test_people_filter_and_sort_before_top_limit(monkeypatch):
     params.setParam('catRole', 'Acting')
     categories._people(params)
     assert listed == ['Anna']
+
+
+def test_people_sort_inherit_and_legacy_empty_keep_previous_sort(monkeypatch):
+    from resources.lib import categories
+    from resources.lib.handler.ParameterHandler import ParameterHandler
+
+    people = [{'id': 1, 'name': 'Zoe'}, {'id': 2, 'name': 'Anna'}]
+    monkeypatch.setattr(categories.cTMDB, 'getUrl', lambda *args: {'results': people, 'total_pages': 1})
+    monkeypatch.setattr(categories, 'favoriteActors', lambda: [])
+    listed = []
+    monkeypatch.setattr(categories, '_addPersonFolder', lambda params, person, title: listed.append(person['name']) or True)
+    set_setting('peopleSort', 'name')
+
+    for role, prefix in (('Acting', 'actor'), ('Directing', 'director')):
+        for value in ('', 'inherit'):
+            set_setting(prefix + 'PeopleSort', value)
+            set_setting(prefix + 'PeopleLimit', '2')
+            listed.clear()
+            params = ParameterHandler()
+            params.setParam('catRole', role)
+            categories._people(params)
+            assert listed == ['Anna', 'Zoe']
 
 
 def test_category_links_preserve_selected_film_metadata(monkeypatch):
