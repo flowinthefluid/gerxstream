@@ -109,7 +109,7 @@ def record(title, thumbnail='', mediaType='movie', source='', season='', episode
     if not cConfig().getSettingBool(HISTORY_ENABLED_SETTING, True):
         return False
     title = _clean(title)
-    showTitle = _clean(showTitle)
+    showTitle = epicfavorites.seriesName(showTitle) if showTitle else ''
     searchTitle = showTitle or title
     if not title or not searchTitle:
         return False

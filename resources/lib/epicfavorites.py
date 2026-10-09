@@ -62,6 +62,13 @@ def _clean(value, maximum=MAX_TEXT):
     return re.sub(r'\s+', ' ', value).strip()[:maximum]
 
 
+def seriesName(title):
+    title = _clean(title, MAX_TITLE)
+    cleaned = re.sub(r'[\s._-]*S\d{1,3}\s*E\d{1,3}\s*(?=\(\d{4}\)\s*$|$)',
+                     ' ', title, flags=re.IGNORECASE).strip()
+    return cleaned or title
+
+
 def _cleanNode(node):
     """Validate a persisted folder recursively and discard malformed fields."""
     if not isinstance(node, dict):
@@ -96,6 +103,8 @@ def _cleanEntry(entry):
     if not re.fullmatch(r'[a-f0-9]{8,32}', entryId) or not target.startswith('plugin://'):
         return None
     title = _clean(entry.get('title'), MAX_TITLE)
+    if entry.get('media_type') == 'tvshow':
+        title = seriesName(title)
     if not title:
         return None
     return {
@@ -366,6 +375,9 @@ def seriesEntry(entry):
             return None
         values.update(title=values['series_title'], target=values['series_target'],
                       media_type='tvshow', is_folder=True)
+    if values.get('media_type') == 'tvshow':
+        values['title'] = seriesName(values['title'])
+        values['series_title'] = seriesName(values.get('series_title') or values['title'])
     target = normaliseTarget(values.get('target'))
     if not target:
         return None

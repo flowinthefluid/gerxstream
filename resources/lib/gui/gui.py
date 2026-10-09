@@ -116,7 +116,9 @@ class cGui:
             parsed = urlsplit(sUrl)
             query = dict(parse_qsl(parsed.query))
             query.update(watchlistTarget=epicfavorites.normaliseTarget(sUrl),
-                         watchlistTitle=oGuiElement.getTitle(), watchlistYear=oGuiElement._sYear,
+                         watchlistTitle=(epicfavorites.seriesName(oGuiElement.getTitle())
+                                         if oGuiElement._mediaType == 'tvshow' else oGuiElement.getTitle()),
+                         watchlistYear=oGuiElement._sYear,
                          watchlistIsFolder=str(bool(bIsFolder)).lower())
             sUrl = urlunsplit((parsed.scheme, parsed.netloc, parsed.path, urlencode(query), ''))
         contextUrl = sUrl

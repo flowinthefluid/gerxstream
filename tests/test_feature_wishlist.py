@@ -247,6 +247,25 @@ def test_status_list_has_one_action_per_command(monkeypatch, tmp_path, real_stri
         'setWatchlistStatus', 'removeWatchlistEntry', 'addEpicFavorite']
 
 
+def test_filmpalast_episode_suffix_in_series_name_is_not_a_new_series(monkeypatch, tmp_path):
+    from resources.lib import epicfavorites
+
+    monkeypatch.setattr(epicfavorites, '_profilePath', lambda: str(tmp_path / 'favorites.json'))
+    monkeypatch.setattr(history, '_historyPath', lambda: str(tmp_path / 'history.json'))
+    folder = 'plugin://plugin.video.gerxstream/?site=filmpalast&function=showSeasons&sUrl=carrie'
+    for title in ('Carrie S01E08', 'CarrieS01E09'):
+        assert history.record('Episode 01', mediaType='episode', showTitle=title,
+                              target=folder, seriesTarget=folder, seriesTitle=title)
+    entries = epicfavorites.watchEntries('watching')
+    assert len(entries) == 1 and entries[0]['title'] == 'Carrie'
+    assert entries[0]['source'] == 'filmpalast'
+    assert history.entries()[0]['show_title'] == 'Carrie'
+    assert epicfavorites.seriesName('Carrie S01E08 (2026)') == 'Carrie (2026)'
+    assert epicfavorites.addEntry('', {'title': 'Carrie S01E08', 'target': folder,
+                                      'is_folder': True, 'media_type': 'tvshow'})[0]
+    assert epicfavorites.contents('')[3][0]['title'] == 'Carrie'
+
+
 # --- Cookie-Import ----------------------------------------------------------
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36'

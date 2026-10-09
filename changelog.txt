@@ -1,3 +1,13 @@
+[B]Version: 1.0.36[/B]
+
+09.10.2026
+
+- Filmpalast-Fall aus den Android-Logs beruecksichtigt: Die Quelle nennt die Serie selbst Carrie S01E08. Solche Folgen-Endungen werden in Watchlist-Serientiteln entfernt, damit neuere Folgen keine zweite Serie erzeugen.
+- Vorhandene Favoriten mit Serien-Medientyp erhalten beim Einlesen ebenfalls den bereinigten Titel; Anbieterordner und Ordnerstruktur bleiben erhalten.
+- Historie verwendet den bereinigten Seriennamen plus die tatsaechlich gewaehlte Staffel/Folge statt der Folgen-Endung im Anbietertitel.
+- Android-Logs der alten Version bestaetigen GetDirectory-Fehler beim Epic-Favorites-Wrapper. Das direkte Anbieter-Routing aus 1.0.35 bleibt erhalten; erfolgreicher Android-Aufruf nach dem Update noch nicht verifiziert.
+- Nach dem Update Kodi neu starten. Repository bleibt auf 1.0.8.
+
 [B]Version: 1.0.35[/B]
 
 09.10.2026
