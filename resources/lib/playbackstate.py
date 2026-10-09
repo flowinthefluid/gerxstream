@@ -126,6 +126,11 @@ def beginPlayback(data, params):
             'mediaType': params.getValue('mediaType') or 'movie',
             'source': params.getValue('site') or '', 'season': params.getValue('season') or '',
             'episode': params.getValue('episode') or '', 'showTitle': data.get('showTitle') or '',
+            'target': params.getValue('watchlistTarget') or '',
+            'targetIsFolder': params.getValue('watchlistIsFolder') == 'true',
+            'seriesTarget': params.getValue('watchlistTarget') or '',
+            'seriesTitle': params.getValue('watchlistTitle') or data.get('showTitle') or '',
+            'year': params.getValue('watchlistYear') or '',
         },
     }
     xbmcgui.Window(10000).setProperty(PLAYBACK_PROPERTY, json.dumps(context))

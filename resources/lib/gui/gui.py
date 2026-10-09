@@ -12,7 +12,7 @@ from resources.lib.config import cConfig
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.ParameterHandler import ParameterHandler
-from urllib.parse import quote_plus, urlencode
+from urllib.parse import quote_plus, urlencode, parse_qsl, urlsplit, urlunsplit
 
 
 class cGui:
@@ -78,14 +78,47 @@ class cGui:
                 values.get('TVShowTitle', ''), params.getValue('sUrl'))
             params.setParam('watchId', watchId)
             oGuiElement.addItemProperties('GerXStream.WatchId', watchId)
-        trackEpisode = oGuiElement._mediaType == 'episode' and not isHoster
+        savedTarget = oGuiElement.getItemProperties().get('GerXStream.Target', '')
+        trackEpisode = (oGuiElement._mediaType == 'episode' and not isHoster and not savedTarget
+                and not oGuiElement.getItemProperties().get('epicFavoritesManaged'))
         if trackEpisode:
             queue = self._episodeQueues.setdefault(
                 self._episodeQueueKey, {'id': uuid.uuid4().hex, 'targets': []})
             params.setParam('episodeQueue', queue['id'])
             params.setParam('episodeIndex', len(queue['targets']))
         queueEnabled = trackEpisode and cConfig().getSettingBool('autoNextEpisodeEnabled', False)
-        sUrl = self.__createItemUrl(oGuiElement, False if queueEnabled else bIsFolder, params)
+        if trackEpisode:
+            from resources.lib import epicfavorites
+            incoming = ParameterHandler()
+            parent = incoming.getValue('watchlistTarget') or xbmc.getInfoLabel('Container.FolderPath')
+            if not parent and len(sys.argv) > 2 and self.pluginPath.startswith('plugin://'):
+                parent = self.pluginPath + sys.argv[2]
+            parent = epicfavorites.normaliseTarget(parent)
+            parentRoute = dict(parse_qsl(urlsplit(parent).query))
+            if (urlsplit(parent).netloc != urlsplit(self.pluginPath).netloc
+                    or parentRoute.get('site') != oGuiElement.getSiteName()):
+                parent = ''
+            params.setParam('watchlistTarget', parent)
+            params.setParam('watchlistTitle', incoming.getValue('watchlistTitle')
+                            or oGuiElement.getItemValues().get('TVShowTitle', '')
+                            or incoming.getValue('TVShowTitle') or '')
+            params.setParam('watchlistYear', incoming.getValue('watchlistYear') or '')
+        sUrl = savedTarget or self.__createItemUrl(oGuiElement, False if queueEnabled else bIsFolder, params)
+        if not savedTarget and params.getValue('watchlistTarget') and sUrl.startswith('plugin://plugin.video.gerxstream/'):
+            parsed = urlsplit(sUrl)
+            query = dict(parse_qsl(parsed.query))
+            for key in ('watchlistTarget', 'watchlistTitle', 'watchlistYear', 'watchlistIsFolder'):
+                query[key] = params.getValue(key) or ''
+            sUrl = urlunsplit((parsed.scheme, parsed.netloc, parsed.path, urlencode(query), ''))
+        if (not isHoster and not savedTarget and oGuiElement._mediaType in ('tvshow', 'movie')
+                and sUrl.startswith('plugin://plugin.video.gerxstream/')):
+            from resources.lib import epicfavorites
+            parsed = urlsplit(sUrl)
+            query = dict(parse_qsl(parsed.query))
+            query.update(watchlistTarget=epicfavorites.normaliseTarget(sUrl),
+                         watchlistTitle=oGuiElement.getTitle(), watchlistYear=oGuiElement._sYear,
+                         watchlistIsFolder=str(bool(bIsFolder)).lower())
+            sUrl = urlunsplit((parsed.scheme, parsed.netloc, parsed.path, urlencode(query), ''))
         contextUrl = sUrl
         if trackEpisode:
             self._episodeQueues[self._episodeQueueKey]['targets'].append(sUrl)
@@ -126,7 +159,7 @@ class cGui:
 
     def createListItem(self, oGuiElement):
         itemValues = oGuiElement.getItemValues()
-        itemTitle = oGuiElement.getTitle()
+        itemTitle = oGuiElement.getItemProperties().get('GerXStream.DisplayTitle') or oGuiElement.getTitle()
         infoString = ''
         if self.globalSearch: # Reihenfolge der zu anzeigenden GUI Elemente
             infoString += ' %s' % oGuiElement.getSiteName()
@@ -311,7 +344,7 @@ class cGui:
         # deshalb funktionieren Favoriten auch nach einem Hosterwechsel.
         # Eintraege innerhalb von Epic-Favorites selbst markieren sich, damit
         # dort nicht noch einmal "Hinzufuegen" erscheint.
-        if not itemValues.get('epicFavoritesManaged'):
+        if not oGuiElement.getItemProperties().get('epicFavoritesManaged'):
             from resources.lib import epicfavorites
             favoriteParams = {
                 'target': sUrl,
@@ -322,9 +355,17 @@ class cGui:
                 'description': oGuiElement.getDescription(),
                 'mediaType': oGuiElement._mediaType,
             }
+            route = dict(parse_qsl(urlsplit(sUrl).query))
+            favoriteParams.update(seriesTitle=route.get('watchlistTitle', ''),
+                                  seriesTarget=route.get('watchlistTarget', ''),
+                                  year=route.get('watchlistYear', ''), source=route.get('site', ''))
             favoriteTitle = cConfig().getLocalizedString(30918) % epicfavorites.displayName()
             contextmenus += [(favoriteTitle, "RunPlugin(%s?function=addEpicFavorite&%s)" %
                              (self.pluginPath, urlencode(favoriteParams)))]
+            if oGuiElement._mediaType in ('movie', 'tvshow', 'season', 'episode'):
+                contextmenus += [(cConfig().getLocalizedString(31855),
+                                  'RunPlugin(%s?site=epicFavorites&function=setWatchlistStatus&%s)' %
+                                  (self.pluginPath, urlencode(favoriteParams)))]
         if oGuiElement._mediaType == 'movie' or oGuiElement._mediaType == 'tvshow':
             if cConfig().getSettingBool('gerxstream.trailer', False):
                 if not xbmc.getCondVisibility('System.HasAddon(%s)' % 'script.module.xstream.trailer'):  # Schauen ob Addon installiert

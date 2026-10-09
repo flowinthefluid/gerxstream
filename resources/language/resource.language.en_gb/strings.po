@@ -2120,7 +2120,7 @@ msgid "Bottom"
 msgstr ""
 
 msgctxt "#30916"
-msgid "Epic-Favorites name"
+msgid "Epic-Watchlist name"
 msgstr ""
 
 msgctxt "#30917"
@@ -2181,6 +2181,42 @@ msgstr ""
 
 msgctxt "#30932"
 msgid ".. Back"
+msgstr ""
+
+msgctxt "#31850"
+msgid "Favorites"
+msgstr ""
+
+msgctxt "#31851"
+msgid "Planned"
+msgstr ""
+
+msgctxt "#31852"
+msgid "Watching"
+msgstr ""
+
+msgctxt "#31853"
+msgid "Completed"
+msgstr ""
+
+msgctxt "#31854"
+msgid "Dropped"
+msgstr ""
+
+msgctxt "#31855"
+msgid "Set watchlist status"
+msgstr ""
+
+msgctxt "#31856"
+msgid "Show history timestamps"
+msgstr ""
+
+msgctxt "#31857"
+msgid "Show the date and time of playback in history. Sorting by most recent playback remains unchanged."
+msgstr ""
+
+msgctxt "#31859"
+msgid "No series folder is available for this episode. Add the series from its provider's series list instead."
 msgstr ""
 
 msgctxt "#30933"

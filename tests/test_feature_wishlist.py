@@ -42,6 +42,211 @@ def test_history_limited_storage_keeps_at_least_1000():
     history.clear()
 
 
+def test_watchlist_series_groups_episodes_and_remembers_latest_provider(monkeypatch, tmp_path):
+    from resources.lib import epicfavorites
+    monkeypatch.setattr(epicfavorites, '_profilePath', lambda: str(tmp_path / 'favorites.json'))
+    monkeypatch.setattr(history, '_historyPath', lambda: str(tmp_path / 'history.json'))
+    for index, source in enumerate(('serienstream', 'aniworld', 'serienstream'), 1):
+        folder = 'plugin://plugin.video.gerxstream/?site=%s&function=showEpisodes&sUrl=carrie' % source
+        assert history.record('CarrieS01E0%d' % index, mediaType='episode', source=source,
+                              season='1', episode=str(index), showTitle='Carrie',
+                              seriesTitle='Carrie (2026)', year='2026', seriesTarget=folder,
+                              target=folder + '&playMode=play&episodeQueue=' + 'a' * 32)
+    entries = epicfavorites.watchEntries('watching')
+    assert len(entries) == 1
+    assert entries[0]['title'] == 'Carrie (2026)'
+    assert entries[0]['source'] == 'serienstream'
+    assert entries[0]['is_folder'] is True
+    assert 'episodeQueue' not in entries[0]['target']
+    assert len(history.entries()) == 3
+
+
+def test_watchlist_preserves_favorite_folders_and_manual_status(monkeypatch, tmp_path):
+    from resources.lib import epicfavorites
+    monkeypatch.setattr(epicfavorites, '_profilePath', lambda: str(tmp_path / 'favorites.json'))
+    assert epicfavorites.importData({'version': 1, 'folders': [], 'entries': []})
+    assert epicfavorites.createFolder('', 'Meine Serien')
+    entry = {'title': 'Carrie (2026)', 'media_type': 'tvshow', 'is_folder': True,
+             'target': 'plugin://plugin.video.gerxstream/?site=serienstream&function=showSeasons'}
+    assert epicfavorites.setStatus(entry, 'completed')
+    assert epicfavorites.setStatus(entry, 'watching', automatic=True)
+    assert len(epicfavorites.watchEntries('completed')) == 1
+    exported = epicfavorites.exportData()
+    assert exported['folders'][0]['name'] == 'Meine Serien'
+    assert exported['watchlist'][0]['title'] == 'Carrie (2026)'
+
+
+def test_episode_playback_context_retains_series_folder(monkeypatch):
+    from resources.lib import playbackstate
+    from resources.lib.handler.ParameterHandler import ParameterHandler
+    import xbmcgui
+    import json
+
+    params = ParameterHandler()
+    folder = 'plugin://plugin.video.gerxstream/?site=serienstream&function=showEpisodes&sUrl=carrie'
+    params.addParams({'site': 'serienstream', 'mediaType': 'episode', 'season': '1', 'episode': '2',
+                      'watchlistTarget': folder, 'watchlistTitle': 'Carrie', 'watchlistYear': '2026'})
+    playbackstate.beginPlayback({'title': 'S01E02', 'showTitle': 'Carrie',
+                                 'link': 'https://example.test/stream'}, params)
+    context = json.loads(xbmcgui.Window(10000).getProperty(playbackstate.PLAYBACK_PROPERTY))
+    assert context['history']['seriesTarget'] == folder
+    assert context['history']['seriesTitle'] == 'Carrie'
+    assert context['history']['year'] == '2026'
+    xbmcgui.Window(10000).clearProperty(playbackstate.PLAYBACK_PROPERTY)
+
+
+def test_watchlist_menu_and_history_timestamp_toggle(monkeypatch, real_strings):
+    import sys
+    import xml.etree.ElementTree as ET
+    from pathlib import Path
+    from resources.lib.gui.gui import cGui
+    from resources.lib.handler.ParameterHandler import ParameterHandler
+
+    main = _main_module(monkeypatch)
+    monkeypatch.setattr(sys, 'argv', ['plugin://plugin.video.gerxstream/', '1', ''])
+    added = []
+    monkeypatch.setattr(cGui, 'addFolder', lambda self, element, *args: added.append(element))
+    monkeypatch.setattr(cGui, 'setView', lambda *args: None)
+    monkeypatch.setattr(cGui, 'setEndOfDirectory', lambda *args: None)
+    main.showEpicFavorites(ParameterHandler())
+    assert [element.getTitle() for element in added] == [
+        'Favorites', 'Geplant', 'Am Schauen', 'Abgeschlossen', 'Abgebrochen', 'Historie']
+    target = 'plugin://plugin.video.gerxstream/?site=serienstream&function=showSeasons&sUrl=carrie'
+    monkeypatch.setattr(history, 'entries', lambda: [{'title': 'CarrieS01E01', 'source': 'serienstream',
+                                                     'watched_at': 1700000000, 'series_target': target}])
+    for enabled in ('false', 'true'):
+        added.clear()
+        set_setting('watchHistoryTimestamps', enabled)
+        main.showWatchHistory()
+        description = added[0].getDescription()
+        assert (main._historyTimestamp(1700000000) in description) == (enabled == 'true')
+        assert added[0].getItemProperties()['GerXStream.Target'] == target
+    settings = ET.parse(Path(__file__).resolve().parents[1] / 'resources' / 'settings.xml')
+    assert settings.find(".//setting[@id='watchHistoryTimestamps']/default").text == 'False'
+
+
+def test_series_folder_context_survives_reopening_and_episode_navigation(monkeypatch, tmp_path):
+    import sys
+    import xbmcplugin
+    from urllib.parse import parse_qsl, urlsplit
+    from resources.lib import epicfavorites
+    from resources.lib.gui.gui import cGui
+    from resources.lib.gui.guiElement import cGuiElement
+    from resources.lib.handler.ParameterHandler import ParameterHandler
+
+    monkeypatch.setattr(epicfavorites, '_profilePath', lambda: str(tmp_path / 'favorites.json'))
+    monkeypatch.setattr(history, '_historyPath', lambda: str(tmp_path / 'history.json'))
+    monkeypatch.setattr(cGui, '_cGui__createContextMenu', lambda self, element, item, *args: item)
+    monkeypatch.setattr(cGui, '_episodeQueues', {})
+    listed = []
+    monkeypatch.setattr(xbmcplugin, 'addDirectoryItem', lambda *args: listed.append(args))
+    base = 'plugin://plugin.video.gerxstream/'
+    monkeypatch.setattr(sys, 'argv', [base, '1', '?site=serienstream&function=showSearch&sUrl=search'])
+    series = cGuiElement('Carrie (2026)', 'serienstream', 'showSeasons')
+    series.setMediaType('tvshow')
+    params = ParameterHandler()
+    params.setParam('sUrl', 'serie/carrie?a=one&b=two')
+    params.setParam('TVShowTitle', 'Carrie')
+    cGui().addFolder(series, params)
+    original = dict(parse_qsl(urlsplit(listed[-1][1]).query))
+    folder = original['watchlistTarget']
+    for folderOnly in (False, True):
+        if folderOnly:
+            entry = epicfavorites.watchEntries('watching')[0]
+            seriesUrl = epicfavorites.targetForEntry(entry)
+        else:
+            seriesUrl = listed[-1][1]
+        monkeypatch.setattr(sys, 'argv', [base, '1', '?' + urlsplit(seriesUrl).query])
+        season = cGuiElement('Staffel 1', 'serienstream', 'showEpisodes')
+        season.setMediaType('season')
+        params = ParameterHandler()
+        params.setParam('sUrl', 'serie/carrie/staffel-1')
+        cGui().addFolder(season, params)
+        monkeypatch.setattr(sys, 'argv', [base, '1', '?' + urlsplit(listed[-1][1]).query])
+        episode = cGuiElement('Folge 2', 'serienstream', 'getHosters')
+        episode.setMediaType('episode')
+        episode.setTVShowTitle('Carrie')
+        episode.setSeason(1)
+        episode.setEpisode(2)
+        params = ParameterHandler()
+        params.setParam('sUrl', 'serie/carrie/staffel-1/episode-2')
+        cGui().addFolder(episode, params)
+        route = dict(parse_qsl(urlsplit(listed[-1][1]).query))
+        assert route['watchlistTarget'] == folder
+        assert dict(parse_qsl(urlsplit(folder).query))['sUrl'] == 'serie/carrie?a=one&b=two'
+        assert route['watchlistTitle'] in ('Carrie', 'Carrie (2026)')
+        assert route['watchlistYear'] == '2026'
+        history.record('Folge 2', mediaType='episode', season='1', episode='2', showTitle='Carrie',
+                       target=folder, seriesTarget=folder, seriesTitle=route['watchlistTitle'], year=route['watchlistYear'])
+    assert len(epicfavorites.watchEntries('watching')) == 1
+    assert epicfavorites.watchEntries('watching')[0]['title'] == 'Carrie (2026)'
+
+
+def test_watchlist_tracks_without_history_and_preserves_movie_folder(monkeypatch, tmp_path):
+    from resources.lib import epicfavorites
+
+    monkeypatch.setattr(epicfavorites, '_profilePath', lambda: str(tmp_path / 'favorites.json'))
+    monkeypatch.setattr(history, '_historyPath', lambda: str(tmp_path / 'history.json'))
+    set_setting('watchHistoryEnabled', 'false')
+    target = 'plugin://plugin.video.gerxstream/?site=netzkino&function=showDetails&sUrl=movie'
+    assert history.record('Film', target=target, targetIsFolder=True) is False
+    entries = epicfavorites.watchEntries('watching')
+    assert len(entries) == 1
+    assert entries[0]['is_folder'] is True
+    assert entries[0]['source'] == 'netzkino'
+    assert history.entries() == []
+
+
+def test_watchlist_status_changes_backup_and_copy_to_favorites(monkeypatch, tmp_path, real_strings):
+    from resources.lib import epicfavorites
+    from resources.lib.handler.ParameterHandler import ParameterHandler
+
+    main = _main_module(monkeypatch)
+    monkeypatch.setattr(epicfavorites, '_profilePath', lambda: str(tmp_path / 'favorites.json'))
+    entry = {'title': 'Carrie (2026)', 'media_type': 'tvshow', 'is_folder': True,
+             'target': 'plugin://plugin.video.gerxstream/?site=serienstream&function=showSeasons&sUrl=carrie'}
+    for status in epicfavorites.STATUSES:
+        assert epicfavorites.setStatus(entry, status)
+        assert len(epicfavorites.watchEntries(status)) == 1
+        assert sum(len(epicfavorites.watchEntries(key)) for key in epicfavorites.STATUSES) == 1
+    stored = epicfavorites.watchEntries('dropped')[0]
+    assert epicfavorites.createFolder('', 'Serien')
+    folderId = epicfavorites.exportData()['folders'][0]['id']
+    assert epicfavorites.createFolder(folderId, 'Drama')
+    subfolderId = epicfavorites.exportData()['folders'][0]['folders'][0]['id']
+    path = folderId + '/' + subfolderId
+    monkeypatch.setattr(epicfavorites, 'chooseFolder', lambda: path)
+    params = ParameterHandler()
+    params.addParams({'entrySource': 'watchlist', 'entryId': stored['id']})
+    main.addEpicFavorite(params)
+    saved = epicfavorites.contents(path)[3]
+    assert len(saved) == 1
+    assert saved[0]['title'] == 'Carrie (2026)' and saved[0]['is_folder']
+    exported = epicfavorites.exportData()
+    assert epicfavorites.importData(exported)
+    assert epicfavorites.exportData() == exported
+    assert epicfavorites.removeWatchEntry(stored['id'])
+    assert epicfavorites.watchEntries('dropped') == []
+    assert len(epicfavorites.contents(path)[3]) == 1
+
+
+def test_status_list_has_one_action_per_command(monkeypatch, tmp_path, real_strings):
+    from resources.lib import epicfavorites
+    from resources.lib.gui.gui import cGui
+
+    main = _main_module(monkeypatch)
+    monkeypatch.setattr(epicfavorites, '_profilePath', lambda: str(tmp_path / 'favorites.json'))
+    assert epicfavorites.setStatus({'title': 'Carrie', 'media_type': 'tvshow', 'is_folder': True,
+                                   'target': 'plugin://plugin.video.gerxstream/?site=serienstream&function=showSeasons'}, 'planned')
+    listed = []
+    monkeypatch.setattr(cGui, 'addFolder', lambda self, element, *args: listed.append(element))
+    monkeypatch.setattr(cGui, 'setView', lambda *args: None)
+    monkeypatch.setattr(cGui, 'setEndOfDirectory', lambda *args: None)
+    main.showWatchlistStatus('planned')
+    assert [context.getFunction() for context in listed[0].getContextItems()] == [
+        'setWatchlistStatus', 'removeWatchlistEntry', 'addEpicFavorite']
+
+
 # --- Cookie-Import ----------------------------------------------------------
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36'
@@ -222,6 +427,39 @@ def _main_module(monkeypatch):
 
     monkeypatch.setitem(sys.modules, 'resolveurl', types.ModuleType('resolveurl'))
     return importlib.import_module('gerxstream')
+
+
+def test_saved_favorite_uses_provider_route_not_wrapper(monkeypatch, real_strings):
+    import sys
+    from resources.lib import epicfavorites
+    from resources.lib.gui.gui import cGui
+    from resources.lib.handler.ParameterHandler import ParameterHandler
+    import xbmcplugin
+
+    main = _main_module(monkeypatch)
+    target = 'plugin://plugin.video.gerxstream/?site=serienstream&function=showSeasons&sUrl=serie/carrie'
+    monkeypatch.setattr(epicfavorites, 'contents', lambda path: ('', {}, [], [{
+        'id': 'a' * 32, 'title': 'Carrie (2026)', 'target': target,
+        'is_folder': True, 'media_type': 'tvshow'}]))
+    monkeypatch.setattr(sys, 'argv', ['plugin://plugin.video.gerxstream/', '1', ''])
+    monkeypatch.setattr(cGui, '_cGui__createContextMenu', lambda self, element, item, *args: item)
+    monkeypatch.setattr(cGui, 'setView', lambda *args: None)
+    monkeypatch.setattr(cGui, 'setEndOfDirectory', lambda *args: None)
+    added = []
+    monkeypatch.setattr(xbmcplugin, 'addDirectoryItem', lambda *args: added.append(args))
+    set_setting('autoNextEpisodeEnabled', 'true')
+    params = ParameterHandler()
+    params.setParam('section', 'favorites')
+    main.showEpicFavorites(params)
+    from urllib.parse import parse_qsl, urlsplit
+    route = dict(parse_qsl(urlsplit(added[-1][1]).query))
+    assert route['site'] == 'serienstream'
+    assert route['function'] == 'showSeasons'
+    assert route['sUrl'] == 'serie/carrie'
+    assert route['watchlistTarget'] == epicfavorites.normaliseTarget(target)
+    assert route['watchlistYear'] == '2026'
+    assert added[-1][2]._label == 'Carrie (2026)'
+    assert added[-1][3] is True
 
 
 def test_selected_movie_does_not_match_anime_or_other_next_titles(monkeypatch):

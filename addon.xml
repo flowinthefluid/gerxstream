@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.34" provider-name="gerxstream">
+<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.35" provider-name="gerxstream">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 		<import addon="script.module.requests"/>
@@ -26,7 +26,7 @@
 		<language>de en</language>
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
-		<news>1.0.34 - Serienfortsetzung ueber native Kodi-Playlists mit Sprung zur naechsten Folge. Hoster-Nachfrage und gemerkter Hoster werden beruecksichtigt. Filme und Folgen werden ab 90 Prozent dauerhaft als gesehen markiert. Nach dem Update Kodi neu starten.</news>
+		<news>1.0.35 - Epic-Watchlist mit Favorites, Geplant, Am Schauen, Abgeschlossen, Abgebrochen und Historie. Serien werden als Ganzes mit dem zuletzt benutzten Anbieter gespeichert. Favoriten oeffnen direkte Anbieterordner; Zeitstempel der Historie sind optional. Nach dem Update Kodi neu starten.</news>
 		<website>https://gitlab.com/gerxstream/gerxstream</website>
 		<source>https://gitlab.com/gerxstream/gerxstream</source>
 		<assets>

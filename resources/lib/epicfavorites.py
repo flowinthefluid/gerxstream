@@ -11,6 +11,7 @@ import os
 import re
 import time
 import uuid
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import xbmcgui
 from xbmcvfs import translatePath
@@ -21,7 +22,8 @@ from resources.lib.gui.gui import cGui
 
 STORAGE_FILE = 'epic_favorites.json'
 NAME_SETTING = 'epicFavoritesName'
-DEFAULT_NAME = 'Epic-Favorites'
+DEFAULT_NAME = 'Epic-Watchlist'
+STATUSES = ('planned', 'watching', 'completed', 'dropped')
 MAX_TITLE = 300
 MAX_TEXT = 2000
 
@@ -29,7 +31,7 @@ MAX_TEXT = 2000
 def displayName():
     """Return the configured, safe display name for the top-level folder."""
     name = re.sub(r'\s+', ' ', cConfig().getSetting(NAME_SETTING, DEFAULT_NAME) or '').strip()
-    return name[:80] or DEFAULT_NAME
+    return DEFAULT_NAME if name in ('', 'Epic-Favorites') else name[:80]
 
 
 def _profilePath():
@@ -40,7 +42,18 @@ def _profilePath():
 
 
 def _emptyData():
-    return {'version': 1, 'folders': [], 'entries': []}
+    return {'version': 2, 'folders': [], 'entries': [], 'watchlist': []}
+
+
+def normaliseTarget(target):
+    if not isinstance(target, str) or not target.startswith('plugin://'):
+        return ''
+    parsed = urlsplit(target)
+    transient = {'episodeQueue', 'episodeIndex', 'episodeStart', 'watchlistTarget',
+                 'watchlistTitle', 'watchlistYear', 'watchlistIsFolder', 'manual'}
+    query = [(key, value) for key, value in parse_qsl(parsed.query)
+             if key not in transient]
+    return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, urlencode(query), ''))
 
 
 def _clean(value, maximum=MAX_TEXT):
@@ -78,7 +91,7 @@ def _cleanNode(node):
 def _cleanEntry(entry):
     if not isinstance(entry, dict):
         return None
-    target = str(entry.get('target') or '')
+    target = normaliseTarget(entry.get('target'))
     entryId = str(entry.get('id') or '')
     if not re.fullmatch(r'[a-f0-9]{8,32}', entryId) or not target.startswith('plugin://'):
         return None
@@ -96,6 +109,11 @@ def _cleanEntry(entry):
         'media_type': entry.get('media_type') if entry.get('media_type') in
                       ('movie', 'tvshow', 'season', 'episode') else '',
         'added_at': int(entry.get('added_at') or 0),
+        'source': _clean(entry.get('source'), 100),
+        'year': _clean(entry.get('year'), 10),
+        'series_title': _clean(entry.get('series_title'), MAX_TITLE),
+        'series_target': normaliseTarget(entry.get('series_target')),
+        'status': entry.get('status') if entry.get('status') in STATUSES else '',
     }
 
 
@@ -112,6 +130,11 @@ def _normaliseData(raw):
         valid = _cleanEntry(entry)
         if valid:
             data['entries'].append(valid)
+    storedWatchlist = raw.get('watchlist', [])
+    for entry in storedWatchlist if isinstance(storedWatchlist, list) else []:
+        valid = _cleanEntry(entry)
+        if valid and valid['status']:
+            data['watchlist'].append(valid)
     return data
 
 
@@ -331,3 +354,88 @@ def chooseFolder(startPath='', allowCreate=True):
 
 def folderTitle(path=''):
     return _folderLabel(_load(), path)
+
+
+def seriesEntry(entry):
+    values = dict(entry)
+    values['title'] = _clean(values.get('title'), MAX_TITLE)
+    if not values['title']:
+        return None
+    if values.get('media_type') in ('episode', 'season'):
+        if not values.get('series_target') or not values.get('series_title'):
+            return None
+        values.update(title=values['series_title'], target=values['series_target'],
+                      media_type='tvshow', is_folder=True)
+    target = normaliseTarget(values.get('target'))
+    if not target:
+        return None
+    route = dict(parse_qsl(urlsplit(target).query))
+    values['source'] = route.get('site', '') or values.get('source', '')
+    values['target'] = target
+    if re.fullmatch(r'\d{4}', str(values.get('year') or '')) and not re.search(r'\(\d{4}\)', values['title']):
+        values['title'] += ' (%s)' % values['year']
+    return values
+
+
+def targetForEntry(entry):
+    target = normaliseTarget(entry.get('series_target') or entry.get('target'))
+    if not target.startswith('plugin://plugin.video.gerxstream/') or not entry.get('media_type'):
+        return target
+    parsed = urlsplit(target)
+    query = dict(parse_qsl(parsed.query))
+    title = entry.get('series_title') or entry.get('show_title') or entry['title']
+    year = entry.get('year') or ''
+    match = re.search(r'\((\d{4})\)\s*$', title)
+    if match and not year:
+        year = match.group(1)
+    query.update(watchlistTarget=target, watchlistTitle=title, watchlistYear=year,
+                 watchlistIsFolder=str(bool(entry.get('is_folder'))).lower())
+    return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, urlencode(query), ''))
+
+
+def _watchKey(entry):
+    title = re.sub(r'\s*\(\d{4}\)\s*$', '', entry['title']).casefold().strip()
+    year = entry.get('year') or ''
+    match = re.search(r'\((\d{4})\)\s*$', entry['title'])
+    if not year and match:
+        year = match.group(1)
+    kind = 'tvshow' if entry.get('media_type') in ('tvshow', 'season', 'episode') else 'movie'
+    return title, year, kind
+
+
+def watchEntries(status):
+    return [entry for entry in sorted(_load()['watchlist'],
+                                     key=lambda item: item['added_at'], reverse=True)
+            if entry['status'] == status]
+
+
+def watchEntry(entryId):
+    return next((entry for entry in _load()['watchlist'] if entry['id'] == entryId), None)
+
+
+def setStatus(entry, status, automatic=False):
+    if status not in STATUSES:
+        return False
+    values = seriesEntry(entry)
+    if values is None:
+        return False
+    data = _load()
+    previous = next((item for item in data['watchlist'] if _watchKey(item) == _watchKey(values)), None)
+    if previous:
+        entryId = previous['id']
+        if automatic and previous['status'] in ('completed', 'dropped'):
+            status = previous['status']
+    else:
+        entryId = uuid.uuid4().hex
+    clean = _cleanEntry(dict(values, id=entryId, status=status, added_at=int(time.time())))
+    if not clean:
+        return False
+    data['watchlist'] = [clean] + [item for item in data['watchlist'] if item['id'] != entryId]
+    return _save(data)
+
+
+def removeWatchEntry(entryId):
+    data = _load()
+    previous = len(data['watchlist'])
+    data['watchlist'] = [entry for entry in data['watchlist'] if entry['id'] != entryId]
+    return len(data['watchlist']) != previous and _save(data)

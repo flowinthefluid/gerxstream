@@ -22,7 +22,7 @@
 				</setting>
 				<setting id="mainMenuOrder" type="string" label="30879" help="">
 					<level>2</level>
-					<default>epicFavorites,globalSearch,sourceCategories,categories,random,history,settings</default>
+					<default>epicFavorites,globalSearch,sourceCategories,categories,random,settings</default>
 					<visible>false</visible>
 					<control type="edit" format="string"/>
 				</setting>
@@ -99,9 +99,17 @@
 					<data>RunPlugin(plugin://plugin.video.gerxstream/?function=clearWatchHistory)</data>
 					<control type="button" format="action"><close>true</close></control>
 				</setting>
+				<setting id="watchHistoryTimestamps" type="boolean" label="31856" help="31857">
+					<level>0</level>
+					<default>False</default>
+					<dependencies>
+						<dependency type="enable" setting="watchHistoryEnabled">true</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
 				<setting id="epicFavoritesName" type="string" label="30916" help="30917">
 					<level>1</level>
-					<default>Epic-Favorites</default>
+					<default>Epic-Watchlist</default>
 					<constraints>
 						<allowempty>false</allowempty>
 					</constraints>

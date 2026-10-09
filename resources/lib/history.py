@@ -5,6 +5,7 @@ import json
 import os
 import re
 import time
+from urllib.parse import parse_qsl, urlsplit
 
 from xbmcvfs import translatePath
 
@@ -90,8 +91,21 @@ def _save(entriesToSave):
     return False
 
 
-def record(title, thumbnail='', mediaType='movie', source='', season='', episode='', showTitle=''):
+def record(title, thumbnail='', mediaType='movie', source='', season='', episode='', showTitle='',
+           target='', seriesTarget='', seriesTitle='', year='', targetIsFolder=False):
     """Store one successfully started playback without saving stream URLs."""
+    from resources.lib import epicfavorites
+
+    target = epicfavorites.normaliseTarget(target)
+    seriesTarget = epicfavorites.normaliseTarget(seriesTarget)
+    source = dict(parse_qsl(urlsplit(seriesTarget or target).query)).get('site') or source
+    if target:
+        epicfavorites.setStatus({'title': title, 'thumbnail': thumbnail, 'media_type': mediaType,
+                                 'source': source, 'target': target, 'year': year,
+                                 'series_target': seriesTarget,
+                                 'series_title': seriesTitle or showTitle,
+                                 'is_folder': targetIsFolder or mediaType in ('tvshow', 'season', 'episode')},
+                                'watching', automatic=True)
     if not cConfig().getSettingBool(HISTORY_ENABLED_SETTING, True):
         return False
     title = _clean(title)
@@ -109,6 +123,11 @@ def record(title, thumbnail='', mediaType='movie', source='', season='', episode
         'episode': _clean(episode, 20),
         'show_title': showTitle,
         'watched_at': int(time.time()),
+        'target': target,
+        'is_folder': targetIsFolder or mediaType in ('tvshow', 'season', 'episode'),
+        'series_target': seriesTarget,
+        'series_title': _clean(seriesTitle or showTitle),
+        'year': _clean(year, 10),
     }
     key = (entry['search_title'].casefold(), entry['season'], entry['episode'])
     storageLimit = _storageLimit()

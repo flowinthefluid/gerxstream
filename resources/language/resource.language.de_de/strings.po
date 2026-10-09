@@ -2119,8 +2119,8 @@ msgid "Bottom"
 msgstr "Ganz unten"
 
 msgctxt "#30916"
-msgid "Epic-Favorites name"
-msgstr "Name der Epic-Favorites"
+msgid "Epic-Watchlist name"
+msgstr "Name der Epic-Watchlist"
 
 msgctxt "#30917"
 msgid "The name is displayed in the main menu and in the favourites browser."
@@ -2181,6 +2181,42 @@ msgstr "Ordner existiert bereits oder sein Name ist ungueltig."
 msgctxt "#30932"
 msgid ".. Back"
 msgstr ".. Zurueck"
+
+msgctxt "#31850"
+msgid "Favorites"
+msgstr "Favorites"
+
+msgctxt "#31851"
+msgid "Planned"
+msgstr "Geplant"
+
+msgctxt "#31852"
+msgid "Watching"
+msgstr "Am Schauen"
+
+msgctxt "#31853"
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+msgctxt "#31854"
+msgid "Dropped"
+msgstr "Abgebrochen"
+
+msgctxt "#31855"
+msgid "Set watchlist status"
+msgstr "Watchlist-Status setzen"
+
+msgctxt "#31856"
+msgid "Show history timestamps"
+msgstr "Zeitstempel in der Historie anzeigen"
+
+msgctxt "#31857"
+msgid "Show the date and time of playback in history. Sorting by most recent playback remains unchanged."
+msgstr "Datum und Uhrzeit der Wiedergabe in der Historie anzeigen. Die Sortierung nach letzter Wiedergabe bleibt unveraendert."
+
+msgctxt "#31859"
+msgid "No series folder is available for this episode. Add the series from its provider's series list instead."
+msgstr "Fuer diese Folge ist kein Serienordner gespeichert. Bitte die Serie stattdessen aus der Serienliste des Anbieters hinzufuegen."
 
 msgctxt "#30933"
 msgid "Automatically play next episode"

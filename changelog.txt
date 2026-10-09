@@ -1,3 +1,17 @@
+[B]Version: 1.0.35[/B]
+
+09.10.2026
+
+- Epic-Favorites heisst standardmaessig Epic-Watchlist. Eigene Namen und vorhandene Ordner/Unterordner bleiben erhalten.
+- Unterpunkte: Favorites, Geplant, Am Schauen, Abgeschlossen, Abgebrochen und Historie. Eintraege der Statuslisten koennen auch in eigene Favorites-Ordner kopiert werden.
+- Neue Serien-Favoriten und Statuslisten speichern die ganze Serie statt einzelner Folgen und oeffnen den konkreten Anbieterordner. Serienjahr wird angezeigt, sofern vorhanden.
+- Am Schauen aktualisiert sich erst bei tatsaechlichem Wiedergabestart und merkt sich den zuletzt benutzten Anbieter. Abgeschlossen und Abgebrochen bleiben bewusst gesetzte Statuswerte; eine gesehene Folge schliesst nicht die ganze Serie ab.
+- Historie bleibt episodenbezogen. Neue Eintraege oeffnen direkt den gespeicherten Anbieterordner; alte Eintraege ohne Anbieterroute behalten die Suchfunktion.
+- Zeitstempel der Historie sind separat ein-/ausschaltbar und standardmaessig aus. Sortierung nach letzter Wiedergabe bleibt erhalten.
+- Gespeicherte Favoriten verwenden Kodi-Plugin-Routen direkt statt eines zweiten Wrapper-Aufrufs. Kurzlebige Folgenqueue-Kennungen werden nicht in neuen Favoriten gespeichert.
+- Nach dem Update Kodi neu starten. Automatisierte Tests mit Kodi-Stubs bestanden; Carrie-Wiedergabe auf Android mangels ADB-Zugriff noch nicht verifiziert.
+- Repository bleibt auf 1.0.8; bestehende Update-URLs unveraendert.
+
 [B]Version: 1.0.34[/B]
 
 09.10.2026

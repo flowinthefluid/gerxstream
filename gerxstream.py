@@ -116,7 +116,7 @@ HOSTER_GUI_FUNCTIONS = frozenset((
 
 
 MAIN_MENU_ORDER_SETTING = 'mainMenuOrder'
-MAIN_MENU_ORDER_DEFAULT = ('epicFavorites', 'globalSearch', 'sourceCategories', 'livestreams', 'categories', 'random', 'history', 'settings')
+MAIN_MENU_ORDER_DEFAULT = ('epicFavorites', 'globalSearch', 'sourceCategories', 'livestreams', 'categories', 'random', 'settings')
 
 
 def _mainMenuOrder():
@@ -145,8 +145,9 @@ def _mainMenuOrder():
 
 def showMainMenuOrder():
     """Kleiner Kodi-Dialog zum schrittweisen Verschieben der Hauptmenuepunkte."""
+    from resources.lib import epicfavorites
     labels = {
-        'epicFavorites': cConfig().getSetting('epicFavoritesName', 'Epic-Favorites'),
+        'epicFavorites': epicfavorites.displayName(),
         'globalSearch': cConfig().getLocalizedString(30040),
         'sourceCategories': cConfig().getLocalizedString(30878),
         'livestreams': cConfig().getLocalizedString(30989),
@@ -430,6 +431,12 @@ def parseUrl():
             moveEpicFavoriteEntry(params)
         elif sFunction == 'removeEpicFavoriteEntry':
             removeEpicFavoriteEntry(params)
+        elif sFunction == 'setWatchlistStatus':
+            setWatchlistStatus(params)
+        elif sFunction == 'removeWatchlistEntry':
+            removeWatchlistEntry(params)
+        elif sFunction == 'addEpicFavorite':
+            addEpicFavorite(params)
         else:
             _endFailedDirectory()
     elif sSiteName == 'GerXStream':
@@ -579,8 +586,6 @@ def showMainMenu(sFunction):
 
     menuGroups['random'].append((randomGuiElement(), None))
     menuGroups['epicFavorites'].append((epicFavoritesGuiElement(), None))
-    if cConfig().getSettingBool('watchHistoryEnabled', True):
-        menuGroups['history'].append((watchHistoryGuiElement(), None))
 
     # VoD Ordner im Hauptmenü anzeigen
     if cConfig().getSettingBool('SettingsFolder', False):
@@ -850,6 +855,26 @@ def showEpicFavorites(params):
     """Render folders and saved plugin invocations in the chosen folder."""
     from resources.lib import epicfavorites
 
+    section = params.getValue('section')
+    if not section and not params.exist('path'):
+        oGui = cGui()
+        for key, labelId in (('favorites', 31850), ('planned', 31851), ('watching', 31852),
+                             ('completed', 31853), ('dropped', 31854)):
+            element = cGuiElement(cConfig().getLocalizedString(labelId), 'epicFavorites', 'showEpicFavorites')
+            element.addItemProperties('epicFavoritesManaged', 'true')
+            child = ParameterHandler()
+            child.setParam('section', key)
+            oGui.addFolder(element, child)
+        if cConfig().getSettingBool('watchHistoryEnabled', True):
+            element = watchHistoryGuiElement()
+            element.addItemProperties('epicFavoritesManaged', 'true')
+            oGui.addFolder(element)
+        oGui.setView('files')
+        oGui.setEndOfDirectory()
+        return
+    if section in epicfavorites.STATUSES:
+        showWatchlistStatus(section)
+        return
     requestedPath = params.getValue('path')
     path, _folder, folders, entries = epicfavorites.contents(requestedPath)
     oGui = cGui()
@@ -900,11 +925,10 @@ def showEpicFavorites(params):
             element.setDescription(entry['description'])
         if entry.get('media_type'):
             element.setMediaType(entry['media_type'])
-        # Gespeicherte Abspiel-Eintraege bleiben absichtlich Ordner: so
-        # kann openEpicFavorite() den originalen Plugin-Aufruf unveraendert
-        # ausfuehren, ohne dass Kodi vorher playMode fuer diesen Wrapper setzt.
         element.addItemProperties('epicFavoritesManaged', 'true')
         moveParams = ParameterHandler()
+        element.addItemProperties('GerXStream.Target', epicfavorites.targetForEntry(entry))
+        element.addItemProperties('GerXStream.DisplayTitle', entry['title'])
         moveParams.setParam('path', path)
         moveParams.setParam('entryId', entry['id'])
         _epicContext(element, cConfig().getLocalizedString(30925),
@@ -914,7 +938,10 @@ def showEpicFavorites(params):
         removeParams.setParam('entryId', entry['id'])
         _epicContext(element, cConfig().getLocalizedString(30926),
                      'removeEpicFavoriteEntry', removeParams)
-        oGui.addFolder(element, entryParams, True, len(entries))
+        statusParams = ParameterHandler()
+        statusParams.addParams({'path': path, 'entryId': entry['id'], 'entrySource': 'favorites'})
+        _epicContext(element, cConfig().getLocalizedString(31855), 'setWatchlistStatus', statusParams)
+        oGui.addFolder(element, entryParams, entry['is_folder'], len(entries))
 
     oGui.setView('files')
     oGui.setEndOfDirectory()
@@ -924,22 +951,14 @@ def addEpicFavorite(params):
     """Add an item from any GerXStream context menu into a selected folder."""
     from resources.lib import epicfavorites
 
-    target = params.getValue('target')
-    if not target or not target.startswith('plugin://'):
-        cGui().showInfo('GerXStream', cConfig().getLocalizedString(30930))
+    entry = _watchlistEntryFromParams(params)
+    entry = epicfavorites.seriesEntry(entry) if entry else None
+    if entry is None:
+        cGui().showInfo(epicfavorites.displayName(), cConfig().getLocalizedString(31859))
         return
     path = epicfavorites.chooseFolder()
     if path is None:
         return
-    entry = {
-        'title': params.getValue('title'),
-        'target': target,
-        'is_folder': params.getValue('isFolder') == 'true',
-        'thumbnail': params.getValue('thumbnail'),
-        'fanart': params.getValue('fanart'),
-        'description': params.getValue('description'),
-        'media_type': params.getValue('mediaType'),
-    }
     stored, result = epicfavorites.addEntry(path, entry)
     if stored:
         cGui().showInfo(epicfavorites.displayName(),
@@ -958,11 +977,83 @@ def openEpicFavorite(params):
     if not entry:
         _endFailedDirectory()
         return
-    target = entry['target']
+    target = epicfavorites.targetForEntry(entry)
     if entry.get('is_folder'):
         xbmc.executebuiltin('Container.Update(%s)' % target)
     else:
-        xbmc.executebuiltin('RunPlugin(%s)' % target)
+        xbmc.executebuiltin('PlayMedia(%s)' % target)
+
+
+def _watchlistEntryFromParams(params):
+    from resources.lib import epicfavorites
+
+    if params.getValue('entrySource') == 'watchlist':
+        return epicfavorites.watchEntry(params.getValue('entryId'))
+    if params.getValue('entrySource') == 'favorites':
+        return epicfavorites.entryAt(params.getValue('path'), params.getValue('entryId'))
+    return {'title': params.getValue('title'), 'target': params.getValue('target'),
+            'is_folder': params.getValue('isFolder') == 'true',
+            'thumbnail': params.getValue('thumbnail'), 'fanart': params.getValue('fanart'),
+            'description': params.getValue('description'), 'media_type': params.getValue('mediaType'),
+            'source': params.getValue('source'), 'year': params.getValue('year'),
+            'series_target': params.getValue('seriesTarget'), 'series_title': params.getValue('seriesTitle')}
+
+
+def showWatchlistStatus(status):
+    from resources.lib import epicfavorites
+
+    oGui = cGui()
+    entries = epicfavorites.watchEntries(status)
+    for entry in entries:
+        element = cGuiElement(entry['title'], 'epicFavorites', 'openEpicFavorite')
+        element.setMediaType(entry['media_type'])
+        element.setThumbnail(entry['thumbnail'])
+        element.setFanart(entry['fanart'])
+        element.setDescription(entry['description'])
+        element.setTitleSecond(entry.get('source', ''))
+        element.addItemProperties('epicFavoritesManaged', 'true')
+        element.addItemProperties('GerXStream.Target', epicfavorites.targetForEntry(entry))
+        element.addItemProperties('GerXStream.DisplayTitle', entry['title'])
+        if entry.get('year'):
+            element._sYear = entry['year']
+        for labelId, function in ((31855, 'setWatchlistStatus'), (30926, 'removeWatchlistEntry')):
+            action = ParameterHandler()
+            action.addParams({'entryId': entry['id'], 'entrySource': 'watchlist'})
+            _epicContext(element, cConfig().getLocalizedString(labelId), function, action)
+        favoriteParams = ParameterHandler()
+        favoriteParams.addParams({'entryId': entry['id'], 'entrySource': 'watchlist'})
+        _epicContext(element, cConfig().getLocalizedString(30918) % cConfig().getLocalizedString(31850),
+                     'addEpicFavorite', favoriteParams)
+        oGui.addFolder(element, ParameterHandler(), entry['is_folder'], len(entries))
+    oGui.setView('files')
+    oGui.setEndOfDirectory()
+
+
+def setWatchlistStatus(params):
+    from resources.lib import epicfavorites
+
+    entry = _watchlistEntryFromParams(params)
+    entry = epicfavorites.seriesEntry(entry) if entry else None
+    if entry is None:
+        cGui().showInfo(epicfavorites.displayName(), cConfig().getLocalizedString(31859))
+        return
+    chosen = xbmcgui.Dialog().select(cConfig().getLocalizedString(31855),
+                                    [cConfig().getLocalizedString(labelId) for labelId in (31851, 31852, 31853, 31854)])
+    if 0 <= chosen < len(epicfavorites.STATUSES):
+        if epicfavorites.setStatus(entry, epicfavorites.STATUSES[chosen]):
+            _epicRefresh()
+        else:
+            cGui().showInfo(epicfavorites.displayName(), cConfig().getLocalizedString(30930))
+
+
+def removeWatchlistEntry(params):
+    from resources.lib import epicfavorites
+
+    entry = epicfavorites.watchEntry(params.getValue('entryId'))
+    if entry and xbmcgui.Dialog().yesno(epicfavorites.displayName(),
+                                      cConfig().getLocalizedString(30927) % entry['title']):
+        if epicfavorites.removeWatchEntry(entry['id']):
+            _epicRefresh()
 
 
 def createEpicFavoriteFolder(params):
@@ -1052,8 +1143,8 @@ def _historyTimestamp(timestamp):
 
 
 def showWatchHistory():
-    """Render the local playback history; replay uses the normal global search."""
-    from resources.lib import history
+    """Render episode history with provider routes where available."""
+    from resources.lib import history, epicfavorites
 
     recent = history.entries()
     oGui = cGui()
@@ -1070,24 +1161,40 @@ def showWatchHistory():
             details = 'S%sE%s' % (season or '0', episode or '0')
             title = '%s – %s: %s' % (item['show_title'], details, title)
         element = cGuiElement(title, 'history', 'resumeWatchHistory')
+        element.addItemProperties('epicFavoritesManaged', 'true')
         mediaType = item.get('media_type', '')
         if mediaType in cGuiElement.MEDIA_TYPES:
             element.setMediaType(mediaType)
         if item.get('thumbnail'):
             element.setThumbnail(item['thumbnail'])
-        description = _historyTimestamp(item.get('watched_at'))
+        description = (_historyTimestamp(item.get('watched_at'))
+                   if cConfig().getSettingBool('watchHistoryTimestamps', False) else '')
         if item.get('source'):
             description = '%s%s' % (description, (' • ' if description else '') + item['source'])
         if description:
             element.setDescription(description)
         itemParams = ParameterHandler()
         itemParams.setParam('searchTitle', item.get('search_title', title))
-        oGui.addFolder(element, itemParams, True, total)
+        target = item.get('series_target') or item.get('target')
+        if target:
+            element.addItemProperties('GerXStream.Target', epicfavorites.targetForEntry(item))
+            itemParams.setParam('target', target)
+            statusParams = ParameterHandler()
+            statusParams.addParams({'title': item.get('series_title') or item.get('show_title') or title,
+                                    'target': target, 'isFolder': 'true', 'mediaType': 'tvshow' if item.get('show_title') else mediaType,
+                                    'year': item.get('year', ''), 'source': item.get('source', ''),
+                                    'thumbnail': item.get('thumbnail', '')})
+            _epicContext(element, cConfig().getLocalizedString(31855), 'setWatchlistStatus', statusParams)
+        oGui.addFolder(element, itemParams, item.get('is_folder', True), total)
     oGui.setView('movies')
     oGui.setEndOfDirectory()
 
 
 def resumeWatchHistory(params):
+    target = params.getValue('target')
+    if isinstance(target, str) and target.startswith('plugin://'):
+        xbmc.executebuiltin('Container.Update(%s)' % target)
+        return
     title = params.getValue('searchTitle')
     if title:
         searchGlobal(title, 'alle')
