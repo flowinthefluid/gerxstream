@@ -8,7 +8,7 @@ Dieses Addon nutzt die ID `plugin.video.gerxstream`.
 2. `script.module.resolveurl` muss installiert sein
 3. Das GerXStream Repository (`repository.gerxstream`) aus der ZIP-Datei der
    GitHub-Pages-Quelle installieren (`https://flowinthefluid.github.io/gerxstream/repo/`).
-   Aktuelle Repository-ZIP: `repository.gerxstream-1.0.7.zip`.
+   Aktuelle Repository-ZIP: `repository.gerxstream-1.0.8.zip`.
    Anschliessend kann GerXStream über
    **Aus Repository installieren** installiert werden. ResolveURL 5.1.209 wird
    als Abhängigkeit aus demselben Repository bereitgestellt.

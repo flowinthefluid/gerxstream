@@ -28,7 +28,7 @@ Installationsschritte, Voraussetzungen und Hinweise zur Datenübernahme stehen
 ausführlich in [INSTALL.md](INSTALL.md). Die Kodi-Quelle wird nach erfolgreicher
 GitHub-Actions-Auslieferung ueber GitHub Pages bereitgestellt:
 `https://flowinthefluid.github.io/gerxstream/repo/`.
-Die Repository-ZIP heisst `repository.gerxstream-1.0.7.zip`; GerXStream selbst
+Die Repository-ZIP heisst `repository.gerxstream-1.0.8.zip`; GerXStream selbst
 hat die Version **1.0.32**. Updates erfolgen ueber Kodis Add-on-Verwaltung.
 Wer noch eine ältere xStream-Installation nutzt, kann direkt zu
 GerXStream wechseln: Einstellungen und Favoriten werden beim ersten Start automatisch

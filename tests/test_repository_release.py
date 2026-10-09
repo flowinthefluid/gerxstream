@@ -27,7 +27,7 @@ def test_repository_is_in_catalog_and_datadir(tmp_path, pages_url):
 
     repository = catalog.find("addon[@id='repository.gerxstream']")
     assert repository is not None
-    assert repository.get('version') == '1.0.7'
+    assert repository.get('version') == '1.0.8'
     assert repository.find('./extension/dir/info').text == pages_url + '/catalog/addons.xml'
     assert repository.find('./extension/dir/checksum').text == pages_url + '/catalog/addons.xml.md5'
     assert hashlib.md5(catalog_bytes).hexdigest() == (output / 'addons.xml.md5').read_text()
@@ -57,7 +57,7 @@ def test_repository_is_in_catalog_and_datadir(tmp_path, pages_url):
         assert setting.find('default').text == 'inherit'
         assert setting.find('constraints/options/option').text == 'inherit'
 
-    name = 'repository.gerxstream-1.0.7.zip'
+    name = 'repository.gerxstream-1.0.8.zip'
     install_zip = output / name
     update_zip = output / 'zips' / 'repository.gerxstream' / name
     assert install_zip.read_bytes() == update_zip.read_bytes()

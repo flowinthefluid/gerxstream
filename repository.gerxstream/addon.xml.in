@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.gerxstream"
        name="GerXStream Repository"
-      version="1.0.7"
+      version="1.0.8"
        provider-name="gerxstream">
   <extension point="xbmc.addon.repository" name="GerXStream Repository">
     <dir>
