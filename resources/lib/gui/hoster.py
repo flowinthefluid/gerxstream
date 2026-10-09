@@ -7,6 +7,7 @@
 import xbmc
 import xbmcgui
 import xbmcplugin
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
@@ -101,7 +102,7 @@ class cHosterGui:
             index = int(params.getValue('episodeIndex'))
         except (TypeError, ValueError):
             return False
-        if not queueId or queueId != params.getValue('episodeQueue') or index <= firstIndex:
+        if not queueId or queueId != params.getValue('episodeQueue') or index < firstIndex:
             return False
         try:
             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
@@ -113,8 +114,41 @@ class cHosterGui:
         # Matching the exact relative position rejects a stale playlist marker
         # after Stop + a new manual episode selection.
         return bool(position == index - firstIndex
-                    and position > 0
+                    and position >= 0
                     and playlist.size() > position)
+
+    @classmethod
+    def _startEpisodeQueue(cls, params):
+        from resources.lib import episodequeue, hosterprefs
+        try:
+            firstIndex = int(params.getValue('episodeIndex'))
+        except (TypeError, ValueError):
+            return False
+        queueId = params.getValue('episodeQueue')
+        targets = episodequeue.getTargets(queueId)
+        if firstIndex < 0 or firstIndex >= len(targets):
+            return False
+        hosterprefs.forgetSticky()
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
+        following = targets[firstIndex:]
+        if not cConfig().getSettingBool('autoNextEpisodeEnabled', False):
+            following = following[:1]
+        for position, target in enumerate(following):
+            if position == 0 and params.getValue('manual') == '1':
+                parts = urlsplit(target)
+                query = dict(parse_qsl(parts.query))
+                query['manual'] = '1'
+                target = urlunsplit(parts._replace(query=urlencode(query)))
+            item = xbmcgui.ListItem(path=target)
+            item.setProperty('IsPlayable', 'true')
+            item.setProperty('ForceResolvePlugin', 'true')
+            playlist.add(target, item)
+        import uuid
+        xbmcgui.Window(10000).setProperty(cls.EPISODE_PLAYLIST_PROPERTY,
+                                         '%s:%d:%s' % (queueId, firstIndex, uuid.uuid4().hex))
+        xbmc.Player().play(playlist)
+        return True
 
     @classmethod
     def _queueFollowingEpisodes(cls, params):
@@ -139,9 +173,11 @@ class cHosterGui:
             return False
 
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        if playlist.size() != 1 or playlist.getposition() != 0:
+        size = playlist.size()
+        if size > 1 or (size == 1 and playlist.getposition() != 0):
             return False
-        for target in targets[firstIndex + 1:]:
+        startIndex = firstIndex if size == 0 else firstIndex + 1
+        for target in targets[startIndex:]:
             queuedItem = xbmcgui.ListItem(path=target)
             queuedItem.setProperty('IsPlayable', 'true')
             # Kodi >= 20 otherwise may reuse an old resolver result if the
@@ -171,6 +207,8 @@ class cHosterGui:
             hosterprefs.forgetSticky()
 
     def play(self, siteResult=False):
+        if ParameterHandler().getValue('episodeStart') == '1':
+            return self._startEpisodeQueue(ParameterHandler())
         logger.info('-> [hoster]: attempt to play file')
         data = self._getInfoAndResolve(siteResult)
         if not data:
@@ -233,6 +271,9 @@ class cHosterGui:
 
         list_item.setProperty('IsPlayable', 'true')
         params = ParameterHandler()
+        from resources.lib import playbackstate
+        watchId = playbackstate.beginPlayback(data, params)
+        vtag.setUniqueID(watchId, 'gerxstream')
         # The following entries of a real Kodi playlist are invoked by Kodi
         # only to obtain their resolved stream. They must return immediately;
         # waiting for their playback would block the playlist transition.
@@ -256,17 +297,6 @@ class cHosterGui:
             xbmc.Player().play(data['link'], list_item)
         player = cPlayer()
         started = player.startPlayer()
-        if started:
-            # Erst nach erfolgreichem Start erfassen; Links und Hoster werden
-            # bewusst nicht gespeichert, nur die lokal sichtbaren Metadaten.
-            try:
-                from resources.lib import history
-                history.record(data['title'], data.get('thumb', ''),
-                               params.getValue('mediaType') or 'movie',
-                               params.getValue('site'), params.getValue('season'),
-                               params.getValue('episode'), data.get('showTitle', ''))
-            except Exception:
-                logger.error('-> [hoster]: could not store playback history')
         return started
 
     def addToPlaylist(self, siteResult=False):
@@ -437,11 +467,14 @@ class cHosterGui:
     def _automaticCandidates(self, hosters, siteName, params):
         """Hoster, die ohne Rueckfrage probiert werden duerfen (in Reihenfolge)."""
         from resources.lib import hosterprefs
-        if hosterprefs.stickyEnabled() and self._isNativeEpisodePlaylistItem(params):
+        following = (self._isNativeEpisodePlaylistItem(params)
+                     and int(params.getValue('episodeIndex')) > self._playlistState()[1])
+        if following and cConfig().getSetting(hosterprefs.STICKY_SETTING, 'ask') == 'ask':
+            return []
+        if hosterprefs.stickyEnabled() and following:
             remembered = hosterprefs.sticky(params.getValue('episodeQueue'), siteName)
             candidates = hosterprefs.stickyCandidates(hosters, remembered)
-            if candidates:
-                return candidates
+            return candidates
         if hosterprefs.mode() == hosterprefs.MODE_AUTO:
             return hosterprefs.onlyPreferred(hosters, hosterprefs.forSite(siteName))
         return []
@@ -534,10 +567,11 @@ class cHosterGui:
                 self.dialog.update(90)
                 if len(siteResult) > self.maxHoster:
                     siteResult = siteResult[:self.maxHoster - 1]
-                if cConfig().getSetting('hosterSelect') == 'List':
+                params = ParameterHandler()
+                if (cConfig().getSetting('hosterSelect') == 'List'
+                    and not self._isNativeEpisodePlaylistItem(params)):
                     self.showHosterFolder(siteResult, siteName, functionName)
                     return
-                params = ParameterHandler()
                 if playMode == 'play' and not manual:
                     candidates = self._automaticCandidates(siteResult, siteName, params)
                     if candidates and self._tryHosters(plugin, functionName, candidates, siteName, params):
@@ -594,6 +628,10 @@ class cHosterGui:
                 pass
 
     def streamAuto(self, playMode, siteName, function):
+        params = ParameterHandler()
+        if playMode == 'play' and self._isNativeEpisodePlaylistItem(params):
+            manual = cConfig().getSetting('autoNextEpisodeHoster', 'ask') == 'ask'
+            return self.stream(playMode, siteName, function, manual=manual)
         logger.info('-> [hoster]: auto stream initiated')
         self.dialog = xbmcgui.DialogProgress()
         self.dialog.create('GerXStream', cConfig().getLocalizedString(30138))

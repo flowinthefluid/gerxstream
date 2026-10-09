@@ -35,8 +35,8 @@ def test_repository_is_in_catalog_and_datadir(tmp_path, pages_url):
     assert (output / 'catalog' / 'addons.xml.md5').read_text() == (output / 'addons.xml.md5').read_text()
 
     plugin = catalog.find("addon[@id='plugin.video.gerxstream']")
-    assert plugin.get('version') == '1.0.32'
-    plugin_zip = output / 'zips' / 'plugin.video.gerxstream' / 'plugin.video.gerxstream-1.0.32.zip'
+    assert plugin.get('version') == '1.0.34'
+    plugin_zip = output / 'zips' / 'plugin.video.gerxstream' / 'plugin.video.gerxstream-1.0.34.zip'
     with zipfile.ZipFile(plugin_zip) as archive:
         assert archive.testzip() is None
         plugin_manifest = ET.fromstring(archive.read('plugin.video.gerxstream/addon.xml'))

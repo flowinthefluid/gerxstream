@@ -1,3 +1,14 @@
+[B]Version: 1.0.34[/B]
+
+09.10.2026
+
+- Serienfortsetzung startet eine native Kodi-Playlist ab der gewaehlten Folge; damit ist auch der Sprung zur naechsten Folge moeglich.
+- Hoster-Nachfrage und gemerkter Hoster gelten auch bei allgemeiner automatischer Hoster-Auswahl. Fehlt der gemerkte Hoster, wird erneut gefragt.
+- Filme und Folgen werden ab 90 Prozent dauerhaft als gesehen gespeichert, auch beim anschliessenden Stoppen oder Ueberspringen des Abspanns. Keine automatische Weiterschaltung bei 90 Prozent.
+- Stabiler Wiedergabekontext und Gesehen-Kennungen ueber Folgenwechsel und umgeleitete Streams hinweg; der Hintergrunddienst bleibt zur Fortschrittsmessung aktiv.
+- Nach dem Update Kodi neu starten. Automatisierte Tests mit Kodi-Stubs bestanden; echter Android-Kodi-Playerablauf noch nicht verifiziert.
+- Repository bleibt auf 1.0.8; bestehende Update-URLs unveraendert.
+
 [B]Version: 1.0.32[/B]
 
 09.10.2026

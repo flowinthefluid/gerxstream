@@ -29,6 +29,21 @@ Dieses Addon nutzt die ID `plugin.video.gerxstream`.
    ZIPs aus den Quellen. Nach erfolgreicher Auslieferung steht Version 1.0.32 unter
    `zips/plugin.video.gerxstream/plugin.video.gerxstream-1.0.32.zip` bereit.
 
+## Wiedergabe ab 1.0.34
+
+- **Naechste Folge automatisch abspielen** startet die Folgen des aktuellen
+   Serien-/Staffelordners als Kodi-Videoplaylist, beginnend bei der gewaehlten Folge.
+   Der native Befehl **Naechster Titel** kann damit auch den Abspann ueberspringen.
+- Bei **Nachfragen** erscheint die Hoster-Auswahl fuer jede Folge. Bei
+   **gleichen Hoster weiterverwenden** wird der erste gewaehlte Hoster fuer die
+   folgenden Folgen bevorzugt; fehlt er, bleibt die Auswahl verfuegbar.
+- Filme und Folgen mit bekannter Laufzeit werden ab **90 %** als gesehen markiert,
+   auch wenn danach gestoppt oder zur naechsten Folge gesprungen wird.
+   Die Wiedergabe endet nicht automatisch bei 90 %.
+- Die Markierungen werden lokal in `watched_items.json` gespeichert, getrennt vom
+   optionalen Verlauf und ohne Stream-URLs. Nach Installation dieser Aenderung
+   Kodi neu starten, damit die dauerhafte Wiedergabeueberwachung laeuft.
+
 ## Personenlisten ab 1.0.29
 
 In den Einstellungen gibt es eigene Seitenleistenbereiche **Schauspieler** und

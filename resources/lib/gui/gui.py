@@ -7,7 +7,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-from resources.lib import utils
+from resources.lib import utils, playbackstate
 from resources.lib.config import cConfig
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
@@ -54,6 +54,8 @@ class cGui:
             import copy
             self.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(params), 'isFolder': bIsFolder})
             return
+        if params == '':
+            params = ParameterHandler()
         # abort xbmc list creation if user requests abort
         if xbmc.Monitor().abortRequested():
             self.setEndOfDirectory(False)
@@ -68,15 +70,35 @@ class cGui:
         # Liste selbst wird erst bei setEndOfDirectory gespeichert, wenn alle
         # Folgeneintraege bekannt sind. Hoster- und Stream-URLs bleiben dabei
         # ausschliesslich im normalen Wiedergabefluss, nie in der Queue.
-        trackEpisode = oGuiElement._mediaType == 'episode' and not bIsFolder
+        if oGuiElement._mediaType in ('movie', 'episode'):
+            values = oGuiElement.getItemValues()
+            watchId = playbackstate.itemKey(
+                oGuiElement.getSiteName(), oGuiElement.getTitle(),
+                values.get('season', ''), values.get('episode', ''),
+                values.get('TVShowTitle', ''), params.getValue('sUrl'))
+            params.setParam('watchId', watchId)
+            oGuiElement.addItemProperties('GerXStream.WatchId', watchId)
+        trackEpisode = oGuiElement._mediaType == 'episode' and not isHoster
         if trackEpisode:
             queue = self._episodeQueues.setdefault(
                 self._episodeQueueKey, {'id': uuid.uuid4().hex, 'targets': []})
             params.setParam('episodeQueue', queue['id'])
             params.setParam('episodeIndex', len(queue['targets']))
-        sUrl = self.__createItemUrl(oGuiElement, bIsFolder, params)
+        queueEnabled = trackEpisode and cConfig().getSettingBool('autoNextEpisodeEnabled', False)
+        sUrl = self.__createItemUrl(oGuiElement, False if queueEnabled else bIsFolder, params)
+        contextUrl = sUrl
         if trackEpisode:
             self._episodeQueues[self._episodeQueueKey]['targets'].append(sUrl)
+        startEpisodeQueue = (queueEnabled
+                             and sUrl.startswith('plugin://plugin.video.gerxstream/'))
+        if startEpisodeQueue:
+            bIsFolder = False
+            sUrl = '%s?%s' % (self.pluginPath, urlencode({
+                'site': 'cHosterGui', 'function': 'play', 'episodeStart': '1',
+                'episodeQueue': params.getValue('episodeQueue'),
+                'episodeIndex': params.getValue('episodeIndex'),
+                'mediaType': 'episode', 'title': oGuiElement.getTitle(),
+            }))
 #kasi
         try:
             if params.exist('trumb'): oGuiElement.setIcon(params.getValue('trumb'))
@@ -84,13 +106,14 @@ class cGui:
             pass
 
         listitem = self.createListItem(oGuiElement)
-        if not bIsFolder and cConfig().getSetting('hosterSelect') == 'List':
+        if not bIsFolder and not startEpisodeQueue and cConfig().getSetting('hosterSelect') == 'List':
             bIsFolder = True
         if isHoster:
             bIsFolder = False
-        listitem = self.__createContextMenu(oGuiElement, listitem, bIsFolder, sUrl)
+        listitem = self.__createContextMenu(oGuiElement, listitem, bIsFolder, contextUrl,
+                          sUrl if startEpisodeQueue else '')
         if not bIsFolder:
-            listitem.setProperty('IsPlayable', 'true')
+            listitem.setProperty('IsPlayable', 'false' if startEpisodeQueue else 'true')
         xbmcplugin.addDirectoryItem(self.pluginHandle, sUrl, listitem, bIsFolder, iTotal)
 
     def addNextPage(self, site, function, params=''):
@@ -135,6 +158,12 @@ class cGui:
         if len(aProperties) > 0:
             for sPropertyKey in aProperties.keys():
                 listitem.setProperty(sPropertyKey, aProperties[sPropertyKey])
+        watchId = aProperties.get('GerXStream.WatchId', '')
+        if watchId:
+            listitem.getVideoInfoTag().setUniqueID(watchId, 'gerxstream')
+        if playbackstate.isWatched(watchId):
+            listitem.getVideoInfoTag().setPlaycount(1)
+            listitem.getVideoInfoTag().setResumePoint(0, 0)
         return listitem
 
     ### ÄNDERUNG ANFANG ###
@@ -267,7 +296,7 @@ class cGui:
     ### ÄNDERUNG ENDE ###
 
 
-    def __createContextMenu(self, oGuiElement, listitem, bIsFolder, sUrl):
+    def __createContextMenu(self, oGuiElement, listitem, bIsFolder, sUrl, episodeStartUrl=''):
         contextmenus = []
         if len(oGuiElement.getContextItems()) > 0:
             for contextitem in oGuiElement.getContextItems():
@@ -353,7 +382,9 @@ class cGui:
             # Immer verfuegbar: umgeht automatisches Abspielen, bevorzugte
             # Hoster mit Autostart und den gemerkten Hoster der Folgenliste.
             contextitem.setTitle(cConfig().getLocalizedString(31400))   # Mit Hoster-Auswahl abspielen
-            contextmenus += [(contextitem.getTitle(), "RunPlugin(%s&playMode=play&manual=1)" % (sUrl,),)]
+            manualAction = ("RunPlugin(%s&manual=1)" % episodeStartUrl if episodeStartUrl else
+                            "RunPlugin(%s&playMode=play&manual=1)" % sUrl)
+            contextmenus += [(contextitem.getTitle(), manualAction)]
         listitem.addContextMenuItems(contextmenus)
         # listitem.addContextMenuItems(contextmenus, True)
         return listitem
@@ -361,7 +392,7 @@ class cGui:
     def setEndOfDirectory(self, success=True):
         # mark the listing as completed, this is mandatory
         episodeQueue = self._episodeQueues.pop(self._episodeQueueKey, None)
-        if episodeQueue and len(episodeQueue['targets']) > 1:
+        if episodeQueue and episodeQueue['targets']:
             from resources.lib import episodequeue
             episodequeue.store(episodeQueue['id'], episodeQueue['targets'])
         if not self._isViewSet:

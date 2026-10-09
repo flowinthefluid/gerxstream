@@ -12,6 +12,7 @@ from resources.lib.config import cConfig
 
 
 STORAGE_FILE = 'episode_queues.json'
+EPISODE_PLAYLIST_PROPERTY = 'GerXStream.EpisodePlaylist'
 MAX_QUEUES = 30
 MAX_AGE = 6 * 60 * 60
 
@@ -68,7 +69,7 @@ def _prune(data, now=None):
         if now - created > MAX_AGE or not isinstance(targets, list):
             continue
         targets = [target for target in targets if _validTarget(target)]
-        if len(targets) > 1:
+        if targets:
             valid[queueId] = {'created_at': created, 'targets': targets[:500]}
     newest = sorted(valid.items(), key=lambda item: item[1]['created_at'], reverse=True)
     return dict(newest[:MAX_QUEUES])
@@ -79,7 +80,7 @@ def store(queueId, targets):
     if not _validQueueId(queueId):
         return False
     cleaned = [target for target in targets if _validTarget(target)]
-    if len(cleaned) < 2:
+    if not cleaned:
         return False
     data = _prune(_load())
     data[queueId] = {'created_at': int(time.time()), 'targets': cleaned[:500]}

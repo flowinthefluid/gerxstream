@@ -140,4 +140,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    from resources.lib.playbackstate import PlaybackMonitor
+    playback = PlaybackMonitor()
+    try:
+        main()
+    except Exception as exc:
+        log('%s - startup task failed (%s)' % (__name__, type(exc).__name__), LOGERROR)
+    playback.run()

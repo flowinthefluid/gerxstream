@@ -110,6 +110,45 @@ def test_manual_selection_is_not_automatic(monkeypatch):
     hosterprefs.forgetSticky()
 
 
+def test_following_episode_asks_even_with_preferred_autostart(monkeypatch):
+    set_setting('autoNextEpisodeEnabled', 'true')
+    set_setting(hosterprefs.STICKY_SETTING, 'ask')
+    set_setting(hosterprefs.MODE_SETTING, 'auto')
+    hosterprefs.save({'*': ['VOE']})
+    monkeypatch.setattr(hoster.cHosterGui, '_isNativeEpisodePlaylistItem',
+                        classmethod(lambda cls, _params: True))
+    monkeypatch.setattr(hoster.cHosterGui, '_playlistState',
+                        classmethod(lambda cls: ('c' * 32, 0)))
+    params = _Params({'episodeQueue': 'c' * 32, 'episodeIndex': '1'})
+    assert hoster.cHosterGui()._automaticCandidates([DOOD, VOE_DE], 'serienstream', params) == []
+
+
+def test_auto_hoster_mode_delegates_to_selection_for_episode_ask(monkeypatch):
+    set_setting(hosterprefs.STICKY_SETTING, 'ask')
+    monkeypatch.setattr(hoster.cHosterGui, '_isNativeEpisodePlaylistItem',
+                        classmethod(lambda cls, _params: True))
+    calls = []
+    monkeypatch.setattr(hoster.cHosterGui, 'stream',
+                        lambda self, *args, **kwargs: calls.append((args, kwargs)))
+    hoster.cHosterGui().streamAuto('play', 'serienstream', 'getHosters')
+    assert calls == [(('play', 'serienstream', 'getHosters'), {'manual': True})]
+
+
+def test_missing_sticky_hoster_does_not_fall_back_to_preferred_auto(monkeypatch):
+    set_setting('autoNextEpisodeEnabled', 'true')
+    set_setting(hosterprefs.STICKY_SETTING, 'sticky')
+    set_setting(hosterprefs.MODE_SETTING, 'auto')
+    hosterprefs.save({'*': ['Streamtape']})
+    hosterprefs.rememberSticky('c' * 32, 'serienstream', VOE_DE)
+    monkeypatch.setattr(hoster.cHosterGui, '_isNativeEpisodePlaylistItem',
+                        classmethod(lambda cls, _params: True))
+    monkeypatch.setattr(hoster.cHosterGui, '_playlistState',
+                        classmethod(lambda cls: ('c' * 32, 0)))
+    params = _Params({'episodeQueue': 'c' * 32, 'episodeIndex': '1'})
+    assert hoster.cHosterGui()._automaticCandidates([DOOD, TAPE], 'serienstream', params) == []
+    hosterprefs.forgetSticky()
+
+
 def test_preferred_autostart_candidates_and_only_filter(monkeypatch):
     monkeypatch.setattr(hoster.cHosterGui, '_isNativeEpisodePlaylistItem', classmethod(lambda cls, _p: False))
     hosterprefs.save({'*': ['Streamtape', 'VOE']})

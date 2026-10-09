@@ -2,14 +2,13 @@
 # Python 3
 
 import xbmc
+import xbmcgui
 import time
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
 from xbmc import LOGINFO as LOGNOTICE, LOGERROR
 from resources.lib.tools import addon_log as log
-
-
-EPISODE_PLAYLIST_PROPERTY = 'GerXStream.EpisodePlaylist'
+from resources.lib.episodequeue import EPISODE_PLAYLIST_PROPERTY
 
 
 class GerxstreamPlayer(xbmc.Player):
@@ -22,6 +21,7 @@ class GerxstreamPlayer(xbmc.Player):
         self.playedTime = 0
         self.totalTime = 999999
         self.avStarted = False
+        self._episodeMarker = xbmcgui.Window(10000).getProperty(EPISODE_PLAYLIST_PROPERTY)
         log(cConfig().getLocalizedString(30166) + ' -> [player]: player instance created', LOGNOTICE)
 
     def onPlayBackStarted(self):
@@ -71,8 +71,10 @@ class GerxstreamPlayer(xbmc.Player):
             # queue.  Only the currently active instance may clear the marker.
             if cPlayer._activePlayer is not self:
                 return
-            import xbmcgui
-            xbmcgui.Window(10000).clearProperty(EPISODE_PLAYLIST_PROPERTY)
+            window = xbmcgui.Window(10000)
+            if window.getProperty(EPISODE_PLAYLIST_PROPERTY) != self._episodeMarker:
+                return
+            window.clearProperty(EPISODE_PLAYLIST_PROPERTY)
             # Stop setzt auch den gemerkten Hoster zurueck: die naechste
             # manuell gestartete Folge fragt wieder ganz normal.
             from resources.lib import hosterprefs
