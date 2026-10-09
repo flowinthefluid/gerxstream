@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.36" provider-name="gerxstream">
+<addon id="plugin.video.gerxstream" name="GerXStream" version="1.0.38" provider-name="gerxstream">
 	<requires>
 		<import addon="xbmc.python" version="3.0.1"/>
 		<import addon="script.module.requests"/>
@@ -26,7 +26,7 @@
 		<language>de en</language>
 		<platform>all</platform>
 		<license>GPL-3.0-only</license>
-		<news>1.0.36 - Epic-Watchlist mit Favorites, Geplant, Am Schauen, Abgeschlossen, Abgebrochen und Historie. Direkte Anbieterordner, optionale Zeitstempel und bereinigte Serientitel: Carrie S01E08 wird zu Carrie, ohne doppelte Watchlist-Eintraege bei neuen Folgen. Nach dem Update Kodi neu starten.</news>
+		<news>1.0.38 - HTTPS-WebDAV direkt im Import-/Export-Menue einrichten. Gesamt- und Bereichssicherungen optional inklusive Konten, teilbare Profile ohne Konten und separater Add-on-ZIP-Export. TMDB-Filmografie: korrigierte Personenabfrage, fehlende Personenfelder und Film-/Seriencredits. Kein zusaetzlicher Verzeichnis-Refresh nach Stop ab 90 Prozent. Nach dem Update Kodi neu starten.</news>
 		<website>https://gitlab.com/gerxstream/gerxstream</website>
 		<source>https://gitlab.com/gerxstream/gerxstream</source>
 		<assets>

@@ -773,6 +773,14 @@ def showBackupMenu():
     """Show all portable-backup actions alongside the other settings tools."""
     ART = os.path.join(cConfig().getAddonInfo('path'), 'resources', 'art')
     actions = (
+        (31887, 'configure', 'storage'),
+        (31885, 'export', 'custom'),
+        (31886, 'import', 'custom'),
+        (31861, 'export', 'share'),
+        (31882, 'import', 'share'),
+        (31863, 'export', 'portable'),
+        (31864, 'import', 'portable'),
+        (31865, 'export', 'addon'),
         (30937, 'export', 'all'),
         (30938, 'import', 'all'),
         (30939, 'export', 'settings'),
@@ -781,6 +789,10 @@ def showBackupMenu():
         (30942, 'import', 'accounts'),
         (30943, 'export', 'epic_favorites'),
         (30944, 'import', 'epic_favorites'),
+        (31866, 'export', 'history'),
+        (31867, 'import', 'history'),
+        (31878, 'export', 'watched'),
+        (31879, 'import', 'watched'),
     )
     oGui = cGui()
     for labelId, action, section in actions:
@@ -804,10 +816,13 @@ def runBackupAction(params):
         backup.exportBackup(section)
     elif action == 'import':
         backup.importBackup(section)
+    elif action == 'configure':
+        backup.configureStorage()
     else:
         _rejectPluginRoute('backup', 'runBackupAction', 'unknown backup action')
         return
     cGui().setEndOfDirectory()
+    xbmc.executebuiltin('Container.Update(plugin://plugin.video.gerxstream/?site=backup&function=showBackupMenu,replace)')
 
 
 def globalSearchGuiElement():

@@ -1,3 +1,27 @@
+[B]Version: 1.0.38[/B]
+
+09.10.2026
+
+- HTTPS-WebDAV, z.B. Nextcloud, direkt im Import-/Export-Menue ueber Sicherungsziel einrichten konfigurieren. Zielordner, HTTPS-Adresse, Benutzername und maskiertes App-Passwort; Abbruch behaelt vorhandene Einstellungen. Import-/Export-Aktionen kehren zum Sicherungsmenue zurueck.
+- Gesamtsicherung oder ausgewaehlte Bereiche inklusive optionaler Konten. Separates kontofreies Einstellungsprofil, Favorites/Watchlist, Historie, Gesehen-Markierungen und installierbare Add-on-ZIP. Manuelle Cloud-Snapshots; keine automatische Synchronisierung. Google Drive/OneDrive ueber externe synchronisierte Ordner, keine direkte OAuth-Anmeldung.
+- TMDB-Filmografie korrigiert: Personenabfrage nutzt eine gueltige Seite; null/fehlende Biografie- und Geburtstagsfelder verhindern den Dialogwechsel nicht mehr. Film- und Seriencredits werden angezeigt, vorherige Listen ersetzt und ungueltige Eintraege ausgelassen. Fehler werden angezeigt statt still verschluckt.
+- Playback-Dienst loest nach Stop oberhalb 90 Prozent keinen zusaetzlichen Container.Refresh aus. Carrie-Favorit, acht Episoden, Wiedergabe und identischer Ordner/Auswahlposition nach Stop wurden im vorausgehenden Android-Teststand verifiziert.
+- Kontensicherungen und lokale WebDAV-Zugangsdaten bleiben unverschluesselt; nur privaten Speicher und separate App-Passwoerter verwenden. Echte Cloud-Kontouebertragung noch nicht mit einem Nutzerkonto getestet.
+- 1.0.37 war ein lokaler Teststand und wurde nicht oeffentlich veroeffentlicht. Repository bleibt auf 1.0.8.
+
+[B]Version: 1.0.37 (lokaler Teststand)[/B]
+
+09.10.2026
+
+- Freie Mehrfachauswahl der Sicherungsbereiche fuer Export und Import; optional inklusive Konten in die private Cloud. Nicht ausgewaehlte Bereiche bleiben beim Import unveraendert.
+- Teilbares Einstellungsprofil: Auswahlwerte, Schalter, Zahlen, Hoster-Reihenfolge und Hauptmenue-Anordnung ohne Konten, Tokens, Cookies, Cloud-Zugangsdaten oder Geraetepfade.
+- Geraetestand ohne Konten uebertraegt dieses Profil plus Favorites-Ordner, Watchlist-Statuslisten, Historie und Gesehen-Markierungen. Gesamtsicherung mit Konten bleibt separat und erfordert eine Warnungsbestaetigung.
+- Manueller Export/Import ueber Kodi-Dateipfade und echte synchronisierte Cloud-Ordner (Google Drive, OneDrive, Nextcloud). Nextcloud alternativ direkt per HTTPS-WebDAV mit App-Passwort. Keine automatische Synchronisierung oder direkte Google-/Microsoft-Anmeldung.
+- Installierbare Add-on-ZIP getrennt vom Profil exportierbar. Keine Cache-/Profillog-Dateien oder userdata im Paket; Einstellungen separat importieren.
+- Begrenzt gelesene Dateien/Cloud-Antworten, keine Weiterleitungen mit Cloud-Zugangsdaten, eindeutige Snapshot-Dateinamen und abgewiesenes Ueberschreiben in Nextcloud.
+- Der Playback-Dienst startet nach Stop keinen zweiten Container.Refresh mehr. Die 90-Prozent-Gesehen-Markierung bleibt erhalten.
+- Oeffentliche Version bleibt vorerst 1.0.36. Kein interner FTP-Server hinzugefuegt.
+
 [B]Version: 1.0.36[/B]
 
 09.10.2026

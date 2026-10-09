@@ -145,7 +145,6 @@ class PlaybackMonitor(xbmc.Player):
         self.playedTime = 0
         self.totalTime = 0
         self.marked = False
-        self.refreshPending = False
 
     def _pendingContext(self):
         try:
@@ -163,19 +162,12 @@ class PlaybackMonitor(xbmc.Player):
                 and math.isfinite(self.totalTime) and math.isfinite(self.playedTime)
                 and self.playedTime / self.totalTime >= WATCHED_PERCENT / 100.0):
             self.marked = self.store.mark(self.context.get('watch_id'))
-            self.refreshPending = self.refreshPending or self.marked
 
     def tick(self):
         try:
             if not self.isPlayingVideo():
                 if self.context:
                     self._finish(not self._hasFollowingEpisode())
-                if (self.refreshPending
-                        and xbmc.getInfoLabel('Container.FolderPath').startswith(
-                            'plugin://plugin.video.gerxstream/')
-                        and not xbmc.getCondVisibility('Window.IsActive(FullScreenVideo)')):
-                    xbmc.executebuiltin('Container.Refresh')
-                    self.refreshPending = False
                 return
             stream = self.getPlayingFile().partition('|')[0]
             pending = self._pendingContext()

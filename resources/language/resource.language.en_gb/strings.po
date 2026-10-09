@@ -184,8 +184,8 @@ msgstr ""
 # Platzhalter
 
 msgctxt "#30050"
-msgid "Use Site-Plugin"
-msgstr ""
+msgid "This backup contains accounts and passwords in plaintext. Use only private storage and never share it. Continue?"
+msgstr "This backup contains accounts and passwords in plaintext. Use only private storage and never share it. Continue?"
 
 msgctxt "#30051"
 msgid "Select Domain"
@@ -456,8 +456,8 @@ msgid "Stream no longer available or broken link"
 msgstr ""
 
 msgctxt "#30136"
-msgid "Playlist"
-msgstr ""
+msgid "Back up settings, Watchlist, history, watched flags and the add-on."
+msgstr "Back up settings, Watchlist, history, watched flags and the add-on."
 
 msgctxt "#30137"
 msgid "Stream has been added to the playlist"
@@ -542,6 +542,110 @@ msgstr ""
 msgctxt "#30157"
 msgid " an error has occurred."
 msgstr ""
+
+msgctxt "#31860"
+msgid "Shareable settings profile"
+msgstr "Shareable settings profile"
+
+msgctxt "#31861"
+msgid "Export settings profile without accounts"
+msgstr "Export settings profile without accounts"
+
+msgctxt "#31862"
+msgid "Device snapshot without accounts"
+msgstr "Device snapshot without accounts"
+
+msgctxt "#31884"
+msgid "Backup sections"
+msgstr "Backup sections"
+
+msgctxt "#31885"
+msgid "Export selected sections (accounts optional)"
+msgstr "Export selected sections (accounts optional)"
+
+msgctxt "#31886"
+msgid "Import selected sections"
+msgstr "Import selected sections"
+
+msgctxt "#31863"
+msgid "Export device snapshot without accounts"
+msgstr "Export device snapshot without accounts"
+
+msgctxt "#31864"
+msgid "Import device snapshot without accounts"
+msgstr "Import device snapshot without accounts"
+
+msgctxt "#31865"
+msgid "Export installable add-on ZIP"
+msgstr "Export installable add-on ZIP"
+
+msgctxt "#31866"
+msgid "Export history"
+msgstr "Export history"
+
+msgctxt "#31867"
+msgid "Import history"
+msgstr "Import history"
+
+msgctxt "#31868"
+msgid "Watched flags"
+msgstr "Watched flags"
+
+msgctxt "#31869"
+msgid "Backup location"
+msgstr "Backup location"
+
+msgctxt "#31870"
+msgid "Folder / synchronized cloud folder"
+msgstr "Folder / synchronized cloud folder"
+
+msgctxt "#31871"
+msgid "HTTPS-WebDAV (e.g. Nextcloud)"
+msgstr "HTTPS-WebDAV (e.g. Nextcloud)"
+
+msgctxt "#31872"
+msgid "Always ask"
+msgstr "Always ask"
+
+msgctxt "#31873"
+msgid "Backup folder"
+msgstr "Backup folder"
+
+msgctxt "#31874"
+msgid "HTTPS WebDAV folder URL"
+msgstr "HTTPS WebDAV folder URL"
+
+msgctxt "#31875"
+msgid "WebDAV username"
+msgstr "WebDAV username"
+
+msgctxt "#31876"
+msgid "WebDAV password / app password"
+msgstr "WebDAV password / app password"
+
+msgctxt "#31877"
+msgid "Use the WebDAV URL of an existing folder and an app password from Nextcloud security settings. HTTPS is required."
+msgstr "Use the WebDAV URL of an existing folder and an app password from Nextcloud security settings. HTTPS is required."
+
+msgctxt "#31878"
+msgid "Export watched flags"
+msgstr "Export watched flags"
+
+msgctxt "#31879"
+msgid "Import watched flags"
+msgstr "Import watched flags"
+
+msgctxt "#31880"
+msgid "Cloud transfer failed. Check HTTPS URL, app password and permissions."
+msgstr "Cloud transfer failed. Check HTTPS URL, app password and permissions."
+
+msgctxt "#31881"
+msgid "No backup files found."
+msgstr "No backup files found."
+
+msgctxt "#31882"
+msgid "Import shareable settings profile"
+msgstr "Import shareable settings profile"
 
 msgctxt "#30158"
 msgid "The installation is now complete![CR]"
@@ -2318,6 +2422,18 @@ msgstr ""
 msgctxt "#30957"
 msgid "Backup file already exists. Overwrite?"
 msgstr ""
+
+msgctxt "#31887"
+msgid "Configure backup location"
+msgstr "Configure backup location"
+
+msgctxt "#31889"
+msgid "WebDAV credentials are stored locally without encryption. Use a separate app password."
+msgstr "WebDAV credentials are stored locally without encryption. Use a separate app password."
+
+msgctxt "#31890"
+msgid "Filmography could not be loaded. Please try again later."
+msgstr "Filmography could not be loaded. Please try again later."
 
 # --- Livestreams (30960-30988, 31100-31215) ---
 msgctxt "#30960"

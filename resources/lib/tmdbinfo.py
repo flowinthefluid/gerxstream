@@ -115,17 +115,17 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
         def credit(self, meta='', control=''):
             listitems = []
-            if not meta:
-                meta = {}
-            for i in meta:
-                if 'title' in i and i['title']:
-                    sTitle = i['title']
-                elif 'name' in i and i['name']:
-                    sTitle = i['name']
-                sThumbnail = cTMDB().imageUrl(i.get('poster_path')) or self.none_poster
+            for entry in meta if isinstance(meta, list) else []:
+                if not isinstance(entry, dict):
+                    continue
+                sTitle = entry.get('title') or entry.get('name')
+                if not isinstance(sTitle, str) or not sTitle:
+                    continue
+                sThumbnail = cTMDB().imageUrl(entry.get('poster_path')) or self.none_poster
                 listitem_ = xbmcgui.ListItem(label=sTitle)
                 listitem_.setArt({'icon': sThumbnail})
                 listitems.append(listitem_)
+            self.getControl(control).reset()
             self.getControl(control).addItems(listitems)
 
         def onClick(self, controlId):
@@ -174,27 +174,36 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 sid = item.getProperty('id')
                 sUrl = 'person/' + str(sid)
                 try:
-                    meta = cTMDB().getUrl(sUrl, '', "append_to_response=movie_credits,tv_credits")
-                    meta_credits = meta['movie_credits']['cast']
+                    meta = cTMDB().getUrl(sUrl, term='append_to_response=movie_credits,tv_credits')
+                    if not isinstance(meta, dict) or not meta.get('name'):
+                        raise ValueError('No TMDB person details')
+                    meta_credits = []
+                    for kind in ('movie_credits', 'tv_credits'):
+                        credits = meta.get(kind)
+                        if isinstance(credits, dict) and isinstance(credits.get('cast'), list):
+                            meta_credits.extend(credits['cast'])
                     self.credit(meta_credits, 5215)
                     sTitle = meta['name']
-                    if not meta['deathday']:
+                    if not meta.get('deathday'):
                         today = date.today()
                         try:
-                            birthday = datetime(*(time.strptime(meta['birthday'], '%Y-%m-%d')[0:6]))
+                            birthday = datetime(*(time.strptime(meta.get('birthday') or '', '%Y-%m-%d')[0:6]))
                             age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
                             age = '%s Jahre' % age
                         except Exception:
                             age = ''
                     else:
                         age = meta['deathday']
-                    self.setProperty('Person_name', sTitle)
-                    self.setProperty('Person_birthday', meta['birthday'])
-                    self.setProperty('Person_place_of_birth', meta['place_of_birth'])
+                    self.setProperty('Person_name', str(sTitle))
+                    self.setProperty('Person_birthday', str(meta.get('birthday') or ''))
+                    self.setProperty('Person_place_of_birth', str(meta.get('place_of_birth') or ''))
                     self.setProperty('Person_deathday', str(age))
-                    self.setProperty('Person_biography', meta['biography'])
+                    self.setProperty('Person_biography', str(meta.get('biography') or ''))
                     self.setFocusId(9000)
-                except Exception:
+                except Exception as error:
+                    xbmc.log('GerXStream TMDB filmography failed: %s' % type(error).__name__, xbmc.LOGWARNING)
+                    xbmcgui.Dialog().notification('TMDB', cConfig().getLocalizedString(31890),
+                                                   xbmcgui.NOTIFICATION_INFO, 3000)
                     return
                 self.setProperty('gerxstream_menu', 'Person')
             elif controlId == 9:

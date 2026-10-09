@@ -100,6 +100,31 @@ def test_stop_keeps_watched_flag_but_clears_own_episode_queue(monitored_playback
     assert window.getProperty(player.EPISODE_PLAYLIST_PROPERTY) == ''
 
 
+@pytest.mark.parametrize('elapsed', [899, 900, 999])
+def test_stop_does_not_restart_directory_loading(monkeypatch, monitored_playback, elapsed):
+    monitor, store, state, window = monitored_playback
+    key = playbackstate.itemKey('source', 'Episode')
+    window.setProperty(playbackstate.PLAYBACK_PROPERTY,
+                       _playback_context(key, state['stream']))
+    commands = []
+    monkeypatch.setattr(playbackstate.xbmc, 'executebuiltin',
+                        lambda *args: commands.append(args))
+    monkeypatch.setattr(playbackstate.xbmc, 'getInfoLabel',
+                        lambda name: 'plugin://plugin.video.gerxstream/?site=source&function=showEpisodes'
+                        if name == 'Container.FolderPath' else '')
+    monkeypatch.setattr(playbackstate.xbmc, 'getCondVisibility', lambda _condition: False)
+    state['time'] = elapsed
+    monitor.tick()
+    assert commands == []
+    assert store.contains(key) is (elapsed >= 900)
+    state['playing'] = False
+    monitor.onPlayBackStopped()
+    monitor.tick()
+    monitor.tick()
+    assert commands == []
+    assert store.contains(key) is (elapsed >= 900)
+
+
 def test_delayed_stop_preserves_pending_new_queue(monitored_playback):
     monitor, store, state, window = monitored_playback
     first = playbackstate.itemKey('source', 'First')

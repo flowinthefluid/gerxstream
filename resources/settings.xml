@@ -6518,6 +6518,51 @@
 				</setting>
 			</group>
 		</category>
+		<category id="backup" label="30935" help="30936">
+			<group id="backuplocation" label="31869">
+				<setting id="backupManager" type="action" label="30935" help="30936">
+					<level>0</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=backup&amp;function=showBackupMenu)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="backupStorage" type="string" label="31869" help="">
+					<level>0</level>
+					<default>ask</default>
+					<constraints><options>
+						<option label="31872">ask</option>
+						<option label="31870">folder</option>
+						<option label="31871">nextcloud</option>
+					</options></constraints>
+					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="backupFolder" type="path" label="31873" help="">
+					<level>0</level>
+					<default/>
+					<constraints><allowempty>true</allowempty><writable>true</writable></constraints>
+					<control type="button" format="path"><heading>31873</heading></control>
+				</setting>
+			</group>
+			<group id="backupcloud" label="31871">
+				<setting id="backupCloudUrl" type="string" label="31874" help="31877">
+					<level>0</level>
+					<default/>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>31874</heading></control>
+				</setting>
+				<setting id="backupCloudUser" type="string" label="31875" help="">
+					<level>0</level>
+					<default/>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>31875</heading></control>
+				</setting>
+				<setting id="backupCloudPassword" type="string" label="31876" help="31877">
+					<level>0</level>
+					<default/>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>31876</heading><hidden>true</hidden></control>
+				</setting>
+			</group>
+		</category>
 		<category id="download" label="30023" help="">
 			<group id="downloads" label="30023">
 				<setting id="download-folder" type="path" label="30081" help="">

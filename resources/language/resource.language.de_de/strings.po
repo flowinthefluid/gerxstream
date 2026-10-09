@@ -2231,8 +2231,8 @@ msgid "Backup and restore"
 msgstr "Sichern und Wiederherstellen"
 
 msgctxt "#30936"
-msgid "Export and import GerXStream settings, accounts and Epic-Favorites."
-msgstr "GerXStream-Einstellungen, Konten und Epic-Favorites exportieren und importieren."
+msgid "Back up settings, Watchlist, history, watched flags and the add-on."
+msgstr "Einstellungen, Watchlist, Historie, Gesehen-Status und Add-on sichern."
 
 msgctxt "#30937"
 msgid "Export complete backup"
@@ -2287,8 +2287,8 @@ msgid "Invalid or unreadable backup file."
 msgstr "Ungueltige oder nicht lesbare Sicherungsdatei."
 
 msgctxt "#30950"
-msgid "This backup contains accounts and passwords. Store it safely."
-msgstr "Diese Sicherung enthaelt Konten und Passwoerter. Bitte sicher aufbewahren."
+msgid "This backup contains accounts and passwords in plaintext. Use only private storage and never share it. Continue?"
+msgstr "Diese Sicherung enthaelt Konten und Passwoerter im Klartext. Nur privat speichern und nicht weitergeben. Fortfahren?"
 
 msgctxt "#30951"
 msgid "Import replaces current %s. Continue?"
@@ -2317,6 +2317,122 @@ msgstr "Gesamtsicherung"
 msgctxt "#30957"
 msgid "Backup file already exists. Overwrite?"
 msgstr "Die Sicherungsdatei existiert bereits. Ueberschreiben?"
+
+msgctxt "#31860"
+msgid "Shareable settings profile"
+msgstr "Teilbares Einstellungsprofil"
+
+msgctxt "#31861"
+msgid "Export settings profile without accounts"
+msgstr "Einstellungsprofil ohne Konten exportieren"
+
+msgctxt "#31862"
+msgid "Device snapshot without accounts"
+msgstr "Geraetestand ohne Konten"
+
+msgctxt "#31863"
+msgid "Export device snapshot without accounts"
+msgstr "Geraetestand ohne Konten exportieren"
+
+msgctxt "#31864"
+msgid "Import device snapshot without accounts"
+msgstr "Geraetestand ohne Konten importieren"
+
+msgctxt "#31865"
+msgid "Export installable add-on ZIP"
+msgstr "Installierbare Add-on-ZIP exportieren"
+
+msgctxt "#31866"
+msgid "Export history"
+msgstr "Historie exportieren"
+
+msgctxt "#31867"
+msgid "Import history"
+msgstr "Historie importieren"
+
+msgctxt "#31868"
+msgid "Watched flags"
+msgstr "Gesehen-Markierungen"
+
+msgctxt "#31869"
+msgid "Backup location"
+msgstr "Sicherungsziel"
+
+msgctxt "#31870"
+msgid "Folder / synchronized cloud folder"
+msgstr "Ordner / synchronisierter Cloud-Ordner"
+
+msgctxt "#31871"
+msgid "HTTPS-WebDAV (e.g. Nextcloud)"
+msgstr "HTTPS-WebDAV (z.B. Nextcloud)"
+
+msgctxt "#31872"
+msgid "Always ask"
+msgstr "Immer nachfragen"
+
+msgctxt "#31873"
+msgid "Backup folder"
+msgstr "Sicherungsordner"
+
+msgctxt "#31874"
+msgid "HTTPS WebDAV folder URL"
+msgstr "HTTPS-WebDAV-Ordneradresse"
+
+msgctxt "#31875"
+msgid "WebDAV username"
+msgstr "WebDAV-Benutzername"
+
+msgctxt "#31876"
+msgid "WebDAV password / app password"
+msgstr "WebDAV-Passwort / App-Passwort"
+
+msgctxt "#31877"
+msgid "Use the WebDAV URL of an existing folder and an app password from Nextcloud security settings. HTTPS is required."
+msgstr "WebDAV-Adresse eines bestehenden Ordners und App-Passwort aus den Nextcloud-Sicherheitseinstellungen verwenden. HTTPS ist erforderlich."
+
+msgctxt "#31878"
+msgid "Export watched flags"
+msgstr "Gesehen-Markierungen exportieren"
+
+msgctxt "#31879"
+msgid "Import watched flags"
+msgstr "Gesehen-Markierungen importieren"
+
+msgctxt "#31880"
+msgid "Cloud transfer failed. Check HTTPS URL, app password and permissions."
+msgstr "Cloud-Uebertragung fehlgeschlagen. HTTPS-Adresse, App-Passwort und Berechtigungen pruefen."
+
+msgctxt "#31881"
+msgid "No backup files found."
+msgstr "Keine Sicherungsdateien gefunden."
+
+msgctxt "#31882"
+msgid "Import shareable settings profile"
+msgstr "Teilbares Einstellungsprofil importieren"
+
+msgctxt "#31884"
+msgid "Backup sections"
+msgstr "Sicherungsbereiche"
+
+msgctxt "#31885"
+msgid "Export selected sections (accounts optional)"
+msgstr "Ausgewaehlte Bereiche exportieren (Konten optional)"
+
+msgctxt "#31886"
+msgid "Import selected sections"
+msgstr "Ausgewaehlte Bereiche importieren"
+
+msgctxt "#31887"
+msgid "Configure backup location"
+msgstr "Sicherungsziel einrichten"
+
+msgctxt "#31889"
+msgid "WebDAV credentials are stored locally without encryption. Use a separate app password."
+msgstr "WebDAV-Zugangsdaten werden lokal unverschluesselt gespeichert. Bitte ein eigenes App-Passwort verwenden."
+
+msgctxt "#31890"
+msgid "Filmography could not be loaded. Please try again later."
+msgstr "Die Filmografie konnte nicht geladen werden. Bitte spaeter erneut versuchen."
 
 # --- Livestreams (30960-30988, 31100-31215) ---
 msgctxt "#30960"
