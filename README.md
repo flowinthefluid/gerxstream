@@ -97,8 +97,7 @@ ein erforderliches Browser-Captcha kann die Anmeldung verhindern.
 
 Supporter-Videos ohne freien YouTube-Stream sind noch nicht abspielbar.
 Red Bull TV ist noch nicht eingebunden; ein funktionierender Katalog samt
-Wiedergabe muss vor der Aufnahme bestaetigt werden. DRM-, Konto- und
-Regionalsperren werden nicht umgangen.
+Wiedergabe muss vor der Aufnahme bestaetigt werden.
 
 ## Wie es funktioniert
 
@@ -151,9 +150,3 @@ Der Service schreibt `playlist.m3u` und `guide.xml` nach
 `special://profile/addon_data/plugin.video.gerxstream/livestreams/`; den Pfad
 zeigt der Button „IPTV-Simple-Einrichtung anzeigen". Den IPTV Simple Client auf
 diese lokalen Dateien konfigurieren.
-
-### Rechterahmen
-
-Es werden nur Inhalte mit belegter Rechtelage gezeigt (offizielle Quelle oder
-`rights_evidence_url`); DRM/Login/Geo werden ehrlich markiert und nicht umgangen.
-Kein Auffinden ungesicherter fremder Kameras, keine Grauzonen-Aggregation.
