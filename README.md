@@ -26,10 +26,10 @@ Filme, Serien und Streams direkt in die gewohnte Kodi-Oberfläche.
 
 Installationsschritte, Voraussetzungen und Hinweise zur Datenübernahme stehen
 ausführlich in [INSTALL.md](INSTALL.md). Die Kodi-Quelle wird nach erfolgreicher
-GitLab-Pipeline ueber GitLab Pages bereitgestellt:
-`https://gerxstream-db50a2.gitlab.io/`.
+GitHub-Actions-Auslieferung ueber GitHub Pages bereitgestellt:
+`https://flowinthefluid.github.io/gerxstream/repo/`.
 Die Repository-ZIP heisst `repository.gerxstream-1.0.7.zip`; GerXStream selbst
-hat die Version **1.0.31**. Updates erfolgen ueber Kodis Add-on-Verwaltung.
+hat die Version **1.0.32**. Updates erfolgen ueber Kodis Add-on-Verwaltung.
 Wer noch eine ältere xStream-Installation nutzt, kann direkt zu
 GerXStream wechseln: Einstellungen und Favoriten werden beim ersten Start automatisch
 übernommen, sofern xStream noch installiert ist.
@@ -73,6 +73,32 @@ standardmaessig unabhaengig von den Suchquellenschaltern sichtbar; in den
 Kategorie-Einstellungen laesst sich das abschalten. Globale Suche und
 Quellenmenues behalten ihre bisherigen Schalter. Bewertungsfilter gelten nur
 fuer den TMDB-Katalog, nicht fuer die Mediatheken oder Personenlisten.
+
+### Strukturierte Mediatheken
+
+ARD oeffnet redaktionelle Bereiche und Serien-/Sendungsordner; ARTE zeigt auch
+Kollektionen und deren Themenbereiche. Bei MediathekViewWeb fuehren Sender zu
+neuen Videos, Themenfiltern und einer auf den Sender begrenzten Suche. Die
+Themenfilter sind Suchbegriffe, keine vom Sender vergebenen Genres.
+
+Netzkino und **Rocket Beans TV** stehen ebenfalls unter Mediatheken.
+Rocket Beans bietet neue Folgen sowie Sendungen A-Z mit Staffeln und
+Seitennavigation. Freie Videos starten ueber das offizielle Kodi-Add-on
+**YouTube**; fehlt es, wird dessen Installation angeboten.
+
+Unter **Einstellungen > Konten > Rocket Beans TV** koennen E-Mail-Adresse
+und Passwort eingegeben und die Anmeldung gestartet werden. Ein optionaler
+Zwei-Faktor-Code wird direkt in Kodi abgefragt. Nach erfolgreicher Anmeldung
+erscheint **Meine Abos**. Das Passwort wird dann entfernt, der Sitzungstoken
+bleibt lokal bis zur Abmeldung oder bis zum Ablauf gespeichert. Kodi verschluesselt
+diese Einstellungen nicht. Bei abgelaufener Sitzung ist erneutes Anmelden noetig.
+Die echte Konto-Anmeldung ist noch nicht mit einem Testkonto bestaetigt;
+ein erforderliches Browser-Captcha kann die Anmeldung verhindern.
+
+Supporter-Videos ohne freien YouTube-Stream sind noch nicht abspielbar.
+Red Bull TV ist noch nicht eingebunden; ein funktionierender Katalog samt
+Wiedergabe muss vor der Aufnahme bestaetigt werden. DRM-, Konto- und
+Regionalsperren werden nicht umgangen.
 
 ## Wie es funktioniert
 

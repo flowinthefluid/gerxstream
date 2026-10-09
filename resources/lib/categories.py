@@ -329,7 +329,7 @@ def _root(params):
 
 # Eigene Mediathek-Quellen; die Sender-Mediatheken darunter laufen ueber die
 # Senderfilter von MediathekViewWeb (ARD, ZDF, 3sat, ORF, SRF, Dritte ...).
-MEDIATHEK_SITES = ('ardmediathek', 'arte', 'mediathekviewweb')
+MEDIATHEK_SITES = ('ardmediathek', 'arte', 'mediathekviewweb', 'netzkino', 'rocketbeans')
 
 
 def _mediathekChannels():
@@ -349,7 +349,9 @@ def _mediatheken(params):
     """Alle Mediatheken des deutschen und oesterreichischen Fernsehens."""
     if cConfig().getSettingBool('categoryMediathekenAll', True):
         enabled = {site_id: {'name': name} for site_id, name in (
-            ('ardmediathek', 'ARD Mediathek'), ('arte', 'arte'), ('mediathekviewweb', 'MediathekViewWeb'))}
+            ('ardmediathek', 'ARD Mediathek'), ('arte', 'arte'),
+            ('mediathekviewweb', 'MediathekViewWeb'), ('netzkino', 'Netzkino'),
+            ('rocketbeans', 'Rocket Beans TV'))}
     else:
         from resources.lib.handler.pluginHandler import cPluginHandler
         enabled = dict((plugin.get('id'), plugin) for plugin in cPluginHandler().getAvailablePlugins())
@@ -370,7 +372,7 @@ def _mediatheken(params):
             channelParams.setParam('mvwValue', channel)
             channelParams.setParam('page', '0')
             element = cGuiElement(_label(31501, '%s-Mediathek').replace('%s', label),
-                                  'mediathekviewweb', 'showEntries')
+                                  'mediathekviewweb', 'showChannel')
             cGui().addFolder(element, channelParams)
             listed += 1
     if not listed:

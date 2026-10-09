@@ -3007,6 +3007,62 @@ msgctxt "#31504"
 msgid "About 190 free, ad-supported channels from Pluto TV incl. sports (official interface, no account). The channel list is refreshed when Kodi starts."
 msgstr "Rund 190 kostenlose, werbefinanzierte Sender von Pluto TV inkl. Sport (offizielle Schnittstelle, ohne Konto). Die Senderliste wird beim Kodi-Start aufgefrischt."
 
+msgctxt "#31505"
+msgid "Topic filters"
+msgstr "Themenfilter"
+
+msgctxt "#31506"
+msgid "Rocket Beans TV"
+msgstr "Rocket Beans TV"
+
+msgctxt "#31507"
+msgid "Shows A-Z"
+msgstr "Sendungen A-Z"
+
+msgctxt "#31508"
+msgid "All episodes"
+msgstr "Alle Folgen"
+
+msgctxt "#31509"
+msgid "Sign in"
+msgstr "Anmelden"
+
+msgctxt "#31510"
+msgid "Sign out"
+msgstr "Abmelden"
+
+msgctxt "#31512"
+msgid "Please sign in under Accounts."
+msgstr "Bitte unter Konten mit der E-Mail-Adresse anmelden."
+
+msgctxt "#31513"
+msgid "No free YouTube stream available. The supporter player is not supported yet."
+msgstr "Kein freier YouTube-Stream vorhanden. Der Supporter-Player wird noch nicht unterstuetzt."
+
+msgctxt "#31514"
+msgid "My subscriptions"
+msgstr "Meine Abos"
+
+msgctxt "#31515"
+msgid "Two-factor code (optional)"
+msgstr "Zwei-Faktor-Code (optional)"
+
+msgctxt "#31516"
+msgid "Sign-in failed. Check credentials and two-factor code; a browser captcha may be required."
+msgstr "Anmeldung fehlgeschlagen. Zugangsdaten und Zwei-Faktor-Code pruefen; eventuell ist eine Browser-Captcha-Anmeldung erforderlich."
+
+msgctxt "#31517"
+msgid "Signed in."
+msgstr "Angemeldet."
+
+msgctxt "#31518"
+msgid "Signed out."
+msgstr "Abgemeldet."
+
+msgctxt "#31519"
+msgid "Use your email address. Kodi stores settings locally, not encrypted. The password is cleared after successful sign-in; the session token stays until sign-out or expiry. Supporter playback is not supported yet."
+msgstr "E-Mail-Adresse verwenden. Kodi speichert Einstellungen lokal, nicht verschluesselt. Nach erfolgreicher Anmeldung wird das Passwort entfernt; die Sitzung bleibt bis zur Abmeldung oder bis zum Ablauf gespeichert. Supporter-Wiedergabe wird noch nicht unterstuetzt."
+
 msgctxt "#31600"
 msgid "Actors"
 msgstr "Schauspieler"

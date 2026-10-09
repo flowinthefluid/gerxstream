@@ -43,6 +43,7 @@ URL_MAIN = 'https://' + DOMAIN
 URL_PAGE = URL_MAIN + '/api/emac/v4/' + LANG + '/web/pages/%s'
 URL_SEARCH = URL_MAIN + '/api/emac/v4/' + LANG + '/web/pages/SEARCH/?page=1&query=%s'
 URL_PLAYER = URL_MAIN + '/api/player/v2/config/' + LANG + '/%s'
+URL_COLLECTION = URL_MAIN + '/api/emac/v4/' + LANG + '/web/collections/%s'
 
 # Rubriken der Mediathek, Kennung -> Menuename.
 SECTIONS = (
@@ -118,8 +119,9 @@ def showGenre():
         aData = ((zone.get('content') or {}).get('data')) or []
         if not sTitle or not aData:
             continue
-        # Themen-Kacheln sind Verweise auf andere Seiten, keine Beitraege.
-        if len([i for i in aData if (i.get('kind') or {}).get('code') != 'TOPIC']) < 2:
+        if not any(item.get('title') and
+                   (item.get('programId') or _programId(item.get('url')))
+                   for item in aData):
             continue
         params.setParam('sUrl', sUrl)
         params.setParam('sZone', zone.get('id') or sTitle)
@@ -138,8 +140,6 @@ def _collectItems(jData, sZone=''):
         if sZone and (zone.get('id') or zone.get('title')) != sZone:
             continue
         for item in ((zone.get('content') or {}).get('data')) or []:
-            if (item.get('kind') or {}).get('code') == 'TOPIC':
-                continue  # Verweis auf eine andere Seite, kein Beitrag
             items.append(item)
     return items
 
@@ -165,6 +165,20 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         sName = item.get('title')
         sProgramId = item.get('programId') or _programId(item.get('url'))
         if not sName or not sProgramId:
+            continue
+        isCollection = bool((item.get('kind') or {}).get('isCollection')) or sProgramId.startswith('RC-')
+        if isCollection:
+            if sGui:
+                continue
+            oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showGenre')
+            thumbnail = _image(item, THUMB_SIZE)
+            if thumbnail:
+                oGuiElement.setThumbnail(thumbnail)
+            if item.get('shortDescription'):
+                oGuiElement.setDescription(item['shortDescription'])
+            params.setParam('sUrl', URL_COLLECTION % cParser.quotePlus(sProgramId))
+            params.setParam('sZone', '')
+            oGui.addFolder(oGuiElement, params, True, total)
             continue
         sSubtitle = item.get('subtitle')
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters')

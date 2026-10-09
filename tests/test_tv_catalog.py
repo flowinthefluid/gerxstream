@@ -125,10 +125,142 @@ def test_mediatheken_folder_lists_sources_and_channels(monkeypatch, real_strings
     assert any(title.startswith('ZDF') for title in titles)
     assert any(title.startswith('ORF') for title in titles)
     assert any(title.startswith('phoenix') for title in titles)
-    assert all(entry[1] in ('ardmediathek', 'arte', 'mediathekviewweb') for entry in added)
+    assert 'Netzkino' in titles
+    assert all(entry[1] in categories.MEDIATHEK_SITES for entry in added)
+    assert all(entry[2] == 'showChannel' for entry in added
+               if entry[0].startswith('ZDF'))
 
     added.clear()
     from conftest import set_setting
     set_setting('categoryMediathekenAll', 'false')
     categories._mediatheken(None)
     assert 'arte' not in [entry[0] for entry in added]
+
+
+def test_mediathek_channel_has_navigation(monkeypatch, real_strings):
+    import sys
+    from sites import mediathekviewweb
+    added = []
+
+    class Gui:
+        def addFolder(self, element, params):
+            added.append((element.getFunction(), dict(params.getAllParameters())))
+
+        def setEndOfDirectory(self):
+            pass
+
+    monkeypatch.setattr(sys, 'argv', ['plugin', '1', '?mvwValue=ZDF'])
+    monkeypatch.setattr(mediathekviewweb, 'cGui', Gui)
+    mediathekviewweb.showChannel()
+    assert [function for function, params in added] == ['showEntries', 'showGenre', 'showSearch']
+    assert all(params['mvwChannel'] == 'ZDF' for function, params in added)
+
+
+def test_mediathek_topic_query_keeps_channel(monkeypatch):
+    import json
+    from sites import mediathekviewweb
+    payloads = []
+
+    class Request:
+        def __init__(self, url, **kwargs):
+            payloads.append(json.loads(kwargs['data']))
+
+        def addHeaderEntry(self, *args):
+            pass
+
+        def request(self):
+            return '{"result":{"results":[],"queryInfo":{"totalResults":0}}}'
+
+    monkeypatch.setattr(mediathekviewweb, 'cRequestHandler', Request)
+    mediathekviewweb._query('topic', 'natur', 2, channel='ZDF')
+    assert payloads[0]['queries'] == [
+        {'fields': ['channel'], 'query': 'ZDF'},
+        {'fields': ['topic', 'title'], 'query': 'natur'}]
+    assert payloads[0]['offset'] == 100
+
+
+def test_mediathek_global_search_ignores_channel(monkeypatch):
+    import sys
+    from sites import mediathekviewweb
+    channels = []
+
+    def query(mode, value, page, gui, channel=''):
+        channels.append(channel)
+        return [], 0
+
+    monkeypatch.setattr(sys, 'argv', ['plugin', '1', '?mvwChannel=ZDF'])
+    monkeypatch.setattr(mediathekviewweb, '_query', query)
+    mediathekviewweb.showEntries(sGui=object(), sSearchText='Natur')
+    assert channels == ['']
+
+
+def test_arte_retains_collection_tiles():
+    from sites import arte
+    collection = {'title': 'Filmklassiker', 'programId': 'RC-028280',
+                  'kind': {'code': 'TOPIC', 'isCollection': True}}
+    payload = {'zones': [{'id': 'themes', 'content': {'data': [collection]}}]}
+    assert arte._collectItems(payload, 'themes') == [collection]
+
+
+def test_arte_collection_is_folder_not_player(monkeypatch):
+    import sys
+    from sites import arte
+    added = []
+    collection = {'title': 'Filmklassiker', 'programId': 'RC-028280',
+                  'kind': {'code': 'TOPIC', 'isCollection': True}}
+
+    class Gui:
+        def addFolder(self, element, params, folder, total):
+            added.append((element.getFunction(), dict(params.getAllParameters()), folder))
+
+        def setView(self, *args):
+            pass
+
+        def setEndOfDirectory(self):
+            pass
+
+    monkeypatch.setattr(sys, 'argv', ['plugin', '1', '?sUrl=test&sZone=themes'])
+    monkeypatch.setattr(arte, 'cGui', Gui)
+    monkeypatch.setattr(arte, '_getJson', lambda *args: {
+        'zones': [{'id': 'themes', 'content': {'data': [collection]}}]})
+    arte.showEntries()
+    assert added[0][0] == 'showGenre' and added[0][2]
+    assert added[0][1]['sUrl'] == arte.URL_COLLECTION % 'RC-028280'
+    assert added[0][1]['sZone'] == ''
+
+
+def test_ard_embeds_teasers_without_losing_pagination():
+    from urllib.parse import parse_qs, urlsplit
+    from sites import ardmediathek
+    url = ardmediathek.URL_MAIN + '/page-gateway/widgets/ard/test?embedded=false&pageNumber=2'
+    query = parse_qs(urlsplit(ardmediathek._embeddedUrl(url)).query)
+    assert query == {'embedded': ['true'], 'pageNumber': ['2']}
+    assert ardmediathek._embeddedUrl(ardmediathek.URL_SEARCH % 'Natur') == ardmediathek.URL_SEARCH % 'Natur'
+
+
+def test_ard_series_target_opens_grouping(monkeypatch):
+    import sys
+    from sites import ardmediathek
+    added = []
+    target = ardmediathek.URL_MAIN + '/page-gateway/pages/one/grouping/series?embedded=true'
+
+    class Gui:
+        def addFolder(self, element, params, folder, total):
+            added.append((element.getFunction(), dict(params.getAllParameters()), folder))
+
+        def setView(self, *args):
+            pass
+
+        def setEndOfDirectory(self):
+            pass
+
+    monkeypatch.setattr(sys, 'argv', ['plugin', '1', '?sUrl=test'])
+    monkeypatch.setattr(ardmediathek, 'cGui', Gui)
+    monkeypatch.setattr(ardmediathek, '_getJson', lambda *args: {'teasers': [
+        {'shortTitle': 'Serie', 'links': {'target': {
+            'id': 'series', 'type': 'application/vnd.ard.page+json', 'href': target}}}]})
+    ardmediathek.showEntries()
+    assert added[0] == ('showGenre', {'sUrl': target}, True)
+    added.clear()
+    ardmediathek.showEntries(sGui=Gui())
+    assert added == []

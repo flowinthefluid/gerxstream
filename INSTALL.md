@@ -7,7 +7,7 @@ Dieses Addon nutzt die ID `plugin.video.gerxstream`.
 1. Kodi 22 (primaer) oder Kodi 21 (weicher Fallback)
 2. `script.module.resolveurl` muss installiert sein
 3. Das GerXStream Repository (`repository.gerxstream`) aus der ZIP-Datei der
-   GitLab-Pages-Quelle installieren (`https://gerxstream-db50a2.gitlab.io/`).
+   GitHub-Pages-Quelle installieren (`https://flowinthefluid.github.io/gerxstream/repo/`).
    Aktuelle Repository-ZIP: `repository.gerxstream-1.0.7.zip`.
    Anschliessend kann GerXStream über
    **Aus Repository installieren** installiert werden. ResolveURL 5.1.209 wird
@@ -25,9 +25,9 @@ Dieses Addon nutzt die ID `plugin.video.gerxstream`.
 
 - GerXStream und ResolveURL werden über Kodis Add-on-Verwaltung aktualisiert.
 - Direkte Selbst-Updates aus GitHub werden nicht als Veröffentlichungsweg verwendet.
-- GitLab CI testet jeden neuen Stand und baut auf `main` den Pages-Katalog samt
-   ZIPs aus den Quellen. Nach erfolgreicher Pipeline steht Version 1.0.31 unter
-   `zips/plugin.video.gerxstream/plugin.video.gerxstream-1.0.31.zip` bereit.
+- GitHub Actions testet jeden neuen Stand und baut auf `main` den Pages-Katalog samt
+   ZIPs aus den Quellen. Nach erfolgreicher Auslieferung steht Version 1.0.32 unter
+   `zips/plugin.video.gerxstream/plugin.video.gerxstream-1.0.32.zip` bereit.
 
 ## Personenlisten ab 1.0.29
 

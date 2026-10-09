@@ -35,14 +35,20 @@ def test_repository_is_in_catalog_and_datadir(tmp_path, pages_url):
     assert (output / 'catalog' / 'addons.xml.md5').read_text() == (output / 'addons.xml.md5').read_text()
 
     plugin = catalog.find("addon[@id='plugin.video.gerxstream']")
-    assert plugin.get('version') == '1.0.31'
-    plugin_zip = output / 'zips' / 'plugin.video.gerxstream' / 'plugin.video.gerxstream-1.0.31.zip'
+    assert plugin.get('version') == '1.0.32'
+    plugin_zip = output / 'zips' / 'plugin.video.gerxstream' / 'plugin.video.gerxstream-1.0.32.zip'
     with zipfile.ZipFile(plugin_zip) as archive:
         assert archive.testzip() is None
         plugin_manifest = ET.fromstring(archive.read('plugin.video.gerxstream/addon.xml'))
         settings = ET.fromstring(archive.read('plugin.video.gerxstream/resources/settings.xml'))
         random_movies = archive.read('plugin.video.gerxstream/resources/lib/randommovies.py').decode('utf-8')
+        rocketbeans = archive.read('plugin.video.gerxstream/sites/rocketbeans.py').decode('utf-8')
     assert plugin_manifest.get('version') == plugin.get('version')
+    assert 'def showSeasons(' in rocketbeans
+    assert 'def login(' in rocketbeans
+    account = settings.find(".//category[@id='account']/group[@id='rocketbeansacc']")
+    assert account is not None
+    assert 'site=rocketbeans&function=login' in account.find("setting[@id='rocketbeans.login']/data").text
     assert 'def sampleCatalog(' in random_movies
     assert settings.find(".//category[@id='randommovies']//setting[@id='randomMinImdb']") is not None
     assert settings.find(".//category[@id='categories']//setting[@id='categoryMinImdb']") is not None

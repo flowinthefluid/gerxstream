@@ -118,8 +118,27 @@ def showGenres():
     for sLabel, sChannel in CHANNELS:
         params.setParam('mvwMode', 'channel')
         params.setParam('mvwValue', sChannel)
+        params.setParam('mvwChannel', sChannel)
         params.setParam('page', '0')
-        cGui().addFolder(cGuiElement(sLabel, SITE_IDENTIFIER, 'showEntries'), params)
+        cGui().addFolder(cGuiElement(sLabel, SITE_IDENTIFIER, 'showChannel'), params)
+    cGui().setEndOfDirectory()
+
+
+def showChannel():
+    params = ParameterHandler()
+    channel = params.getValue('mvwChannel') or params.getValue('mvwValue')
+    if channel not in dict(CHANNELS).values():
+        cGui().showInfo()
+        return
+    params.setParam('mvwChannel', channel)
+    params.setParam('mvwMode', 'channel')
+    params.setParam('mvwValue', channel)
+    params.setParam('page', '0')
+    for title, function in (
+            (cConfig().getLocalizedString(30500), 'showEntries'),
+            (cConfig().getLocalizedString(31505) or 'Themenfilter', 'showGenre'),
+            (cConfig().getLocalizedString(30520), 'showSearch')):
+        cGui().addFolder(cGuiElement(title, SITE_IDENTIFIER, function), params)
     cGui().setEndOfDirectory()
 
 
@@ -134,7 +153,7 @@ def showGenre():
     cGui().setEndOfDirectory()
 
 
-def _query(mode, value, page, sGui=False):
+def _query(mode, value, page, sGui=False, channel=''):
     """Stellt die Abfrage an die API. Liefert (Treffer, Gesamtzahl)."""
     if mode == 'channel':
         queries = [{'fields': ['channel'], 'query': value}]
@@ -144,6 +163,9 @@ def _query(mode, value, page, sGui=False):
         queries = [{'fields': ['title', 'topic'], 'query': value}]
     else:  # latest
         queries = []
+
+    if channel and mode != 'channel':
+        queries.insert(0, {'fields': ['channel'], 'query': channel})
 
     payload = json.dumps({
         'queries': queries,
@@ -190,7 +212,9 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         sPage = params.getValue('page')
         page = int(sPage) if isinstance(sPage, str) and sPage.isdigit() else 0
 
-    aResults, total = _query(mode, value, page, sGui)
+    channel = '' if sGui else (params.getValue('mvwChannel') or '')
+    params.setParam('mvwChannel', channel)
+    aResults, total = _query(mode, value, page, sGui, channel=channel)
     if not aResults:
         if not sGui:
             oGui.showInfo()

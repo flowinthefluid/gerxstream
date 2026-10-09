@@ -679,6 +679,37 @@
 			</group>
 		</category>
 		<category id="account" label="30024" help="">
+			<group id="rocketbeansacc" label="31506">
+				<setting id="rocketbeans.user" type="string" label="30083" help="31519">
+					<level>1</level>
+					<default/>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>30083</heading></control>
+				</setting>
+				<setting id="rocketbeans.pass" type="string" label="30084" help="31519">
+					<level>1</level>
+					<default/>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><heading>30084</heading><hidden>true</hidden></control>
+				</setting>
+				<setting id="rocketbeans.login" type="action" label="31509" help="31519">
+					<level>1</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=rocketbeans&amp;function=login)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="rocketbeans.logout" type="action" label="31510">
+					<level>1</level>
+					<data>RunPlugin(plugin://plugin.video.gerxstream/?site=rocketbeans&amp;function=logout)</data>
+					<control type="button" format="action"><close>true</close></control>
+				</setting>
+				<setting id="rocketbeans.token" type="string" label="31506">
+					<level>3</level>
+					<default/>
+					<visible>false</visible>
+					<constraints><allowempty>true</allowempty></constraints>
+					<control type="edit" format="string"><hidden>true</hidden></control>
+				</setting>
+			</group>
 			<group id="aniworldacc" label="30700">
 				<setting id="aniworld.user" type="string" label="30083" help="">
 					<level>1</level>
@@ -4245,6 +4276,23 @@
 
 					</control>
 
+				</setting>
+			</group>
+			<group id="rocketbeans" label="31506">
+				<setting id="plugin_rocketbeans" type="boolean" label="30050" help="30411">
+					<level>0</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="plugin_rocketbeans_visible" type="boolean" label="30848" help="30849">
+					<level>1</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="global_search_rocketbeans" type="boolean" label="30052">
+					<default>False</default>
+					<visible>false</visible>
+					<control type="toggle"/>
 				</setting>
 			</group>
 			<group id="arte" label="30796">

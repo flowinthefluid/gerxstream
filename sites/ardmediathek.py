@@ -10,6 +10,7 @@
 # die Beitraege liegen als direkte mp4- bzw. HLS-Adressen vor.
 
 import json
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from resources.lib.handler.ParameterHandler import ParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -65,7 +66,7 @@ def load():  # Menu structure of the site plugin
 
 
 def _getJson(sUrl, sGui=False, cacheTime=0):
-    oRequest = cRequestHandler(sUrl, ignoreErrors=(sGui is not False))
+    oRequest = cRequestHandler(_embeddedUrl(sUrl), ignoreErrors=(sGui is not False))
     if cacheTime:
         oRequest.cacheTime = cacheTime
     sContent = oRequest.request()
@@ -76,6 +77,15 @@ def _getJson(sUrl, sGui=False, cacheTime=0):
     except ValueError:
         logger.info('-> [%s]: Antwort war kein gueltiges JSON: %s' % (SITE_NAME, sUrl))
         return {}
+
+
+def _embeddedUrl(url):
+    parts = urlsplit(url)
+    if '/page-gateway/' not in parts.path:
+        return url
+    query = dict(parse_qsl(parts.query, keep_blank_values=True))
+    query['embedded'] = 'true'
+    return urlunsplit(parts._replace(query=urlencode(query)))
 
 
 def _image(images, width):
@@ -147,6 +157,19 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         sId = ((teaser.get('links') or {}).get('target') or {}).get('id') or teaser.get('id')
         if not sName or not sId:
             continue
+        target = ((teaser.get('links') or {}).get('target')) or {}
+        targetUrl = target.get('href') or ''
+        isFolder = target.get('type') == 'application/vnd.ard.page+json' and '/item/' not in targetUrl
+        if isFolder and targetUrl:
+            if sGui:
+                continue
+            element = cGuiElement(sName, SITE_IDENTIFIER, 'showGenre')
+            thumbnail = _image(teaser.get('images'), THUMB_WIDTH)
+            if thumbnail:
+                element.setThumbnail(thumbnail)
+            params.setParam('sUrl', targetUrl)
+            oGui.addFolder(element, params, True, total)
+            continue
         oGuiElement = cGuiElement(sName, SITE_IDENTIFIER, 'showHosters')
         oGuiElement.setMediaType('movie')
         sShow = teaser.get('show')
@@ -160,7 +183,7 @@ def showEntries(entryUrl=False, sGui=False, sSearchText=False):
         sBroadcast = teaser.get('broadcastedOn') or ''
         if len(sBroadcast) >= 4 and sBroadcast[:4].isdigit():
             oGuiElement.setYear(sBroadcast[:4])
-        params.setParam('entryUrl', URL_ITEM % sId)
+        params.setParam('entryUrl', targetUrl or URL_ITEM % sId)
         params.setParam('sName', sName)
         oGui.addFolder(oGuiElement, params, False, total)
 

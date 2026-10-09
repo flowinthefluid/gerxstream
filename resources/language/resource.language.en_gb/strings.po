@@ -3008,6 +3008,62 @@ msgctxt "#31504"
 msgid "About 190 free, ad-supported channels from Pluto TV incl. sports (official interface, no account). The channel list is refreshed when Kodi starts."
 msgstr "About 190 free, ad-supported channels from Pluto TV incl. sports (official interface, no account). The channel list is refreshed when Kodi starts."
 
+msgctxt "#31505"
+msgid "Topic filters"
+msgstr "Topic filters"
+
+msgctxt "#31506"
+msgid "Rocket Beans TV"
+msgstr "Rocket Beans TV"
+
+msgctxt "#31507"
+msgid "Shows A-Z"
+msgstr "Shows A-Z"
+
+msgctxt "#31508"
+msgid "All episodes"
+msgstr "All episodes"
+
+msgctxt "#31509"
+msgid "Sign in"
+msgstr "Sign in"
+
+msgctxt "#31510"
+msgid "Sign out"
+msgstr "Sign out"
+
+msgctxt "#31512"
+msgid "Please sign in under Accounts."
+msgstr "Please sign in under Accounts using your email address."
+
+msgctxt "#31513"
+msgid "No free YouTube stream available. The supporter player is not supported yet."
+msgstr "No free YouTube stream available. The supporter player is not supported yet."
+
+msgctxt "#31514"
+msgid "My subscriptions"
+msgstr "My subscriptions"
+
+msgctxt "#31515"
+msgid "Two-factor code (optional)"
+msgstr "Two-factor code (optional)"
+
+msgctxt "#31516"
+msgid "Sign-in failed. Check credentials and two-factor code; a browser captcha may be required."
+msgstr "Sign-in failed. Check credentials and two-factor code; a browser captcha may be required."
+
+msgctxt "#31517"
+msgid "Signed in."
+msgstr "Signed in."
+
+msgctxt "#31518"
+msgid "Signed out."
+msgstr "Signed out."
+
+msgctxt "#31519"
+msgid "Use your email address. Kodi stores settings locally, not encrypted. The password is cleared after successful sign-in; the session token stays until sign-out or expiry. Supporter playback is not supported yet."
+msgstr "Use your email address. Kodi stores settings locally, not encrypted. The password is cleared after successful sign-in; the session token stays until sign-out or expiry. Supporter playback is not supported yet."
+
 msgctxt "#31600"
 msgid "Actors"
 msgstr "Actors"

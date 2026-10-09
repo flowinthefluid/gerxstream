@@ -1,3 +1,15 @@
+[B]Version: 1.0.32[/B]
+
+09.10.2026
+
+- ARD-Mediathek mit eingebetteten Beitraegen und echten Serien-/Sendungsordnern; ARTE-Kollektionen und einzelne Themenbereiche bleiben sichtbar.
+- MediathekViewWeb-Sender mit neuen Videos, Themenfiltern und senderbezogener Suche. Themenfilter sind Suchbegriffe, keine redaktionellen Genres.
+- Netzkino und Rocket Beans TV unter Mediatheken; Rocket Beans mit neuen Folgen, Sendungen A-Z, Staffeln und Seitennavigation.
+- Freie Rocket-Beans-Videos starten ueber das offizielle YouTube-Add-on. Supporter-Wiedergabe und Red-Bull-TV-Mediathek sind noch nicht integriert.
+- Rocket-Beans-Konto unter Konten mit An-/Abmeldung, optionalem Zwei-Faktor-Code und persoenlichen Abos. Passwort wird nach erfolgreicher Anmeldung entfernt; Kodi speichert die Sitzung lokal, nicht verschluesselt. Echte Konto-Anmeldung noch nicht mit einem Testkonto bestaetigt, Browser-Captcha kann die Anmeldung verhindern.
+- Globale Suche behandelt ARD-Serienordner und ARTE-Kollektionen nicht als abspielbare Filme.
+- Repository bleibt auf Version 1.0.7; bestehende Update-URLs unveraendert.
+
 [B]Version: 1.0.31[/B]
 
 09.10.2026

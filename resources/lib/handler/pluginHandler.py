@@ -44,6 +44,7 @@ PUBLIC_MEDIA_SITES = frozenset((
     'mediaccc',
     'internetarchive',
     'netzkino',
+    'rocketbeans',
 ))
 
 
